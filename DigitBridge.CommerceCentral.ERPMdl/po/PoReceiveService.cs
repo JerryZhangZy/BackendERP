@@ -260,7 +260,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.Messages.Add(new MessageClass() { Message = "transNum is not found" });
                 return false;
             }
-            return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, transNum.ToString());
+             return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, poTransactions[0].TransUuid);
         }
 
         /// <summary>

@@ -146,6 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string TransUuid { get; set; }
         public long  TransNum { get; set; }
         public string PoUuid { get; set; }
+        public string VendorName { get; set; }
 
         public string PoNumFrom { get; set; }
         public string PoNumTo { get; set; }
@@ -161,6 +162,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     .RuleFor(u => u.TransUuid, f => string.Empty)
                     .RuleFor(u => u.TransNum, f => 0)
                     .RuleFor(u => u.PoUuid, f => string.Empty)
+                    .RuleFor(u => u.VendorName, f => string.Empty)
                     .RuleFor(u => u.PoNumFrom, f => string.Empty)
                     .RuleFor(u => u.PoNumTo, f => string.Empty)
                     .RuleFor(u => u.TransDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))

@@ -71,7 +71,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
-
+        protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorName => _VendorName;
 
 
         protected QueryFilter<string> _VendorInvoiceNumFrom = new QueryFilter<string>("_PoNumFrom", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
@@ -101,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public PoReceiveQuery() : base(TranSactionPREFIX)
         {
-
+            AddFilter(_VendorName);
             AddFilter(_TransUuid);
             AddFilter(_TransNum);
             AddFilter(_PoUuid);
