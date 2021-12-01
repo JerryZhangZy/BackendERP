@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.CommerceCentral.ApiCommon
+namespace DigitBridge.Base.Utility
 {
     public static class MySingletonAppSetting
     {

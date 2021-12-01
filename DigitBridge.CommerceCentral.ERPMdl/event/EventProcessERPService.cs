@@ -18,6 +18,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
 using System.Text;
+using DigitBridge.CommerceCentral.AzureStorage;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -516,6 +517,54 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await srv.GetEventProcessERPListAsync(payload);
             return payload.EventProcessERPList;
         }
+
+        public async Task<bool> AddEventAndQueueMessageAsync(EventProcessERP data)
+        {
+            if (!await AddEventProcessERPAsync(data))
+            {
+                return false;
+            }
+            return await InQueueAsync();
+        }
+
+        #region send message to queue
+
+        protected ErpEventType GetErpEventTypeFromERPEventProcessType(int processType)
+        {
+            switch (processType)
+            {
+                case (int)EventProcessTypeEnum.ShipmentFromWMS:
+                    return ErpEventType.ShipmentFromWMS;
+                default:
+                    return ErpEventType.Default;
+            }
+        }
+
+        protected ERPQueueMessage GetMessageWithoutProcessData()
+        {
+            var erpdata = Data.EventProcessERP;
+            return new ERPQueueMessage
+            {
+                ERPEventType = GetErpEventTypeFromERPEventProcessType(erpdata.ERPEventProcessType),
+                DatabaseNum = erpdata.DatabaseNum,
+                MasterAccountNum = erpdata.MasterAccountNum,
+                ProfileNum = erpdata.ProfileNum,
+                ProcessUuid = erpdata.ProcessUuid,
+                //ProcessData = erpdata.ProcessData,
+                ProcessSource = erpdata.ProcessSource,
+                EventUuid = erpdata.EventUuid,
+            };
+        }
+
+        protected async Task<bool> InQueueAsync()
+        {
+            var message = GetMessageWithoutProcessData();
+            var queueName = message.ERPEventType.GetErpEventQueueName();
+            await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, MySingletonAppSetting.AzureWebJobsStorage, message);
+            return true;
+        }
+
+        #endregion
     }
 }
 
