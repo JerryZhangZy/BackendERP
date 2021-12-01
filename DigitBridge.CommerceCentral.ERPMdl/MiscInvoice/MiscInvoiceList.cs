@@ -115,10 +115,7 @@ SELECT
                 if (result)
                 {
                     if (payload.MiscInvoiceListCount == 0)
-                    {
-                        payload.Success = false;
-                        AddError("Invoices not found");
-                    }
+                        payload.ReturnError("No data be found");
                     payload.MiscInvoiceList = sb;
                 }
             }

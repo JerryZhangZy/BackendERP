@@ -192,10 +192,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task GetReturnsAsync(InvoiceReturnPayload payload, string invoiceNumber, int? transNum = null)
         {
-            payload.InvoiceTransactions = await base.GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Return, transNum);
-            await LoadInvoiceAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
-            payload.InvoiceDataDto = this.ToDto().InvoiceDataDto;
-            payload.Success = true;
+            var transactions = await base.GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Return, transNum);
+            if (transactions.Any())
+            {
+                payload.InvoiceTransactions = transactions;
+                await LoadInvoiceAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
+                payload.InvoiceDataDto = this.ToDto().InvoiceDataDto;
+                payload.Success = true;
+            }
+            else
+            {
+                payload.Success = false;
+                AddError("No data be found");
+            }
         }
 
 
