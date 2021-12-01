@@ -17,13 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class MiscInvoiceTransaction
     {
-        public override IList<string> IgnoreUpdateColumns()
-        {
-            return new List<string> { 
-                "PaidAmount",
-                "CreditAmount"
-            };
-        }
+
     }
 }
 
