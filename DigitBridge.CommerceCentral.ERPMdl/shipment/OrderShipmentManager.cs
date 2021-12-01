@@ -678,7 +678,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var processResult = new ProcessResult()
             {
-                EventMessage = JObject.FromObject(result.Messages),
+                EventMessage = new JObject() { { "message", JArray.FromObject(result.Messages) } },
                 ProcessUuid = result.ShipmentID,
                 ProcessStatus = result.Success ? (int)EventProcessProcessStatusEnum.Success : (int)EventProcessProcessStatusEnum.Failed
             };
