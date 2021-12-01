@@ -140,6 +140,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data != null && this.Data.InventoryUpdateItems != null && this.Data.InventoryUpdateItems.Count > 0)
+                {
+                    await InventoryLogService.UpdateByInventoryUpdateAsync(this.Data);
+                }
             }
             catch (Exception)
             {
@@ -551,26 +555,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload;
         }
 
-        public override async Task<bool> SaveDataAsync()
-        {
-            if (await base.SaveDataAsync())
-            {
-                await InventoryLogService.UpdateByInventoryUpdateAsync(_data);
-                return true;
-            }
-            return false;
-        }
-
-        public override bool SaveData()
-        {
-            if (base.SaveData())
-            {
-                InventoryLogService.UpdateByInventoryUpdate(_data);
-                return true;
-            }
-            return false;
-        }
-
         public override async Task<bool> DeleteDataAsync()
         {
             if (await base.DeleteDataAsync())
@@ -595,6 +579,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         #region inventory update for one sku and warehouse
+
+        public virtual async Task<bool> AddCountAsync(IList<InventoryUpdateItems> items, int masterAccountNum, int profileNum, bool addNew = true)
+        {
+            this.Add();
+            var header = this.Data.InventoryUpdateHeader;
+            header.DatabaseNum = dbFactory.DatabaseNum;
+            header.ProfileNum = profileNum;
+            header.MasterAccountNum = masterAccountNum;
+            header.InventoryUpdateUuid = Guid.NewGuid().ToString();
+            header.BatchNumber = (await GetNextPaymentNumberAsync(masterAccountNum, profileNum)).ToString();
+            header.InventoryUpdateType = (int)InventoryUpdateType.CycleCount;
+            header.InventoryUpdateStatus = 0;
+            header.UpdateDate = DateTime.UtcNow.Date;
+            header.UpdateTime = DateTime.UtcNow.ToTimeSpan();
+            header.Processor = "WMS";
+
+            foreach (var item in items)
+            {
+                var obj = await CreateCountItemAsync(item.SKU, item.WarehouseCode, item.CountQty, masterAccountNum, profileNum);
+                if (obj == null || obj.UpdateQty == 0) continue;
+                this.Data.AddInventoryUpdateItems(obj);
+            }
+            if (this.Data.InventoryUpdateItems == null || this.Data.InventoryUpdateItems.Count == 0)
+            {
+                AddError($"There is no SKU need update.");
+                return false;
+            }
+
+            header.WarehouseCode = this.Data.InventoryUpdateItems[0].WarehouseCode;
+            header.WarehouseUuid = this.Data.InventoryUpdateItems[0].WarehouseUuid;
+            return await SaveDataAsync();
+         }
 
         public virtual async Task<InventoryUpdateItems> CreateCountItemAsync(string sku, string warehouseCode, decimal qty, int masterAccountNum, int profileNum, bool addNew = true)
         {
@@ -661,6 +677,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion inventory update for one sku and warehouse
+
+        public async Task<long> GetNextPaymentNumberAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+    SELECT COALESCE(MAX(CAST(BatchNumber AS bigint)), 0) AS num
+    FROM InventoryUpdateHeader
+    WHERE MasterAccountNum=@0 AND ProfileNum=@1
+	AND ISNUMERIC(BatchNumber) = 1
+    ";
+            return await dbFactory.Db.ExecuteScalarAsync<long>(
+                sql,
+                masterAccountNum.ToSqlParameter("@0"),
+                profileNum.ToSqlParameter("@1")
+            ) + 1;
+        }
+
     }
 }
 
