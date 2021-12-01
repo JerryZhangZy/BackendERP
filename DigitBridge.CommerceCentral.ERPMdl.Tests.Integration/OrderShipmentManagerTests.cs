@@ -44,6 +44,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 ShipmentHeader = new InputOrderShipmentHeaderType()
                 {
+                    WarehouseCode= "Test WarehouseCode",
+                    ChannelNum = 10015,
+                    ChannelAccountNum = 108343,
                     ShipmentID = Guid.NewGuid().ToString(),
 
                     SalesOrderUuid = "716bcd22-3779-45db-a443-1b274995c394",
@@ -171,7 +174,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var wmsShipmentList = new List<InputOrderShipmentType>();
             int i = 0;
-            while (i < 1)
+            while (i < 10)
             {
                 wmsShipmentList.Add(await GetWmsShipmentWithSavedSalesOrder());
                 i++;
@@ -183,27 +186,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = ProfileNum,
             };
 
-            var success = false;
-            List<OrderShipmentCreateResultPayload> result = null;
-            try
+            using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
             {
-                using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
-                {
-                    var srv = new OrderShipmentManager(DataBaseFactory);
-                    result = await srv.CreateShipmentListAsync(payload, wmsShipmentList);
-                    success = result.Count(i => !i.Success) == 0;
-                }
-
-                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+                var srv = new OrderShipmentManager(DataBaseFactory);
+                var result = await srv.CreateShipmentListAsync(payload, wmsShipmentList);
+                var success = result.Count(i => !i.Success) == 0;
+                Assert.True(success, result.SelectMany(i => i.Messages).ObjectToString());
             }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            //Assert.True(success, result.Where(i => !i.Success).SelectMany(j => j.Messages).ObjectToString());
-
-            //Assert.True(!result.InvoiceUuid.IsZero(), "Shipment Added. But invoice was not transferred.");
         }
     }
 }

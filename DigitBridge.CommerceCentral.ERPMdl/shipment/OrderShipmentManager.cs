@@ -291,7 +291,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // loop for shipment list to create each shipment
-            foreach (var shipment in wmsShipments)
+            foreach (var wmsShipment in wmsShipments)
             {
                 // for each shipment, create result object to hold shipment creating result
                 var result = new OrderShipmentCreateResultPayload()
@@ -299,16 +299,69 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     Success = true,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
-                    ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
+                    ShipmentID = wmsShipment?.ShipmentHeader?.ShipmentID,
                 };
 
-                // first validate shipment data, allow to create new shipment
-                await CreateShipmentAsync(shipment, result);
+                // first validate shipment data, then sent it to eventprocess and queue.
+                if (await ValidateShipment(wmsShipment, result))
+                {
+                    var eventProcessERP = new EventProcessERP()
+                    {
+                        MasterAccountNum = result.MasterAccountNum,
+                        ProfileNum = result.ProfileNum,
+                        ProcessData = wmsShipment.ObjectToString(),
+                        ProcessUuid = result.ShipmentID,
+                        ChannelNum = wmsShipment.ShipmentHeader.ChannelNum,
+                        ChannelAccountNum = wmsShipment.ShipmentHeader.ChannelAccountNum,
+                        ERPEventProcessType = (int)EventProcessTypeEnum.ShipmentFromWMS,
+                        ActionStatus = (int)EventProcessActionStatusEnum.Pending,
+                    };
+                    if (!await eventProcessERPService.AddEventAndQueueMessageAsync(eventProcessERP))
+                    {
+                        result.Success = false;
+                        result.Messages.Add(eventProcessERPService.Messages);
+                    }
+                }
 
                 resultList.Add(result);
             }
             return resultList;
         }
+
+        ///// <summary>
+        ///// Create multiple shipment and invoice
+        ///// </summary>
+        //public async Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
+        //{
+        //    var resultList = new List<OrderShipmentCreateResultPayload>();
+        //    if (wmsShipments is null || wmsShipments.Count == 0)
+        //    {
+        //        resultList.Add(new OrderShipmentCreateResultPayload()
+        //        {
+        //            Messages = this.AddError("shipment data is required."),
+        //        });
+        //        return resultList;
+        //    }
+
+        //    // loop for shipment list to create each shipment
+        //    foreach (var shipment in wmsShipments)
+        //    {
+        //        // for each shipment, create result object to hold shipment creating result
+        //        var result = new OrderShipmentCreateResultPayload()
+        //        {
+        //            Success = true,
+        //            MasterAccountNum = payload.MasterAccountNum,
+        //            ProfileNum = payload.ProfileNum,
+        //            ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
+        //        };
+
+        //        // first validate shipment data, allow to create new shipment
+        //        await CreateShipmentAsync(shipment, result);
+
+        //        resultList.Add(result);
+        //    }
+        //    return resultList;
+        //}
 
         /// <summary>
         /// Validate current shipment data 
@@ -338,7 +391,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Messages.AddError("SalesOrderUuid cannot be empty.");
                 result.Success = false;
             }
-
+            if (wmsShipment.ShipmentHeader.ChannelAccountNum.IsZero())
+            {
+                result.Messages.AddError("ChannelAccountNum cannot be empty.");
+                result.Success = false;
+            }
+            if (wmsShipment.ShipmentHeader.ChannelNum.IsZero())
+            {
+                result.Messages.AddError("ChannelNum cannot be empty.");
+                result.Success = false;
+            }
             if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
             {
                 result.Messages.AddError("WarehouseCode cannot be empty.");
