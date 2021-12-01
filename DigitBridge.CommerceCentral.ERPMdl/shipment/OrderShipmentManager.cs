@@ -19,6 +19,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +38,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region services
+        [XmlIgnore, JsonIgnore]
+        protected EventProcessERPService _eventProcessERPService;
+        [XmlIgnore, JsonIgnore]
+        public EventProcessERPService eventProcessERPService
+        {
+            get
+            {
+                if (_eventProcessERPService is null)
+                    _eventProcessERPService = new EventProcessERPService(dbFactory);
+                return _eventProcessERPService;
+            }
+        }
+
         [XmlIgnore, JsonIgnore]
         protected SalesOrderService _salesOrderService;
         [XmlIgnore, JsonIgnore]
@@ -359,11 +373,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result.Success;
         }
 
-
         /// <summary>
         /// Create and save one shipment, but set processStatus to -1 (pending)
         /// </summary>
-        public async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        protected async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
         {
             // create mapper, and transfer shipment payload ro ero shipment Dto
             var mapper = new WMSOrderShipmentMapper(result.MasterAccountNum, result.ProfileNum);
@@ -560,5 +573,78 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
+
+        #region create shipment for wms trigger by queue
+
+        /// <summary>
+        /// create shipment by wmsShipmentID
+        /// </summary>
+        /// <param name="wmsShipment"></param>
+        /// <param name="wmsShipmentID"></param>
+        /// <returns></returns>
+        public async Task<bool> CreateShipmentAsync(OrderShipmentPayload payload, string shipmentID)
+        {
+            var result = new OrderShipmentCreateResultPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                ShipmentID = shipmentID,
+            };
+
+            var success = true;
+
+            var wmsShipment = await GetWmsShipment(result);
+            if (wmsShipment == null)
+            {
+                result.Messages.AddError($"Data not found,ShipmentID:{result.ShipmentID}");
+                success = false;
+            }
+
+            // first validate shipment data, allow to create new shipment
+            success = success && await ValidateShipment(wmsShipment, result);
+            success = success && await CreateShipmentAsync(wmsShipment, result);
+            result.Success = success;
+
+            return await UpdateProcessResultAsync(result);
+        }
+
+        /// <summary>
+        /// update process result back to  event process 
+        /// </summary>
+        /// <returns></returns>
+        protected async Task<bool> UpdateProcessResultAsync(OrderShipmentCreateResultPayload result)
+        {
+            var processResult = new ProcessResult()
+            {
+                EventMessage = JObject.FromObject(result.Messages),
+                ProcessUuid = result.ShipmentID,
+                ProcessStatus = result.Success ? (int)EventProcessProcessStatusEnum.Success : (int)EventProcessProcessStatusEnum.Failed
+            };
+
+            var ackPayload = new AcknowledgeProcessPayload()
+            {
+                MasterAccountNum = result.MasterAccountNum,
+                ProfileNum = result.ProfileNum,
+                EventProcessType = EventProcessTypeEnum.ShipmentFromWMS,
+                ProcessResults = new List<ProcessResult>()
+                { processResult }
+            };
+
+            return await eventProcessERPService.UpdateProcessStatusAsync(ackPayload);
+        }
+
+        protected async Task<InputOrderShipmentType> GetWmsShipment(OrderShipmentCreateResultPayload result)
+        {
+            eventProcessERPService.List();
+            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.ShipmentFromWMS, result.ShipmentID);
+            if (!success)
+            {
+                result.Messages.Add(eventProcessERPService.Messages);
+            }
+            var wmsShipment = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<InputOrderShipmentType>();
+            return wmsShipment;
+        }
+
+        #endregion
     }
 }
