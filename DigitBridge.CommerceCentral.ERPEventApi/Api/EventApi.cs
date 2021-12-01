@@ -264,7 +264,7 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             {
                 MasterAccountNum = eventdata.MasterAccountNum,
                 ProfileNum = eventdata.ProfileNum,
-                EventERP = eventdata.ToEventERPDataDto(ErpEventType.DeleteQboPayment)
+                EventERP = eventdata.ToEventERPDataDto(ErpEventType.SyncProduct)
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);

@@ -35,7 +35,10 @@ namespace DigitBridge.Base.Common
         InvoiceRetrunToQboRefund = 7,
 
         [Description("Void QuickBooks Refund")] 
-        DeleteQboRefund = 8
+        DeleteQboRefund = 8,
+
+        [Description("Create ProductExt and Inventory from ProductBasic")]
+        SyncProduct = 9,
     } 
     public static class ErpEventQueueName
     {
@@ -60,6 +63,8 @@ namespace DigitBridge.Base.Common
                     return AddQboInvoiceReturn;
                 case ErpEventType.DeleteQboRefund:
                     return DeleteQboInvoiceReturn;
+                case ErpEventType.SyncProduct:
+                    return SyncProduct;
                 default:
                     return DefaultQueue;
             }
@@ -80,5 +85,6 @@ namespace DigitBridge.Base.Common
         public static string AddQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnQueue;
         public static string DeleteQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnDeleteQueue;
 
+        public static string SyncProduct = ERPQueueSetting.ERPSyncProductQueue;
     }
 }
