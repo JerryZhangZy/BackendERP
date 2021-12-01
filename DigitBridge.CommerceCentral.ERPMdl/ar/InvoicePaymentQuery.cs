@@ -157,5 +157,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _TransType.FilterValue = (int)TransTypeEnum.Payment;
         }
 
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("TransDate", "TransDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("TransNum", "MiscInvoiceNumber DESC, TransNum DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("InvoiceNumber", "InvoiceNumber DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("PaidBy", "PaidBy, RowNum DESC")
+            );
+        }
+
     }
 }
