@@ -81,16 +81,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //_OrderDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
         }
 
-        //public override void SetAvailableOrderByList(IList<string> orderByList)
-        //{
-        //    base.SetAvailableOrderByList();
-        //    AddAvailableOrderByList(
-        //        new KeyValuePair<string, string>("VendorCode", "VendorCode"),
-        //        new KeyValuePair<string, string>("VendorName", "VendorName"),
-        //        new KeyValuePair<string, string>("ClassCode", "ClassCode "),
-        //        new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode ")
-        //        );
-        //}
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("VendorCode", "VendorCode"),
+                new KeyValuePair<string, string>("VendorName", "VendorName"),
+                new KeyValuePair<string, string>("ClassCode", "ClassCode "),
+                new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode ")
+                );
+        }
 
     }
 }
