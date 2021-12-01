@@ -27,12 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class PoReceivePayloadAdd
     {
-        /// <summary>
-        /// (Request Data) PoReceive object to add.
-        /// (Response Data) PoReceive object which has been added.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) PoReceive object to add.")]
-        public PoTransactionDataDto PoTransaction { get; set; }
+  
         
         /// <summary>
         /// (Request Data) PoReceive object to add.
@@ -57,12 +52,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class PoReceivePayloadUpdate
     {
+
         /// <summary>
-        /// (Request Data) PoReceive object to update.
-        /// (Response Data) PoReceive object which has been updated.
+        /// (Request Data) PoReceive object to add.
+        /// (Response Data) PoReceive object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) PoReceive object to update.")]
-        public PoTransactionDataDto PoTransaction { get; set; }
+        [OpenApiPropertyDescription("(Request and Response) Batch PoReceives object to add.")]
+        public IList<PoTransactionDataDto> PoTransactions { get; set; }
+
+        
     }
 
 
