@@ -30,10 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public interface IInventoryService : IService<InventoryService, InventoryData, InventoryDataDto>
     {
 
-        bool Add(InventoryDataDto dto);
         Task<bool> AddAsync(InventoryDataDto dto);
-        
-        bool Update(InventoryDataDto dto);
         Task<bool> UpdateAsync(InventoryDataDto dto);
 
 

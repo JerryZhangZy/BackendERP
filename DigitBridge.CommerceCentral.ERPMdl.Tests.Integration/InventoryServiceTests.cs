@@ -30,65 +30,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public void AddDto_Test()
-        {
-            var srv = new InventoryService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            var id = data.UniqueId;
-
-            srv.Add(dto);
-
-            var srvGet = new InventoryService(DataBaseFactory);
-            //srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-        }
-
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void UpdateDto_Test()
-        {
-            SaveData_Test();
-
-            var id = DataBaseFactory.GetValue<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
-INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
-WHERE itm.cnt > 0
-");
-
-
-            var srv = new InventoryService(DataBaseFactory);
-            srv.Edit(id);
-            var rowNum = srv.Data.ProductBasic.RowNum;
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.ProductBasic.RowNum = rowNum;
-            dto.ProductBasic.ProductUuid = id;
-
-            srv.Clear();
-            srv.Update(dto);
-
-            var srvGet = new InventoryService(DataBaseFactory);
-            srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-        }
-
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
         public async Task AddDtoAsync_Test()
         {
             var srv = new InventoryService(DataBaseFactory);

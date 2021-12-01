@@ -28,11 +28,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public interface IInventoryManager 
     {
         Task<byte[]> ExportAsync(InventoryPayload payload);
-
-        byte[] Export(InventoryPayload payload);
-
-        void Import(InventoryPayload payload, IFormFileCollection files);
-
         Task ImportAsync(InventoryPayload payload, IFormFileCollection files);
     }
 }

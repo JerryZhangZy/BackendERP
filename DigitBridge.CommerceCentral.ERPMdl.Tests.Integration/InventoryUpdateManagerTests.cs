@@ -62,63 +62,75 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 {
                     new InventorySyncItem()
                     {
+                        SKU = "101409S-BK-M-STD-NEW-001",
+                        WarehouseCode = "Default",
+                        Qty = 666,
+                    },
+                    new InventorySyncItem()
+                    {
                         SKU = "101409S-BK-M-STD",
                         WarehouseCode = "Default",
-                        Qty = 100,
+                        Qty = 105,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-BK-S-STD",
                         WarehouseCode = "Default",
-                        Qty = 200,
+                        Qty = 205,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-BK-XL-STD",
                         WarehouseCode = "Default",
-                        Qty = 300,
+                        Qty = 305,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-CGREEN-L-STD",
                         WarehouseCode = "Default",
-                        Qty = 400,
+                        Qty = 405,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-CGREEN-M-STD",
                         WarehouseCode = "Default",
-                        Qty = 500,
+                        Qty = 505,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-CHARCOAL-L-STD",
                         WarehouseCode = "Default",
-                        Qty = 650,
+                        Qty = 655,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-CHARCOAL-2XL-STD",
                         WarehouseCode = "Default",
-                        Qty = 700,
+                        Qty = 705,
                     },
                     new InventorySyncItem() 
                     {
                         SKU = "101409S-CGREEN-2XL-STD",
                         WarehouseCode = "Default",
-                        Qty = 800,
+                        Qty = 805,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-CGREEN-XL-STD",
                         WarehouseCode = "Default",
-                        Qty = 900,
+                        Qty = 905,
                     },
                     new InventorySyncItem()
                     {
                         SKU = "101409S-CHARCOAL-M-STD",
                         WarehouseCode = "Default",
-                        Qty = 950,
+                        Qty = 955,
+                    },
+                    new InventorySyncItem()
+                    {
+                        SKU = "101409S-BK-M-STD-NEW-002",
+                        WarehouseCode = "Default",
+                        Qty = 777,
                     },
                 }
             };
