@@ -28,5 +28,6 @@ namespace DigitBridge.Base.Common
         InvoiceToCommerceCentral = 1,
         SalesOrderToWMS = 2,
         PoToWMS = 3,
+        ShipmentFromWMS = 4,
     }
 }

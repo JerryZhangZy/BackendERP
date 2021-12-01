@@ -1,3 +1,4 @@
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
@@ -9,6 +10,8 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -48,5 +51,22 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
         //    return new JsonNetResponse<OrderShipmentPayload>(payload);
         //}
+
+        [FunctionName("CreateShipmentByWMS")]
+        public static async Task CreateShipmentByWMS([QueueTrigger(QueueName.Erp_Create_Shipment_By_WMS)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+            };
+
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+
+            var service = new OrderShipmentManager(dbFactory);
+            await service.CreateShipmentAsync(payload, message.ProcessUuid);
+        }
+
     }
 }

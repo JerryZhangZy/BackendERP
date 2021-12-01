@@ -28,6 +28,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Item in stock Qty. <br> Title: Instock, Display: true, Editable: false
         /// </summary>
         [OpenApiPropertyDescription("Item in stock Qty. <br> Title: Instock, Display: true, Editable: false")]
-        public decimal? Qty { get; set; }
+        public decimal Qty { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Model
     {
         public string SKU { get; set; }
         public string WarehouseCode { get; set; }
-        public decimal? Qty { get; set; }
+        public decimal Qty { get; set; }
     }
 }

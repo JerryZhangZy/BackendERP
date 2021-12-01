@@ -38,6 +38,7 @@
     "ERPInvoiceQueueName": "erp-invoice-queue",
     "ERPCreateInvoiceByOrdershipmentQueueName": "erp-create-invoice-by-ordershipment",
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
+    "ERPCreateShipmentByWMS": "erp-create-shipment-by-wms",
 
     //test
     //"UseOrchestration": "false",

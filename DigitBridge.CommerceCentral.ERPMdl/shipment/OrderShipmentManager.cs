@@ -19,6 +19,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +38,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region services
+        [XmlIgnore, JsonIgnore]
+        protected EventProcessERPService _eventProcessERPService;
+        [XmlIgnore, JsonIgnore]
+        public EventProcessERPService eventProcessERPService
+        {
+            get
+            {
+                if (_eventProcessERPService is null)
+                    _eventProcessERPService = new EventProcessERPService(dbFactory);
+                return _eventProcessERPService;
+            }
+        }
+
         [XmlIgnore, JsonIgnore]
         protected SalesOrderService _salesOrderService;
         [XmlIgnore, JsonIgnore]
@@ -277,7 +291,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // loop for shipment list to create each shipment
-            foreach (var shipment in wmsShipments)
+            foreach (var wmsShipment in wmsShipments)
             {
                 // for each shipment, create result object to hold shipment creating result
                 var result = new OrderShipmentCreateResultPayload()
@@ -285,18 +299,69 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     Success = true,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
-                    ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
+                    ShipmentID = wmsShipment?.ShipmentHeader?.ShipmentID,
                 };
 
-                // first validate shipment data, allow to create new shipment
-                if (await ValidateShipment(shipment, result))
+                // first validate shipment data, then sent it to eventprocess and queue.
+                if (await ValidateShipment(wmsShipment, result))
                 {
-                    await CreateShipmentAsync(shipment, result);
+                    var eventProcessERP = new EventProcessERP()
+                    {
+                        MasterAccountNum = result.MasterAccountNum,
+                        ProfileNum = result.ProfileNum,
+                        ProcessData = wmsShipment.ObjectToString(),
+                        ProcessUuid = result.ShipmentID,
+                        ChannelNum = wmsShipment.ShipmentHeader.ChannelNum,
+                        ChannelAccountNum = wmsShipment.ShipmentHeader.ChannelAccountNum,
+                        ERPEventProcessType = (int)EventProcessTypeEnum.ShipmentFromWMS,
+                        ActionStatus = (int)EventProcessActionStatusEnum.Pending,
+                    };
+                    if (!await eventProcessERPService.AddEventAndQueueMessageAsync(eventProcessERP))
+                    {
+                        result.Success = false;
+                        result.Messages.Add(eventProcessERPService.Messages);
+                    }
                 }
+
                 resultList.Add(result);
             }
             return resultList;
         }
+
+        ///// <summary>
+        ///// Create multiple shipment and invoice
+        ///// </summary>
+        //public async Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
+        //{
+        //    var resultList = new List<OrderShipmentCreateResultPayload>();
+        //    if (wmsShipments is null || wmsShipments.Count == 0)
+        //    {
+        //        resultList.Add(new OrderShipmentCreateResultPayload()
+        //        {
+        //            Messages = this.AddError("shipment data is required."),
+        //        });
+        //        return resultList;
+        //    }
+
+        //    // loop for shipment list to create each shipment
+        //    foreach (var shipment in wmsShipments)
+        //    {
+        //        // for each shipment, create result object to hold shipment creating result
+        //        var result = new OrderShipmentCreateResultPayload()
+        //        {
+        //            Success = true,
+        //            MasterAccountNum = payload.MasterAccountNum,
+        //            ProfileNum = payload.ProfileNum,
+        //            ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
+        //        };
+
+        //        // first validate shipment data, allow to create new shipment
+        //        await CreateShipmentAsync(shipment, result);
+
+        //        resultList.Add(result);
+        //    }
+        //    return resultList;
+        //}
 
         /// <summary>
         /// Validate current shipment data 
@@ -326,7 +391,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Messages.AddError("SalesOrderUuid cannot be empty.");
                 result.Success = false;
             }
-
+            if (wmsShipment.ShipmentHeader.ChannelAccountNum.IsZero())
+            {
+                result.Messages.AddError("ChannelAccountNum cannot be empty.");
+                result.Success = false;
+            }
+            if (wmsShipment.ShipmentHeader.ChannelNum.IsZero())
+            {
+                result.Messages.AddError("ChannelNum cannot be empty.");
+                result.Success = false;
+            }
             if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
             {
                 result.Messages.AddError("WarehouseCode cannot be empty.");
@@ -359,12 +433,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result.Success;
         }
 
-
         /// <summary>
         /// Create and save one shipment, but set processStatus to -1 (pending)
         /// </summary>
         public async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
         {
+            if (!await ValidateShipment(wmsShipment, result))
+            {
+                return false;
+            }
             // create mapper, and transfer shipment payload ro ero shipment Dto
             var mapper = new WMSOrderShipmentMapper(result.MasterAccountNum, result.ProfileNum);
             var erpShipment = mapper.MapperToErpShipment(wmsShipment);
@@ -560,5 +637,76 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
+
+        #region create shipment for wms trigger by queue
+
+        /// <summary>
+        /// create shipment by wmsShipmentID
+        /// </summary>
+        /// <param name="wmsShipment"></param>
+        /// <param name="wmsShipmentID"></param>
+        /// <returns></returns>
+        public async Task<bool> CreateShipmentAsync(OrderShipmentPayload payload, string shipmentID)
+        {
+            var result = new OrderShipmentCreateResultPayload()
+            {
+                Success = true,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                ShipmentID = shipmentID,
+            };
+
+            var wmsShipment = await GetWmsShipment(result);
+            if (wmsShipment == null)
+            {
+                result.Messages.AddError($"Data not found,ShipmentID:{result.ShipmentID}");
+                result.Success = false;
+            }
+
+            if (result.Success)
+                result.Success = await CreateShipmentAsync(wmsShipment, result);
+
+            // update all result back to event process.
+            return await UpdateProcessResultAsync(result);
+        }
+
+        /// <summary>
+        /// update process result back to  event process 
+        /// </summary>
+        /// <returns></returns>
+        protected async Task<bool> UpdateProcessResultAsync(OrderShipmentCreateResultPayload result)
+        {
+            var processResult = new ProcessResult()
+            {
+                EventMessage = new JObject() { { "message", JArray.FromObject(result.Messages) } },
+                ProcessUuid = result.ShipmentID,
+                ProcessStatus = result.Success ? (int)EventProcessProcessStatusEnum.Success : (int)EventProcessProcessStatusEnum.Failed
+            };
+
+            var ackPayload = new AcknowledgeProcessPayload()
+            {
+                MasterAccountNum = result.MasterAccountNum,
+                ProfileNum = result.ProfileNum,
+                EventProcessType = EventProcessTypeEnum.ShipmentFromWMS,
+                ProcessResults = new List<ProcessResult>()
+                { processResult }
+            };
+
+            return await eventProcessERPService.UpdateProcessStatusAsync(ackPayload);
+        }
+
+        protected async Task<InputOrderShipmentType> GetWmsShipment(OrderShipmentCreateResultPayload result)
+        {
+            eventProcessERPService.List();
+            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.ShipmentFromWMS, result.ShipmentID);
+            if (!success)
+            {
+                result.Messages.Add(eventProcessERPService.Messages);
+            }
+            var wmsShipment = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<InputOrderShipmentType>();
+            return wmsShipment;
+        }
+
+        #endregion
     }
 }
