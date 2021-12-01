@@ -166,20 +166,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _ApInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
-        //public override void SetAvailableOrderByList(IList<string> orderByList)
-        //{
-        //    base.SetAvailableOrderByList();
-        //    AddAvailableOrderByList(
-        //        new KeyValuePair<string,string>("ApInvoiceDate", "ApInvoiceDate DESC "),
-        //        new KeyValuePair<string, string>("ApInvoiceNum", "ApInvoiceNum DESC"),
-        //        new KeyValuePair<string, string>("VendorCode", "VendorCode ")
-        //        );
-        //}
+ 
 
-        
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("ApInvoiceDate", "ApInvoiceDate DESC "),
+                new KeyValuePair<string, string>("ApInvoiceNum", "ApInvoiceNum DESC"),
+                new KeyValuePair<string, string>("VendorCode", "VendorCode ")
+                );
+        }
+
+
 
 
     }
 
-   
+
 }

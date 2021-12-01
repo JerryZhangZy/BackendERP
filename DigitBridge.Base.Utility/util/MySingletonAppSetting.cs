@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.CommerceCentral.ApiCommon
+namespace DigitBridge.Base.Utility
 {
     public static class MySingletonAppSetting
     {
@@ -32,6 +32,11 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             }
         }
+#if DEBUG
+        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net";
+#else
+        public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
+#endif
         public static string OrchestrationDbConnString => GetValueByName("OrchestrationDbConnString");
 
         public static string DBConnectionString => GetValueByName("DBConnectionString");
@@ -41,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string CryptKey => GetValueByName("CryptKey");
 
-        public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
+        
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");

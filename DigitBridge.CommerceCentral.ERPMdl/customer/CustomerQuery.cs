@@ -107,18 +107,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
-        //public override void SetAvailableOrderByList(IList<string> orderByList)
-        //{
-        //    base.SetAvailableOrderByList();
-        //    AddAvailableOrderByList(
-        //        new KeyValuePair<string, string>("CustomerCode", "CustomerCode"),
-        //        new KeyValuePair<string, string>("CustomerName", "CustomerName"),
-        //        new KeyValuePair<string, string>("BusinessType", "BusinessType "),
-        //        new KeyValuePair<string, string>("ClassCode", "ClassCode"),
-        //        new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode ")
-        //        );
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("CustomerCode", "CustomerCode"),
+                new KeyValuePair<string, string>("CustomerName", "CustomerName"),
+                new KeyValuePair<string, string>("BusinessType", "BusinessType"),
+                new KeyValuePair<string, string>("ClassCode", "ClassCode"),
+                new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode")
+                );
 
-        //}
+        }
 
 
     }

@@ -6,7 +6,7 @@
   },
   "Values": {
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet", 
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
     //local
@@ -46,8 +46,9 @@
     "ERPInvoiceQueueName": "erp-invoice-queue",
     "ERPCreateInvoiceByOrdershipmentQueueName": "erp-create-invoice-by-ordershipment",
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
+    "ERPCreateShipmentByWMS": "erp-create-shipment-by-wms",
     "ERPSummaryTableName": "ErpSummaryCache",
-    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
+    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
 
     //test
     //"UseOrchestration": "false",
