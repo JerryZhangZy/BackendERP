@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!dto.HasPoTransactionItems)
             {
-                AddError("Effective TransactionItem is require.");
+                AddError("Transactionitem's transqty cannot be less than or equal to 0");
                 return false;
             }
           

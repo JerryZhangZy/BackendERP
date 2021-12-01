@@ -260,7 +260,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.Messages.Add(new MessageClass() { Message = "transNum is not found" });
                 return false;
             }
-            return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, transNum.ToString());
+             return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, poTransactions[0].TransUuid);
         }
 
         /// <summary>
@@ -381,20 +381,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> UpdateAsync(PoReceivePayload payload)
         {
-            if (!payload.HasPoTransaction)
+            if (!payload.HasPoTransactions)
             {
                 AddError("PoTransaction cannot be blank");
                 return false;
             }
+            bool result = true;
 
-            var transdata = payload.PoTransaction;
-            if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
+
+            var poTransactions = new List<PoTransactionDataDto>();
+            foreach (var item in payload.PoTransactions)
             {
-                AddError("PoTransaction cannot be blank");
-                return false;
+                payload.PoTransaction = item;
+                if (!await base.UpdateAsync(payload))
+                    result = false;
+                else
+                    poTransactions.Add(ToDto());
             }
+            payload.PoTransactions = poTransactions;
+            payload.PoTransaction = null;
 
-            return await base.UpdateAsync(payload);
+            return result;
 
         }
 
