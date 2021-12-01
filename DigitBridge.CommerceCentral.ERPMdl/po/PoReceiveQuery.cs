@@ -130,17 +130,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _TransDateTo.FilterValue = DateTime.UtcNow.Date;
 
         }
-        //public override void SetAvailableOrderByList(IList<string> orderByList)
-        //{
-        //    base.SetAvailableOrderByList();
-        //    AddAvailableOrderByList(
-        //        new KeyValuePair<string, string>("TransDate", "TransDate"),
-        //        new KeyValuePair<string, string>("TransNum", "TransNum"),
-        //        new KeyValuePair<string, string>("VendorCode", "VendorCode "),
-        //        new KeyValuePair<string, string>("VendorInvoiceDate", "VendorInvoiceDate "),
-        //        new KeyValuePair<string, string>("VendorInvoiceNum", "VendorInvoiceNum ")
-        //        );
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("TransDate", "TransDate DESC"),
+                new KeyValuePair<string, string>("TransNum", "TransNum DESC"),
+                new KeyValuePair<string, string>("VendorCode", "VendorCode"),
+                new KeyValuePair<string, string>("VendorInvoiceDate", "VendorInvoiceDate DESC"),
+                new KeyValuePair<string, string>("VendorInvoiceNum", "VendorInvoiceNum DESC")
+                );
 
-        //}
+        }
     }
 }
