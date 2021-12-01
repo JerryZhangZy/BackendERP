@@ -145,7 +145,11 @@ channelAccount.ChannelAccountName as channelAccountName,
                 payload.InvoiceTransactionListCount = await CountAsync();
                 payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
+                {
+                    if (sb.Length < 5)
+                        payload.Messages.AddError("No data be found");
                     payload.InvoiceTransactionList = sb;
+                }
             }
             catch (Exception ex)
             {
