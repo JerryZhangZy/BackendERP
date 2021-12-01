@@ -303,10 +303,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 };
 
                 // first validate shipment data, allow to create new shipment
-                if (await ValidateShipment(shipment, result))
-                {
-                    await CreateShipmentAsync(shipment, result);
-                }
+                await CreateShipmentAsync(shipment, result);
+
                 resultList.Add(result);
             }
             return resultList;
@@ -376,8 +374,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Create and save one shipment, but set processStatus to -1 (pending)
         /// </summary>
-        protected async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        public async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
         {
+            if (!await ValidateShipment(wmsShipment, result))
+            {
+                return false;
+            }
             // create mapper, and transfer shipment payload ro ero shipment Dto
             var mapper = new WMSOrderShipmentMapper(result.MasterAccountNum, result.ProfileNum);
             var erpShipment = mapper.MapperToErpShipment(wmsShipment);
@@ -600,8 +602,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 success = false;
             }
 
-            // first validate shipment data, allow to create new shipment
-            success = success && await ValidateShipment(wmsShipment, result);
+            // first validate shipment data, allow to create new shipment 
             success = success && await CreateShipmentAsync(wmsShipment, result);
             result.Success = success;
 

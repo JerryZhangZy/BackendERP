@@ -36,6 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task ImportAsync(OrderShipmentPayload payload, IFormFileCollection files);
 
         Task<bool> CreateShipmentAsync(OrderShipmentPayload payload, string shipmentID);
+        Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result);
         Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments);
 
         Task<string> CreateShipmentFromSalesOrderAsync(string salesOrderUuid);
