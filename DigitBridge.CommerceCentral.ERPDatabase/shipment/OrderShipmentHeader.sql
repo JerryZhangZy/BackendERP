@@ -52,13 +52,8 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderShipmentHeader_OrderShipmentUuid] ON [
 (
     [OrderShipmentUuid] ASC
 )  
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
-(
-	[ProfileNum] ASC,
-	[MainTrackingNumber] ASC
-) 
-GO
+ 
+
 --ALTER TABLE [dbo].[OrderShipmentHeader] ADD  CONSTRAINT [DF_OrderShipmentHeader_EnterDateUtc]  DEFAULT (getutcdate()) FOR [EnterDateUtc]
 --GO
 

@@ -1166,7 +1166,7 @@ where inv.InventoryUuid=il.InventoryUuid
         //        DatabaseNum = this.Data.InventoryLog.DatabaseNum,
         //        ProcessUuid = this.Data.InventoryLog.InventoryLogUuid,
         //        ProcessNumber = this.Data.InventoryLog.LogNumber,
-        //        ChannelNum = this.Data.InventoryLog.ChannelAccountNum,
+        //        ChannelNum = this.Data.InventoryLog.ChannelNum,
         //        ChannelAccountNum = this.Data.InventoryLog.ChannelAccountNum,
 
         //        LogMessage = string.Empty

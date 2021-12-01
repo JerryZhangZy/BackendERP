@@ -23,7 +23,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class PurchaseOrderService
     {
+        #region Service Property
+        private InventoryService _inventoryService;
 
+        protected InventoryService InventoryService
+        {
+            get
+            {
+                if (_inventoryService == null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        #endregion
         #region override methods
 
         /// <summary>
@@ -50,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.PoHeader != null)
                 {
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                    await InventoryService.UpdateOpenPoQtyFromPoUuidAsync(this.Data.PoHeader.PoUuid, true);
                 }
             }
             catch (Exception)
@@ -93,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.PoHeader != null)
                 {
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+                    await InventoryService.UpdateOpenPoQtyFromPoUuidAsync(this.Data.PoHeader.PoUuid);
                 }
             }
             catch (Exception)
@@ -171,7 +184,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.PoHeader.DatabaseNum,
                 ProcessUuid = this.Data.PoHeader.PoUuid,
                 ProcessNumber = this.Data.PoHeader.PoNum,
-                ChannelNum = this.Data.PoHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.PoHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.PoHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty

@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var client = new WMSShipmentClient(_baseUrl, _code);
             var shipmentList = GetWmsShipmentList();
             var success = await client.AddShipmentListAsync(MasterAccountNum, ProfileNum, shipmentList);
-            Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
+            Assert.True(client.ResopneData != null, $"SDK invoke failed. Error is {client.Messages.ObjectToString()}");
             //Assert.True(success, client.Messages.ObjectToString());
         }
 

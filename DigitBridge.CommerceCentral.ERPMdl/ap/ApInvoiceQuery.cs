@@ -29,10 +29,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
  
 
-        protected QueryFilter<string> _ApInvoiceNumFrom = new QueryFilter<string>("_ApInvoiceNumFrom", "ApInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _ApInvoiceNumFrom = new QueryFilter<string>("ApInvoiceNumFrom", "ApInvoiceNum", PREFIX, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> ApInvoiceNumFrom => _ApInvoiceNumFrom;
 
-        protected QueryFilter<string> _ApInvoiceNumTo = new QueryFilter<string>("_ApInvoiceNumTo", "ApInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _ApInvoiceNumTo = new QueryFilter<string>("ApInvoiceNumTo", "ApInvoiceNum", PREFIX, FilterBy.le, string.Empty, isNVarChar: true);
         public QueryFilter<string> ApInvoiceNumTo => _ApInvoiceNumTo;
 
 
@@ -165,6 +165,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _ApInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
             _ApInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
+
+        //public override void SetAvailableOrderByList(IList<string> orderByList)
+        //{
+        //    base.SetAvailableOrderByList();
+        //    AddAvailableOrderByList(
+        //        new KeyValuePair<string,string>("ApInvoiceDate", "ApInvoiceDate DESC "),
+        //        new KeyValuePair<string, string>("ApInvoiceNum", "ApInvoiceNum DESC"),
+        //        new KeyValuePair<string, string>("VendorCode", "VendorCode ")
+        //        );
+        //}
+
+        
+
+
     }
 
    

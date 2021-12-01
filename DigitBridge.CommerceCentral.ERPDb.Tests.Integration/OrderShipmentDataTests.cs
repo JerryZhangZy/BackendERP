@@ -80,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         }
 
 
-        public static string GetOrderShipmentUuid(IDataBaseFactory dbFactory)
+        public static OrderShipmentData GetOrderShipmentDataFromDB(IDataBaseFactory dbFactory)
         {
             var orderShipmentUuid = dbFactory.GetValue<OrderShipmentHeader, string>(@"
 SELECT TOP 1 ins.OrderShipmentUuid 
@@ -91,7 +91,10 @@ INNER JOIN (
 WHERE itm.cnt > 0
 ");
 
-            return orderShipmentUuid;
+            var data = new OrderShipmentData(dbFactory);
+            var success = data.GetById(orderShipmentUuid);
+            Assert.True(success, "Data not found.");
+            return data;
         }
     }
 }

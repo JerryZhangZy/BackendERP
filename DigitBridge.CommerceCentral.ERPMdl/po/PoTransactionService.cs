@@ -155,7 +155,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    DatabaseNum = this.Data.PoTransaction.DatabaseNum,
         //    ProcessUuid = this.Data.PoTransaction.InvoiceUuid,
         //    ProcessNumber = this.Data.PoTransaction.InvoiceNumber,
-        //    ChannelNum = this.Data.PoTransaction.ChannelAccountNum,
+        //    ChannelNum = this.Data.PoTransaction.ChannelNum,
         //    ChannelAccountNum = this.Data.PoTransaction.ChannelAccountNum,
 
         //    LogMessage = string.Empty
@@ -512,7 +512,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
             if (!success)
             {
-                AddError($"PurchaseOrderData no found");
+
+                AddError($"Data not found for {poNum}.");
                 return false;
             }
 

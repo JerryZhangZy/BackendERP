@@ -28,6 +28,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         int TotalRecords { get; set; }
         int RecordsCount { get; set; }
 
+        void AddAvailableOrderByList(params KeyValuePair<string, string>[] obj);
+
         IList<string> OrderByList { get; }
         bool HasOrderBy { get; }
 

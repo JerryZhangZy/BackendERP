@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using DigitBridge.Base.Utility;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -94,5 +95,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         IDictionary<string, Action<string>> GetOtherParameters();
+
+        bool ReturnError(string message);
+        bool ReturnError(IList<MessageClass> messages);
+        bool ReturnWarning(string message);
+        bool ReturnInfo(string message);
+
     }
 }

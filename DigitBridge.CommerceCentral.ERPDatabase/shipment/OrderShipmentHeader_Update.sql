@@ -24,14 +24,6 @@ BEGIN
     ALTER TABLE OrderShipmentHeader ADD [InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT ''
 END	
 
---Add by junxian 10/30/2021
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
-(
-	[ProfileNum] ASC,
-	[MainTrackingNumber] ASC
-) 
-GO
 
 
 -- 11/22/20201 By Jerry Z 
@@ -63,5 +55,18 @@ CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_OrderNumber] ON [dbo].[OrderSh
 (
 	[ProfileNum] ASC,
 	[OrderNumber] ASC
+) 
+GO
+
+--Add by junxian 11/30/2021
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
+drop INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_ShipmentID')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[ShipmentID] ASC
 ) 
 GO

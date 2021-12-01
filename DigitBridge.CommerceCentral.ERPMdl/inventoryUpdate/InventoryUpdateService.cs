@@ -22,6 +22,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InventoryUpdateService
     {
+        #region services
+        private InventoryService _inventoryService;
+        protected InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService == null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        private InventoryLogService _inventoryLogService;
+
+        protected InventoryLogService InventoryLogService
+        {
+            get
+            {
+                if (_inventoryLogService == null)
+                    _inventoryLogService = new InventoryLogService(dbFactory);
+                return _inventoryLogService;
+            }
+        }
+        #endregion services
 
         #region override methods
 
@@ -443,6 +467,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await InventoryUpdateHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {batchNumber}.");
+                return false;
+            }
             return await GetDataAsync(rowNum);
         }
 
@@ -521,17 +550,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = msglist;
             return payload;
         }
-        private InventoryLogService _inventoryLogService;
-
-        protected InventoryLogService InventoryLogService
-        {
-            get
-            {
-                if (_inventoryLogService == null)
-                    _inventoryLogService = new InventoryLogService(dbFactory);
-                return _inventoryLogService;
-            }
-        }
 
         public override async Task<bool> SaveDataAsync()
         {
@@ -575,6 +593,74 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return false;
         }
 
+
+        #region inventory update for one sku and warehouse
+
+        public virtual async Task<InventoryUpdateItems> CreateCountItemAsync(string sku, string warehouseCode, decimal qty, int masterAccountNum, int profileNum, bool addNew = true)
+        {
+            if (string.IsNullOrEmpty(sku) || string.IsNullOrEmpty(warehouseCode))
+                return null;
+
+            var inv = await inventoryService.GetInventoryDataByWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum, addNew);
+            if (inv == null)
+            {
+                AddError($"Sku {sku} or warehouse {warehouseCode} not found.");
+                return null;
+            }
+            var ind = inv.Inventory.FindByWarehouseCode(warehouseCode);
+
+            if (this.Data == null)
+                this.NewData();
+            var updt = GenerateInventoryUpdateItems(new InventoryUpdateItems(), ind, inv);
+            if (updt != null)
+            {
+                this.Data.AddInventoryUpdateItems(updt);
+                qty = qty.ToQty();
+                var adj = qty - updt.BeforeInstockQty.ToQty();
+                updt.UpdatePack = adj;
+                updt.CountPack = qty;
+                updt.UpdateQty = adj;
+                updt.CountQty = qty;
+            }
+            return updt;
+        }
+
+        protected virtual InventoryUpdateItems GenerateInventoryUpdateItems(InventoryUpdateItems updt, Inventory ind, InventoryData inv)
+        {
+            if (updt == null)
+                updt = new InventoryUpdateItems();
+            updt.RowNum = 0;
+            updt.InventoryUpdateItemsUuid = Guid.NewGuid().ToString();
+            //updt.InventoryUpdateUuid = string.Empty
+            //updt.Seq 
+            updt.ItemDate = DateTime.UtcNow.Date;
+	        updt.ItemTime = DateTime.UtcNow.ToTimeSpan();
+            updt.SKU = ind.SKU;
+            updt.ProductUuid = ind.ProductUuid;
+            updt.InventoryUuid = ind.InventoryUuid;
+            updt.WarehouseUuid = ind.WarehouseUuid;
+            updt.WarehouseCode = ind.WarehouseCode;
+            updt.LotNum = ind.LotNum;
+            updt.Description = inv.ProductBasic.ProductTitle;
+            //updt.Notes = 
+            updt.UOM = inv.ProductExt.UOM;
+            updt.PackType = inv.ProductExt.PackType;
+            updt.PackQty = inv.ProductExt.PackQty;
+            //updt.UpdatePack
+            //updt.CountPack
+            updt.BeforeInstockPack = ind.Instock;
+            //updt.UpdateQty
+            //   updt.CountQty
+            updt.BeforeInstockQty = ind.Instock;
+            updt.UnitCost = ind.UnitCost;
+            updt.AvgCost = ind.AvgCost;
+            updt.LotCost = ind.AvgCost;
+            updt.LotInDate = ind.LotInDate;
+            updt.LotExpDate = ind.LotExpDate;
+            return updt;
+        }
+
+        #endregion inventory update for one sku and warehouse
     }
 }
 

@@ -11,6 +11,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     {
         string ConnectionString { get; }
         IDatabase Db { get; }
+        int DatabaseNum { get; set; }
 
         IDatabase GetDb(string connectionString = null);
 

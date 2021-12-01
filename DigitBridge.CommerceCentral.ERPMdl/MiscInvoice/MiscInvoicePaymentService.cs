@@ -288,7 +288,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.MiscInvoiceTransaction.DatabaseNum,
                 ProcessUuid = this.Data.MiscInvoiceTransaction.TransUuid,
                 ProcessNumber = this.Data.MiscInvoiceTransaction.TransNum.ToString(),
-                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty

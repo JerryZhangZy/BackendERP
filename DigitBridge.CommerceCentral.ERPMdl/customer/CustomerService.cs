@@ -170,7 +170,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.Customer.DatabaseNum,
                 ProcessUuid = this.Data.Customer.CustomerUuid,
                 ProcessNumber = this.Data.Customer.CustomerCode,
-                ChannelNum = this.Data.Customer.ChannelAccountNum,
+                ChannelNum = this.Data.Customer.ChannelNum,
                 ChannelAccountNum = this.Data.Customer.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -445,6 +445,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum =await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {customerCode}.");
+                return false;
+            }
+
             return await GetDataAsync(rowNum);
         }
 
