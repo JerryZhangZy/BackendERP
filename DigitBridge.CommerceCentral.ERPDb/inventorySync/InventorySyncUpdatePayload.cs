@@ -11,7 +11,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.ERPDb.inventorySync.dto;
 
-namespace DigitBridge.CommerceCentral.ERPDb.inventorySync
+namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Request and Response payload object for Patch API

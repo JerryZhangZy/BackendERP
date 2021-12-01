@@ -106,15 +106,14 @@ AND SKU = @2";
             if (string.IsNullOrEmpty(productUuid) || warehouseCode == null || warehouseCode.Count == 0)
                 return null;
 
-            var sql = @"
+            var sql = $@"
 SELECT * FROM Inventory
-WHERE ProductUuid = @0 AND WarehouseCode IN @1 
+WHERE ProductUuid = @0 AND WarehouseCode IN {warehouseCode.JoinToSqlInStatementString()} 
 ";
 
             var paras = new SqlParameter[]
             {
-                (SqlParameter)productUuid.ToSqlParameter("@0"),
-                (SqlParameter)warehouseCode.JoinToSqlInStatementString().ToSqlParameter("@1")
+                (SqlParameter)productUuid.ToSqlParameter("@0")
             };
             return (await dbFactory.FindAsync<Inventory>(sql, paras)).ToList();
         }
