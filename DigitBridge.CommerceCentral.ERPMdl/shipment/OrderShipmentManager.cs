@@ -588,24 +588,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var result = new OrderShipmentCreateResultPayload()
             {
+                Success = true,
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
                 ShipmentID = shipmentID,
             };
 
-            var success = true;
-
             var wmsShipment = await GetWmsShipment(result);
             if (wmsShipment == null)
             {
                 result.Messages.AddError($"Data not found,ShipmentID:{result.ShipmentID}");
-                success = false;
+                result.Success = false;
             }
 
-            // first validate shipment data, allow to create new shipment 
-            success = success && await CreateShipmentAsync(wmsShipment, result);
-            result.Success = success;
+            if (result.Success)
+                result.Success = await CreateShipmentAsync(wmsShipment, result);
 
+            // update all result back to event process.
             return await UpdateProcessResultAsync(result);
         }
 

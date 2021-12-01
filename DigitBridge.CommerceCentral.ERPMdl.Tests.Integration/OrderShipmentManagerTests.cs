@@ -30,8 +30,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     public partial class OrderShipmentManagerTests
     {
         #region get faker data
-        public const int MasterAccountNum = 10001;
-        public const int ProfileNum = 10001;
+        public const int MasterAccountNum = 10002;
+        public const int ProfileNum = 10003;
 
         protected async Task<InputOrderShipmentType> GetWmsShipmentWithSavedSalesOrder()
         {
@@ -149,6 +149,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             //Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ProcessStatus, (int)OrderShipmentStatusEnum.Pending);
         }
+        [Fact()]
+        public async Task CreateShipmentAsync_For_Wms_Test()
+        {
+            //To get  processuuid from event process which eventprocesstype is shipmentfromwms.
+            var shipmentID = "b29fe59e-9850-9232-2888-d13ec9a70055";
+
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            };
+            var srv = new OrderShipmentManager(DataBaseFactory);
+            var result = await srv.CreateShipmentAsync(payload, shipmentID);
+            Assert.True(result, srv.Messages.ObjectToString());
+        }
+
 
         [Fact()]
         public async Task CreateShipmentListAsync_Test()
