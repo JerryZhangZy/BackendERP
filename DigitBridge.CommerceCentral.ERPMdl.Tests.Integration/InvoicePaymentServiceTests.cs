@@ -214,6 +214,105 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
         #endregion
 
+        #region New payment Test
+        [Fact]
+        public async Task Add_new_payment_should_success()
+        {
+            var srv = new InvoicePaymentService(DataBaseFactory);
+            List<InvoiceDataDto> invoices = await PrepareInvoices();
+            decimal totalPaidAmount = 100m;
+            decimal paidForEachInvoice = totalPaidAmount / invoices.Count;
+            InvoiceNewPaymentPayload payload = new InvoiceNewPaymentPayload { 
+                MasterAccountNum = 1001,
+                ProfileNum = 1000,
+                InvoiceTransaction = new InvoiceTransactionDto { 
+                    AuthCode = "test-auth-code",
+                    CheckNum = "test-checknum",
+                    TotalAmount = totalPaidAmount,
+                    CustomerCode = "test-customer-code-1"
+                },
+                ApplyInvoices = invoices.Select(i => new ApplyInvoice { 
+                    InvoiceUuid = i.InvoiceHeader.InvoiceUuid,
+                    InvoiceNumber = i.InvoiceHeader.InvoiceNumber,
+                    PaidAmount = paidForEachInvoice
+                }).ToList()
+            };
+
+            bool result = await srv.UpdateInvoicePaymentsAsync(payload);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task Add_new_payment_by_credit_memo_should_success()
+        {
+            var srv = new InvoicePaymentService(DataBaseFactory);
+            List<InvoiceDataDto> invoices = await PrepareInvoices();
+            decimal totalPaidAmount = 1000m;
+            decimal paidForEachInvoice = totalPaidAmount / invoices.Count;
+            InvoiceNewPaymentPayload payload = new InvoiceNewPaymentPayload
+            {
+                MasterAccountNum = 1001,
+                ProfileNum = 1000,
+                InvoiceTransaction = new InvoiceTransactionDto
+                {
+                    AuthCode = invoices.Last().InvoiceHeader.InvoiceUuid,
+                    CheckNum = invoices.Last().InvoiceHeader.InvoiceNumber,
+                    TotalAmount = totalPaidAmount,
+                    CustomerCode = "test-customer-code-1",
+                    PaidBy = (int)PaidByAr.CreditMemo
+                },
+                ApplyInvoices = invoices.Take(4).Select(i => new ApplyInvoice
+                {
+                    InvoiceUuid = i.InvoiceHeader.InvoiceUuid,
+                    InvoiceNumber = i.InvoiceHeader.InvoiceNumber,
+                    PaidAmount = paidForEachInvoice
+                }).ToList()
+            };
+
+            bool result = await srv.UpdateInvoicePaymentsAsync(payload);
+
+            Assert.True(result);
+        }
+
+        async Task<List<InvoiceDataDto>> PrepareInvoices()
+        {
+            var srv = new InvoiceService(DataBaseFactory);
+            var mapper = srv.DtoMapper;
+            List<InvoiceDataDto> invoices = new List<InvoiceDataDto>();
+
+            string customerCode = "test-customer-code-1";
+
+            string invoiceNumberPrefix = DateTime.Now.ToString("yyyyMMddhhmmss");
+            for (int i = 0; i < 5; i++)
+            {
+                string invoiceNumber = $"{invoiceNumberPrefix}{i.ToString("D5")}";
+                srv.Add();
+                var data = InvoiceDataTests.GetFakerData();
+                data.InvoiceHeader.MasterAccountNum = 1001;
+                data.InvoiceHeader.ProfileNum = 1000;
+                data.InvoiceHeader.InvoiceNumber = invoiceNumber;
+                data.InvoiceHeader.CustomerCode = customerCode;
+                data.InvoiceHeader.InvoiceType = 0;
+                data.InvoiceHeader.InvoiceStatus = 1;
+                data.InvoiceHeader.InvoiceDate = DateTime.Now.AddDays(-i);
+                if (i == 4)
+                {
+                    data.InvoiceHeader.PaidAmount = 100000000;
+                }
+
+                var dto = mapper.WriteDto(data, null);
+                _ = await srv.AddAsync(dto);
+
+                srv.List();
+                await srv.GetDataByNumberAsync(1001, 1000, invoiceNumber);
+                invoices.Add(srv.ToDto());
+                srv.Clear();
+            }
+
+            return invoices;
+        }
+        #endregion
 
         [Fact]
         public async Task LoadInvoiceListAsync_Test()
