@@ -88,57 +88,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return inventoryDataDtoCsv.Export(dtoList);
         }
 
-        public byte[] Export(InventoryPayload payload)
-        {
-            var rowNumList =inventoryList.GetRowNumList(payload);
-            var dtoList = new List<InventoryDataDto>();
-            foreach (var x in rowNumList)
-            {
-                if (inventoryService.GetData(x))
-                    dtoList.Add(inventoryService.ToDto());
-            };
-            if (dtoList.Count == 0)
-                dtoList.Add(new InventoryDataDto());
-            return inventoryDataDtoCsv.Export(dtoList);
-        }
-
-        public void Import(InventoryPayload payload, IFormFileCollection files)
-        {
-            if(files==null||files.Count==0)
-            {
-                AddError("no files upload");
-                return;
-            }
-            foreach(var file in files)
-            {
-                if (!file.FileName.ToLower().EndsWith("csv"))
-                {
-                    AddError($"invalid file type:{file.FileName}");
-                    continue;
-                }
-                var list = inventoryDataDtoCsv.Import(file.OpenReadStream());
-                var readcount = list.Count();
-                var addsucccount = 0;
-                var errorcount = 0;
-                foreach(var item in list)
-                {
-                    payload.Inventory = item;
-                    if (inventoryService.Add(payload))
-                        addsucccount++;
-                    else
-                    {
-                        errorcount++;
-                        foreach (var msg in inventoryService.Messages)
-                            Messages.Add(msg);
-                        inventoryService.Messages.Clear();
-                    }
-                }
-                if (payload.HasInventory)
-                    payload.Inventory = null;
-                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
-            }
-        }
-
         public async Task ImportAsync(InventoryPayload payload, IFormFileCollection files)
         {
             if(files==null||files.Count==0)

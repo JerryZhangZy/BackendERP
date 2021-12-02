@@ -64,17 +64,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _PoDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
         }
 
-        //public override void SetAvailableOrderByList(IList<string> orderByList)
-        //{
-        //    base.SetAvailableOrderByList();
-        //    AddAvailableOrderByList(
-        //        new KeyValuePair<string, string>("PoDate", "PoDate"),
-        //        new KeyValuePair<string, string>("EtaArrivalDate", "EtaArrivalDate"),
-        //        new KeyValuePair<string, string>("PoNum", "PoNum"),
-        //        new KeyValuePair<string, string>("VendorCode", "VendorCode")
-        //        );
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("PoDate", "PoDate DESC"),
+                new KeyValuePair<string, string>("EtaArrivalDate", "EtaArrivalDate DESC"),
+                new KeyValuePair<string, string>("PoNum", "PoNum DESC"),
+                new KeyValuePair<string, string>("VendorCode", "VendorCode")
+                );
 
-        //}
+        }
 
     }
 }

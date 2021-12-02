@@ -17,6 +17,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
+using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -31,7 +32,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             this.Success = success;
         }
 
+        [JsonIgnore,XmlIgnore]
         public int MasterAccountNum { get; set; }
+        [JsonIgnore, XmlIgnore]
         public int ProfileNum { get; set; }
 
         /// <summary>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.AzureStorage
 {
-    public class QueueUniversal<T> where T:class, IQueueEntity, new()
+    public class QueueUniversal<T> where T : class, IQueueEntity, new()
     {
         protected QueueClient queueClient;
 
@@ -24,14 +24,14 @@ namespace DigitBridge.CommerceCentral.AzureStorage
             return new QueueUniversal<T>(client);
         }
 
-        public static async Task SendMessageAsync(string queueName, string connectionString,T entity)
+        public static async Task SendMessageAsync(string queueName, string connectionString, T entity)
         {
-            var client = new QueueClient(connectionString, queueName,new QueueClientOptions() {MessageEncoding=QueueMessageEncoding.Base64 });
+            var client = new QueueClient(connectionString, queueName, new QueueClientOptions() { MessageEncoding = QueueMessageEncoding.Base64 });
             await client.CreateAsync();
             var message = JsonConvert.SerializeObject(entity);
-            await client.SendMessageAsync(message);
+            var result = await client.SendMessageAsync(message);
         }
-        public static void  SendMessage(string queueName, string connectionString,T entity)
+        public static void SendMessage(string queueName, string connectionString, T entity)
         {
             var client = new QueueClient(connectionString, queueName.ToLowerInvariant());
             client.CreateIfNotExists();
@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.AzureStorage
 
         public async Task<T> ReceiveMessageAsync()
         {
-            var message =await queueClient.ReceiveMessageAsync();
+            var message = await queueClient.ReceiveMessageAsync();
             if (message.Value != null)
                 return message.Value.QueueMessageToEntity<T>();
             return default;

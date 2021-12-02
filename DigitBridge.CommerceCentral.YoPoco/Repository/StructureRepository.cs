@@ -58,6 +58,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             return _Cache.FromCache<T>(id, create);
         }
+        public virtual T SetCache<T>(string id, T obj) where T : StructureRepository<T>, new()
+        {
+            return _Cache.SetData(id, obj);
+        }
 
         #endregion Cache
 

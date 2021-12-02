@@ -417,6 +417,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Add(this.ToDto());
                 this.DetachData(this.Data);
             }
+
+            if (!result.Any())
+            {
+                payload.ReturnError("No data be found");
+            }
             payload.Invoices = result;
         }
         /// <summary>

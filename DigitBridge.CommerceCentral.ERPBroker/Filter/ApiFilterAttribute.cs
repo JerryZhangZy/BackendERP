@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 exceptionContext.Logger.LogInformation(exceptionContext.Exception.ObjectToString());
             }
             ((RecoverableException)exceptionContext.ExceptionDispatchInfo.SourceException).Handled = true;
-             
+
             //write log without waiting.
             WriteLogAsync(exceptionContext.FunctionName, exceptionContext.Exception);
         }
@@ -60,7 +60,8 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             var exception = executedContext.FunctionResult.Exception;
             if (exception != null)
             {
-                var req = executedContext.GetContext<HttpRequest>();
+                var myQueueItem = executedContext.GetContext<string>();
+
                 var hasException = !(exception is InvalidParameterException
                     || exception is NoContentException
                     || exception is InvalidRequestException);
@@ -68,13 +69,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var logMessage = string.Empty;
                 if (needLog)
                 {
-                    logMessage = await WriteLogAsync(executedContext.FunctionName, exception, req);
+                    logMessage = await WriteLogAsync(executedContext.FunctionName, exception, myQueueItem);
                 }
-
+                // send email or do something else.
                 var data = needLog ? logMessage : (hasException ? exception.ObjectToString() : exception.Message);
 
-                // anyway write response
-                await req.HttpContext.Response.Output(data);
             }
         }
 
@@ -112,17 +111,13 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 throw new InvalidParameterException();
             }
         }
-        private async Task<string> WriteLogAsync(string functionName, Exception exception, HttpRequest req = null)
+        private async Task<string> WriteLogAsync(string functionName, Exception exception, string myQueueItem = null)
         {
-            //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
-            //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
-            //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
-
-            // write log to log center
-            var methodInfo = _currentType.GetMethod(functionName);
-            var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
-            var reqInfo = req == null ? null : await LogHelper.GetRequestInfo(req, functionName, parmeters);
-            var logID = LogCenter.CaptureException(exception, reqInfo);
+            var reqInfo = new Dictionary<string, object>();
+            reqInfo["myQueueItem"] = myQueueItem;
+            var tags = new Dictionary<string, string>();
+            tags["functionName"] = functionName;
+            var logID = LogCenter.CaptureException(exception, reqInfo, tags);
             return $"A general error occured. Error ID: {logID}";
         }
     }

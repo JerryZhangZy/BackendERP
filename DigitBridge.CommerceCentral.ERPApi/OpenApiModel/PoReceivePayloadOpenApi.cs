@@ -27,12 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class PoReceivePayloadAdd
     {
-        /// <summary>
-        /// (Request Data) PoReceive object to add.
-        /// (Response Data) PoReceive object which has been added.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) PoReceive object to add.")]
-        public PoTransactionDataDto PoTransaction { get; set; }
+  
         
         /// <summary>
         /// (Request Data) PoReceive object to add.
@@ -57,12 +52,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class PoReceivePayloadUpdate
     {
+
         /// <summary>
-        /// (Request Data) PoReceive object to update.
-        /// (Response Data) PoReceive object which has been updated.
+        /// (Request Data) PoReceive object to add.
+        /// (Response Data) PoReceive object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) PoReceive object to update.")]
-        public PoTransactionDataDto PoTransaction { get; set; }
+        [OpenApiPropertyDescription("(Request and Response) Batch PoReceives object to add.")]
+        public IList<PoTransactionDataDto> PoTransactions { get; set; }
+
+        
     }
 
 
@@ -146,6 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string TransUuid { get; set; }
         public long  TransNum { get; set; }
         public string PoUuid { get; set; }
+        public string VendorName { get; set; }
 
         public string PoNumFrom { get; set; }
         public string PoNumTo { get; set; }
@@ -161,6 +160,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     .RuleFor(u => u.TransUuid, f => string.Empty)
                     .RuleFor(u => u.TransNum, f => 0)
                     .RuleFor(u => u.PoUuid, f => string.Empty)
+                    .RuleFor(u => u.VendorName, f => string.Empty)
                     .RuleFor(u => u.PoNumFrom, f => string.Empty)
                     .RuleFor(u => u.PoNumTo, f => string.Empty)
                     .RuleFor(u => u.TransDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))

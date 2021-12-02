@@ -71,7 +71,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
-
+        protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorName => _VendorName;
 
 
         protected QueryFilter<string> _VendorInvoiceNumFrom = new QueryFilter<string>("_PoNumFrom", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
@@ -101,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public PoReceiveQuery() : base(TranSactionPREFIX)
         {
-
+            AddFilter(_VendorName);
             AddFilter(_TransUuid);
             AddFilter(_TransNum);
             AddFilter(_PoUuid);
@@ -130,17 +131,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _TransDateTo.FilterValue = DateTime.UtcNow.Date;
 
         }
-        //public override void SetAvailableOrderByList(IList<string> orderByList)
-        //{
-        //    base.SetAvailableOrderByList();
-        //    AddAvailableOrderByList(
-        //        new KeyValuePair<string, string>("TransDate", "TransDate"),
-        //        new KeyValuePair<string, string>("TransNum", "TransNum"),
-        //        new KeyValuePair<string, string>("VendorCode", "VendorCode "),
-        //        new KeyValuePair<string, string>("VendorInvoiceDate", "VendorInvoiceDate "),
-        //        new KeyValuePair<string, string>("VendorInvoiceNum", "VendorInvoiceNum ")
-        //        );
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("TransDate", "TransDate DESC"),
+                new KeyValuePair<string, string>("TransNum", "TransNum DESC"),
+                new KeyValuePair<string, string>("VendorCode", "VendorCode"),
+                new KeyValuePair<string, string>("VendorInvoiceDate", "VendorInvoiceDate DESC"),
+                new KeyValuePair<string, string>("VendorInvoiceNum", "VendorInvoiceNum DESC")
+                );
 
-        //}
+        }
     }
 }

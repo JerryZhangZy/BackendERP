@@ -30,8 +30,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     public partial class OrderShipmentManagerTests
     {
         #region get faker data
-        public const int MasterAccountNum = 10001;
-        public const int ProfileNum = 10001;
+        public const int MasterAccountNum = 10002;
+        public const int ProfileNum = 10003;
 
         protected async Task<InputOrderShipmentType> GetWmsShipmentWithSavedSalesOrder()
         {
@@ -44,6 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 ShipmentHeader = new InputOrderShipmentHeaderType()
                 {
+                    WarehouseCode= "Test WarehouseCode", 
                     ShipmentID = Guid.NewGuid().ToString(),
 
                     SalesOrderUuid = "716bcd22-3779-45db-a443-1b274995c394",
@@ -149,13 +150,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             //Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ProcessStatus, (int)OrderShipmentStatusEnum.Pending);
         }
+        [Fact()]
+        public async Task CreateShipmentAsync_For_Wms_Test()
+        {
+            //To get  processuuid from event process which eventprocesstype is shipmentfromwms.
+            var shipmentID = "b29fe59e-9850-9232-2888-d13ec9a70055";
+
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            };
+            var srv = new OrderShipmentManager(DataBaseFactory);
+            var result = await srv.CreateShipmentAsync(payload, shipmentID);
+            Assert.True(result, srv.Messages.ObjectToString());
+        }
+
 
         [Fact()]
         public async Task CreateShipmentListAsync_Test()
         {
             var wmsShipmentList = new List<InputOrderShipmentType>();
             int i = 0;
-            while (i < 1)
+            while (i < 10)
             {
                 wmsShipmentList.Add(await GetWmsShipmentWithSavedSalesOrder());
                 i++;
@@ -167,27 +184,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = ProfileNum,
             };
 
-            var success = false;
-            List<OrderShipmentCreateResultPayload> result = null;
-            try
+            using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
             {
-                using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
-                {
-                    var srv = new OrderShipmentManager(DataBaseFactory);
-                    result = await srv.CreateShipmentListAsync(payload, wmsShipmentList);
-                    success = result.Count(i => !i.Success) == 0;
-                }
-
-                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+                var srv = new OrderShipmentManager(DataBaseFactory);
+                var result = await srv.CreateShipmentListAsync(payload, wmsShipmentList);
+                var success = result.Count(i => !i.Success) == 0;
+                Assert.True(success, result.SelectMany(i => i.Messages).ObjectToString());
             }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            //Assert.True(success, result.Where(i => !i.Success).SelectMany(j => j.Messages).ObjectToString());
-
-            //Assert.True(!result.InvoiceUuid.IsZero(), "Shipment Added. But invoice was not transferred.");
         }
     }
 }

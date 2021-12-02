@@ -100,36 +100,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _MiscInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
-        public override string GetOrderBySql(string prefix = null)
+        protected override void SetAvailableOrderByList()
         {
-            string[] descOrderFields = new string[3]
-            {
-                "miscinvoicedate",
-                "miscinvoicetime",
-                "miscinvoicenumber"
-            };
-            if (OrderByList.Count <= 0)
-                return string.Empty;
-
-            var sb = new StringBuilder();
-            var isFirst = true;
-            var pre = !string.IsNullOrEmpty(prefix)
-                    ? $"{prefix.Trim()}."
-                    : !string.IsNullOrEmpty(_PREFIX)
-                        ? $"{_PREFIX}."
-                        : string.Empty;
-            foreach (string item in _orderByList)
-            {
-                var orderType = descOrderFields.Contains(item.Trim().ToLower()) ? " DESC" : "";
-                if (string.IsNullOrWhiteSpace(item))
-                    continue;
-                var sep = (isFirst) ? string.Empty : ", ";
-                sb.Append($"{sep}{pre}{item.Trim()}{orderType}");
-                isFirst = false;
-            }
-            return (sb.Length > 1)
-                ? $" ORDER BY {sb} "
-                : string.Empty;
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("MiscInvoiceDate", "MiscInvoiceDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("MiscInvoiceNumber", "MiscInvoiceNumber DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CustomerCode", "CustomerCode, RowNum DESC")
+            );
         }
 
         public void InitForNewPaymet(string customerCode)
