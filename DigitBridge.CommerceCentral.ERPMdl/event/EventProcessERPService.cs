@@ -24,6 +24,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class EventProcessERPService
     {
+        protected string _queueConnectionString;
+        protected string QueueConnectionString
+        {
+            get
+            {
+                if (_queueConnectionString.IsZero())
+                    throw new Exception("QueueConnectionString cannot be empty.");
+                return _queueConnectionString;
+            }
+            set { _queueConnectionString = value; }
+        }
+        public EventProcessERPService(IDataBaseFactory dbFactory, string queueConnectionString) : base(dbFactory)
+        {
+            _queueConnectionString = queueConnectionString;
+        }
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -562,7 +577,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var message = GetMessageWithoutProcessData();
             var queueName = message.ERPEventType.GetErpEventQueueName();
-            await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, MySingletonAppSetting.AzureWebJobsStorage, message);
+            await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, QueueConnectionString, message);
             return true;
         }
 

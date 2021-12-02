@@ -29,12 +29,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public class OrderShipmentManager : IOrderShipmentManager, IMessage
     {
-
+        protected string _queueConnectionString;
         public OrderShipmentManager() : base() { }
 
         public OrderShipmentManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
+        }
+        public OrderShipmentManager(IDataBaseFactory dbFactory, string queueConnectionString)
+        {
+            SetDataBaseFactory(dbFactory);
+            _queueConnectionString = queueConnectionString;
         }
 
         #region services
@@ -46,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_eventProcessERPService is null)
-                    _eventProcessERPService = new EventProcessERPService(dbFactory);
+                    _eventProcessERPService = new EventProcessERPService(dbFactory, _queueConnectionString);
                 return _eventProcessERPService;
             }
         }
@@ -632,7 +637,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             var salesOrderData = salesOrderService.Data;
 
-            if (salesOrderData.SalesOrderHeaderInfo?.WarehouseCode != erpShipment.OrderShipmentHeader?.WarehouseCode)
+            if (salesOrderData.SalesOrderHeaderInfo?.WarehouseCode.ToUpper() != erpShipment.OrderShipmentHeader?.WarehouseCode.ToUpper())
             {
                 result.Messages.AddError("WarehouseCode error.");
                 return false;
