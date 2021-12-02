@@ -27,6 +27,7 @@ namespace DigitBridge.Base.Common
         public static string ERPCreateInvoiceByOrdershipmentQueue => "erp-create-invoice-by-ordershipment";
         public static string ERPCreateSalesOrderByCentralorderQueue => "erp-create-salesorder-by-centralorder";
         public static string ERPSyncProductQueue => "erp-sync-product-from-productbasic-queue";
+        public static string ERPSyncInventoryByWms => "erp-sync-inventory-by-wms";
 #else
       public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
         
