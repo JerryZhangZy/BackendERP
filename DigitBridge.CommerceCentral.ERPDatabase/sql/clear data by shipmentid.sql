@@ -18,12 +18,12 @@ where ShipmentID in
  select * from #tmpProcessUuid
 )  
 
---delete salesorder
-delete from SalesOrderHeader where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
-delete from SalesOrderHeaderAttributes where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
-delete from SalesOrderHeaderInfo where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
-delete from SalesOrderItems where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
-delete from SalesOrderItemsAttributes where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids) 
+----delete salesorder
+--delete from SalesOrderHeader where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
+--delete from SalesOrderHeaderAttributes where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
+--delete from SalesOrderHeaderInfo where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
+--delete from SalesOrderItems where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
+--delete from SalesOrderItemsAttributes where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids) 
 
 --delete invoice
 delete from InvoiceHeader where InvoiceUuid in (select  InvoiceUuid from #ToDeleteUuids)
