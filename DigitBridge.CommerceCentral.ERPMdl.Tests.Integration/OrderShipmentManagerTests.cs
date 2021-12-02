@@ -44,9 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 ShipmentHeader = new InputOrderShipmentHeaderType()
                 {
-                    WarehouseCode= "Test WarehouseCode",
-                    ChannelNum = 10015,
-                    ChannelAccountNum = 108343,
+                    WarehouseCode= "Test WarehouseCode", 
                     ShipmentID = Guid.NewGuid().ToString(),
 
                     SalesOrderUuid = "716bcd22-3779-45db-a443-1b274995c394",
