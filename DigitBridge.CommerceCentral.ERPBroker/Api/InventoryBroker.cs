@@ -14,15 +14,13 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPBroker
 {
-    [ApiFilter(typeof(ProductBroker))]
-    public static class ProductBroker
+    [ApiFilter(typeof(InventoryBroker))]
+    public static class InventoryBroker
     {
         [FunctionName("SyncProductFromProductBasic")]
         public static async Task SyncProductFromProductBasic([QueueTrigger("erp-sync-product-from-productbasic-queue")] string myQueueItem, ILogger log)
         {
             log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
-            //var invoiceClient = new InvoiceClient();
-            var eventDto = new UpdateErpEventDto();
             try
             {
                 ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
@@ -31,9 +29,6 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
-                eventDto.EventUuid = message.EventUuid;
-                eventDto.MasterAccountNum = message.MasterAccountNum;
-                eventDto.ProfileNum = message.ProfileNum;
                 var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var svc = new InventoryService(dbFactory);
                 var productUuid = message.ProcessUuid;
@@ -47,13 +42,9 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var data = svc.Data;
                 svc.DetachData(null);
                 var result = await svc.AddInventoryForExistProductAsync(data);
-                eventDto.ActionStatus = result ? 0 : 1;
-                eventDto.EventMessage = svc.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                eventDto.ActionStatus = 1;
-                eventDto.EventMessage = e.ObjectToString();
                 var reqInfo = new Dictionary<string, object>
                 {
                     { "QueueFunctionName", "SyncProductFromProductBasic" },
@@ -61,12 +52,35 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 };
                 LogCenter.CaptureException(e, reqInfo);
             }
-            finally
-            {
-                //await invoiceClient.SendActionResultAsync(eventDto);
-            }
-
         }
 
+        [FunctionName("SyncInventoryByWms")]
+        public static async Task SyncInventoryByWms([QueueTrigger("erp-sync-inventory-by-wms")] string myQueueItem, ILogger log)
+        {
+            log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
+            try
+            {
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                var payload = new InventoryPayload()
+                {
+                    MasterAccountNum = message.MasterAccountNum,
+                    ProfileNum = message.ProfileNum
+                };
+                var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+                var svc = new InventoryUpdateService(dbFactory);
+                var productUuids = message.ProcessData.Split(',');
+                var items = JsonConvert.DeserializeObject<List<InventoryUpdateItems>>(message.ProcessData);
+                await svc.AddCountAsync(items, message.MasterAccountNum, message.ProfileNum);
+            }
+            catch (Exception e)
+            {
+                var reqInfo = new Dictionary<string, object>
+                {
+                    { "QueueFunctionName", "SyncInventoryByWms" },
+                    { "QueueMessage", myQueueItem }
+                };
+                LogCenter.CaptureException(e, reqInfo);
+            }
+        }
     }
 }
