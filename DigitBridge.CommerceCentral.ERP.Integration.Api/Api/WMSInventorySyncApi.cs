@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.AzureStorage;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPDb.inventorySync;
 using DigitBridge.CommerceCentral.ERPMdl;
@@ -45,8 +46,49 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
             payload.InventorySyncItems = await req.GetBodyObjectAsync<IList<InventorySyncItem>>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InventoryUpdateManager(dataBaseFactory);
-            payload.Success = await srv.UpdateStockByList(payload);
-            payload.Messages = srv.Messages;
+            var items = srv.GetUpdateStockByList(payload);
+            if (items != null && items.Count > 0)
+            {
+                var items20 = new List<InventoryUpdateItems>();
+                foreach (var item in items)
+                {
+                    items20.Add(item);
+                    if (items20.Count >= 20)
+                    {
+                        await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncInventoryByWms, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage
+                        {
+                            //ERPEventType = (ErpEventType)erpdata.ERPEventType,
+                            DatabaseNum = payload.DatabaseNum,
+                            MasterAccountNum = payload.MasterAccountNum,
+                            ProfileNum = payload.ProfileNum,
+                            //ProcessUuid = erpdata.ProcessUuid,
+                            ProcessData = JsonConvert.SerializeObject(items20),
+                            //ProcessSource = erpdata.ProcessSource,
+                            //EventUuid = erpdata.EventUuid,
+                        });
+                        items20.Clear();
+                    }
+                }
+                if (items20.Count > 0)
+                    await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncInventoryByWms, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage
+                    {
+                        //ERPEventType = (ErpEventType)erpdata.ERPEventType,
+                        DatabaseNum = payload.DatabaseNum,
+                        MasterAccountNum = payload.MasterAccountNum,
+                        ProfileNum = payload.ProfileNum,
+                        //ProcessUuid = erpdata.ProcessUuid,
+                        ProcessData = JsonConvert.SerializeObject(items20),
+                        //ProcessSource = erpdata.ProcessSource,
+                        //EventUuid = erpdata.EventUuid,
+                    });
+                payload.Success = true;
+                payload.Messages = srv.Messages;
+            }
+            else
+            {
+                payload.Success = false;
+                payload.Messages = srv.Messages;
+            }
             return new JsonNetResponse<InventorySyncUpdatePayload>(payload);
 
         }

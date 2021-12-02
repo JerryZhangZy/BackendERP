@@ -108,6 +108,8 @@
     <None Include="po\PoTransaction.sql" />
     <None Include="inventory\Warehouse.sql" />
     <None Include="po\PoHeader_Update.sql" />
+    <None Include="sql\clear data by shipmentid.sql" />
+    <None Include="sql\reset salesorder to pending.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

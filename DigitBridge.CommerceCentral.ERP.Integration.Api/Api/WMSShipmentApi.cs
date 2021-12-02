@@ -1,3 +1,4 @@
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
@@ -36,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-            var shipmentManager = new OrderShipmentManager(dataBaseFactory);
+            var shipmentManager = new OrderShipmentManager(dataBaseFactory, MySingletonAppSetting.IntegrationStorage);
             var result = await shipmentManager.CreateShipmentListAsync(payload, inputShipments);
 
             return new JsonNetResponse<IList<OrderShipmentCreateResultPayload>>(result);
