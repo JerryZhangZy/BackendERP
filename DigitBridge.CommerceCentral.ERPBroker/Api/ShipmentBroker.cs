@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         //}
 
         [FunctionName("CreateShipmentByWMS")]
-        public static async Task CreateShipmentByWMS([QueueTrigger(QueueName.Erp_Create_Shipment_By_WMS)] string myQueueItem, ILogger log)
+        public static async Task CreateShipmentByWMS([QueueTrigger(QueueName.Erp_Create_Shipment_By_WMS, Connection = "IntegrationStorage")] string myQueueItem, ILogger log)
         {
             var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
             var payload = new OrderShipmentPayload()

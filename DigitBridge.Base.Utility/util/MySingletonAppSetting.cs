@@ -33,9 +33,11 @@ namespace DigitBridge.Base.Utility
             }
         }
 #if DEBUG
+        public static string IntegrationStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
         public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net";
 #else
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
+        public static string IntegrationStorage => GetValueByName("IntegrationStorage"); 
 #endif
         public static string OrchestrationDbConnString => GetValueByName("OrchestrationDbConnString");
 
