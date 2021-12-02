@@ -30,8 +30,10 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             {
                 instance = new TPayload();
             }
-            instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
-            instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            instance.GetHeaderParameters(req);
+            //instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            //instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            //instance.AccessToken = req.GetHeaderValue("Authorization").Replace("Bearer ", "");
             return instance;
         }
         /// <summary>
@@ -42,13 +44,16 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             //return (T)req.GetRequestParameter(typeof(T));
             //Activator.CreateInstance(instanceType);
             var instance = new T();
-            instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
-            instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
-            instance.Top = req.GetQueryStringValue("$top").ToInt();
-            instance.Skip = req.GetQueryStringValue("$skip").ToInt();
-            instance.IsQueryTotalCount = req.GetQueryStringValue("$Count").ToBool();
-            instance.SortBy = req.GetQueryStringValue("$sortBy");
-            instance.Filter = req.GetQueryStringValue("$filter").ToJObject();
+            instance.GetHeaderParameters(req);
+            instance.GetQueryParameters(req);
+
+            //instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            //instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            //instance.Top = req.GetQueryStringValue("$top").ToInt();
+            //instance.Skip = req.GetQueryStringValue("$skip").ToInt();
+            //instance.IsQueryTotalCount = req.GetQueryStringValue("$Count").ToBool();
+            //instance.SortBy = req.GetQueryStringValue("$sortBy");
+            //instance.Filter = req.GetQueryStringValue("$filter").ToJObject();
 
             var moreParameterFunc = instance.GetOtherParameters();
             if (moreParameterFunc != null && moreParameterFunc.Count > 0)
@@ -64,6 +69,39 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             return instance;
         }
+
+        private static TPayload GetHeaderParameters<TPayload>(this TPayload instance, HttpRequest req)
+            where TPayload : PayloadBase, new()
+        {
+            if (instance is null)
+                return instance;
+
+            instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            instance.AccessToken = req.GetHeaderValue("Authorization").Replace("Bearer ", "");
+
+            if (MySingletonAppSetting.BackdoorMode)
+            {
+                instance.BackdoorModeEmail = req.GetHeaderValue("BackdoorModeEmail");
+                instance.BackdoorModePassword = req.GetHeaderValue("BackdoorModePassword");
+            }
+            return instance;
+        }
+
+        private static TPayload GetQueryParameters<TPayload>(this TPayload instance, HttpRequest req)
+            where TPayload : PayloadBase, new()
+        {
+            if (instance is null)
+                return instance;
+
+            instance.Top = req.GetQueryStringValue("$top").ToInt();
+            instance.Skip = req.GetQueryStringValue("$skip").ToInt();
+            instance.IsQueryTotalCount = req.GetQueryStringValue("$Count").ToBool();
+            instance.SortBy = req.GetQueryStringValue("$sortBy");
+            instance.Filter = req.GetQueryStringValue("$filter").ToJObject();
+            return instance;
+        }
+
 
         public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
         {

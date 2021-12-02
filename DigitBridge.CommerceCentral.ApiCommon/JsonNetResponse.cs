@@ -16,11 +16,16 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         private const string ContentTypeApplicationJson = "application/json";
 
         /// <summary>
+        /// Response by statusCode
+        /// </summary>
+        public JsonNetResponse(HttpStatusCode statusCode) : base(statusCode) {}
+
+        /// <summary>
         /// success respone data 
         /// </summary>
         /// <param name="data"></param>
         /// <param name="success"></param> 
-        public JsonNetResponse(T data, HttpStatusCode statusCode = HttpStatusCode.OK, JsonSerializerSettings setting = null) 
+        public JsonNetResponse(T data, HttpStatusCode statusCode = HttpStatusCode.OK, JsonSerializerSettings setting = null)
             : base(statusCode)
         {
             if (typeof(T) is string)
@@ -39,12 +44,12 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 NullValueHandling = NullValueHandling.Ignore,
                 Formatting = Formatting.None,
                 ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy
                     {
-                        NamingStrategy = new CamelCaseNamingStrategy
-                        {
-                            OverrideSpecifiedNames = false
-                        }
-                    },
+                        OverrideSpecifiedNames = false
+                    }
+                },
                 Converters = new List<JsonConverter> { new StringEnumConverter { CamelCaseText = true } }
             };
             return setting;
