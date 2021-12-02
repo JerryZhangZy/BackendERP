@@ -347,6 +347,56 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return allSuccess;
         }
 
+        /// <summary>
+        /// Validate current shipment data 
+        /// </summary>
+        protected bool ValidateShipment(InputOrderShipmentType wmsShipment)
+        {
+            var success = true;
+            if (wmsShipment is null)
+            {
+                AddError("Shipment data cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader is null)
+            {
+                AddError("ShipmentHeader data cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
+            {
+                AddError("SalesOrderUuid cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
+            {
+                AddError("WarehouseCode cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
+            {
+                AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
+            {
+                AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
+            {
+                AddError("ShipmentID cannot be empty.");
+                success = false;
+            }
+
+            return success;
+        }
 
 
 
@@ -462,60 +512,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
-        #region create shipment for wms trigger by queue
-
-        /// <summary>
-        /// Validate current shipment data 
-        /// </summary>
-        protected bool ValidateShipment(InputOrderShipmentType wmsShipment)
-        {
-            var success = true;
-            if (wmsShipment is null)
-            {
-                AddError("Shipment data cannot be empty.");
-                success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader is null)
-            {
-                AddError("ShipmentHeader data cannot be empty.");
-                success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
-            {
-                AddError("SalesOrderUuid cannot be empty.");
-                success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
-            {
-                AddError("WarehouseCode cannot be empty.");
-                success = false;
-            }
-
-            if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
-            {
-                AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
-                success = false;
-            }
-
-            if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
-            {
-                AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
-                success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
-            {
-                AddError("ShipmentID cannot be empty.");
-                success = false;
-            }
-
-            return success;
-        }
-
-
+        #region create shipment for wms trigger by queue 
 
         protected async Task<InputOrderShipmentType> GetWmsShipment(string shipmentID)
         {
@@ -527,17 +524,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             var wmsShipment = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<InputOrderShipmentType>();
             return wmsShipment;
-        }
-
-
-        protected async Task<bool> ShipmentIDExistAsync(int masterAccountNum, int profileNum, string shipmentID)
-        {
-            if (await orderShipmentService.ExistShipmentIDAsync(masterAccountNum, profileNum, shipmentID))
-            {
-                AddInfo($"Shipment has been transfered. ShipmentID:{shipmentID}");
-                return true;
-            }
-            return false;
         }
 
         /// <summary>
@@ -555,26 +541,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ShipmentID = shipmentID,
             };
 
-            var success = true;
-
             var wmsShipment = await GetWmsShipment(shipmentID);
             if (wmsShipment == null)
             {
                 AddError($"Data not found,ShipmentID:{shipmentID}");
-                success = false;
+                result.Success = false;
             }
-
-            success = success && ValidateShipment(wmsShipment);
-
-            var shipmentIDExist = await ShipmentIDExistAsync(payload.MasterAccountNum, payload.ProfileNum, shipmentID);
-
-            // validate is true and shipmentid not exist then create erp shipment.
-            if (success && !shipmentIDExist)
+            else
             {
-                success = await CreateShipmentAsync(wmsShipment, result);
+                // wmsShipment was validate before sent to queue. so there is no validate for  wmsshipment. 
+                //ValidateShipment(wmsShipment); 
+
+                (var shipmentUuid, var invoiceUuid) = await orderShipmentService.GetShipmentUuidAndInvoiceUuidAsync(payload.MasterAccountNum, payload.ProfileNum, shipmentID);
+
+                if (shipmentUuid.IsZero())
+                {
+                    result.Success = await CreateShipmentAsync(wmsShipment, result);
+                }
+                else if (invoiceUuid.IsZero())
+                {
+                    AddInfo($"Shipment has been transfered, but invoice not found, it will create invoice for ShipmentID:{shipmentID}");
+                    //shipemnt created. but invoice not found.
+                    result.Success = await CreateInvoiceAndUpdaeInvoiceToShipment(shipmentUuid);
+                }
+                else
+                {
+                    AddInfo($"Shipment has been transfered. ShipmentID:{shipmentID}");
+                    result.Success = true;
+                }
             }
 
-            result.Success = success;
             // Add all validate message.
             result.Messages.Add(this.Messages);
 
@@ -694,6 +690,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
 
             return await eventProcessERPService.UpdateProcessStatusAsync(ackPayload);
+        }
+
+        /// <summary>
+        /// Create invoice by orderShimentUuid, then update invoiceuuid and invoicenumber to shipment.
+        /// </summary>
+        /// <param name="orderShimentUuid"></param>
+        /// <returns></returns>
+        public async Task<bool> CreateInvoiceAndUpdaeInvoiceToShipment(string orderShimentUuid)
+        {
+            var invoiceUuid = await invoiceManager.CreateInvoiceByOrderShipmentIdAsync(orderShimentUuid);
+            if (invoiceUuid.IsZero())
+            {
+                AddError($"Create invoice by orderShimentUuid failed. OrderShimentUuid:{orderShimentUuid}");
+                return false;
+            }
+            return await orderShipmentService.UpdateProcessStatusAsync(
+                  orderShimentUuid,
+                  OrderShipmentProcessStatusEnum.InvoiceReady,
+                  invoiceUuid,
+                  "");
         }
 
         #endregion
