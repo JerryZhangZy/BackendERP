@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// Get value string from context headers
         /// </summary>
         /// <returns></returns>
-        private static string GetHeaderValue(this HttpRequest req, string key) =>
+        public static string GetHeaderValue(this HttpRequest req, string key) =>
             req.Headers.TryGetValue(key, out var val)
                 ? val.ToString()
                 : string.Empty;
