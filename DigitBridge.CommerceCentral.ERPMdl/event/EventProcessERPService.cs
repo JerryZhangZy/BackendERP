@@ -353,6 +353,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         this.Data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
                         return await SaveDataAsync();
                     }
+                    return true;
                 }
             }
 
