@@ -207,42 +207,60 @@ AND ShipmentID= @shipmentID
             return result > 0;
         }
 
-
-        public static bool ExistChannelAccountNumPackageTrackingNumber(int channelAccountNum, string packageTrackingNumber, int masterAccountNum, int profileNum)
+        public static async Task<(string, string)> GetShipmentUuidAndInvoiceUuidAsync(string shipmentID, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM OrderShipmentPackage tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND ChannelAccountNum= @channelAccountNum
-AND PackageTrackingNumber= @packageTrackingNumber
+SELECT top 1 shipment.OrderShipmentUuid,shipment.InvoiceUuid
+FROM OrderShipmentHeader shipment
+WHERE shipment.MasterAccountNum = @masterAccountNum
+AND shipment.ProfileNum = @profileNum
+AND shipment.ShipmentID= @shipmentID
 ";
-            var result = SqlQuery.ExecuteScalar<int>(sql,
+            var result = await SqlQuery.ExecuteAsync(sql,
+                (string orderShipmentUuid, string invoiceUuid) => (orderShipmentUuid, invoiceUuid),
                  masterAccountNum.ToSqlParameter("masterAccountNum"),
                  profileNum.ToSqlParameter("profileNum"),
-                 channelAccountNum.ToSqlParameter("channelAccountNum"),
-                 packageTrackingNumber.ToSqlParameter("packageTrackingNumber")
+                 shipmentID.ToSqlParameter("shipmentID")
                  );
-            return result > 0;
+            return result.FirstOrDefault();
         }
 
-        public static async Task<bool> ExistChannelAccountNumPackageTrackingNumberAsync(int channelAccountNum, string packageTrackingNumber, int masterAccountNum, int profileNum)
-        {
-            var sql = $@"
-SELECT COUNT(1) FROM OrderShipmentPackage tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND ChannelAccountNum= @channelAccountNum
-AND PackageTrackingNumber= @packageTrackingNumber
-";
-            var result = SqlQuery.ExecuteScalar<int>(sql,
-                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 channelAccountNum.ToSqlParameter("channelAccountNum"),
-                 packageTrackingNumber.ToSqlParameter("packageTrackingNumber")
-                 );
-            return result > 0;
-        }
+
+//        public static bool ExistChannelAccountNumPackageTrackingNumber(int channelAccountNum, string packageTrackingNumber, int masterAccountNum, int profileNum)
+//        {
+//            var sql = $@"
+//SELECT COUNT(1) FROM OrderShipmentPackage tbl
+//WHERE MasterAccountNum = @masterAccountNum
+//AND ProfileNum = @profileNum
+//AND ChannelAccountNum= @channelAccountNum
+//AND PackageTrackingNumber= @packageTrackingNumber
+//";
+//            var result = SqlQuery.ExecuteScalar<int>(sql,
+//                 masterAccountNum.ToSqlParameter("masterAccountNum"),
+//                 profileNum.ToSqlParameter("profileNum"),
+//                 channelAccountNum.ToSqlParameter("channelAccountNum"),
+//                 packageTrackingNumber.ToSqlParameter("packageTrackingNumber")
+//                 );
+//            return result > 0;
+//        }
+
+//        public static async Task<bool> ExistChannelAccountNumPackageTrackingNumberAsync(int channelAccountNum, string packageTrackingNumber, int masterAccountNum, int profileNum)
+//        {
+//            var sql = $@"
+//SELECT COUNT(1) FROM OrderShipmentPackage tbl
+//WHERE MasterAccountNum = @masterAccountNum
+//AND ProfileNum = @profileNum
+//AND ChannelAccountNum= @channelAccountNum
+//AND PackageTrackingNumber= @packageTrackingNumber
+//";
+//            var result = SqlQuery.ExecuteScalar<int>(sql,
+//                 masterAccountNum.ToSqlParameter("masterAccountNum"),
+//                 profileNum.ToSqlParameter("profileNum"),
+//                 channelAccountNum.ToSqlParameter("channelAccountNum"),
+//                 packageTrackingNumber.ToSqlParameter("packageTrackingNumber")
+//                 );
+//            return result > 0;
+//        }
 
         public static async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
         {

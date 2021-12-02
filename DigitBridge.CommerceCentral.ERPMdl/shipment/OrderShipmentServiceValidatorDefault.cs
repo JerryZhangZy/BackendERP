@@ -240,19 +240,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var header = data.OrderShipmentHeader;
             header.RowNum = 0;
-            if (!string.IsNullOrEmpty(header.MainTrackingNumber))
-            {
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    var exist = OrderShipmentHelper.ExistMainTrackingNumber(header.MainTrackingNumber, header.MasterAccountNum, header.ProfileNum);
-                    if (exist)
-                    {
-                        AddError($"Data existed for MainTrackingNumber:{header.MainTrackingNumber}");
-                        return false;
-                    }
+            //if (!string.IsNullOrEmpty(header.MainTrackingNumber))
+            //{
+            //    using (var tx = new ScopedTransaction(dbFactory))
+            //    {
+            //        var exist = OrderShipmentHelper.ExistMainTrackingNumber(header.MainTrackingNumber, header.MasterAccountNum, header.ProfileNum);
+            //        if (exist)
+            //        {
+            //            AddError($"Data existed for MainTrackingNumber:{header.MainTrackingNumber}");
+            //            return false;
+            //        }
 
-                }
-            }
+            //    }
+            //}
             if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
             {
                 foreach (var item in data.OrderShipmentPackage)
@@ -281,25 +281,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
 
-            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
-            {
-                foreach (var package in data.OrderShipmentPackage)
-                {
-                    if (!package.PackageTrackingNumber.IsZero())
-                    {
-                        using (var tx = new ScopedTransaction(dbFactory))
-                        {
-                            var exist = OrderShipmentHelper.ExistChannelAccountNumPackageTrackingNumber(package.ChannelAccountNum, package.PackageTrackingNumber, package.MasterAccountNum, package.ProfileNum);
-                            if (exist)
-                            {
-                                AddError($"Data existed for ChannelAccountNum:{package.ChannelAccountNum} and PackageTrackingNumber:{package.PackageTrackingNumber}");
-                                return false;
-                            }
+            //if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            //{
+            //    foreach (var package in data.OrderShipmentPackage)
+            //    {
+            //        if (!package.PackageTrackingNumber.IsZero())
+            //        {
+            //            using (var tx = new ScopedTransaction(dbFactory))
+            //            {
+            //                var exist = OrderShipmentHelper.ExistChannelAccountNumPackageTrackingNumber(package.ChannelAccountNum, package.PackageTrackingNumber, package.MasterAccountNum, package.ProfileNum);
+            //                if (exist)
+            //                {
+            //                    AddError($"Data existed for ChannelAccountNum:{package.ChannelAccountNum} and PackageTrackingNumber:{package.PackageTrackingNumber}");
+            //                    return false;
+            //                }
 
-                        }
-                    }
-                }
-            }
+            //            }
+            //        }
+            //    }
+            //}
 
 
             return true;
@@ -418,19 +418,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var header = data.OrderShipmentHeader;
             header.RowNum = 0;
-            if (!string.IsNullOrEmpty(header.MainTrackingNumber))
-            {
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    var exist = await OrderShipmentHelper.ExistMainTrackingNumberAsync(header.MainTrackingNumber, header.MasterAccountNum, header.ProfileNum);
-                    if (exist)
-                    {
-                        AddError($"Data existed for MainTrackingNumber:{header.MainTrackingNumber}");
-                        return false;
-                    }
+            //if (!string.IsNullOrEmpty(header.MainTrackingNumber))
+            //{
+            //    using (var tx = new ScopedTransaction(dbFactory))
+            //    {
+            //        var exist = await OrderShipmentHelper.ExistMainTrackingNumberAsync(header.MainTrackingNumber, header.MasterAccountNum, header.ProfileNum);
+            //        if (exist)
+            //        {
+            //            AddError($"Data existed for MainTrackingNumber:{header.MainTrackingNumber}");
+            //            return false;
+            //        }
 
-                }
-            }
+            //    }
+            //}
             if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
             {
                 foreach (var item in data.OrderShipmentPackage)
@@ -459,25 +459,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
 
-            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
-            {
-                foreach (var package in data.OrderShipmentPackage)
-                {
-                    if (!package.PackageTrackingNumber.IsZero())
-                    {
-                        using (var tx = new ScopedTransaction(dbFactory))
-                        {
-                            var exist = await OrderShipmentHelper.ExistChannelAccountNumPackageTrackingNumberAsync(package.ChannelAccountNum, package.PackageTrackingNumber, package.MasterAccountNum, package.ProfileNum);
-                            if (exist)
-                            {
-                                AddError($"Data existed for ChannelAccountNum:{package.ChannelAccountNum} and PackageTrackingNumber:{package.PackageTrackingNumber}");
-                                return false;
-                            }
+            //if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            //{
+            //    foreach (var package in data.OrderShipmentPackage)
+            //    {
+            //        if (!package.PackageTrackingNumber.IsZero())
+            //        {
+            //            using (var tx = new ScopedTransaction(dbFactory))
+            //            {
+            //                var exist = await OrderShipmentHelper.ExistChannelAccountNumPackageTrackingNumberAsync(package.ChannelAccountNum, package.PackageTrackingNumber, package.MasterAccountNum, package.ProfileNum);
+            //                if (exist)
+            //                {
+            //                    AddError($"Data existed for ChannelAccountNum:{package.ChannelAccountNum} and PackageTrackingNumber:{package.PackageTrackingNumber}");
+            //                    return false;
+            //                }
 
-                        }
-                    }
-                }
-            }
+            //            }
+            //        }
+            //    }
+            //}
 
             return true;
 
