@@ -26,7 +26,7 @@ namespace DigitBridge.Base.Common
         public static string ERPInvoiceQueue => GetValueByName("ERPInvoiceQueueName");
         public static string ERPCreateInvoiceByOrdershipmentQueue => "erp-create-invoice-by-ordershipment";
         public static string ERPCreateSalesOrderByCentralorderQueue => "erp-create-salesorder-by-centralorder";
-        public static string ERPCreateShipmentByWMS => "erp-create-shipment-by-wms";
+        public static string ERPCreateShipmentByWMSQueue => "erp-create-shipment-by-wms";
 #else
       public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
         
@@ -40,7 +40,7 @@ namespace DigitBridge.Base.Common
         public static string ERPInvoiceQueue => GetValueByName("ERPInvoiceQueueName");
         public static string ERPCreateInvoiceByOrdershipmentQueue => GetValueByName("ERPCreateInvoiceByOrdershipmentQueueName");
         public static string ERPCreateSalesOrderByCentralorderQueue => GetValueByName("ERPCreateSalesOrderByCentralorderQueueName");
-        public static string ERPCreateShipmentByWMS => GetValueByName("ERPCreateShipmentByWMS");
+        public static string ERPCreateShipmentByWMSQueue => GetValueByName("ERPCreateShipmentByWMSQueueName");
 #endif
 
         public static string GetValueByName(string name)

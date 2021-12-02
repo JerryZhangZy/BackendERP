@@ -86,6 +86,6 @@ namespace DigitBridge.Base.Common
 
         public static string AddQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnQueue;
         public static string DeleteQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnDeleteQueue;
-        public static string ERPCreateShipmentByWMS = ERPQueueSetting.ERPCreateShipmentByWMS;
+        public static string ERPCreateShipmentByWMS = ERPQueueSetting.ERPCreateShipmentByWMSQueue;
     }
 }
