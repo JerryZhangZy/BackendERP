@@ -273,7 +273,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion import export 
 
-        #region Create shipment from API
+        #region Add WMS shipment info to event process and queue
 
         /// <summary>
         /// Create multiple shipment and invoice
@@ -281,11 +281,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
         {
             var resultList = new List<OrderShipmentCreateResultPayload>();
-            if (wmsShipments is null || wmsShipments.Count == 0)
+
+            if (!ValidateAllWMSShipment(wmsShipments))
             {
                 resultList.Add(new OrderShipmentCreateResultPayload()
                 {
-                    Messages = this.AddError("shipment data is required."),
+                    Messages = this.Messages,
                 });
                 return resultList;
             }
@@ -293,235 +294,56 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // loop for shipment list to create each shipment
             foreach (var wmsShipment in wmsShipments)
             {
+                var eventProcessERP = new EventProcessERP()
+                {
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    ProcessData = wmsShipment.ObjectToString(),
+                    ProcessUuid = wmsShipment.ShipmentHeader.ShipmentID,
+                    ERPEventProcessType = (int)EventProcessTypeEnum.ShipmentFromWMS,
+                    ActionStatus = (int)EventProcessActionStatusEnum.Pending,
+                };
+
                 // for each shipment, create result object to hold shipment creating result
                 var result = new OrderShipmentCreateResultPayload()
                 {
-                    Success = true,
-                    MasterAccountNum = payload.MasterAccountNum,
-                    ProfileNum = payload.ProfileNum,
-                    ShipmentID = wmsShipment?.ShipmentHeader?.ShipmentID,
+                    ShipmentID = wmsShipment.ShipmentHeader.ShipmentID,
                 };
 
-                // first validate shipment data, then sent it to eventprocess and queue.
-                if (await ValidateShipment(wmsShipment, result))
-                {
-                    var eventProcessERP = new EventProcessERP()
-                    {
-                        MasterAccountNum = result.MasterAccountNum,
-                        ProfileNum = result.ProfileNum,
-                        ProcessData = wmsShipment.ObjectToString(),
-                        ProcessUuid = result.ShipmentID,
-                        ERPEventProcessType = (int)EventProcessTypeEnum.ShipmentFromWMS,
-                        ActionStatus = (int)EventProcessActionStatusEnum.Pending,
-                    };
-                    if (!await eventProcessERPService.AddEventAndQueueMessageAsync(eventProcessERP))
-                    {
-                        result.Success = false;
-                        result.Messages.Add(eventProcessERPService.Messages);
-                    }
-                }
+                result.Success = await eventProcessERPService.AddEventAndQueueMessageAsync(eventProcessERP);
+                result.Messages.Add(eventProcessERPService.Messages);
 
                 resultList.Add(result);
             }
             return resultList;
         }
 
-        ///// <summary>
-        ///// Create multiple shipment and invoice
-        ///// </summary>
-        //public async Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
-        //{
-        //    var resultList = new List<OrderShipmentCreateResultPayload>();
-        //    if (wmsShipments is null || wmsShipments.Count == 0)
-        //    {
-        //        resultList.Add(new OrderShipmentCreateResultPayload()
-        //        {
-        //            Messages = this.AddError("shipment data is required."),
-        //        });
-        //        return resultList;
-        //    }
-
-        //    // loop for shipment list to create each shipment
-        //    foreach (var shipment in wmsShipments)
-        //    {
-        //        // for each shipment, create result object to hold shipment creating result
-        //        var result = new OrderShipmentCreateResultPayload()
-        //        {
-        //            Success = true,
-        //            MasterAccountNum = payload.MasterAccountNum,
-        //            ProfileNum = payload.ProfileNum,
-        //            ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
-        //        };
-
-        //        // first validate shipment data, allow to create new shipment
-        //        await CreateShipmentAsync(shipment, result);
-
-        //        resultList.Add(result);
-        //    }
-        //    return resultList;
-        //}
-
-        protected async Task<bool> ValidateShipment(List<InputOrderShipmentType> wmsShipments, OrderShipmentCreateResultPayload result)
+        /// <summary>
+        /// Validate all wms shipment
+        /// </summary>
+        /// <param name="wmsShipments"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected bool ValidateAllWMSShipment(IList<InputOrderShipmentType> wmsShipments)
         {
-            result.Success = true;
+            if (wmsShipments is null || wmsShipments.Count == 0)
+            {
+                AddError("shipment data is required.");
+                return false;
+            }
+
+            var allSuccess = true;
             foreach (var wmsShipment in wmsShipments)
-            { }
-
-
-            return result.Success;
-        }
-
-        /// <summary>
-        /// Validate current shipment data 
-        /// </summary>
-        protected async Task<bool> ValidateShipment(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
-        {
-            //if (payload is null)
-            //{
-            //    AddError("Request is invalid.");
-            //    return response;
-            //}
-            result.Success = true;
-            if (wmsShipment is null)
             {
-                result.Messages.AddError("Shipment data cannot be empty.");
-                result.Success = false;
+                var success = ValidateShipment(wmsShipment);
+                if (!success)
+                    allSuccess = false;
             }
-
-            if (wmsShipment.ShipmentHeader is null)
-            {
-                result.Messages.AddError("ShipmentHeader data cannot be empty.");
-                result.Success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
-            {
-                result.Messages.AddError("SalesOrderUuid cannot be empty.");
-                result.Success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
-            {
-                result.Messages.AddError("WarehouseCode cannot be empty.");
-                result.Success = false;
-            }
-
-            if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
-            {
-                result.Messages.AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
-                result.Success = false;
-            }
-
-            if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
-            {
-                result.Messages.AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
-                result.Success = false;
-            }
-
-            if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
-            {
-                result.Messages.AddError("ShipmentID cannot be empty.");
-                result.Success = false;
-            }
-
-            return result.Success;
-        }
-
-        /// <summary>
-        /// Create and save one shipment, but set processStatus to -1 (pending)
-        /// </summary>
-        public async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
-        {
-            // create mapper, and transfer shipment payload ro ero shipment Dto
-            var mapper = new WMSOrderShipmentMapper(result.MasterAccountNum, result.ProfileNum);
-            var erpShipment = mapper.MapperToErpShipment(wmsShipment);
-            // set shipment status to pending, this will not send to marketplace API
-            erpShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
-
-            // load other info from salesOrder data
-            if (!(await LoadSalesOrderToShipmentAsync(erpShipment, result)))
-                return false;
-
-            // create orderShipmentService and save new shipment
-            var service = orderShipmentService;
-            service.DetachData(null);
-            if (!(await service.AddAsync(erpShipment)))
-            {
-                result.Messages.Add(service.Messages);
-                result.Success = false;
-                return result.Success;
-            }
-
-            // if shipment succes add, transfer shipment to invoice
-            await CreateInvoiceAsync(orderShipmentService.Data, result);
-            return result.Success;
-        }
-        protected async Task<bool> ShipmentIDExistAsync(string shipmentID, OrderShipmentCreateResultPayload result)
-        {
-            if (await orderShipmentService.ExistShipmentIDAsync(result.MasterAccountNum, result.ProfileNum, shipmentID))
-            {
-                result.Success = true;
-            }
-            return false;
-        }
-        protected async Task<bool> LoadSalesOrderToShipmentAsync(OrderShipmentDataDto erpShipment, OrderShipmentCreateResultPayload result)
-        {
-            // if shipment payload not include SalesOrderUuid, try to load SalesOrderUuid by OrderDCAssignmentNum
-            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-                erpShipment.OrderShipmentHeader.SalesOrderUuid =
-                    await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
-
-            //// load OrderNumber from salesOrder Uuid
-            //if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-            //    erpShipment.OrderShipmentHeader.OrderNumber =
-            //        await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
-
-            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-            {
-                return false;
-            }
-
-            // load sales order data           
-            if (!(await salesOrderService.ListAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid)))
-            {
-                result.Messages.Add(salesOrderService.Messages);
-                return false;
-            }
-            var salesOrderData = salesOrderService.Data;
-
-            if (salesOrderData.SalesOrderHeaderInfo?.WarehouseCode != erpShipment.OrderShipmentHeader?.WarehouseCode)
-            {
-                result.Messages.AddError("WarehouseCode error.");
-                return false;
-            }
-
-            salesOrderService.DetachData(null);
-
-            // create mapper, and transfer shipment payload ro ero shipment Dto
-            var mapper = new ShipmentTransfer(this, dbFactory, "");
-            await mapper.LoadOthersDataFromSalesOrder(salesOrderData, erpShipment);
-            return true;
+            return allSuccess;
         }
 
 
-        /// <summary>
-        /// After save one shipment, create invoice from this shipment and set processStatus to 0 (allow send to marketplace)
-        /// </summary>
-        protected async Task<bool> CreateInvoiceAsync(OrderShipmentData orderShipmentData, OrderShipmentCreateResultPayload result)
-        {
-            // create invoice and set invoicenumber back to shipmentdata. 
-            var invoiceUuid = await invoiceManager.CreateInvoiceFromShipmentAsync(orderShipmentData);
-            if (string.IsNullOrEmpty(invoiceUuid))
-            {
-                this.Messages.Add(invoiceManager.Messages);
-                result.Success = false;
-                return result.Success;
-            }
 
-            //// change orderShipment status to 0 (InvoiceReady, allow to upload)
-            //await orderShipmentService.UpdateProcessStatusAsync(orderShipmentData.OrderShipmentHeader.OrderShipmentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
-            return result.Success;
-        }
 
         #endregion
 
@@ -638,6 +460,82 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region create shipment for wms trigger by queue
 
         /// <summary>
+        /// Validate current shipment data 
+        /// </summary>
+        protected bool ValidateShipment(InputOrderShipmentType wmsShipment)
+        {
+            var success = true;
+            if (wmsShipment is null)
+            {
+                AddError("Shipment data cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader is null)
+            {
+                AddError("ShipmentHeader data cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
+            {
+                AddError("SalesOrderUuid cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
+            {
+                AddError("WarehouseCode cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
+            {
+                AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
+            {
+                AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
+                success = false;
+            }
+
+            if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
+            {
+                AddError("ShipmentID cannot be empty.");
+                success = false;
+            }
+
+            return success;
+        }
+
+
+
+        protected async Task<InputOrderShipmentType> GetWmsShipment(string shipmentID)
+        {
+            eventProcessERPService.List();
+            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.ShipmentFromWMS, shipmentID);
+            if (!success)
+            {
+                this.Messages.Add(eventProcessERPService.Messages);
+            }
+            var wmsShipment = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<InputOrderShipmentType>();
+            return wmsShipment;
+        }
+
+
+        protected async Task<bool> ShipmentIDExistAsync(int masterAccountNum, int profileNum, string shipmentID)
+        {
+            if (await orderShipmentService.ExistShipmentIDAsync(masterAccountNum, profileNum, shipmentID))
+            {
+                AddInfo($"Shipment has been transfered. ShipmentID:{shipmentID}");
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// create shipment by wmsShipmentID
         /// </summary>
         /// <param name="wmsShipment"></param>
@@ -654,25 +552,118 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var success = true;
 
-            var wmsShipment = await GetWmsShipment(result);
+            var wmsShipment = await GetWmsShipment(shipmentID);
             if (wmsShipment == null)
             {
-                result.Messages.AddError($"Data not found,ShipmentID:{result.ShipmentID}");
+                AddError($"Data not found,ShipmentID:{shipmentID}");
                 success = false;
             }
 
+            success = success && ValidateShipment(wmsShipment);
 
-            success = success && await ValidateShipment(wmsShipment, result);
+            var shipmentIDExist = await ShipmentIDExistAsync(payload.MasterAccountNum, payload.ProfileNum, shipmentID);
 
             // validate is true and shipmentid not exist then create erp shipment.
-            if (success && !await ShipmentIDExistAsync(wmsShipment.ShipmentHeader.ShipmentID, result))
-                success = success && await CreateShipmentAsync(wmsShipment, result);
-
+            if (success && !shipmentIDExist)
+            {
+                success = await CreateShipmentAsync(wmsShipment, result);
+            }
 
             result.Success = success;
+            // Add all validate message.
+            result.Messages.Add(this.Messages);
 
             // update all result back to event process.
             return await UpdateProcessResultAsync(result);
+        }
+
+        /// <summary>
+        /// Create and save one shipment, but set processStatus to -1 (pending)
+        /// </summary>
+        public async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        {
+            // create mapper, and transfer shipment payload ro ero shipment Dto
+            var mapper = new WMSOrderShipmentMapper(result.MasterAccountNum, result.ProfileNum);
+            var erpShipment = mapper.MapperToErpShipment(wmsShipment);
+            // set shipment status to pending, this will not send to marketplace API
+            erpShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
+
+            // load other info from salesOrder data
+            if (!(await LoadSalesOrderToShipmentAsync(erpShipment, result)))
+                return false;
+
+            // create orderShipmentService and save new shipment
+            var service = orderShipmentService;
+            service.DetachData(null);
+            if (!(await service.AddAsync(erpShipment)))
+            {
+                result.Messages.Add(service.Messages);
+                result.Success = false;
+                return result.Success;
+            }
+
+            // if shipment succes add, transfer shipment to invoice
+            await CreateInvoiceAsync(orderShipmentService.Data, result);
+            return result.Success;
+        }
+
+        protected async Task<bool> LoadSalesOrderToShipmentAsync(OrderShipmentDataDto erpShipment, OrderShipmentCreateResultPayload result)
+        {
+            // if shipment payload not include SalesOrderUuid, try to load SalesOrderUuid by OrderDCAssignmentNum
+            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+                erpShipment.OrderShipmentHeader.SalesOrderUuid =
+                    await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
+
+            //// load OrderNumber from salesOrder Uuid
+            //if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+            //    erpShipment.OrderShipmentHeader.OrderNumber =
+            //        await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+
+            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+            {
+                return false;
+            }
+
+            // load sales order data           
+            if (!(await salesOrderService.ListAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid)))
+            {
+                result.Messages.Add(salesOrderService.Messages);
+                return false;
+            }
+            var salesOrderData = salesOrderService.Data;
+
+            if (salesOrderData.SalesOrderHeaderInfo?.WarehouseCode != erpShipment.OrderShipmentHeader?.WarehouseCode)
+            {
+                result.Messages.AddError("WarehouseCode error.");
+                return false;
+            }
+
+            salesOrderService.DetachData(null);
+
+            // create mapper, and transfer shipment payload ro ero shipment Dto
+            var mapper = new ShipmentTransfer(this, dbFactory, "");
+            await mapper.LoadOthersDataFromSalesOrder(salesOrderData, erpShipment);
+            return true;
+        }
+
+
+        /// <summary>
+        /// After save one shipment, create invoice from this shipment and set processStatus to 0 (allow send to marketplace)
+        /// </summary>
+        protected async Task<bool> CreateInvoiceAsync(OrderShipmentData orderShipmentData, OrderShipmentCreateResultPayload result)
+        {
+            // create invoice and set invoicenumber back to shipmentdata. 
+            var invoiceUuid = await invoiceManager.CreateInvoiceFromShipmentAsync(orderShipmentData);
+            if (string.IsNullOrEmpty(invoiceUuid))
+            {
+                this.Messages.Add(invoiceManager.Messages);
+                result.Success = false;
+                return result.Success;
+            }
+            result.InvoiceUuid = invoiceUuid;
+            //// change orderShipment status to 0 (InvoiceReady, allow to upload)
+            //await orderShipmentService.UpdateProcessStatusAsync(orderShipmentData.OrderShipmentHeader.OrderShipmentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
+            return result.Success;
         }
 
         /// <summary>
@@ -698,18 +689,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
 
             return await eventProcessERPService.UpdateProcessStatusAsync(ackPayload);
-        }
-
-        protected async Task<InputOrderShipmentType> GetWmsShipment(OrderShipmentCreateResultPayload result)
-        {
-            eventProcessERPService.List();
-            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.ShipmentFromWMS, result.ShipmentID);
-            if (!success)
-            {
-                result.Messages.Add(eventProcessERPService.Messages);
-            }
-            var wmsShipment = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<InputOrderShipmentType>();
-            return wmsShipment;
         }
 
         #endregion
