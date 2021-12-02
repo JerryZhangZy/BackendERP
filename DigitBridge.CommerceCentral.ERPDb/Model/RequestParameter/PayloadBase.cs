@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
+using System.Security.Claims;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -17,6 +18,52 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class PayloadBase : IPayload
     {
+        /// <summary>
+        /// User BackdoorModeEmail
+        /// </summary>
+        [Required(ErrorMessage = "BackdoorModeEmail")]
+        [Display(Name = "backdoorModeEmail")]
+        [DataMember(Name = "backdoorModeEmail")]
+        [JsonIgnore]
+        public string BackdoorModeEmail { get; set; }
+        [JsonIgnore] public virtual bool HasBackdoorModeEmail => !string.IsNullOrEmpty(BackdoorModeEmail);
+        public bool ShouldSerializeBackdoorModeEmail() => HasBackdoorModeEmail;
+
+        /// <summary>
+        /// User BackdoorModePassword
+        /// </summary>
+        [Required(ErrorMessage = "BackdoorModePassword")]
+        [Display(Name = "backdoorModePassword")]
+        [DataMember(Name = "backdoorModePassword")]
+        [JsonIgnore]
+        public string BackdoorModePassword { get; set; }
+        [JsonIgnore] public virtual bool HasBackdoorModePassword => !string.IsNullOrEmpty(BackdoorModePassword);
+        public bool ShouldSerializeBackdoorModePassword() => HasBackdoorModePassword;
+
+        /// <summary>
+        /// User MasterAccountNum
+        /// Required, from header
+        /// </summary>
+        [Required(ErrorMessage = "API ClaimsPrincipal")]
+        [Display(Name = "claimsPrincipal")]
+        [DataMember(Name = "claimsPrincipal")]
+        [JsonIgnore]
+        public ClaimsPrincipal ClaimsPrincipal { get; set; }
+        [JsonIgnore] public virtual bool HasClaimsPrincipal => ClaimsPrincipal != null;
+        public bool ShouldSerializeClaimsPrincipal() => HasClaimsPrincipal;
+
+        /// <summary>
+        /// User MasterAccountNum
+        /// Required, from header
+        /// </summary>
+        [Required(ErrorMessage = "API Access Token")]
+        [Display(Name = "accessToken")]
+        [DataMember(Name = "accessToken")]
+        [JsonIgnore]
+        public string AccessToken { get; set; }
+        [JsonIgnore] public virtual bool HasAccessToken => !string.IsNullOrEmpty(AccessToken);
+        public bool ShouldSerializeAccessToken() => HasAccessToken;
+
         /// <summary>
         /// User MasterAccountNum
         /// Required, from header

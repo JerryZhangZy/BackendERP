@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
                     items20.Add(item);
                     if (items20.Count >= 20)
                     {
-                        await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncInventoryByWms, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage
+                        await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncInventoryByWmsQueue, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage
                         {
                             //ERPEventType = (ErpEventType)erpdata.ERPEventType,
                             DatabaseNum = payload.DatabaseNum,
@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
                     }
                 }
                 if (items20.Count > 0)
-                    await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncInventoryByWms, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage
+                    await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncInventoryByWmsQueue, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage
                     {
                         //ERPEventType = (ErpEventType)erpdata.ERPEventType,
                         DatabaseNum = payload.DatabaseNum,
