@@ -60,6 +60,18 @@
     "ERPSummaryTableName": "ErpSummaryCache",
     "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
 
+    // User account
+    "BackdoorMode": "True",
+    "BackdoorModePassword": "blabla",
+    "BackdoorModeEmail": "abc@123.com",
+
+    "AccountApiEndPoint": "https://digitbridgeappaccountapidev.azurewebsites.net/v1/",
+    "AccountApiCode": "KFxrn/51OpLqBDuIcUs7va2UXpn0NTzdQYQSdfyL4wxV3GkGejBEuQ==",
+    "OrchestrationApiEndpoint": "https://digitbridge-orchestration-api-china-dev-rg.chinacloudsites.cn/api/GetConnSettingByTargetName",
+    "OrchestrationApiCode": "xsRPQnKJ5gxuGY2TKDDVs26maiKoZv/rD7kQGIm/G5ver2Mrrvqu/g==",
+    "OrchestrationDbAzureToken": "RunAs=Developer;DeveloperTool=VisualStudio",
+    "OrchestrationTargetName": "ERP",
+
     //test
     //"UseOrchestration": "false",
     //"OrchestrationDbConnString": "Server=bobotestsql.database.windows.net,1433;Initial Catalog=TestOrchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
