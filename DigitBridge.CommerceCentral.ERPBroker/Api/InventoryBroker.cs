@@ -68,7 +68,6 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 };
                 var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var svc = new InventoryUpdateService(dbFactory);
-                var productUuids = message.ProcessData.Split(',');
                 var items = JsonConvert.DeserializeObject<List<InventoryUpdateItems>>(message.ProcessData);
                 await svc.AddCountAsync(items, message.MasterAccountNum, message.ProfileNum);
             }
