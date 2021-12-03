@@ -1,14 +1,6 @@
 ﻿
 select ProcessUuid into #tmpProcessUuid from EventProcessERP 
-where ERPEventProcessType=4  
-and ProcessUuid in 
-(
- '113-10000000496',
- '113-10000000497',
- '113-10000000498',
- '113-10000000499',
- '113-10000000450'
-) 
+where ERPEventProcessType=4   and MasterAccountNum=10002 and ProfileNum=10003
 
 select SalesOrderUuid,InvoiceUuid,OrderShipmentUuid
 into #ToDeleteUuids
@@ -17,13 +9,7 @@ where ShipmentID in
 (
  select * from #tmpProcessUuid
 )  
-
-----delete salesorder
---delete from SalesOrderHeader where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
---delete from SalesOrderHeaderAttributes where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
---delete from SalesOrderHeaderInfo where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
---delete from SalesOrderItems where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
---delete from SalesOrderItemsAttributes where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids) 
+ 
 
 --delete invoice
 delete from InvoiceHeader where InvoiceUuid in (select  InvoiceUuid from #ToDeleteUuids)

@@ -86,7 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeader.ProfileNum = soHeader.ProfileNum;
             //InvoiceUuid
             invoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
-            invoiceHeader.InvoiceNumber = string.IsNullOrEmpty(osHeader.InvoiceNumber) ? 
+            invoiceHeader.InvoiceNumber = string.IsNullOrEmpty(osHeader.InvoiceNumber) ?
                 soHeader.OrderNumber + "-" + osHeader.OrderShipmentNum : osHeader.InvoiceNumber;
 
             invoiceHeader.SalesOrderUuid = soHeader.SalesOrderUuid;
@@ -132,12 +132,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //AvgCost
             //LotCost
             invoiceHeader.InvoiceSourceCode = "OrderShipmentUuid:" + osHeader.OrderShipmentUuid;
-             
+
             invoiceHeader.EnterBy = _userId;
             //UpdateBy
             //EnterDateUtc
             //DigitBridgeGuid
-            invoiceHeader.ShipDate = soHeader.ShipDate;
+            invoiceHeader.ShipDate = osHeader.ShipmentDateUtc;
             return invoiceHeader;
         }
 
@@ -186,7 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (soLine == null)
                         soLine = soData.SalesOrderItems.FirstOrDefault(p => p.SalesOrderItemsUuid.EqualsIgnoreSpace(osItem.SalesOrderItemsUuid));
                     if (soLine == null)
-                        {
+                    {
                         AddError($"SKU {osItem.SKU} not found in sales order items.");
                         return null;
                     }

@@ -536,6 +536,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var result = new OrderShipmentCreateResultPayload()
             {
+                Success = true,
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
                 ShipmentID = shipmentID,
@@ -567,7 +568,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 else
                 {
                     AddInfo($"Shipment has been transfered. ShipmentID:{shipmentID}");
-                    result.Success = true;
                 }
             }
 
@@ -675,7 +675,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var processResult = new ProcessResult()
             {
-                EventMessage = new JObject() { { "message", JArray.FromObject(result.Messages) } },
+                EventMessage = result.HasMessages ? new JObject() { { "message", JArray.FromObject(result.Messages) } } : null,
                 ProcessUuid = result.ShipmentID,
                 ProcessStatus = result.Success ? (int)EventProcessProcessStatusEnum.Success : (int)EventProcessProcessStatusEnum.Failed
             };
