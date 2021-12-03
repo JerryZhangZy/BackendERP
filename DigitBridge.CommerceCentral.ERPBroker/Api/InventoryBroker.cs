@@ -31,12 +31,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 };
                 var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var svc = new InventoryService(dbFactory);
-                var productUuid = message.ProcessUuid;
                 var rowNum = await svc.GetRowNumByProductFindAsync(new ProductFindClass()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum,
-                    ProductUuid = productUuid
+                    ProductUuid = message.ProcessUuid
                 });
                 await svc.EditAsync(rowNum);
                 var data = svc.Data;
