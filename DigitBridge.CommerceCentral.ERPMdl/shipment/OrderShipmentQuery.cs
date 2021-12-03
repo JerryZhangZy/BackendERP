@@ -81,6 +81,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShippingCarrier);
             
         }
+
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("ShipmentDateUtc", "ShipmentDateUtc DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("ShipmentID", "ShipmentID, RowNum DESC"),
+                new KeyValuePair<string, string>("CentralOrderNum", "CentralOrderNum, RowNum DESC"),
+                new KeyValuePair<string, string>("OrderNumber", "OrderNumber, RowNum DESC"),
+                new KeyValuePair<string, string>("InvoiceNumber", "InvoiceNumber, RowNum DESC")
+            );
+        }
+
         public override void InitQueryFilter()
         {
             _ShipDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);

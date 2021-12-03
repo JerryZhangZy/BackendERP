@@ -269,7 +269,7 @@ AND shipment.ShipmentID= @shipmentID
                 COALESCE(
                     (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE SalesOrderUuid != '' AND SalesOrderUuid=@salesOrderUuid),
                     (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE OrderDCAssignmentNum != 0 AND 
-                        ('OrderDCAssignmentNum:' + Cast(OrderDCAssignmentNum as varchar))=@orderSourceCode)
+                        ('{Consts.SalesOrderSourceCode_Prefix}' + Cast(OrderDCAssignmentNum as varchar))=@orderSourceCode)
                     ''
                 )
             ";

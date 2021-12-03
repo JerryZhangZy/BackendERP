@@ -289,4 +289,16 @@
   <ItemGroup>
     <None Include="po\PoTransactionItems_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="sql\check wms shipment upload and transfer count.sql" />
+    <Build Include="sql\check shipment data between wms and erp.sql" />
+    <Build Include="sql\check shipment upload data.sql" />
+    <Build Include="sql\debug_credit_payment.sql" />
+    <Build Include="sql\debug_invoice_payment.sql" />
+    <Build Include="sql\debug_event_erp.sql" />
+    <Build Include="sql\debug_create_invoice_from_shipment.sql" />
+    <Build Include="sql\debug_centralOrder_to_salesOrder.sql" />
+    <Build Include="sql\calculate_invoice_balance_and_status.sql" />
+    <Build Include="sql\check salesorder item.sql" />
+  </ItemGroup>
 </Project>
