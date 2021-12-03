@@ -412,6 +412,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.DetachData(this.Data);
             }
             payload.OrderShipments = result;
+
+            if (!result.Any())
+                payload.ReturnError("No data be found");
         }
 
         /// <summary>
