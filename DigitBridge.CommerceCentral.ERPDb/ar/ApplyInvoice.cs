@@ -17,13 +17,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public int TransNum { get; set; }
         public string Description { get; set; }
         public string Notes { get; set; }
-
-        public DateTime InvoiceDate { get; set; }
-        public DateTime DueDate { get; set; }
-        public string QuickbookDocNum { get; set; }
-        public decimal InvoiceTotalAmount { get; set; }
-        public decimal InvoicePaidAmount { get; set; }
-        public decimal InvoiceBalance { get; set; }
         public decimal PaidAmount { get; set; }
         [JsonIgnore]
         public bool Success { get; set; } = false;
