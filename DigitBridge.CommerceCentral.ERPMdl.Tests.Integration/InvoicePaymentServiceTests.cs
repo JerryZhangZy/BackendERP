@@ -454,12 +454,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 TransNum = ins.TransNum,
                 Description = ins.Description,
                 Notes = ins.Notes,
-                InvoiceDate = ins.invoiceDate,
-                DueDate = ins.dueDate,
-                QuickbookDocNum = ins.qboDocNumber,
-                InvoiceTotalAmount = ins.totalAmount,
-                InvoicePaidAmount = ins.paidAmount,
-                InvoiceBalance = ins.balance,
                 PaidAmount = amt,
             };
         }

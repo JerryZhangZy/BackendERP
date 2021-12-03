@@ -195,8 +195,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.InvoiceTransaction.DatabaseNum,
                 ProcessUuid = this.Data.InvoiceTransaction.TransUuid,
                 ProcessNumber = $"{this.Data.InvoiceTransaction.InvoiceNumber}-{this.Data.InvoiceTransaction.TransUuid}",
-                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelNum,
-                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo != null ? this.Data.InvoiceData.InvoiceHeaderInfo.ChannelNum : 0,
+                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo != null ? this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum : 0,
 
                 LogMessage = string.Empty
             };
@@ -229,12 +229,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TransUuid = t.InvoiceTransaction.TransUuid,
                 InvoiceUuid = t.InvoiceTransaction.InvoiceUuid,
                 InvoiceNumber = t.InvoiceTransaction.InvoiceNumber,
-                InvoiceDate = invoiceHeader.InvoiceDate.ToDateTime(),
-                DueDate = invoiceHeader.DueDate.ToDateTime(),
-                QuickbookDocNum = invoiceHeader.QboDocNumber,
-                InvoiceTotalAmount = invoiceHeader.TotalAmount.ToDecimal(),
-                InvoicePaidAmount = invoiceHeader.PaidAmount.ToDecimal(),
-                InvoiceBalance = invoiceHeader.Balance.ToDecimal(),
                 PaidAmount = t.InvoiceTransaction.TotalAmount,
                 Success = true
             }).ToList();
@@ -626,7 +620,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Data.InvoiceTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.Balance.IsZero() ? 0 : Data.InvoiceData.InvoiceHeader.Balance;
 
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
-
+            payload.ApplyInvoices = new List<ApplyInvoice> {
+                new ApplyInvoice
+                {
+                    InvoiceUuid = Data.InvoiceData.InvoiceHeader.InvoiceUuid,
+                    InvoiceNumber = Data.InvoiceData.InvoiceHeader.InvoiceNumber
+                }
+            };
             return await LoadInvoiceListAsync(payload, Data.InvoiceData.InvoiceHeader.CustomerCode);
         }
 
@@ -639,6 +639,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             NewData();
             Data.InvoiceTransaction.CustomerCode = customerCode;
+            payload.ApplyInvoices = payload.InvoiceList
+                .Select(i => new ApplyInvoice { 
+                    InvoiceUuid = i.invoiceUuid,
+                    InvoiceNumber = i.invoiceNumber,
+                    Success = false,
+                    PaidAmount = 0
+                }).ToList();
 
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
 
@@ -653,7 +660,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, payload.InvoiceTransaction.CustomerCode);
             //if (invoices?.Count == 0)
             //    return false;
-
             payload.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
             payload.InvoiceTransaction.ProfileNum = payload.ProfileNum;
             var succes = true;
@@ -691,6 +697,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.Success = false;
 
                 // load invoice header
+                //await InvoiceService.GetDataByIdAsync(applyInvoice.InvoiceUuid);
+                //var invoice = InvoiceService.Data.InvoiceHeader;
+                
                 var invoice = await InvoiceService.GetInvoiceHeaderAsync(applyInvoice.InvoiceUuid);
                 if (invoice == null)
                 {
@@ -711,6 +720,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                applyInvoice.TransNum = Data.InvoiceTransaction.TransNum;
                 applyInvoice.PaidAmount = Data.InvoiceTransaction.TotalAmount;
                 applyInvoice.Success = true;
             }
@@ -777,6 +787,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                applyInvoice.TransNum = Data.InvoiceTransaction.TransNum;
                 applyInvoice.PaidAmount = Data.InvoiceTransaction.TotalAmount;
                 applyInvoice.Success = true;
             }
@@ -901,6 +912,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 .OrderByDescending(x => x.pay)
                 .OrderBy(x => x.invoiceDate)
                 .ToList();
+
             return true;
         }
 
