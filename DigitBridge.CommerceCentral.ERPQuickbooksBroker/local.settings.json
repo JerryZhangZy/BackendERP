@@ -5,7 +5,7 @@
     "LocalHttpPort": 7072
   },
   "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=7cL7694TZ2OgF5Bv5LqT4XZX1c46Dj2ZcDIITh5p+vhbgq3+KgvzStbboOrEf0gk8+T2uEuzKfWQHxDRrquj6w==;EndpointSuffix=core.windows.net",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
