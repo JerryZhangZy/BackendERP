@@ -44,7 +44,13 @@ create table #ProcessData(id int identity(1,1),ProcessData varchar(max))
 
 declare @n int,@rows int,@ProcessData varchar(max)
 insert into  #ProcessData (ProcessData) 
-select ProcessData from  EventProcessERP where ERPEventProcessType=4 and ProcessStatus=2 and ProfileNum=10003 and MasterAccountNum=10002
+select ProcessData from  EventProcessERP 
+where ERPEventProcessType=4 and ProcessStatus=2 and ProfileNum=10003 and MasterAccountNum=10002
+and RowNum not in (4756,
+4774,
+4775,
+4776,
+4777)
 
 select @rows =@@rowcount
 set @n=1
@@ -53,9 +59,9 @@ begin
   select @ProcessData=ProcessData from #ProcessData where id=@n 
 
 --declare @processdata varchar(max)='{"shipmentHeader":{"shipmentID":"113-10000000515","shippingCarrier":"UPS","shippingClass":"UPS® Ground","shippingCost":20.0000,"mainTrackingNumber":"UPS-10000000515","mainReturnTrackingNumber":"","billOfLadingID":"","totalPackages":0,"totalHandlingFee":0.0,"totalShippedQty":2.0,"totalCanceledQty":0.0,"totalWeight":0.0,"totalVolume":0.0,"weightUnit":0,"lengthUnit":0,"volumeUnit":0,"invoiceNumber":"","salesOrderUuid":"38b047fa-34cf-4be4-b4ba-5cd90c7a1d33","warehouseCode":"Main","orderDCAssignmentNum":0,"centralOrderNum":100004286,"channelOrderID":"99308504","shipmentType":0,"shipmentReferenceID":"","shipmentDateUtc":"2021-12-03T03:39:09.5916512","shipmentStatus":1},"packageItems":[{"shipmentPackage":{"packageID":"10000000515-FEDEX_BOX","packageType":0,"packagePatternNum":0,"packageTrackingNumber":"UPS-10000000515","packageReturnTrackingNumber":"","packageWeight":0.0,"packageLength":0.0,"packageWidth":0.0,"packageHeight":0.0,"packageVolume":0.0,"packageQty":2.0,"parentPackageNum":0,"hasChildPackage":false},"shippedItems":[{"salesOrderItemsUuid":"0-597","centralOrderLineNum":10005075,"orderDCAssignmentLineNum":0,"sku":"FA16023WV-MIDNIGHTBLUE-XL-STD","unitHandlingFee":0.0,"shippedQty":1.0,"lineHandlingFee":0.0,"enterDateUtc":"2021-12-03T03:48:01.1633121Z"},{"salesOrderItemsUuid":"0-598","centralOrderLineNum":10005074,"orderDCAssignmentLineNum":0,"sku":"FA16023WV-SLATE-XL-STD","unitHandlingFee":0.0,"shippedQty":1.0,"lineHandlingFee":0.0,"enterDateUtc":"2021-12-03T03:48:01.1633207Z"}]}],"canceledItems":[]}'
-declare @salesorderuuid varchar(100)
+declare @salesorderuuid varchar(100),@shipmentID varchar(100)
 --put wms shipment header to tmp table
-select @salesorderuuid=Json_Value (value,'$.salesOrderUuid')
+select @salesorderuuid=Json_Value (value,'$.salesOrderUuid'),@shipmentID=Json_Value (value,'$.shipmentID')
 from openjson (@ProcessData) 
 where [key]='shipmentHeader' 
 
@@ -76,9 +82,10 @@ where [key]='shipmentHeader'
 
 
 --put wms shipment shippedItems to tmp table
-insert into #wmsshipmentItem(salesOrderUuid,shippedQty,centralOrderLineNum,salesOrderItemsUuid,sku)
+insert into #wmsshipmentItem(shipmentID,salesOrderUuid,shippedQty,centralOrderLineNum,salesOrderItemsUuid,sku)
 select  
- @salesorderuuid as salesorderuuid
+ @shipmentID as shipmentID
+ ,@salesorderuuid as salesorderuuid
 ,Json_Value (value,'$.shippedQty')  as shippedQty
 ,Json_Value (value,'$.centralOrderLineNum')  as centralOrderLineNum
 ,Json_Value (value,'$.salesOrderItemsUuid')  as salesOrderItemsUuid  
@@ -166,23 +173,46 @@ or c.shippingCostInWMSShipment!= c.ShippingAmountInInvoice
 or c.shippingCarrierInWMSShipment!=c.shippingCarrierInInvoice
 or c.shippingClassInWMSShipment!=c.shippingClassInInvoice 
 
+
+ --compare wms item & erp item
+ select wmsItem.sku as skuInWMS, erpShipmentItem.SKU as skuInErp
+ ,wmsItem.shippedQty as shippedQtyInWMS, erpShipmentItem.ShippedQty as shippedQtyInErp   
+ into #comparewmsShipmentAndErpShiment
+ from #wmsshipmentItem wmsItem
+ left join OrderShipmentHeader erpShipmentHeader on wmsItem.shipmentID=erpShipmentHeader.ShipmentID
+ left join OrderShipmentShippedItem erpShipmentItem on wmsItem.sku= erpShipmentItem.SKU  and  erpShipmentItem.OrderShipmentUuid=erpShipmentHeader.OrderShipmentUuid
+
+ select * from #comparewmsShipmentAndErpShiment
+ where 
+ skuInErp is null or shippedQtyInWMS is null or shippedQtyInWMS is null
+ or skuInWMS!=skuInErp 
+ or shippedQtyInWMS!=shippedQtyInErp  
+
  --compare wms item & salesorder item
  select wmsItem.sku as skuInWMS, orderItem.SKU as skuInOrder
  ,wmsItem.shippedQty as shippedQtyInWMS, orderItem.ShipQty as shippedQtyInOrder
  ,wmsItem.salesOrderItemsUuid salesOrderItemsUuidInWMS,orderItem.SalesOrderItemsUuid as  SalesOrderItemsUuidInOrder
+ ,wmsItem.shipmentID
  --,wmsItem.centralOrderLineNum as centralOrderLineNumInWMS
  into #comparewmsShipmentAndOrder
  from #wmsshipmentItem wmsItem
- left join SalesOrderItems orderItem on wmsItem.salesOrderUuid= orderItem.SalesOrderUuid and wmsItem.salesOrderItemsUuid=orderItem.SalesOrderItemsUuid 
+ full outer join SalesOrderItems orderItem on wmsItem.salesOrderUuid= orderItem.SalesOrderUuid and wmsItem.salesOrderItemsUuid=orderItem.SalesOrderItemsUuid 
 
- select * from #comparewmsShipmentAndOrder
+ select 
+ shipmentID 
+ ,*
+ from #comparewmsShipmentAndOrder
  where 
- SalesOrderItemsUuidInOrder is null or skuInOrder is null or shippedQtyInWMS is null
+ salesOrderItemsUuidInWMS is null or skuInWMS is null or shippedQtyInWMS is null-- item in erp s/o, not in wms shipment
+ or SalesOrderItemsUuidInOrder is null or skuInOrder is null or shippedQtyInWMS is null-- item in wms shipment ,not in erp s/o
  or skuInOrder!=skuInWMS 
  or shippedQtyInWMS!=shippedQtyInOrder
  or salesOrderItemsUuidInWMS!=SalesOrderItemsUuidInOrder
+ --group by shipmentID
 
- --select * from #comparewmsShipmentAndOrder
+
+
+-- --select * from #comparewmsShipmentAndOrder
 --drop table #wmsshipment
 --drop table #wmsshipmentItem 
 --drop table #compareHeader
