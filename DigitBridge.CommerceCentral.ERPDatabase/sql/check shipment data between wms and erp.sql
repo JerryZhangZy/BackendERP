@@ -27,8 +27,7 @@ begin
 
 
 insert into #wmsshipment(shipmentID,shippingCarrier,shippingClass,shippingCost,mainTrackingNumber,channelOrderID,shipmentDateUtc,salesOrderUuid,centralOrderNum)   
-select * from(
-select 
+ select 
 Json_Value (value,'$.shipmentID')  as shipmentID
 ,Json_Value (value,'$.shippingCarrier')  as shippingCarrier
 ,Json_Value (value,'$.shippingClass')  as shippingClass
@@ -41,9 +40,8 @@ Json_Value (value,'$.shipmentID')  as shipmentID
 from openjson
 ( 
 @ProcessData
-) 
-) tmp where tmp.shipmentID is not null
-
+)  as a
+where a.[key]='shipmentHeader'
   print (@n)
   select @n=@n+1
 end
