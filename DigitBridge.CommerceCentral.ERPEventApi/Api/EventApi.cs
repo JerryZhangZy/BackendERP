@@ -265,7 +265,39 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             {
                 MasterAccountNum = eventdata.MasterAccountNum,
                 ProfileNum = eventdata.ProfileNum,
-                EventERP = eventdata.ToEventERPDataDto(ErpEventType.DeleteQboPayment)
+                EventERP = eventdata.ToEventERPDataDto(ErpEventType.SyncProduct)
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
+            if (await svc.AddAsync(payload))
+                payload.EventERP = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+
+            return new JsonNetResponse<EventERPPayload>(payload);
+        }
+
+        [FunctionName(nameof(SyncProductEvent))]
+        [OpenApiOperation(operationId: "SyncProductEvent", tags: new[] { "EventERPs" })]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+    Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+    Description = "ProductUuid array")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+    bodyType: typeof(EventERPPayloadAdd))]
+        public static async Task<JsonNetResponse<EventERPPayload>> SyncProductEvent(
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/syncProduct")]
+            HttpRequest req)
+        {
+            var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
+            var payload = new EventERPPayload()
+            {
+                MasterAccountNum = eventdata.MasterAccountNum,
+                ProfileNum = eventdata.ProfileNum,
+                //EventERP = eventdata.ToEventERPDataDto(ErpEventType.DeleteQboPayment)
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
