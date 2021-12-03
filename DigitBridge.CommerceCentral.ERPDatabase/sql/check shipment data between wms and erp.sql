@@ -142,17 +142,13 @@ shipment.InvoiceUuid
 ,wmsShipment.shippingClass as shippingClassInWMSShipment
 ,invoiceInfo.shippingClass as shippingClassInInvoice
 
-into #compareHeader
-from EventProcessERP ep
-join #wmsshipment wmsShipment on wmsShipment.shipmentID=ep.ProcessUuid  
-join OrderShipmentHeader  shipment on shipment.ShipmentID=ep.ProcessUuid
-join SalesOrderHeader  orderHeader on orderHeader.SalesOrderUuid=shipment.SalesOrderUuid
+into #compareHeader 
+from #wmsshipment wmsShipment  
+left join OrderShipmentHeader  shipment on shipment.ShipmentID=wmsShipment.shipmentID
+left join SalesOrderHeader  orderHeader on orderHeader.SalesOrderUuid=shipment.SalesOrderUuid
 left join SalesOrderHeaderInfo orderInfo on orderInfo.SalesOrderUuid=orderHeader.SalesOrderUuid
-join InvoiceHeader invoice on invoice.InvoiceUuid=shipment.InvoiceUuid 
-left join InvoiceHeaderInfo invoiceInfo on invoiceInfo.InvoiceUuid=invoice.InvoiceUuid
-
-where ep.ERPEventProcessType=4  
-and ep.ProcessStatus=2
+left join InvoiceHeader invoice on invoice.InvoiceUuid=shipment.InvoiceUuid 
+left join InvoiceHeaderInfo invoiceInfo on invoiceInfo.InvoiceUuid=invoice.InvoiceUuid 
  
 
  -- no result means all data matched.
@@ -170,9 +166,23 @@ or c.shippingCostInWMSShipment!= c.ShippingAmountInInvoice
 or c.shippingCarrierInWMSShipment!=c.shippingCarrierInInvoice
 or c.shippingClassInWMSShipment!=c.shippingClassInInvoice 
 
- --compare item.
+ --compare wms item & salesorder item
+ select wmsItem.sku as skuInWMS, orderItem.SKU as skuInOrder
+ ,wmsItem.shippedQty as shippedQtyInWMS, orderItem.ShipQty as shippedQtyInOrder
+ ,wmsItem.salesOrderItemsUuid salesOrderItemsUuidInWMS,orderItem.SalesOrderItemsUuid as  SalesOrderItemsUuidInOrder
+ --,wmsItem.centralOrderLineNum as centralOrderLineNumInWMS
+ into #comparewmsShipmentAndOrder
+ from #wmsshipmentItem wmsItem
+ left join SalesOrderItems orderItem on wmsItem.salesOrderUuid= orderItem.SalesOrderUuid and wmsItem.salesOrderItemsUuid=orderItem.SalesOrderItemsUuid 
 
+ select * from #comparewmsShipmentAndOrder
+ where 
+ SalesOrderItemsUuidInOrder is null or skuInOrder is null or shippedQtyInWMS is null
+ or skuInOrder!=skuInWMS 
+ or shippedQtyInWMS!=shippedQtyInOrder
+ or salesOrderItemsUuidInWMS!=SalesOrderItemsUuidInOrder
 
-drop table #wmsshipment
-drop table #wmsshipmentItem 
-drop table #compareHeader
+ --select * from #comparewmsShipmentAndOrder
+--drop table #wmsshipment
+--drop table #wmsshipmentItem 
+--drop table #compareHeader
