@@ -209,6 +209,7 @@ or c.shippingClassInWMSShipment!=c.shippingClassInInvoice
  or shippedQtyInWMS!=shippedQtyInOrder
  or salesOrderItemsUuidInWMS!=SalesOrderItemsUuidInOrder 
 
+ -- todo check invoie.
 
 
  --select * from #comparewmsShipmentAndOrder
