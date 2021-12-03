@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-            var shipmentManager = new OrderShipmentManager(dataBaseFactory, MySingletonAppSetting.IntegrationStorage);
+            var shipmentManager = new OrderShipmentManager(dataBaseFactory, MySingletonAppSetting.AzureWebJobsStorage);
             var result = await shipmentManager.CreateShipmentListAsync(payload, inputShipments);
 
             return new JsonNetResponse<IList<OrderShipmentCreateResultPayload>>(result);
