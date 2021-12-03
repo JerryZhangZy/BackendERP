@@ -536,6 +536,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var result = new OrderShipmentCreateResultPayload()
             {
+                Success = true,
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
                 ShipmentID = shipmentID,
@@ -567,7 +568,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 else
                 {
                     AddInfo($"Shipment has been transfered. ShipmentID:{shipmentID}");
-                    result.Success = true;
                 }
             }
 
