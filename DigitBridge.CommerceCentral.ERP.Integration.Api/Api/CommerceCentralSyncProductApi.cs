@@ -38,6 +38,17 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
             var masterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
             var profileNum = req.GetHeaderValue("profileNum").ToInt();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var uuids = dbFactory.Db.Query<string>(
+@$"SELECT pb.ProductUuid FROM ProductBasic pb LEFT JOIN ProductExt pe ON pb.ProductUuid=pe.ProductUuid
+WHERE pb.MasterAccountNum={masterAccountNum} AND pb.ProfileNum={profileNum} AND pe.ProductUuid IS NULL");
+            foreach (var uuid in uuids)
+                await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncProductQueue, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage()
+                {
+                    //DatabaseNum = payload.DatabaseNum,
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    ProcessUuid = uuid,
+                });
         }
     }
 }
