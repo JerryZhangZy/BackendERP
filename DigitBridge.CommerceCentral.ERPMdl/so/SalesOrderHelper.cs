@@ -198,7 +198,7 @@ SELECT TOP 1 [SalesOrderUuid] FROM SalesOrderHeader tbl
 WHERE OrderSourceCode = @orderSourceCode
 ";
             var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
-                 $"OrderDCAssignmentNum:{orderDCAssignmentNum}".ToSqlParameter("orderSourceCode"));
+                 $"{Consts.SalesOrderSourceCode_Prefix}{orderDCAssignmentNum}".ToSqlParameter("orderSourceCode"));
 
             return result;
         }

@@ -272,7 +272,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             shipHeader.ChannelNum = soInfo.ChannelNum;
             shipHeader.ChannelAccountNum = soInfo.ChannelAccountNum;
-            //shipHeader.OrderDCAssignmentNum = 0;    //soHeader.OrderSourceCode
+            shipHeader.OrderDCAssignmentNum = soHeader.OrderSourceCode.IsZero() ? 0 : soHeader.OrderSourceCode.Replace(Consts.SalesOrderSourceCode_Prefix, "").ToInt();
             shipHeader.DistributionCenterNum = soInfo.DistributionCenterNum;
             //shipHeader.CentralOrderNum = soInfo.CentralOrderNum;
             //shipHeader.ChannelOrderID = soInfo.ChannelOrderID;
