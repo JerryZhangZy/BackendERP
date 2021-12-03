@@ -14,21 +14,55 @@ shipmentID varchar(1000)
 ,centralOrderNum bigint
 )
 
+--{"salesOrderItemsUuid":"0-597","centralOrderLineNum":10005075,"orderDCAssignmentLineNum":0,"sku":"FA16023WV-MIDNIGHTBLUE-XL-STD","unitHandlingFee":0.0,"shippedQty":1.0,"lineHandlingFee":0.0,"enterDateUtc":"2021-12-03T03:48:01.1633121Z"}
+create table #wmsshipmentItem(
+shipmentID varchar(1000) 
+,salesOrderUuid varchar(100)
+,shippedQty decimal
+,centralOrderLineNum bigint
+,salesOrderItemsUuid varchar(100)
+,sku varchar(100)
+)
+
+--create table #wmsshipmentPackage
+--(
+--packageID varchar(1000)  
+--packageTrackingNumber varchar(1000)  
+--packageReturnTrackingNumber
+--packageWeight
+--packageLength
+--packageWidth
+--packageHeight
+--packageVolume
+--packageQty
+--parentPackageNum
+--hasChildPackage
+--)
+
+
 create table #ProcessData(id int identity(1,1),ProcessData varchar(max))
 
 declare @n int,@rows int,@ProcessData varchar(max)
-insert into  #ProcessData (ProcessData)
-select ProcessData from EventProcessERP where ERPEventProcessType=4 and ProcessStatus=2
+insert into  #ProcessData (ProcessData) 
+select ProcessData from  EventProcessERP where ERPEventProcessType=4 and ProcessStatus=2 and ProfileNum=10003 and MasterAccountNum=10002
+
 select @rows =@@rowcount
 set @n=1
 while @n<=@rows
 begin
-  select @ProcessData=ProcessData from #ProcessData where id=@n
+  select @ProcessData=ProcessData from #ProcessData where id=@n 
 
+--declare @processdata varchar(max)='{"shipmentHeader":{"shipmentID":"113-10000000515","shippingCarrier":"UPS","shippingClass":"UPS® Ground","shippingCost":20.0000,"mainTrackingNumber":"UPS-10000000515","mainReturnTrackingNumber":"","billOfLadingID":"","totalPackages":0,"totalHandlingFee":0.0,"totalShippedQty":2.0,"totalCanceledQty":0.0,"totalWeight":0.0,"totalVolume":0.0,"weightUnit":0,"lengthUnit":0,"volumeUnit":0,"invoiceNumber":"","salesOrderUuid":"38b047fa-34cf-4be4-b4ba-5cd90c7a1d33","warehouseCode":"Main","orderDCAssignmentNum":0,"centralOrderNum":100004286,"channelOrderID":"99308504","shipmentType":0,"shipmentReferenceID":"","shipmentDateUtc":"2021-12-03T03:39:09.5916512","shipmentStatus":1},"packageItems":[{"shipmentPackage":{"packageID":"10000000515-FEDEX_BOX","packageType":0,"packagePatternNum":0,"packageTrackingNumber":"UPS-10000000515","packageReturnTrackingNumber":"","packageWeight":0.0,"packageLength":0.0,"packageWidth":0.0,"packageHeight":0.0,"packageVolume":0.0,"packageQty":2.0,"parentPackageNum":0,"hasChildPackage":false},"shippedItems":[{"salesOrderItemsUuid":"0-597","centralOrderLineNum":10005075,"orderDCAssignmentLineNum":0,"sku":"FA16023WV-MIDNIGHTBLUE-XL-STD","unitHandlingFee":0.0,"shippedQty":1.0,"lineHandlingFee":0.0,"enterDateUtc":"2021-12-03T03:48:01.1633121Z"},{"salesOrderItemsUuid":"0-598","centralOrderLineNum":10005074,"orderDCAssignmentLineNum":0,"sku":"FA16023WV-SLATE-XL-STD","unitHandlingFee":0.0,"shippedQty":1.0,"lineHandlingFee":0.0,"enterDateUtc":"2021-12-03T03:48:01.1633207Z"}]}],"canceledItems":[]}'
+declare @salesorderuuid varchar(100)
+--put wms shipment header to tmp table
+select @salesorderuuid=Json_Value (value,'$.salesOrderUuid')
+from openjson (@ProcessData) 
+where [key]='shipmentHeader' 
 
+--put wms shipment header to tmp table
 insert into #wmsshipment(shipmentID,shippingCarrier,shippingClass,shippingCost,mainTrackingNumber,channelOrderID,shipmentDateUtc,salesOrderUuid,centralOrderNum)   
  select 
-Json_Value (value,'$.shipmentID')  as shipmentID
+ Json_Value (value,'$.shipmentID')  as shipmentID
 ,Json_Value (value,'$.shippingCarrier')  as shippingCarrier
 ,Json_Value (value,'$.shippingClass')  as shippingClass
 ,Json_Value (value,'$.shippingCost')  as shippingCost  
@@ -37,20 +71,28 @@ Json_Value (value,'$.shipmentID')  as shipmentID
 ,Json_Value (value,'$.shipmentDateUtc')  as shipmentDateUtc 
 ,Json_Value (value,'$.salesOrderUuid')  as salesOrderUuid 
 ,Json_Value (value,'$.centralOrderNum')  as centralOrderNum 
-from openjson
-( 
-@ProcessData
-)  as a
-where a.[key]='shipmentHeader'
+from openjson (@ProcessData) 
+where [key]='shipmentHeader'
+
+
+--put wms shipment shippedItems to tmp table
+insert into #wmsshipmentItem(salesOrderUuid,shippedQty,centralOrderLineNum,salesOrderItemsUuid,sku)
+select  
+ @salesorderuuid as salesorderuuid
+,Json_Value (value,'$.shippedQty')  as shippedQty
+,Json_Value (value,'$.centralOrderLineNum')  as centralOrderLineNum
+,Json_Value (value,'$.salesOrderItemsUuid')  as salesOrderItemsUuid  
+,Json_Value (value,'$.sku')  as sku
+from openjson (@ProcessData,'$.packageItems[0].shippedItems') 
+
+
+
+
   print (@n)
   select @n=@n+1
 end
 
-drop table #ProcessData 
-
---select * from #wmsshipment
---drop table #wmsshipment
-
+drop table #ProcessData  
 
 select  
 shipment.InvoiceUuid
@@ -72,6 +114,7 @@ shipment.InvoiceUuid
 ,invoiceInfo.ChannelNum as ChannelNumInInvoice
 ,orderInfo.ChannelNum as ChannelNumInOrder
 
+,wmsShipment.channelOrderID as ChannelOrderIDInWMSShipment
 ,shipment.ChannelOrderID as ChannelOrderIDInShipment
 ,invoiceInfo.ChannelOrderID as ChannelOrderIDInInvoice
 ,orderInfo.ChannelOrderID as ChannelOrderIDInOrder
@@ -99,8 +142,7 @@ shipment.InvoiceUuid
 ,wmsShipment.shippingClass as shippingClassInWMSShipment
 ,invoiceInfo.shippingClass as shippingClassInInvoice
 
-
-
+into #compareHeader
 from EventProcessERP ep
 join #wmsshipment wmsShipment on wmsShipment.shipmentID=ep.ProcessUuid  
 join OrderShipmentHeader  shipment on shipment.ShipmentID=ep.ProcessUuid
@@ -111,9 +153,26 @@ left join InvoiceHeaderInfo invoiceInfo on invoiceInfo.InvoiceUuid=invoice.Invoi
 
 where ep.ERPEventProcessType=4  
 and ep.ProcessStatus=2
---and shipment.ShipmentID in 
---(
--- select * from #tmpProcessUuid
---)
+ 
+
+ -- no result means all data matched.
+select * from #compareHeader c
+where 
+c.centralOrderNumInWMSShipment!=c.CentralOrderNumInShipment or c.CentralOrderNumInShipment != c.CentralOrderNumInInvoice or c.CentralOrderNumInShipment != c.CentralOrderNumInOrder
+or c.ChannelAccountNumInShipment!=c.ChannelAccountNumInOrder or c.ChannelAccountNumInShipment!=c.ChannelAccountNumInInvoice
+or c.ChannelNumInShipment!=c.ChannelNumInOrder or c.ChannelNumInShipment!=c.ChannelNumInInvoice
+or c.ChannelOrderIDInWMSShipment!=c.ChannelOrderIDInShipment or c.ChannelOrderIDInShipment!=c.ChannelOrderIDInOrder or c.ChannelOrderIDInShipment!=c.ChannelOrderIDInInvoice
+or c.MainTrackingNumberInWMSShipment!=c.MainTrackingNumberInShipment
+or c.SalesOrderUuidInWMSShipment!=c.SalesOrderUuidInShipment
+or c.MasterAccountNumInShipment!=c.MasterAccountNumInOrder or c.MasterAccountNumInShipment!=c.MasterAccountNumInInvoice
+or c.ProfileNumInShipment!=c.ProfileNumInOrder or c.ProfileNumInShipment!=c.ProfileNumInInvoice
+or c.shippingCostInWMSShipment!= c.ShippingAmountInInvoice
+or c.shippingCarrierInWMSShipment!=c.shippingCarrierInInvoice
+or c.shippingClassInWMSShipment!=c.shippingClassInInvoice 
+
+ --compare item.
+
 
 drop table #wmsshipment
+drop table #wmsshipmentItem 
+drop table #compareHeader
