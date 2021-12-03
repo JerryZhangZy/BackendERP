@@ -47,6 +47,7 @@
     "ERPCreateInvoiceByOrdershipmentQueueName": "erp-create-invoice-by-ordershipment",
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
     "ERPCreateShipmentByWMSQueueName": "erp-create-shipment-by-wms",
+    "ERPSyncInventoryByWmsQueueName": "erp-sync-inventory-by-wms",
     "ERPSummaryTableName": "ErpSummaryCache",
     "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
 
