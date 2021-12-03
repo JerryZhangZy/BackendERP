@@ -14,8 +14,7 @@ namespace DigitBridge.Base.Common
                     Build();
 
 #if DEBUG
-        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net";
-        public static string IntegrationStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
+        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
         public static string ERPQuickBooksInvoiceQueue => "erp-quickbooks-invoice-queue";
         public static string ERPQuickBooksInvoiceVoidQueue => "erp-quickbooks-invoice-void-queue";
         public static string ERPQuickBooksReturnQueue => "erp-quickbooks-return-queue";
@@ -29,7 +28,6 @@ namespace DigitBridge.Base.Common
         public static string ERPCreateShipmentByWMSQueue => "erp-create-shipment-by-wms";
 #else
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
-        public static string IntegrationStorage => GetValueByName("IntegrationStorage"); 
 
         public static string ERPQuickBooksInvoiceQueue => GetValueByName("ERPQuickBooksInvoiceQueueName");
         public static string ERPQuickBooksInvoiceVoidQueue => GetValueByName("ERPQuickBooksInvoiceVoidQueueName");
