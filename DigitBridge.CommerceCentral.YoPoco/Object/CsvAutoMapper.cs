@@ -22,11 +22,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var props = ObjectSchema.GetProperties<T>();
             if (props is null)
                 return;
-            MapPropertys(props);
+            MapProperties(props);
             //Map(m => m.Name).Name("The Name");
         }
 
-        public CsvAutoMapper<T> MapPropertys(IDictionary<string, PocoColumn> properties)
+        public CsvAutoMapper<T> MapProperties(IDictionary<string, PocoColumn> properties)
         {
             foreach (var map in this.MemberMaps.ToList())
             {
