@@ -20,6 +20,7 @@ using System.IO;
 using DigitBridge.Base.Utility;
 using System.Dynamic;
 using System.Linq;
+using DigitBridge.CommerceCentral.ERPDb;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
