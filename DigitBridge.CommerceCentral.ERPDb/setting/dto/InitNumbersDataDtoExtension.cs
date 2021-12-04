@@ -121,7 +121,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				.RuleFor(u => u.EnterBy, f => null)
 				.RuleFor(u => u.UpdateBy, f => null)
-				;
+                .RuleFor(u => u.MaxNumber, f => default(long))
+                ;
 			#endregion faker data rules
 		}
 

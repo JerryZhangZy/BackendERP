@@ -25,6 +25,41 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(PurchaseOrderApi))]
     public static class PurchaseOrderApi
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="poNum">poNum</param>
+        /// <returns></returns>
+        [FunctionName(nameof(ExistPoNum))]
+        [OpenApiOperation(operationId: "ExistPoNum", tags: new[] { "PurchaseOrders" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "PoNum", Description = "PoNum", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExistPoNumPayload))]
+        public static async Task<JsonNetResponse<ExistPoNumPayload>> ExistPoNum(
+[HttpTrigger(AuthorizationLevel.Function, "GET", Route = "purchaseOrders/existPoNum/{poNum}")] HttpRequest req,
+string poNum = null)
+        {
+            var payload = await req.GetParameters<ExistPoNumPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PurchaseOrderService(dataBaseFactory);
+
+            payload.Success = await srv.GetDataAsync(new PurchaseOrderPayload() {  MasterAccountNum=payload.MasterAccountNum,ProfileNum=payload.ProfileNum}, poNum);
+            if (payload.Success)
+                payload.IsExistPoNum = srv.ToDto(srv.Data)!=null;
+            else
+                payload.Messages = srv.Messages;
+            return new JsonNetResponse<ExistPoNumPayload>(payload);
+
+        }
+
+
+
+
+
         /// <summary>
         /// Get one purchase order
         /// </summary>

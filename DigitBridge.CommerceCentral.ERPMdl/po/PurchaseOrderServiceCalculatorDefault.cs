@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class PurchaseOrderServiceCalculatorDefault : ICalculator<PurchaseOrderData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public PurchaseOrderServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        protected IPurchaseOrderService  _purchaseOrderService;
+        public PurchaseOrderServiceCalculatorDefault(IPurchaseOrderService  purchaseOrderService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)purchaseOrderService;
+            this._purchaseOrderService = purchaseOrderService;
             this.dbFactory = dbFactory;
         }
 
@@ -125,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (string.IsNullOrEmpty(data.PoHeader.PoNum))
                 {
-                    data.PoHeader.PoNum = NumberGenerate.Generate();
+                    data.PoHeader.PoNum =  _purchaseOrderService.GetNextNumberAsync(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum).Result;
                 }
                 //for Add mode, always reset data's uuid
                 data.PoHeader.PoUuid = Guid.NewGuid().ToString();

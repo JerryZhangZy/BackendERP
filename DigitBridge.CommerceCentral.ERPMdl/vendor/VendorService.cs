@@ -84,6 +84,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.AfterSaveAsync();
+                if (this.Data?.Vendor != null)
+                {
+
+                    await initNumbersService.UpdateMaxNumberAsync(this.Data.Vendor.MasterAccountNum, this.Data.Vendor.ProfileNum, ActivityLogType.Vendor, this.Data.Vendor.VendorCode);
+                }
             }
             catch (Exception)
             {
@@ -604,7 +609,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
            return vendorAddressService.ToDto();
         }
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.Vendor);
 
+        }
+        public  string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.Vendor);
+
+        }
 
     }
 }
