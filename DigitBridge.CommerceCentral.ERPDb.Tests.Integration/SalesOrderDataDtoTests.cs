@@ -136,7 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public static SalesOrderDataDto GetFakerSalesorderDataDto(long orderDCAssignmentNum, Inventory[] inventories)
         {
             var data = SalesOrderDataTests.GetFakerData();
-            data.SalesOrderHeader.OrderSourceCode = $"OrderDCAssignmentNum:{orderDCAssignmentNum}";
+            data.SalesOrderHeader.OrderSourceCode = $"{Consts.SalesOrderSourceCode_Prefix}{orderDCAssignmentNum}";
             for (int i = 0; i < data.SalesOrderItems.Count; i++)
             {
                 var item = data.SalesOrderItems[i];

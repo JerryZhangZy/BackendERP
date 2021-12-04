@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 
 namespace DigitBridge.CommerceCentral.YoPoco
@@ -11,6 +12,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
     /// </summary>
     public interface IPayload
     {
+        string BackdoorModeEmail { get; set; }
+        string BackdoorModePassword { get; set; }
+        ClaimsPrincipal ClaimsPrincipal { get; set; }
+        string AccessToken { get; set; }
+
         /// <summary>
         /// User MasterAccountNum
         /// Required, from header

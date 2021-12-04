@@ -11,10 +11,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public string SalesOrderUuid { get; set; }
         public string WarehouseCode { get; set; }
 
-        public int ChannelNum { get; set; }
-
-        public int ChannelAccountNum { get; set; }
-
         [Required]
         public string ShipmentID = "";
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +32,8 @@ namespace DigitBridge.Base.Utility
                 return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             }
         }
-#if DEBUG
-        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net";
+#if false
+        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
 #else
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
 #endif
@@ -107,5 +107,40 @@ namespace DigitBridge.Base.Utility
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, "setting name: " + name);
             }
         }
+
+
+        #region user account
+        public static bool BackdoorMode => GetValueByName("BackdoorMode").ToBoolByString();
+        public static string BackdoorModePassword => GetValueByName("BackdoorModePassword");
+        public static string BackdoorModeEmail => GetValueByName("BackdoorModeEmail");
+
+
+        /// <summary>
+        /// centrel account api endpoint url
+        /// </summary>
+        public static string AccountApiEndPoint => GetValueByName("AccountApiEndPoint");
+        /// <summary>
+        /// central account api function code
+        /// </summary>
+        public static string AccountApiCode => GetValueByName("AccountApiCode");
+
+        /// <summary>
+        /// orchestration api endpoint url
+        /// </summary>
+        public static string OrchestrationApiEndpoint => GetValueByName("OrchestrationApiEndpoint");
+        /// <summary>
+        /// orchestration api function code
+        /// </summary>
+        public static string OrchestrationApiCode => GetValueByName("OrchestrationApiCode");
+        /// <summary>
+        /// orchestration db tagart name(Fulfillment)
+        /// </summary>
+        public static string OrchestrationTargetName => GetValueByName("OrchestrationTargetName");
+        /// <summary>
+        /// orchestration db azure token
+        /// </summary>
+        public static string OrchestrationDbAzureToken => GetValueByName("OrchestrationDbAzureToken");
+
+        #endregion user account
     }
 }

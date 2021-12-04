@@ -135,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //AvgCost
             //LotCost
             //soHeader.OrderSourceCode = "OrderDCAssignmentUuid:" + dcHeader.OrderDCAssignmentUuid;
-            soHeader.OrderSourceCode = "OrderDCAssignmentNum:" + dcHeader.OrderDCAssignmentNum;
+            soHeader.OrderSourceCode = Consts.SalesOrderSourceCode_Prefix + dcHeader.OrderDCAssignmentNum;
             soHeader.UpdateDateUtc = _dtNowUtc;
             soHeader.EnterBy = _userId;
             soHeader.SignatureFlag = !string.IsNullOrEmpty(coHeader.SignatureFlag);

@@ -579,11 +579,11 @@ WHERE spc.OrderShipmentUuid=@0
                 return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
         }
 
-        public async Task<bool> ExistShipmentIDAsync(int masterAccountNum, int profileNum, string shipmentID)
+        public async Task<(string, string)> GetShipmentUuidAndInvoiceUuidAsync(int masterAccountNum, int profileNum, string shipmentID)
         {
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                return await OrderShipmentHelper.ExistShipmentIDAsync(shipmentID, masterAccountNum, profileNum);
+                return await OrderShipmentHelper.GetShipmentUuidAndInvoiceUuidAsync(shipmentID, masterAccountNum, profileNum);
             }
         }
 
