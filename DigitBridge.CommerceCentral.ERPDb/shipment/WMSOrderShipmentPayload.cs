@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
-    public class WMSOrderShipmentPayload
+    public class WMSOrderShipmentPayload : ResponsePayloadBase
     {
         #region list service
 
@@ -16,10 +16,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder WMSShipmentList { get; set; }
-        [JsonIgnore] public virtual bool HasWMSShipmentList => WMSShipmentList != null && WMSShipmentList.Length > 0;
-        public bool ShouldSerializeWMSShipmentList() => HasWMSShipmentList;
+        public StringBuilder WMSShipmentProcessesList { get; set; }
+        [JsonIgnore] public virtual bool HasWMSShipmentProcessesList => WMSShipmentProcessesList != null && WMSShipmentProcessesList.Length > 0;
+        public bool ShouldSerializeWMSShipmentProcessesList() => HasWMSShipmentProcessesList;
 
-        #endregion
+        #endregion 
+
     }
 }

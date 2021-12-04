@@ -280,7 +280,7 @@ drop table #EventUuidList
             return eventUuidList;
         }
 
-        public static async Task<StringBuilder> GetWMSOrderShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
+        public static async Task<(bool, StringBuilder)> GetWMSOrderShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
         {
             var sql = $@"
 select 
@@ -312,8 +312,8 @@ for json path
             paramList.Add(((int)EventProcessTypeEnum.ShipmentFromWMS).ToParameter("EventProcessType"));
 
             StringBuilder sb = new StringBuilder();
-            await SqlQuery.QueryJsonAsync(sb, sql, CommandType.Text, paramList.ToArray());
-            return sb;
+            var success = await SqlQuery.QueryJsonAsync(sb, sql, CommandType.Text, paramList.ToArray());
+            return (success, sb);
         }
     }
 }

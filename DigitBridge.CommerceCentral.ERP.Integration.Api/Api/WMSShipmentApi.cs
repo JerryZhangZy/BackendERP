@@ -69,9 +69,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
             var result = await wmsListService.GetWMSOrderShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
 
-            var payload = new WMSOrderShipmentPayload() { WMSShipmentList = result };
-
-            return new JsonNetResponse<WMSOrderShipmentPayload>(payload);
+            return new JsonNetResponse<WMSOrderShipmentPayload>(result);
         }
 
     }

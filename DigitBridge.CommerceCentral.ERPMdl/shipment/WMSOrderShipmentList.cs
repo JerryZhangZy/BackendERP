@@ -37,13 +37,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             SetDataBaseFactory(dbFactory);
         }
-        public virtual async Task<StringBuilder> GetWMSOrderShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
+        public virtual async Task<WMSOrderShipmentPayload> GetWMSOrderShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
         {
-            using (var trs = new ScopedTransaction(dbFactory))
+            var payload = new WMSOrderShipmentPayload();
+            try
             {
-                return await EventProcessERPHelper.GetWMSOrderShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    (payload.Success, payload.WMSShipmentProcessesList) = await EventProcessERPHelper.GetWMSOrderShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
+                }
             }
-
+            catch (Exception e)
+            {
+                payload.Messages.AddError(e.Message);
+            }
+            return payload;
         }
     }
 }

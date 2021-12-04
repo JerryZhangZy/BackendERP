@@ -32,6 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal static string InventorySync = "/api/wms/inventory";
 
         internal const string AddShipments = "/api/wms/shipments";
+        internal const string WMSShipmentList = "/api/wms/shipments/find";
 
         internal const string UnprocessList = "/api/commercecentral/invoices/list/unprocess";
         internal const string AckReceiveInvoices = "/api/commercecentral/invoices/AckReceive";
