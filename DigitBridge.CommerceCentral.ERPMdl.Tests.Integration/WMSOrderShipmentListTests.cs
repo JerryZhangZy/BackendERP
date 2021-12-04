@@ -28,7 +28,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class WMSShipmentListTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class WMSOrderShipmentListTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Helper Function";
 
@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory dataBaseFactory { get; set; }
 
-        public WMSShipmentListTests(TestFixture<StartupTest> fixture)
+        public WMSOrderShipmentListTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetSalesOrderListAsync_Test()
+        public async Task GetWMSOrderShipmentListAsync_Test()
         {
             var wmsShipmentList = new WMSOrderShipmentList(dataBaseFactory);
             var shipmentIDs = new List<string>() { "113-10000001139", "113-10000001140" };
