@@ -367,6 +367,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     payload.PoTransactions.Add(ToDto());
                 }
+                else
+                {
+                    return false;
+                }
             }
 
             payload.PoTransaction = null;

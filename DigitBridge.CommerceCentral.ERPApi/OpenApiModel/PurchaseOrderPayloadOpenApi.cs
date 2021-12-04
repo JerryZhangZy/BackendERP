@@ -132,7 +132,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return data;
         }
     }
-
+    [Serializable()]
+    public class ExistPoNumPayload : PayloadBase
+    {
+        [OpenApiPropertyDescription("(Request Parameter) Does the  PoNum exist")]
+        public bool IsExistPoNum { get; set; }
+    }
     public class PurchaseOrderFilter
     {
 

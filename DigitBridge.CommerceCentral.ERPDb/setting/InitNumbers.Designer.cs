@@ -65,6 +65,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("CurrentNumber",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _currentNumber;
+        [Column("MaxNumber", SqlDbType.BigInt, NotNull = true, IsDefault = true)]
+        private long _maxNumber;
+
 
         [Column("Number",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _number;
@@ -222,9 +225,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-		/// <summary>
-		/// Init number, real number will be more than init number and not exist number
+        /// <summary>
+		/// Init number,  MaxNumber 
 		/// </summary>
+        public virtual long MaxNumber
+        {
+            get
+            {
+                return _maxNumber;
+            }
+            set
+            {
+                _maxNumber = value;
+                OnPropertyChanged("MaxNumber", value);
+            }
+        }
+
+        /// <summary>
+        /// Init number, real number will be more than init number and not exist number
+        /// </summary>
         public virtual int Number
         {
             get

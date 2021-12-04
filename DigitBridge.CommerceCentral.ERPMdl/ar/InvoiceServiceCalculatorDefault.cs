@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class InvoiceServiceCalculatorDefault : ICalculator<InvoiceData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public InvoiceServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        private IInvoiceService _invoiceService;
+        public InvoiceServiceCalculatorDefault(IInvoiceService  invoiceService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)invoiceService;
+            _invoiceService = invoiceService;
             this.dbFactory = dbFactory;
         }
         public InvoiceServiceCalculatorDefault(IDataBaseFactory dbFactory)
@@ -164,7 +165,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (string.IsNullOrEmpty(sum.InvoiceNumber))
                 {
-                    sum.InvoiceNumber = NumberGenerate.Generate();
+                    sum.InvoiceNumber =  _invoiceService.GetNextNumber(data.InvoiceHeader.MasterAccountNum, data.InvoiceHeader.ProfileNum);
                 }
 
                 //for Add mode, always reset uuid

@@ -49,59 +49,65 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+
+
+        #region 2021-12-4 wzj
+
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
+        {
+            string nextMaxNumber;
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                nextMaxNumber = await InitNumbersHelper.GetNextNumberAsync(masterAccountNum, profileNum, activityLogType);
+
+            }
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                if (string.IsNullOrWhiteSpace(nextMaxNumber))
+                    return await InitNumbersHelper.GetNumberAsync(masterAccountNum, profileNum, activityLogType);
+                else
+                    return nextMaxNumber;
+            }
+       
+        }
+
+        public  string  GetNextNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
+        {
+            string nextMaxNumber;
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                nextMaxNumber =  InitNumbersHelper.GetNextNumber(masterAccountNum, profileNum, activityLogType);
+
+            }
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                if (string.IsNullOrWhiteSpace(nextMaxNumber))
+                    return  InitNumbersHelper.GetNumber(masterAccountNum, profileNum, activityLogType);
+                else
+                    return nextMaxNumber;
+            }
+
+        }
+
+        public async Task<bool> UpdateMaxNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
+        {
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return await InitNumbersHelper.UpdateMaxNumberAsync(masterAccountNum, profileNum, activityLogType, maxNumber);
+            }
+        }
+
+
+        #endregion
+
+
         public virtual async Task<bool> GetByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
         {
                 var rownum = await InitNumbersHelper.GetRowNumByInitNumbersUuidAsync(masterAccountNum, profileNum, initNumbersUuid);
                 GetData(rownum);
             return true;
         }
-
-
-
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected void AddActivityLogForCurrentData()
-        {
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.InitNumber,
-                Action = (int)this.ProcessMode,
-                LogSource = "InitNumberService",
-
-                MasterAccountNum = this.Data.InitNumbers.MasterAccountNum,
-                ProfileNum = this.Data.InitNumbers.ProfileNum,
-                DatabaseNum = this.Data.InitNumbers.DatabaseNum,
-                ProcessUuid = this.Data.InitNumbers.InitNumbersUuid,
-
-                LogMessage = string.Empty
-            });
-        }
-
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected async Task AddActivityLogForCurrentDataAsync()
-        {
-            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.InitNumber,
-                Action = (int)this.ProcessMode,
-                LogSource = "InitNumberService",
-
-                MasterAccountNum = this.Data.InitNumbers.MasterAccountNum,
-                ProfileNum = this.Data.InitNumbers.ProfileNum,
-                DatabaseNum = this.Data.InitNumbers.DatabaseNum,
-                ProcessUuid = this.Data.InitNumbers.InitNumbersUuid,
-
-                LogMessage = string.Empty
-
-            });
-        }
-
-
+ 
         public async Task<InitNumbersPayload> GetInitNumbersForCustomer(int masterAccountNum,int profileNum, string customerUuid)
         {
             var payload = new InitNumbersPayload()
@@ -116,28 +122,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
                 return await _initNumbersList.GetInitNumbersListAsync(payload);
         }
-        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
-        {
-            string minNumber = string.Empty;
-            using (var trx = new ScopedTransaction(dbFactory))
-            {
-                  minNumber = await InitNumbersHelper.GetMinNumberAsync(masterAccountNum, profileNum, customerUuid, type);
-            }
+        //public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
+        //{
+        //    string minNumber = string.Empty;
+        //    using (var trx = new ScopedTransaction(dbFactory))
+        //    {
+        //         // minNumber = await InitNumbersHelper.GetMinNumberAsync(masterAccountNum, profileNum, customerUuid, type);
+        //    }
    
-            var initNumbers =  InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
-            if (string.IsNullOrWhiteSpace(minNumber))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
-            {
+        //    var initNumbers =  InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
+        //    if (string.IsNullOrWhiteSpace(minNumber))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
+        //    {
 
-                return string.Concat(initNumbers.prefix, initNumbers.currentNumber+1, initNumbers.suffix);
+        //        return string.Concat(initNumbers.prefix, initNumbers.currentNumber+1, initNumbers.suffix);
 
-            }
-            else //如果不为null，则直接返回
-            {
-                return string.Concat(initNumbers.prefix, minNumber, initNumbers.suffix);
-            }
+        //    }
+        //    else //如果不为null，则直接返回
+        //    {
+        //        return string.Concat(initNumbers.prefix, minNumber, initNumbers.suffix);
+        //    }
  
 
-        }
+        //}
 
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, string currentNumber)
         {
@@ -149,10 +155,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
  
             int currentNum = GetCurrentNumber(currentNumber, initNumbers.prefix, initNumbers.suffix);
             _data.InitNumbers.CurrentNumber = currentNum;
-           var result= await _data.SaveAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+           return await _data.SaveAsync();
+           
         }
 
 
@@ -229,10 +233,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+           return SaveData();
+           
+ 
         }
 
         public virtual async Task<bool> AddAsync(InitNumbersPayload payload)
@@ -256,10 +259,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
+            
         }
 
         /// <summary>
@@ -285,10 +286,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
+            
         }
 
         /// <summary>
@@ -314,10 +313,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
+            
         }
 
         /// <summary>
@@ -347,10 +344,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
+            
         }
 
         /// <summary>
@@ -379,10 +374,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
+           
         }
 
         /// <summary>
@@ -422,11 +415,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             if (success)
             {
-                if (DeleteData()) {
-                    await AddActivityLogForCurrentDataAsync();
-                    return true;
- 
-                }
+                await DeleteDataAsync();
             }
  
             return false;
@@ -449,7 +438,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (DeleteData())
                 {
-                    AddActivityLogForCurrentData();
+                     
                     return true;
 
                 }
@@ -475,11 +464,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
             if (success)
             {
-                if (DeleteData())
-                {
-                    await AddActivityLogForCurrentDataAsync();
-                    return true;
-                }
+                return await DeleteDataAsync();
+                
             }
             return false;
         }
@@ -499,6 +485,54 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return int.Parse( fullStrNumber);
 
+        }
+
+
+        public virtual async Task<bool> InitInitNumbersAsync(InitNumbersPayload payload)
+        {
+            var types = new List<string>() { ((int)ActivityLogType.SalesOrder).ToString(),((int)ActivityLogType.Invoice).ToString(), ((int)ActivityLogType.Invoice).ToString() ,((int)ActivityLogType.Invoice).ToString() ,((int)ActivityLogType.Vendor).ToString() ,((int)ActivityLogType.Customer).ToString() };
+
+            foreach (var aType in types)
+            {
+
+                if ((await ExistInitNumberAsync( payload.MasterAccountNum, payload.ProfileNum, aType))) continue;
+                payload.InitNumbers = new InitNumbersDataDto();
+                payload.InitNumbers.InitNumbers = GetInitNumbers(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum, aType);
+                await AddAsync(payload);
+            }
+            return true;
+        }
+
+    
+        public virtual InitNumbersDto GetInitNumbers(int databaseNum, int masterAccountNum, int profileNum, string type)
+        {
+
+            return new InitNumbersDto()
+            {
+                DatabaseNum = databaseNum,
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                InActive = true,
+                Type = type,
+                InitNumbersUuid = System.Guid.NewGuid().ToString(),
+                CustomerUuid = string.Empty,
+                Number = 10000,
+                MaxNumber = 0,
+                EnterBy = string.Empty,
+                UpdateBy=string.Empty
+
+            };
+        }
+        public virtual async Task<bool> ExistInitNumberAsync(int masterAccountNum, int profileNum, string type)
+        {
+            if (string.IsNullOrEmpty(type))
+                return false;
+
+            return await dbFactory.ExistsAsync<InitNumbers>("MasterAccountNum=@0 AND ProfileNum=@1 AND type=@2"
+                , masterAccountNum.ToSqlParameter("masterAccountNum")
+                , profileNum.ToSqlParameter("profileNum")
+                , type.ToSqlParameter("type")
+            );
         }
     }
 }
