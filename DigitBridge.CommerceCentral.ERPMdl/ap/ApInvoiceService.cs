@@ -489,6 +489,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
+        public async Task<bool> ExistApInvoiceNumber(string number, int masterAccountNum, int profileNum)
+        {
+            return await ApInvoiceHelper.ExistApInvoiceNumberAsync(number, masterAccountNum, profileNum);
+        }
+
         public async Task<int?> GetRowNumByPoUuidAsync(string transUuid)
         {
            return   dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
