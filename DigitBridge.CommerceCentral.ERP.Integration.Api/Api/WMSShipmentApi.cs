@@ -56,8 +56,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(string[]), Required = true, Description = "Array of WMS ShipmentID")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(StringBuilder))]
-        public static async Task<JsonNetResponse<StringBuilder>> GetWMSShipmentListAsync(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WMSShipmentPayload))]
+        public static async Task<JsonNetResponse<WMSShipmentPayload>> GetWMSShipmentListAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/shipments/find")] HttpRequest req)
         {
             var shipmentIDs = await req.GetBodyObjectAsync<IList<string>>();
@@ -69,7 +69,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
             var result = await wmsListService.GetWMSShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
 
-            return new JsonNetResponse<StringBuilder>(result);
+            var payload = new WMSShipmentPayload() { WMSShipmentList = result };
+
+            return new JsonNetResponse<WMSShipmentPayload>(payload);
         }
 
     }

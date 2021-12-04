@@ -300,6 +300,7 @@ LEFT JOIN @ProcessStatus epps on epps.num=ep.ProcessStatus
 where MasterAccountNum=@masterAccountNum
 AND ProfileNum=@profileNum
 AND ERPEventProcessType=@EventProcessType
+for json path
 ";
 
 
