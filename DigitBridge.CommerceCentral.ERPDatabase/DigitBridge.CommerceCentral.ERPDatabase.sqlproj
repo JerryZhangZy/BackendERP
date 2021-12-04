@@ -110,6 +110,7 @@
     <None Include="po\PoHeader_Update.sql" />
     <None Include="sql\clear data by shipmentid.sql" />
     <None Include="sql\reset salesorder to pending.sql" />
+    <None Include="sql\check so download and shipment upload.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
