@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class WMSOrderShipmentList
+    public class WMSShipmentList
     {
         #region DataBase
         [JsonIgnore]
@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _dbFactory = dbFactory;
         }
         #endregion DataBase
-        public WMSOrderShipmentList(IDataBaseFactory dbFactory)
+        public WMSShipmentList(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }

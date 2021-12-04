@@ -65,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             var profileNum = req.ProfileNum();
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
-            var wmsListService = new WMSOrderShipmentList(dataBaseFactory);
+            var wmsListService = new WMSShipmentList(dataBaseFactory);
 
             var result = await wmsListService.GetWMSShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
 
