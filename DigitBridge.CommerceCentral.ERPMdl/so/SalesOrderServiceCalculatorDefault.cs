@@ -29,9 +29,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>, IMessage
     {
 
-        public SalesOrderServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        public SalesOrderServiceCalculatorDefault(ISalesOrderService serviceMessage, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)serviceMessage;
+            this.service = serviceMessage;
             this.dbFactory = dbFactory;
         }
         public SalesOrderServiceCalculatorDefault(IDataBaseFactory dbFactory)
@@ -40,6 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         protected IDataBaseFactory dbFactory { get; set; }
+        protected ISalesOrderService service { get; set; }
 
         //
 
