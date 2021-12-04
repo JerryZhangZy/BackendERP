@@ -144,15 +144,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class CustomerFilter
     {
+        public string CustomerUuid { get; set; }
         public string CustomerCode { get; set; }
-
         public string CustomerName { get; set; }
-
+        public string Contact { get; set; }
+        public string Phone1 { get; set; }
+        public string Email { get; set; }
+        public string WebSite { get; set; }
+        public int CustomerType { get; set; }
+        public int CustomerStatus { get; set; }
+        public string BusinessType { get; set; }
+        public string FirstDate { get; set; }
+        public int Priority { get; set; }
         public string Area { get; set; }
-
         public string Region { get; set; }
-
-        public string ShippingCarrier { get; set; }
+        public string Districtn { get; set; }
+        public string Zone { get; set; }
+        public string ClassCode { get; set; }
+        public string DepartmentCode { get; set; }
+        public string DivisionCode { get; set; }
+        public string SourceCode { get; set; }
 
         public static Faker<CustomerFilter> GetFaker()
         {

@@ -37,10 +37,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _WebSite = new QueryFilter<string>("WebSite", "WebSite", PREFIX, FilterBy.bw, string.Empty);
         public QueryFilter<string> WebSite => _WebSite;
 
-        protected QueryFilter<int> _CustomerType = new QueryFilter<int>("CustomerType", "CustomerType", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _CustomerType = new QueryFilter<int>("CustomerType", "CustomerType", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> CustomerType => _CustomerType;
 
-        protected QueryFilter<int> _CustomerStatus = new QueryFilter<int>("CustomerStatus", "CustomerStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _CustomerStatus = new QueryFilter<int>("CustomerStatus", "CustomerStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> CustomerStatus => _CustomerStatus;
 
         protected QueryFilter<string> _BusinessType = new QueryFilter<string>("BusinessType", "BusinessType", PREFIX, FilterBy.bw, string.Empty);
