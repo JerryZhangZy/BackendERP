@@ -79,7 +79,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return;
             // get property orders in object 
             var props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
+            if (Format?.ParentObject == null || Format?.ParentObject?.Count == 0)
                 props = ((ExpandoObject)records[0]).GetPropertyNames().ToList();
             // add RecordType column at first
             props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));

@@ -131,6 +131,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
             payload.Messages = srv.Messages;
+            payload.InvoiceTransaction = srv.ToDto();
 
             //Directly return without waiting this result. 
             if (payload.Success)
