@@ -65,9 +65,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetSalesOrderListAsync_Test()
         {
-            var wmsShipmentList = new WMSShipmentList(dataBaseFactory);
+            var wmsShipmentList = new WMSOrderShipmentList(dataBaseFactory);
             var shipmentIDs = new List<string>() { "113-10000001139", "113-10000001140" };
-            var result = await wmsShipmentList.GetWMSShipmentListAsync(10002, 10003, shipmentIDs);
+            var result = await wmsShipmentList.GetWMSOrderShipmentListAsync(10002, 10003, shipmentIDs);
             Assert.True(!result.ToString().IsZero(), "This is a generated tester, please report any tester bug to team leader.");
         }
 

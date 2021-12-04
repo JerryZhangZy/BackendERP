@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
-    public class WMSShipmentPayload
+    public class WMSOrderShipmentPayload
     {
         #region list service
 

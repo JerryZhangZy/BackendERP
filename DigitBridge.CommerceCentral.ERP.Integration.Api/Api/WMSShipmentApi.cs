@@ -50,14 +50,14 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        [FunctionName(nameof(GetWMSShipmentListAsync))]
-        [OpenApiOperation(operationId: "GetWMSShipmentListAsync", tags: new[] { "WMSShipments" }, Summary = "Get WMS shipment list  ")]
+        [FunctionName(nameof(GetWMSOrderShipmentList))]
+        [OpenApiOperation(operationId: "GetWMSOrderShipmentList", tags: new[] { "WMSShipments" }, Summary = "Get WMS shipment list  ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(string[]), Required = true, Description = "Array of WMS ShipmentID")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WMSShipmentPayload))]
-        public static async Task<JsonNetResponse<WMSShipmentPayload>> GetWMSShipmentListAsync(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WMSOrderShipmentPayload))]
+        public static async Task<JsonNetResponse<WMSOrderShipmentPayload>> GetWMSOrderShipmentList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/shipments/find")] HttpRequest req)
         {
             var shipmentIDs = await req.GetBodyObjectAsync<IList<string>>();
@@ -65,13 +65,13 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             var profileNum = req.ProfileNum();
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
-            var wmsListService = new WMSShipmentList(dataBaseFactory);
+            var wmsListService = new WMSOrderShipmentList(dataBaseFactory);
 
-            var result = await wmsListService.GetWMSShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
+            var result = await wmsListService.GetWMSOrderShipmentListAsync(masterAccountNum, profileNum, shipmentIDs);
 
-            var payload = new WMSShipmentPayload() { WMSShipmentList = result };
+            var payload = new WMSOrderShipmentPayload() { WMSShipmentList = result };
 
-            return new JsonNetResponse<WMSShipmentPayload>(payload);
+            return new JsonNetResponse<WMSOrderShipmentPayload>(payload);
         }
 
     }

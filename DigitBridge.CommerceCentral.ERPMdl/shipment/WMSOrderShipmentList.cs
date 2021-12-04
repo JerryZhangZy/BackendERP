@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class WMSShipmentList
+    public class WMSOrderShipmentList
     {
         #region DataBase
         [JsonIgnore]
@@ -33,11 +33,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _dbFactory = dbFactory;
         }
         #endregion DataBase
-        public WMSShipmentList(IDataBaseFactory dbFactory)
+        public WMSOrderShipmentList(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
-        public virtual async Task<StringBuilder> GetWMSShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
+        public virtual async Task<StringBuilder> GetWMSOrderShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
         {
             using (var trs = new ScopedTransaction(dbFactory))
             {
