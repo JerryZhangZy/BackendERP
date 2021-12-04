@@ -20,7 +20,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public SalesOrderOpenList(IDataBaseFactory dbFactory, SalesOrderOpenQuery queryObject)
             : base(dbFactory, queryObject)
         {
-        } 
+        }
 
         #region override methods
 
@@ -174,7 +174,7 @@ ordi.BillToNightPhone as 'BillToNightPhone',
         }
 
         protected override string GetSQL_from()
-        { 
+        {
             this.SQL_From = $@"
  FROM EventProcessERP epe
  INNER JOIN SalesOrderHeader ord  
@@ -187,6 +187,14 @@ ordi.BillToNightPhone as 'BillToNightPhone',
  LEFT JOIN Setting_ChannelAccount channelAccount ON(ord.MasterAccountNum = chanel.MasterAccountNum AND ord.ProfileNum = chanel.ProfileNum AND ordi.ChannelNum = chanel.ChannelNum AND ordi.ChannelAccountNum = channelAccount.ChannelAccountNum)
 ";
             return this.SQL_From;
+        }
+
+
+        protected override string GetSQL_where()
+        {
+            var whereSql = base.GetSQL_where();
+            whereSql += $" AND ord.OrderStatus not in ({(int)SalesOrderStatus.Hold},{(int)SalesOrderStatus.Cancelled})";
+            return whereSql;
         }
 
         #endregion override methods 
