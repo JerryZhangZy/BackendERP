@@ -100,7 +100,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     {
         [Required]
         public string SalesOrderItemsUuid = "";
-        
+
         [Required]
         public long CentralOrderLineNum = 0;
 

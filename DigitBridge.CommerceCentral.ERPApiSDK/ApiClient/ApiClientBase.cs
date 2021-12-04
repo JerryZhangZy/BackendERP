@@ -109,8 +109,19 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 var responseData = await response.Content.ReadAsStringAsync();
 
                 // Deserialize response
-                ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
-                success = await AnalysisResponseAsync(responseData);
+                try
+                {
+                    ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
+                }
+                catch
+                {
+                    // no need handle.
+                }
+                finally
+                {
+                    success = await AnalysisResponseAsync(responseData);
+                }
+
             }
             catch (Exception ex)
             {
@@ -120,7 +131,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
             return success;
         }
-
         /// <summary>
         /// Sends HTTP patch request
         /// </summary>
@@ -142,9 +152,18 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 var responseData = await response.Content.ReadAsStringAsync();
 
                 // Deserialize response
-                ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
-
-                success = await AnalysisResponseAsync(responseData);
+                try
+                {
+                    ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
+                }
+                catch
+                {
+                    // no need handle.
+                }
+                finally
+                {
+                    success = await AnalysisResponseAsync(responseData);
+                }
             }
             catch (Exception ex)
             {
@@ -169,9 +188,18 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 var responseData = await response.Content.ReadAsStringAsync();
 
                 // Deserialize response
-                ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
-
-                success = await AnalysisResponseAsync(responseData);
+                try
+                {
+                    ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
+                }
+                catch
+                {
+                    // no need handle.
+                }
+                finally
+                {
+                    success = await AnalysisResponseAsync(responseData);
+                }
             }
             catch (Exception ex)
             {
@@ -194,7 +222,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <returns></returns>
         protected virtual HttpContent GetHttpContent(object data = null)
         {
-            var content = data == null ? string.Empty : JsonConvert.SerializeObject(data,jsonSerializerSettings);
+            var content = data == null ? string.Empty : JsonConvert.SerializeObject(data, jsonSerializerSettings);
             return new StringContent(content, Encoding.UTF8, "application/json");
         }
         /// <summary>

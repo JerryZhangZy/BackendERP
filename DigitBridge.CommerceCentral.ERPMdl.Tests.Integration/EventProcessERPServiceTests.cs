@@ -303,6 +303,31 @@ FROM EventProcessERP ins
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
+        public async Task AddEventAndQueueMessageAsync_Test()
+        {
+            // only test message to eventprocess table and to queue.
+            var shipmentID = "602e17ff-c31a-0b94-ccc3-833dc0809943";
+            var data = new EventProcessERP(DataBaseFactory)
+            {
+                ChannelNum = 10001,
+                ChannelAccountNum = 101,
+                ERPEventProcessType = (int)EventProcessTypeEnum.ShipmentFromWMS,
+                ProcessSource = string.Empty,
+                ProcessUuid = shipmentID,
+                ProcessData = string.Empty,
+                ActionStatus = EventProcessActionStatusEnum.Pending.ToInt(),
+                EventMessage = string.Empty
+            };
+
+            var srv = new EventProcessERPService(DataBaseFactory);
+            var result = (await srv.AddEventAndQueueMessageAsync(data));
+
+            Assert.True(result, srv.Messages.ObjectToString());
+        }
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
         public async Task UpdateActionStatusAsync_Test()
         {
 

@@ -591,6 +591,13 @@ namespace DigitBridge.Base.Utility
                         ? r
                         : false;
 
+        public static bool ToBoolByString(this string s) =>
+            string.IsNullOrWhiteSpace(s)
+                ? false
+                : s.EqualsIgnoreSpace("true") || s.EqualsIgnoreSpace("yes")
+                    ? true
+                    : false;
+
         /// <summary>
         /// Convert nullable value to its default, non-nullable value when its nullable value is null. 
         /// For example: default(int?) is null, this function will return default(int) is 0;

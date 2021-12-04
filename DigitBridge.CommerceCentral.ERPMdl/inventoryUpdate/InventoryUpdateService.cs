@@ -617,16 +617,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(sku) || string.IsNullOrEmpty(warehouseCode))
                 return null;
 
+            if (this.Data == null)
+                this.NewData();
+
             var inv = await inventoryService.GetInventoryDataByWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum, addNew);
             if (inv == null)
             {
                 AddError($"Sku {sku} or warehouse {warehouseCode} not found.");
                 return null;
             }
+            // add invrntoryData to cache
+            this.Data.SetCache(inv.ProductBasic.ProductUuid, inv);
             var ind = inv.Inventory.FindByWarehouseCode(warehouseCode);
 
-            if (this.Data == null)
-                this.NewData();
             var updt = GenerateInventoryUpdateItems(new InventoryUpdateItems(), ind, inv);
             if (updt != null)
             {

@@ -287,6 +287,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
+        public List<InventoryUpdateItems> GetUpdateStockByList(InventorySyncUpdatePayload payload)
+        {
+            if (!payload.HasInventorySyncItems)
+            {
+                AddError("no data sync");
+                return null;
+            }
+            var items = new List<InventoryUpdateItems>();
+            foreach (var item in payload.InventorySyncItems)
+            {
+                if (string.IsNullOrEmpty(item.SKU) || string.IsNullOrEmpty(item.WarehouseCode)) continue;
+                items.Add(new InventoryUpdateItems()
+                {
+                    SKU = item.SKU,
+                    WarehouseCode = item.WarehouseCode,
+                    CountQty = item.Qty.ToQty(),
+                });
+            }
+            return items;
+        }
 
 
         ////public async Task<bool> UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
@@ -361,8 +381,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ////            Inventory = new List<InventoryDto>() { new InventoryDto() { SKU = item.Item0, WarehouseCode = item.Item1, Instock = decimal.Parse(item.Item2),
         ////                ProductUuid = productList.Find(r=>r.Item0==item.Item0).Item1,
         ////                MasterAccountNum = inventorySyncUpdatePayload.MasterAccountNum, ProfileNum = inventorySyncUpdatePayload.ProfileNum,
- 
-                    
+
+
         ////            } }
         ////        };
         ////        inventoryData.ProductBasic = new ProductBasicDto() { SKU = item.Item0 };
@@ -374,15 +394,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ////        }
         ////    };
 
-          
- 
+
+
         ////    #endregion
 
- 
+
         ////    var inventoryUpdateDatalist = new List<InventoryUpdateDataDto>();
 
 
- 
+
 
         ////    foreach (var item in inventorySyncItems)
         ////    {
@@ -397,7 +417,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ////            UpdateQty = item.Qty- decimal.Parse( existInventory.Item5),
         ////            InventoryUuid = existInventory.Item4,
         ////            ProductUuid= existInventory.Item3,
- 
+
         ////        };
         ////        var data = new InventoryUpdateDataDto()
         ////        {
@@ -423,7 +443,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ////    payload.ProfileNum = inventorySyncUpdatePayload.ProfileNum;
         ////    foreach (var item in inventoryUpdateDatalist)
         ////    {
-       
+
         ////        payload.InventoryUpdate = item;
         ////        if (!await inventoryUpdateService.AddAsync(payload))
         ////        {
@@ -433,7 +453,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ////    }
 
         ////    return true;
- 
+
 
         ////}
 

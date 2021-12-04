@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPApi;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -264,7 +265,7 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             {
                 MasterAccountNum = eventdata.MasterAccountNum,
                 ProfileNum = eventdata.ProfileNum,
-                EventERP = eventdata.ToEventERPDataDto(ErpEventType.DeleteQboPayment)
+                EventERP = eventdata.ToEventERPDataDto(ErpEventType.SyncProduct)
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
@@ -278,7 +279,6 @@ namespace DigitBridge.CommerceCentral.EventERPApi
 
             return new JsonNetResponse<EventERPPayload>(payload);
         }
-
 
         [FunctionName(nameof(UpdateEventERP))]
         [OpenApiOperation(operationId: "UpdateEventERP", tags: new[] { "EventERPs" })]

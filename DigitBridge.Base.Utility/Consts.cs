@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.CommerceCentral.ERPDb
+namespace DigitBridge.Base.Utility
 {
-    /// <summary>
-    /// All Const variable
-    /// </summary>
     public class Consts
     {
+        /// <summary>
+        /// Salesorder SourceCodePrefix
+        /// </summary>
+        public const string SalesOrderSourceCode_Prefix = "OrderDCAssignmentNum:";
         /// <summary>
         /// MasterAccountNum name
         /// </summary>

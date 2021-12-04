@@ -17,6 +17,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual int Index { get; set; }
         public virtual bool Ignore { get; set; }
         public virtual string DefaultValue { get; set; }
+        public virtual string ConstantValue { get; set; }
+    }
+
+    public class CsvFormatParentObject
+    {
+        public virtual string Name { get; set; }
+        public virtual IList<CsvFormatColumn> Columns { get; set; } = new List<CsvFormatColumn>();
     }
 
     public class CsvFormat
@@ -24,12 +31,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual bool HasHeaderRecord { get; set; } = true;
         public virtual string Delimiter { get; set; } = ",";
         public virtual Encoding Encoding { get; set; } = Encoding.UTF8;
-        public virtual IList<CsvFormatColumn> Columns { get; set; }
-
-        public CsvFormat()
-        {
-            //var config = new CsvConfiguration(CultureInfo.InvariantCulture);
-            Columns = new List<CsvFormatColumn>();
-        }
+        public virtual IList<CsvFormatParentObject> ParentObject { get; set; } = new List<CsvFormatParentObject>();
     }
 }

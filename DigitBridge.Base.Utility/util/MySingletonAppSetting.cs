@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.CommerceCentral.ApiCommon
+namespace DigitBridge.Base.Utility
 {
     public static class MySingletonAppSetting
     {
@@ -32,6 +32,11 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             }
         }
+#if false
+        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
+#else
+        public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
+#endif
         public static string OrchestrationDbConnString => GetValueByName("OrchestrationDbConnString");
 
         public static string DBConnectionString => GetValueByName("DBConnectionString");
@@ -41,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string CryptKey => GetValueByName("CryptKey");
 
-        public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
+        
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
@@ -102,5 +107,40 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, "setting name: " + name);
             }
         }
+
+
+        #region user account
+        public static bool BackdoorMode => GetValueByName("BackdoorMode").ToBoolByString();
+        public static string BackdoorModePassword => GetValueByName("BackdoorModePassword");
+        public static string BackdoorModeEmail => GetValueByName("BackdoorModeEmail");
+
+
+        /// <summary>
+        /// centrel account api endpoint url
+        /// </summary>
+        public static string AccountApiEndPoint => GetValueByName("AccountApiEndPoint");
+        /// <summary>
+        /// central account api function code
+        /// </summary>
+        public static string AccountApiCode => GetValueByName("AccountApiCode");
+
+        /// <summary>
+        /// orchestration api endpoint url
+        /// </summary>
+        public static string OrchestrationApiEndpoint => GetValueByName("OrchestrationApiEndpoint");
+        /// <summary>
+        /// orchestration api function code
+        /// </summary>
+        public static string OrchestrationApiCode => GetValueByName("OrchestrationApiCode");
+        /// <summary>
+        /// orchestration db tagart name(Fulfillment)
+        /// </summary>
+        public static string OrchestrationTargetName => GetValueByName("OrchestrationTargetName");
+        /// <summary>
+        /// orchestration db azure token
+        /// </summary>
+        public static string OrchestrationDbAzureToken => GetValueByName("OrchestrationDbAzureToken");
+
+        #endregion user account
     }
 }

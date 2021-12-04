@@ -20,7 +20,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     {
         [Required]
         public string ShipmentID = "";
-        public string SalesOrderUuid { get; set; }
+        [Required]
+        public string SalesOrderUuid { get; set; } 
         public long OrderDCAssignmentNum { get; set; }
         public string WarehouseCode { get; set; }
         [Required]

@@ -18,11 +18,27 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
 using System.Text;
+using DigitBridge.CommerceCentral.AzureStorage;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class EventProcessERPService
     {
+        protected string _queueConnectionString;
+        protected string QueueConnectionString
+        {
+            get
+            {
+                if (_queueConnectionString.IsZero())
+                    throw new Exception("QueueConnectionString cannot be empty.");
+                return _queueConnectionString;
+            }
+            set { _queueConnectionString = value; }
+        }
+        public EventProcessERPService(IDataBaseFactory dbFactory, string queueConnectionString) : base(dbFactory)
+        {
+            _queueConnectionString = queueConnectionString;
+        }
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -353,6 +369,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         return await SaveDataAsync();
                     }
                 }
+                // rownum >0 means data exist.
+                return true;
             }
 
             Add();
@@ -466,7 +484,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 this.Data.EventProcessERP.ProcessStatus = result.ProcessStatus;
                 this.Data.EventProcessERP.ProcessDate = DateTime.UtcNow;
-                this.Data.EventProcessERP.ProcessData = (result.ProcessData == null) ? string.Empty : result.ProcessData.ToString();
+
+                //only update while the ProcessData changed.
+                if (result.ProcessData != null)
+                    this.Data.EventProcessERP.ProcessData = result.ProcessData.ToString();
                 this.Data.EventProcessERP.EventMessage = (result.EventMessage == null) ? string.Empty : result.EventMessage.ToString();
                 await this.SaveDataAsync();
             }
@@ -513,6 +534,54 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await srv.GetEventProcessERPListAsync(payload);
             return payload.EventProcessERPList;
         }
+
+        public async Task<bool> AddEventAndQueueMessageAsync(EventProcessERP data)
+        {
+            if (!await AddEventProcessERPAsync(data))
+            {
+                return false;
+            }
+            return await InQueueAsync();
+        }
+
+        #region send message to queue
+
+        protected ErpEventType GetErpEventTypeFromERPEventProcessType(int processType)
+        {
+            switch (processType)
+            {
+                case (int)EventProcessTypeEnum.ShipmentFromWMS:
+                    return ErpEventType.ShipmentFromWMS;
+                default:
+                    return ErpEventType.Default;
+            }
+        }
+
+        protected ERPQueueMessage GetMessageWithoutProcessData()
+        {
+            var erpdata = Data.EventProcessERP;
+            return new ERPQueueMessage
+            {
+                ERPEventType = GetErpEventTypeFromERPEventProcessType(erpdata.ERPEventProcessType),
+                DatabaseNum = erpdata.DatabaseNum,
+                MasterAccountNum = erpdata.MasterAccountNum,
+                ProfileNum = erpdata.ProfileNum,
+                ProcessUuid = erpdata.ProcessUuid,
+                //ProcessData = erpdata.ProcessData,
+                ProcessSource = erpdata.ProcessSource,
+                EventUuid = erpdata.EventUuid,
+            };
+        }
+
+        protected async Task<bool> InQueueAsync()
+        {
+            var message = GetMessageWithoutProcessData();
+            var queueName = message.ERPEventType.GetErpEventQueueName();
+            await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, QueueConnectionString, message);
+            return true;
+        }
+
+        #endregion
     }
 }
 
