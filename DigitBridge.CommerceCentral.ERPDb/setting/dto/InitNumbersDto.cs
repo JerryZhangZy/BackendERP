@@ -125,10 +125,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasNumber => Number != null;
 
-		/// <summary>
-		/// Prefix append to Init number
-		/// </summary>
-		[OpenApiPropertyDescription("Prefix append to Init number")]
+
+        /// <summary>
+        /// The last assigned number, real number will be more than init number and not exist number
+        /// </summary>
+        [OpenApiPropertyDescription("The last assigned number, real number will be more than init number and not exist number")]
+        public long? MaxNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasMaxNumber => MaxNumber != null;
+        /// <summary>
+        /// Prefix append to Init number
+        /// </summary>
+        [OpenApiPropertyDescription("Prefix append to Init number")]
         [StringLength(20, ErrorMessage = "The Prefix value cannot exceed 20 characters. ")]
         public string Prefix { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

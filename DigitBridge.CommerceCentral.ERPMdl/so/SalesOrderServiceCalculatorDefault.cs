@@ -28,10 +28,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>, IMessage
     {
-
-        public SalesOrderServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        protected ISalesOrderService _salesOrderService;
+        public SalesOrderServiceCalculatorDefault(ISalesOrderService  salesOrderService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)salesOrderService;
+            this._salesOrderService = salesOrderService;
             this.dbFactory = dbFactory;
         }
         public SalesOrderServiceCalculatorDefault(IDataBaseFactory dbFactory)
@@ -157,7 +158,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (string.IsNullOrEmpty(sum.OrderNumber))
                 {
-                    sum.OrderNumber = NumberGenerate.Generate();
+                    sum.OrderNumber = _salesOrderService.GetNextNumber(data.SalesOrderHeader.MasterAccountNum,data.SalesOrderHeader.ProfileNum);
                 }
                 //for Add mode, always reset data's uuid
                 sum.SalesOrderUuid = Guid.NewGuid().ToString();

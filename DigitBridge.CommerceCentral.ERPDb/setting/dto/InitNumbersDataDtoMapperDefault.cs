@@ -67,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
-
+			if (dto.HasMaxNumber) data.MaxNumber = dto.MaxNumber.ToLong();
 			#endregion read properties
 
 			data.CheckIntegrity();

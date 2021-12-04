@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class ApInvoiceServiceCalculatorDefault : ICalculator<ApInvoiceData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public ApInvoiceServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        private IApInvoiceService _apInvoiceService; 
+        public ApInvoiceServiceCalculatorDefault(IApInvoiceService  apInvoiceService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)apInvoiceService;
+            this._apInvoiceService = apInvoiceService;
             this.dbFactory = dbFactory;
         }
 
@@ -107,15 +108,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool SetDefaultSummary(ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual  bool SetDefaultSummary(ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
             if (processingMode == ProcessingMode.Add)
             {
-                if(data.ApInvoiceHeader.ApInvoiceNum.IsZero())
-                    data.ApInvoiceHeader.ApInvoiceNum=NumberGenerate.Generate();
+                if (data.ApInvoiceHeader.ApInvoiceNum.IsZero())
+                    data.ApInvoiceHeader.ApInvoiceNum =   _apInvoiceService.GetNextNumber(data.ApInvoiceHeader.MasterAccountNum, data.ApInvoiceHeader.ProfileNum);
             }
 
             var sum = data.ApInvoiceHeader;

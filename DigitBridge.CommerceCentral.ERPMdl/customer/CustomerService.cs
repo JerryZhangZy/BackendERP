@@ -98,6 +98,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.AfterSaveAsync();
+                if (this.Data?.Customer != null)
+                {
+                    await initNumbersService.UpdateMaxNumberAsync(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Invoice, this.Data.Customer.CustomerCode);
+                }
             }
             catch (Exception)
             {
@@ -567,6 +571,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.Customer);
+
+        }
+        public string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.Customer);
+
+        }
 
         #region customer Address
         public async Task<bool> AddCustomerAddressAsync(CustomerAddressPayload payload)
