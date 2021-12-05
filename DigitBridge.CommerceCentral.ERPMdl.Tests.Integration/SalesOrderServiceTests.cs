@@ -517,8 +517,11 @@ WHERE itm.cnt > 0
             SalesOrderStatus orderStatus_Processing = SalesOrderStatus.Processing;
             var salesOrderUuid = await GetSalesOrderUuidWithPartialItemShippedAsync();
             var service = new SalesOrderService(DataBaseFactory);
+
             var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
-            Assert.True(success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
+            
+            // no data was updated.
+            Assert.True(!success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
 
             var orderService = new SalesOrderService(DataBaseFactory);
             success = await orderService.GetDataByIdAsync(salesOrderUuid);
