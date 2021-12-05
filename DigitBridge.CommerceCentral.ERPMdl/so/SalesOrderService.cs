@@ -124,7 +124,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
 
-                    await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                    }
                 }
             }
             catch (Exception)
