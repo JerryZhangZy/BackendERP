@@ -92,6 +92,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.ApInvoiceHeader != null)
                 {
+
+                    await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
@@ -489,6 +491,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
+        public async Task<bool> ExistApInvoiceNumber(string number, int masterAccountNum, int profileNum)
+        {
+            return await ApInvoiceHelper.ExistApInvoiceNumberAsync(number, masterAccountNum, profileNum);
+        }
+
         public async Task<int?> GetRowNumByPoUuidAsync(string transUuid)
         {
            return   dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
@@ -593,7 +600,17 @@ where TransUuid=@0";
             }
             return await SaveDataAsync();
         }
-        
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.ApInvoice);
+
+        }
+
+        public   string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.ApInvoice);
+
+        }
         //public bool CreateOrUpdateApInvoiceByPoReceive(PoTransactionData data)
         //{
         //    if (data == null || data.PoTransaction == null)

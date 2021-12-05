@@ -123,6 +123,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.SalesOrderHeader != null)
                 {
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+
+                    await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
                 }
             }
             catch (Exception)
@@ -868,6 +870,15 @@ and not exists(
                 ((int)OrderShipmentStatusEnum.Cancelled).ToSqlParameter("@4")
             );
             return result > 0;
+        }
+
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
+        }
+        public  string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
         }
     }
 }

@@ -94,7 +94,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 dtolist.Add(mapper.WriteDto(x, null));
             });
             var fileName = "c:\\temp\\salesOrderDto.csv";
-            var csvHelper = new SalesOrderDataDtoCsv();
+            var csvHelper = new SalesOrderIOFormat();
 
             try
             {
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void ImportCsv_Test()
         {
             var fileName = "c:\\temp\\salesOrderDto.csv";
-            var csvHelper = new SalesOrderDataDtoCsv();
+            var csvHelper = new SalesOrderIOFormat();
             IList<SalesOrderDataDto> data;
 
             try

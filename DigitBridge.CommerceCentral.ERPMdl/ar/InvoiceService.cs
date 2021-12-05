@@ -109,6 +109,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.AfterSaveAsync();
+                if (this.Data?.InvoiceHeader != null)
+                {
+                    await initNumbersService.UpdateMaxNumberAsync(this.Data.InvoiceHeader.MasterAccountNum, this.Data.InvoiceHeader.ProfileNum, ActivityLogType.Invoice, this.Data.InvoiceHeader.InvoiceNumber);
+                }
             }
             catch (Exception)
             {
@@ -771,6 +775,15 @@ WHERE ins.InvoiceStatus != @4 AND ins.InvoiceStatus != @5
             return result > 0;
         }
 
+
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.Invoice);
+        }
+        public  string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.Invoice);
+        }
     }
 }
 

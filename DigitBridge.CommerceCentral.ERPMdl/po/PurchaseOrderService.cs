@@ -107,6 +107,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.PoHeader != null)
                 {
                     await InventoryService.UpdateOpenPoQtyFromPoUuidAsync(this.Data.PoHeader.PoUuid);
+
+                    await initNumbersService.UpdateMaxNumberAsync(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
+
                 }
             }
             catch (Exception)
@@ -573,7 +576,10 @@ where poi.PoUuid=@0;
 ";
             await dbFactory.Db.ExecuteAsync(sql, poUuid.ToSqlParameter("PoUuid"));
         }
-
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.PurchaseOrder);
+        }
         #region Get merged po data list by po item uuid list. 
         /// <summary>
         /// Get po data list by po item uuid list. then merge po by vendor

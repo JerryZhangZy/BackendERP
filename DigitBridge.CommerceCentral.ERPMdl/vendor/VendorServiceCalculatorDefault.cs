@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class VendorServiceCalculatorDefault : ICalculator<VendorData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public VendorServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        private IVendorService _vendorService;
+        public VendorServiceCalculatorDefault(IVendorService  vendorService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)vendorService;
+            this._vendorService = vendorService;
             this.dbFactory = dbFactory;
         }
 
@@ -109,7 +110,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
-
+            if (processingMode == ProcessingMode.Add)
+            {
+                if (string.IsNullOrEmpty(data.Vendor.VendorCode))
+                {
+                    data.Vendor.VendorCode = _vendorService.GetNextNumber(data.Vendor.MasterAccountNum, data.Vendor.ProfileNum);
+                }
+ 
+            }
             //TODO: add set default summary data logic
             /* This is generated sample code
             var sum = data.Vendor;
