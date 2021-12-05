@@ -22,6 +22,7 @@ using System.Dynamic;
 using System.Linq;
 using DigitBridge.CommerceCentral.ERPDb;
 using CsvHelper.Configuration;
+using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -32,6 +33,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     [Serializable()]
     public partial class SalesOrderIOCsv : CsvHelper<SalesOrderDataDto>
     {
+        public SalesOrderIOCsv(SalesOrderIOFormat format): base(format)
+        {
+        }
+
+        //public override void RegisterMapper(CsvContext context)
+        //{
+        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderHeaderDto>(Format));
+        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderHeaderInfoDto>(Format));
+        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderHeaderAttributesDto>(Format));
+        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderItemsDto>(Format));
+        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderItemsAttributesDto>(Format));
+        //}
+
         public override void GetMapper()
         {
             _mappers = new List<ClassMap>() 
@@ -44,56 +58,102 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
-        protected override void WriteCsv(SalesOrderDataDto data, CsvWriter csv)
+        public override async Task ReadEntitiesAsync(CsvReader csv, IList<SalesOrderDataDto> data)
         {
-            // combine multiple Dto to one dynamic object
-            var headerRecords = data.MergeHeaderRecord(true).ToList();
-            WriteEntities(csv, headerRecords, "H");
+            var hasReadSummary = false;
+            var headerFound = false;
+            SalesOrderDataDto dto = new SalesOrderDataDto().NewData(); 
 
-            var detailRecords = data.MergeDetailRecord(true).ToList();
-
-            WriteEntities(csv, detailRecords, "L");
-        }
-
-        public override void ReadEntities(CsvReader csv, IList<SalesOrderDataDto> data)
-        {
-            var isFirst = true;
-            SalesOrderDataDto dto = new SalesOrderDataDto();
-            while (csv.Read())
+            while (await csv.ReadAsync())
             {
-                // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
+                if (!headerFound)
                 {
-                    csv.ReadHeader();
-                    isFirst = false;
-                    continue;
+                    if ((Format?.IsheaderLine(csv)).ToBool())
+                    {
+                        csv.ReadHeader();
+                        hasReadSummary = false;
+                        headerFound = true;
+                        continue;
+                    }
                 }
 
-                switch (csv.GetField(0))
+                if (string.IsNullOrEmpty(Format.KeyName))
                 {
-                    case "H":
-                        if (!isFirst)
+                    if (!hasReadSummary)
+                    {
+                        await ReadSummaryRecordAsync(csv, dto);
+                        hasReadSummary = true;
+                    }
+                    await ReadDetailRecordAsync(csv, dto);
+                }
+                else
+                {
+                    var keys = GetKeyField(csv);
+                    if (keys != null)
+                    {
+                        if (!ObjectSchema.CompareProperties<SalesOrderHeaderDto>(dto.SalesOrderHeader, keys))
                         {
-                            if (dto != null && dto.HasSalesOrderHeader)
-                                data.Add(dto);
-                            dto = new SalesOrderDataDto();
-                            isFirst = false;
+                            data.Add(dto);
+                            dto = new SalesOrderDataDto().NewData();
+                            hasReadSummary = false;
                         }
-                        dto.SalesOrderHeader = csv.GetRecord<SalesOrderHeaderDto>();
-                        dto.SalesOrderHeaderInfo = csv.GetRecord<SalesOrderHeaderInfoDto>();
-                        dto.SalesOrderHeaderAttributes = csv.GetRecord<SalesOrderHeaderAttributesDto>();
-                        break;
-                    case "L":
-                        if (dto.SalesOrderItems == null)
-                            dto.SalesOrderItems = new List<SalesOrderItemsDto>();
-                        var item = csv.GetRecord<SalesOrderItemsDto>();
-                        item.SalesOrderItemsAttributes = csv.GetRecord<SalesOrderItemsAttributesDto>();
-                        dto.SalesOrderItems.Add(item);
-                        break;
+                        if (!hasReadSummary)
+                        {
+                            await ReadSummaryRecordAsync(csv, dto);
+                            hasReadSummary = true;
+                        }
+                        await ReadDetailRecordAsync(csv, dto);
+                    }
+
                 }
             }
             if (dto != null)
                 data.Add(dto);
+        }
+
+
+        protected virtual async Task<bool> ReadSummaryRecordAsync(CsvReader csv, SalesOrderDataDto dto)
+        {
+            try
+            {
+                dto.SalesOrderHeader = csv.GetRecord<SalesOrderHeaderDto>();
+                dto.SalesOrderHeaderInfo = csv.GetRecord<SalesOrderHeaderInfoDto>();
+                dto.SalesOrderHeaderAttributes = csv.GetRecord<SalesOrderHeaderAttributesDto>();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+                //throw;
+            }
+        }
+
+        protected virtual async Task<bool> ReadDetailRecordAsync(CsvReader csv, SalesOrderDataDto dto)
+        {
+            try
+            {
+                var ln = csv.GetRecord<SalesOrderItemsDto>();
+                if (ln == null || !ln.HasSKU)
+                    return false;
+                dto.SalesOrderItems.Add(ln);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+                //throw;
+            }
+        }
+
+        protected override async Task WriteCsvAsync(SalesOrderDataDto data, CsvWriter csv)
+        {
+            // combine multiple Dto to one dynamic object
+            var headerRecords = data.MergeHeaderRecord(true).ToList();
+            await WriteEntitiesAsync(csv, headerRecords, "H");
+
+            var detailRecords = data.MergeDetailRecord(true).ToList();
+
+            await WriteEntitiesAsync(csv, detailRecords, "L");
         }
 
     }

@@ -20,6 +20,9 @@ using System.IO;
 using DigitBridge.Base.Utility;
 using System.Dynamic;
 using System.Linq;
+using System.Threading.Tasks;
+using DigitBridge.CommerceCentral.ERPDb;
+using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -30,11 +33,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     [Serializable()]
     public partial class SalesOrderIOManager : ISalesOrderIOManager, IMessage
     {
-        public SalesOrderIOManager() : base() { }
+        public SalesOrderIOManager() : base() 
+        {
+            Format = new SalesOrderIOFormat();
+        }
 
         public SalesOrderIOManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
+            Format = new SalesOrderIOFormat();
         }
 
         #region Service Property
@@ -137,6 +144,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion Messages
 
+        [XmlIgnore, JsonIgnore]
+        public SalesOrderIOFormat Format { get; set; }
+
+        [XmlIgnore, JsonIgnore]
+        protected SalesOrderIOCsv _salesOrderIOCsv;
+        [XmlIgnore, JsonIgnore]
+        public SalesOrderIOCsv salesOrderIOCsv
+        {
+            get
+            {
+                if (_salesOrderIOCsv is null)
+                    _salesOrderIOCsv = new SalesOrderIOCsv(Format);
+                return _salesOrderIOCsv;
+            }
+        }
+
+        public async Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files)
+        {
+            if (files == null || files.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            foreach (var file in files)
+            {
+                if (!file.FileName.ToLower().EndsWith("csv"))
+                {
+                    AddError($"invalid file type:{file.FileName}");
+                    continue;
+                }
+                var list = salesOrderIOCsv.Import(file.OpenReadStream());
+                var readcount = list.Count();
+                var addsucccount = 0;
+                var errorcount = 0;
+                foreach (var item in list)
+                {
+                    payload.SalesOrder = item;
+                    if (await salesOrderService.AddAsync(payload))
+                        addsucccount++;
+                    else
+                    {
+                        errorcount++;
+                        foreach (var msg in salesOrderService.Messages)
+                            Messages.Add(msg);
+                        salesOrderService.Messages.Clear();
+                    }
+                }
+                if (payload.HasSalesOrder)
+                    payload.SalesOrder = null;
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+            }
+        }
+
+        public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
+        {
+            var rowNumList = await salesOrderList.GetRowNumListAsync(payload);
+            var dtoList = new List<SalesOrderDataDto>();
+            foreach (var x in rowNumList)
+            {
+                if (salesOrderService.GetData(x))
+                    dtoList.Add(salesOrderService.ToDto());
+            };
+            if (dtoList.Count == 0)
+                dtoList.Add(new SalesOrderDataDto());
+            return salesOrderIOCsv.Export(dtoList);
+        }
+
+        public async Task<IList<SalesOrderDataDto>> ImportAsync(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return null;
+            var result = await salesOrderIOCsv.ImportAsync(fileName);
+            return result.ToList();
+        }
 
     }
 }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected IList<ClassMap> _mappers;
         public IList<ClassMap> CsvMappers => _mappers;
         public CsvFormat Format { get; set; }
+        public int SkipLines { get; set; }
 
         public CsvHelper()
         {
@@ -41,14 +43,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 config.Delimiter = Format.Delimiter;
                 config.Encoding = Format.Encoding;
                 config.HasHeaderRecord = Format.HasHeaderRecord;
+                SkipLines = Format.SkipLines;
             }
+            config.HeaderValidated = null;
             config.MissingFieldFound = null;
+            config.IgnoreBlankLines = true;
+
             return config;
         }
 
         public virtual void RegisterMapper(CsvContext context) {
             if (CsvMappers == null || CsvMappers.Count == 0) return;
-            foreach(var mapper in CsvMappers.Where(x => x != null)) 
+            foreach(var mapper in CsvMappers.Where(x => x != null && x.MemberMaps != null && x.MemberMaps.Count > 0)) 
                 context.RegisterClassMap(mapper);
         }
 
@@ -106,6 +112,53 @@ namespace DigitBridge.CommerceCentral.YoPoco
             csv.WriteRecords(records);
         }
 
+        public virtual async Task<byte[]> ExportAsync(IEnumerable<T> datas)
+        {
+            var config = GetConfiguration();
+            config.HasHeaderRecord = false;
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    csv.Context.Configuration.HasHeaderRecord = false;
+                    foreach (var data in datas)
+                    {
+                        await WriteCsvAsync(data, csv);
+                    }
+                    await csv.FlushAsync();
+                }
+                return ms.ToArray();
+            }
+        }
+        protected virtual async Task WriteCsvAsync(T data, CsvWriter csv)
+        {
+            throw new Exception("must override WriteCsv  Method");
+        }
+
+        protected virtual async Task WriteEntitiesAsync(CsvWriter csv, IList<dynamic> records, string recordType)
+        {
+            if (records == null || records.Count < 1 || records[0] == null)
+                return;
+            // get property orders in object 
+            var props = new List<KeyValuePair<string, object>>();
+            if (Format?.ParentObject == null || Format?.ParentObject?.Count == 0)
+                props = ((ExpandoObject)records[0]).GetPropertyNames().ToList();
+
+            // add RecordType column at first
+            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
+
+            // Sort property of object by orders
+            records[0] = ((ExpandoObject)records[0]).FilterAndSortProperty(props);
+
+            // sort data object property orders and set type = "H"
+            props[0] = new KeyValuePair<string, object>("RecordType", recordType);
+            for (int i = 1; i < records.Count; i++)
+                records[i] = ((ExpandoObject)records[i]).FilterAndSortProperty(props);
+            await csv.WriteRecordsAsync(records);
+        }
+
+
         public virtual IEnumerable<T> Import(string fileName)
         {
             using (var reader = new FileStream(fileName, FileMode.Open))
@@ -133,6 +186,77 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual void ReadEntities(CsvReader reader, IList<T> data)
         {
             throw new Exception("must override ReadEntities  Method");
-        } 
+        }
+
+
+        public virtual async Task<IEnumerable<T>> ImportAsync(string fileName)
+        {
+            using (var reader = new FileStream(fileName, FileMode.Open))
+                return await ImportAsync(reader);
+        }
+        public virtual async Task<IEnumerable<T>> ImportAsync(Stream stream)
+        {
+            IList<T> data = new List<T>();
+            using (var reader = new StreamReader(stream))
+            {
+                // skip lines
+                if (SkipLines > 0)
+                {
+                    var lines = 0;
+                    while (lines < SkipLines)
+                    {
+                        await reader.ReadLineAsync();
+                        lines++;
+                    }
+                }
+                using (var csv = new CsvReader(reader, GetConfiguration()))
+                {
+                    RegisterMapper(csv.Context);
+                    await ReadEntitiesAsync(csv, data);
+                }
+            }
+            return data;
+        }
+
+        public virtual async Task ReadEntitiesAsync(CsvReader reader, IList<T> data)
+        {
+            throw new Exception("must override ReadEntities  Method");
+        }
+
+        protected virtual IDictionary<string, string> GetKeyField(CsvReader csv)
+        {
+            if (string.IsNullOrEmpty(Format.KeyName))
+                return null;
+            var result = new Dictionary<string, string>();
+            try
+            {
+                var keyList = Format.KeyName.Split(",");
+                foreach (var key in keyList)
+                {
+                    if (string.IsNullOrEmpty(key)) continue;
+                    foreach (var parent in Format.ParentObject)
+                    {
+                        if (parent == null) continue;
+                        if (csv.TryGetField(parent.Type, key, out var value))
+                        {
+                            if (!string.IsNullOrEmpty(value.ToString()))
+                            {
+                                result.Add(key, value.ToString());
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                return null;
+                //throw;
+            }
+        }
+
+
     }
 }

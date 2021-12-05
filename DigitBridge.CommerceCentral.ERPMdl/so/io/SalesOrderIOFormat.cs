@@ -44,12 +44,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var idx = 0;
             obj.Columns = new List<CsvFormatColumn>()
             {
-                new CsvFormatColumn("OrderNumber", "Order #", idx++),
-                new CsvFormatColumn("OrderDate", "Date", idx++),
-                new CsvFormatColumn("ShipDate", "Ship Date", idx++),
-                new CsvFormatColumn("CustomerCode", "Customer", idx++),
-                new CsvFormatColumn("Terms", "Terms", idx++),
-                new CsvFormatColumn("TermsDays", "Days", idx++),
+                new CsvFormatColumn("OrderNumber", "Order #", idx++, false),
+                new CsvFormatColumn("OrderDate", "Date", idx++, false),
+                new CsvFormatColumn("ShipDate", "Ship Date", idx++, false),
+                new CsvFormatColumn("CustomerCode", "Customer", idx++, false),
+                new CsvFormatColumn("Terms", "Terms", idx++, false),
+                new CsvFormatColumn("TermsDays", "Days", idx++, false),
             };
         }
         protected virtual void InitSalesOrderHeaderInfo()
@@ -58,11 +58,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var idx = 0;
             obj.Columns = new List<CsvFormatColumn>()
             {
-                new CsvFormatColumn("ShippingCarrier", "ShippingCarrier", idx++),
-                new CsvFormatColumn("ShippingClass", "ShippingClass", idx++),
-                new CsvFormatColumn("CentralOrderNum", "CentralOrderNum", idx++),
-                new CsvFormatColumn("ChannelOrderI", "ChannelOrderI", idx++),
-                new CsvFormatColumn("CustomerPoNum", "CustomerPoNum", idx++),
+                new CsvFormatColumn("ShippingCarrier", "ShippingCarrier", idx++, false),
+                new CsvFormatColumn("ShippingClass", "ShippingClass", idx++, false),
+                new CsvFormatColumn("CentralOrderNum", "CentralOrderNum", idx++, false),
+                new CsvFormatColumn("ChannelOrderNum", "ChannelOrder", idx++, false),
+                new CsvFormatColumn("CustomerPoNum", "CustomerPoNum", idx++, false),
             };
         }
         protected virtual void InitSalesOrderItems()
@@ -71,10 +71,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var idx = 0;
             obj.Columns = new List<CsvFormatColumn>()
             {
-                new CsvFormatColumn("Seq", "Seq", idx++),
-                new CsvFormatColumn("SKU", "SKU", idx++),
-                new CsvFormatColumn("OrderQty", "OrderQty", idx++),
-                new CsvFormatColumn("Price", "Price", idx++),
+                new CsvFormatColumn("Seq", "Seq", idx++, false),
+                new CsvFormatColumn("SKU", "SKU", idx++, false),
+                new CsvFormatColumn("OrderQty", "OrderQty", idx++, false),
+                new CsvFormatColumn("Price", "Price", idx++, false),
             };
         }
 

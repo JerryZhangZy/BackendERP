@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Newtonsoft.Json;
@@ -23,5 +24,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         string Export(IEnumerable<T> data, string fileName);
         IEnumerable<T> Import(string fileName);
+
+        Task<byte[]> ExportAsync(IEnumerable<T> datas);
+
+        Task<IEnumerable<T>> ImportAsync(string fileName);
+        Task<IEnumerable<T>> ImportAsync(Stream stream);
+        Task ReadEntitiesAsync(CsvReader reader, IList<T> data);
+
     }
 }

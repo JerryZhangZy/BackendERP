@@ -20,8 +20,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public interface ISalesOrderIOManager
     {
-        //Task<byte[]> ExportAsync(SalesOrderPayload payload);
-        //Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files);
+        Task<byte[]> ExportAsync(SalesOrderPayload payload);
+        Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files);
+
+        Task<IList<SalesOrderDataDto>> ImportAsync(string fileName);
     }
 }
 

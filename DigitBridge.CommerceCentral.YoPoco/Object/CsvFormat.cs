@@ -9,6 +9,7 @@ using CsvHelper.Configuration;
 using Newtonsoft.Json;
 
 using DigitBridge.Base.Utility;
+using CsvHelper;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -103,7 +104,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         public virtual IList<CsvFormatColumn> Columns { get; set; } = new List<CsvFormatColumn>();
-
+        public virtual bool HasColumns() => Columns != null && Columns.Count > 0;
+            
 
         public CsvFormatParentObject(Type type, string name = null)
         {
@@ -136,12 +138,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual int FormatNum { get; set; }
         public virtual string FormatName { get; set; }
 
+        public virtual int SkipLines { get; set; } = 0;
+        public virtual string KeyName { get; set; } = null;
+
         public virtual bool HasHeaderRecord { get; set; } = true;
         public virtual string Delimiter { get; set; } = ",";
         [JsonIgnore] public virtual Encoding Encoding { get; set; } = Encoding.UTF8;
         public virtual IList<CsvFormatParentObject> ParentObject { get; set; } = new List<CsvFormatParentObject>();
+        public virtual bool HasParentObject() => ParentObject != null && ParentObject.Count > 0;
 
-        protected virtual CsvFormatParentObject InitParentObject<T>() where T: class, new()
+        protected virtual CsvFormatParentObject InitParentObject<T>() where T : class, new()
         {
             var t = typeof(T);
             var obj = ParentObject.FindByType(t);
@@ -168,6 +174,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (!string.IsNullOrEmpty(fmt.Delimiter)) Delimiter = fmt.Delimiter;
             FormatNum = fmt.FormatNum;
             FormatName = fmt.FormatName;
+            SkipLines = fmt.SkipLines;
+            KeyName = fmt.KeyName;
         }
 
         public virtual void LoadParentObject(IList<CsvFormatParentObject> parents)
@@ -181,8 +189,28 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 obj.Clone(parent);
             }
         }
-    }
 
+        public virtual bool IsheaderLine(CsvReader csv)
+        {
+            var headers = GetHeaderNames();
+            var found = 0;
+            found += headers.Contains(csv.GetField(0)) ? 1 : 0;
+            found += headers.Contains(csv.GetField(1)) ? 1 : 0;
+            found += headers.Contains(csv.GetField(2)) ? 1 : 0;
+            return found > 1;
+        }
+
+        public virtual IList<string> GetHeaderNames() 
+            => !HasParentObject()
+                ? null
+                : ParentObject.GetHeaderNames();
+
+        public virtual IList<string> GetNames()
+            => !HasParentObject()
+                ? null
+                : ParentObject.GetNames();
+
+    }
 
     public static class CsvFormatParentObjectExtension
     {
@@ -190,6 +218,34 @@ namespace DigitBridge.CommerceCentral.YoPoco
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => x.Type != null && x.Type.Equals(ty));
         public static CsvFormatParentObject FindByName(this IList<CsvFormatParentObject> list, string name)
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name) && x.Name.EqualsIgnoreSpace(name));
+
+        public static IList<string> GetHeaderNames(this IList<CsvFormatParentObject> list)
+        {
+            if (list == null || list.Count == 0)
+                return new List<string>();
+            var result = new List<string>();
+            foreach (var item in list)
+            {
+                if (item == null || !item.HasColumns())
+                    continue;
+                result.AddRange(item.Columns.GetHeaderNames());
+            }
+            return result;
+        }
+        public static IList<string> GetNames(this IList<CsvFormatParentObject> list)
+        {
+            if (list == null || list.Count == 0)
+                return new List<string>();
+            var result = new List<string>();
+            foreach (var item in list)
+            {
+                if (item == null || !item.HasColumns())
+                    continue;
+                result.AddRange(item.Columns.GetNames());
+            }
+            return result;
+        }
+
     }
 
     public static class CsvFormatColumnExtension
@@ -203,6 +259,32 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static CsvFormatColumn FindByIndex(this IList<CsvFormatColumn> list, int index)
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => x.Index == index);
 
+        public static IList<string> GetHeaderNames(this IList<CsvFormatColumn> list)
+        {
+            if (list == null || list.Count == 0)
+                return new List<string>();
+            var result = new List<string>();
+            foreach (var item in list)
+            {
+                if (item == null || string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.HeaderName))
+                    continue;
+                result.AddRange(item.HeaderName.Split(","));
+            }
+            return result;
+        }
+        public static IList<string> GetNames(this IList<CsvFormatColumn> list)
+        {
+            if (list == null || list.Count == 0)
+                return new List<string>();
+            var result = new List<string>();
+            foreach (var item in list)
+            {
+                if (item == null || string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.HeaderName))
+                    continue;
+                result.AddRange(item.Name.Split(","));
+            }
+            return result;
+        }
     }
 
 }
