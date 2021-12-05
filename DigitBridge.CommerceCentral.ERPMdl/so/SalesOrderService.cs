@@ -832,12 +832,14 @@ WHERE shippedItem.OrderShipmentUuid=@0
         public async Task<bool> UpdateOrderStautsToShippedAsync(string salesOrderUuid)
         {
             var sql = $@"
---declare @SalesOrderUuid varchar(50)
---declare @shipmentStatus_Cancelled int --16
---declare @orderStatus_Cancelled int --255
---declare @orderStatus_Hold int --100
---declare @orderStatus_Shipped int --4
 
+--declare @0 varchar(50)='a6cef76f-7049-4759-89b1-e7390d76a58d' --@SalesOrderUuid 
+--declare @4 int=16 --@shipmentStatus_Cancelled int --16
+--declare @1 int =255--@orderStatus_Cancelled int --255
+--declare @2 int =100 --@orderStatus_Hold int --100
+--declare @3 int=4 --@orderStatus_Shipped int --4
+
+set nocount off;
 update orderHeader 
 set orderHeader.OrderStatus=@3
 FROM SalesOrderHeader orderHeader
@@ -860,7 +862,7 @@ AND shippedOrderItem.SalesOrderItemsUuid is not null--- make sure all item shipp
                 ((int)SalesOrderStatus.Cancelled).ToSqlParameter("@1"),
                 ((int)SalesOrderStatus.Hold).ToSqlParameter("@2"),
                 ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3"),
-                ((int)OrderShipmentStatusEnum.Shipped).ToSqlParameter("@4")
+                ((int)OrderShipmentStatusEnum.Cancelled).ToSqlParameter("@4")
             );
             return result > 0;
         }
