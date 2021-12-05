@@ -91,9 +91,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 await base.AfterSaveAsync();
                 if (this.Data?.ApInvoiceHeader != null)
-                {
-
-                    await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                {   
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                    }
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }

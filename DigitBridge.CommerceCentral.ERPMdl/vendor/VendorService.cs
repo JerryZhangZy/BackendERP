@@ -86,8 +86,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.Vendor != null)
                 {
-
-                    await initNumbersService.UpdateMaxNumberAsync(this.Data.Vendor.MasterAccountNum, this.Data.Vendor.ProfileNum, ActivityLogType.Vendor, this.Data.Vendor.VendorCode);
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Vendor.MasterAccountNum, this.Data.Vendor.ProfileNum, ActivityLogType.Vendor, this.Data.Vendor.VendorCode);
+                    }
                 }
             }
             catch (Exception)
