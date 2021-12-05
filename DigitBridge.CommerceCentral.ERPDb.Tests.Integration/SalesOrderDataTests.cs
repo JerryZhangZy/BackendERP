@@ -88,6 +88,18 @@ WHERE itm.cnt > 0 and masterAccountNum={masterAccountNum} and profileNum={profil
             Assert.True(success, "Data not found.");
             return data;
         }
+
+        public static SalesOrderData GetFakerDataWithCountItem(int count)
+        {
+            var SalesOrderData = new SalesOrderData();
+            SalesOrderData.SalesOrderHeader = SalesOrderHeaderTests.GetFakerData().Generate();
+            SalesOrderData.SalesOrderHeaderInfo = SalesOrderHeaderInfoTests.GetFakerData().Generate();
+            SalesOrderData.SalesOrderHeaderAttributes = SalesOrderHeaderAttributesTests.GetFakerData().Generate();
+            SalesOrderData.SalesOrderItems = SalesOrderItemsTests.GetFakerData().Generate(count);
+            foreach (var ln in SalesOrderData.SalesOrderItems)
+                ln.SalesOrderItemsAttributes = SalesOrderItemsAttributesTests.GetFakerData().Generate();
+            return SalesOrderData;
+        }
     }
 }
 

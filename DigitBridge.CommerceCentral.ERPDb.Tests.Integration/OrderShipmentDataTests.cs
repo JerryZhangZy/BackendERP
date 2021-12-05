@@ -98,14 +98,15 @@ WHERE itm.cnt > 0 and masterAccountNum={masterAccountNum} and profileNum={profil
         }
 
 
-        public static OrderShipmentData GetFakerDataWithCountItem(int itemCount)
+        public static OrderShipmentData GetFakerDataWithCountItem(int packageCount, int packageItemCount, int cancelledItemCount = 0)
         {
             var OrderShipmentData = new OrderShipmentData();
             OrderShipmentData.OrderShipmentHeader = OrderShipmentHeaderTests.GetFakerData().Generate();
-            //OrderShipmentData.OrderShipmentCanceledItem = OrderShipmentCanceledItemTests.GetFakerData().Generate(itemCount);
-            OrderShipmentData.OrderShipmentPackage = OrderShipmentPackageTests.GetFakerData().Generate(itemCount);
+            if (cancelledItemCount > 0)
+                OrderShipmentData.OrderShipmentCanceledItem = OrderShipmentCanceledItemTests.GetFakerData().Generate(cancelledItemCount);
+            OrderShipmentData.OrderShipmentPackage = OrderShipmentPackageTests.GetFakerData().Generate(packageCount);
             foreach (var ln in OrderShipmentData.OrderShipmentPackage)
-                ln.OrderShipmentShippedItem = OrderShipmentShippedItemTests.GetFakerData().Generate(5);
+                ln.OrderShipmentShippedItem = OrderShipmentShippedItemTests.GetFakerData().Generate(packageItemCount);
             return OrderShipmentData;
         }
     }

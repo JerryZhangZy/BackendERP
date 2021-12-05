@@ -854,7 +854,7 @@ and orderHeader.OrderStatus !=@1
 AND orderHeader.OrderStatus !=@2
 AND shippedOrderItem.SalesOrderItemsUuid is not null--- make sure all item shipped. 
 ";
-            var result = dbFactory.Db.ExecuteAsync(
+            var result = await dbFactory.Db.ExecuteAsync(
                 sql,
                 salesOrderUuid.ToSqlParameter("@0"),
                 ((int)SalesOrderStatus.Cancelled).ToSqlParameter("@1"),

@@ -430,11 +430,15 @@ WHERE itm.cnt > 0
         #region Test update salesorder status to shipped
 
         protected string GetSalesOrderUuidWithAllItemShipped()
-        { 
-            var salesOrderData = SalesOrderDataTests.GetFakerData();
-            var shipmentData = OrderShipmentDataTests.GetFakerData();
+        {
+            int itemCount = 3;
+            var salesOrderData = SalesOrderDataTests.GetFakerDataWithCountItem(itemCount);
+            var shipmentData = OrderShipmentDataTests.GetFakerDataWithCountItem(1, itemCount, 0);
 
-            for (int i = 0; i < 10; i++)
+            salesOrderData.SalesOrderHeader.OrderStatus = (int)SalesOrderStatus.Processing;
+            shipmentData.OrderShipmentHeader.ShipmentStatus = (int)OrderShipmentStatusEnum.Shipped;
+
+            for (int i = 0; i < itemCount; i++)
             {
                 var orderItem = salesOrderData.SalesOrderItems[i];
                 var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
@@ -454,15 +458,21 @@ WHERE itm.cnt > 0
             success = shipmentService.SaveData();
             Assert.True(success, "save shipmentData failed");
 
-            return orderService.Data.SalesOrderHeader.SalesOrderUuid; 
+            return orderService.Data.SalesOrderHeader.SalesOrderUuid;
         }
 
-        protected string GetSalesOrderUuidWithPartialItemShipped()
-        { 
-            var salesOrderData = SalesOrderDataTests.GetFakerData();
-            var shipmentData = OrderShipmentDataTests.GetFakerData();
+        protected string GetSalesOrderUuidWithPartialItemShipped(SalesOrderStatus processing)
+        {
+            int orderItemCount = 5;
+            var partialShippedCount = 3;
 
-            for (int i = 0; i < 3; i++)
+            var salesOrderData = SalesOrderDataTests.GetFakerDataWithCountItem(orderItemCount);
+            var shipmentData = OrderShipmentDataTests.GetFakerDataWithCountItem(1, partialShippedCount, 0);
+
+            salesOrderData.SalesOrderHeader.OrderStatus = (int)processing;
+            shipmentData.OrderShipmentHeader.ShipmentStatus = (int)OrderShipmentStatusEnum.Shipped;
+
+            for (int i = 0; i < partialShippedCount; i++)
             {
                 var orderItem = salesOrderData.SalesOrderItems[i];
                 var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
@@ -487,17 +497,36 @@ WHERE itm.cnt > 0
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task UpdateOrderStautsToShippedAsync_Test()
+        public async Task UpdateOrderStautsToShippedAsync_AllShipped_Test()
         {
-            var salesOrderData = SalesOrderDataTests.GetFakerData();
-            var shipmentData = OrderShipmentDataTests.GetFakerData();
-
-            var orderShipmentUuid = await MakeRealtionForShipmentAndSalesOrder();
-
+            var salesOrderUuid = GetSalesOrderUuidWithAllItemShipped();
             var service = new SalesOrderService(DataBaseFactory);
-            var success = await service.UpdateShippedQtyFromShippedItemAsync(orderShipmentUuid);
-            Assert.True(success, service.Messages.ObjectToString());
+            var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
+            Assert.True(success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
 
+            var orderService = new SalesOrderService(DataBaseFactory);
+            success = await orderService.GetDataByIdAsync(salesOrderUuid);
+            Assert.True(success, "GetDataByIdAsync:" + service.Messages.ObjectToString());
+
+            Assert.True(orderService.Data.SalesOrderHeader.OrderStatus == (int)SalesOrderStatus.Shipped, $"order status is {orderService.Data.SalesOrderHeader.OrderStatus}, expected order status is {(int)SalesOrderStatus.Shipped}");
+        }
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateOrderStautsToShippedAsync_PartialShipped_Test()
+        {
+            SalesOrderStatus orderStatus_Processing = SalesOrderStatus.Processing;
+            var salesOrderUuid = GetSalesOrderUuidWithPartialItemShipped(orderStatus_Processing);
+            var service = new SalesOrderService(DataBaseFactory);
+            var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
+            Assert.True(success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            success = await orderService.GetDataByIdAsync(salesOrderUuid);
+            Assert.True(success, "GetDataByIdAsync:" + service.Messages.ObjectToString());
+
+            Assert.True(orderService.Data.SalesOrderHeader.OrderStatus == (int)orderStatus_Processing, $"order status is {orderService.Data.SalesOrderHeader.OrderStatus}, expected order status is {orderStatus_Processing}");
         }
 
         #endregion
