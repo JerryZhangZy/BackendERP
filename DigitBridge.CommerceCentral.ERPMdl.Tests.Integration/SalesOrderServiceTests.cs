@@ -402,8 +402,8 @@ WHERE itm.cnt > 0
             var service = new OrderShipmentService(DataBaseFactory);
             service.Edit();
 
-            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(DataBaseFactory);
-            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(DataBaseFactory);
+            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(10001, 10001, DataBaseFactory);
+            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(10001, 10001, DataBaseFactory);
 
             int index = 0;
 
@@ -424,8 +424,114 @@ WHERE itm.cnt > 0
             Assert.True(success, service.Messages.ObjectToString());
 
             return shipmentData.OrderShipmentHeader.OrderShipmentUuid;
-        }  
+        }
         #endregion
+
+        #region Test update salesorder status to shipped
+
+        protected async Task<string> GetSalesOrderUuidWithAllItemShippedAsync()
+        {
+            return await GetSalesOrderUuidWithItemCountAsync();
+        }
+
+        private async Task<string> GetSalesOrderUuidWithItemCountAsync(int orderItemCount = 3, int shippedItemCount = 3, int cancelledShippedCount = 0)
+        {
+            //int orderItemCount = 5;
+            //var partialShippedCount = 3;
+            //var cancelledShippedCount = 0;
+
+            if (shippedItemCount > orderItemCount) shippedItemCount = orderItemCount;
+
+            var salesOrderData = SalesOrderDataTests.GetFakerDataWithCountItem(orderItemCount);
+            salesOrderData.SalesOrderHeader.OrderStatus = (int)SalesOrderStatus.Processing;
+            for (int i = 0; i < shippedItemCount; i++)
+            {
+                var orderItem = salesOrderData.SalesOrderItems[i];
+                orderItem.ShipQty = 0;
+            }
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            orderService.Add();
+            orderService.AttachData(salesOrderData);
+            var success = await orderService.SaveDataAsync();
+            Assert.True(success, "save salesorder failed");
+
+
+
+
+            var shipmentData = OrderShipmentDataTests.GetFakerDataWithCountItem(1, shippedItemCount, cancelledShippedCount);
+            shipmentData.OrderShipmentHeader.ShipmentStatus = (int)OrderShipmentStatusEnum.Shipped;
+            shipmentData.OrderShipmentHeader.SalesOrderUuid = orderService.Data.SalesOrderHeader.SalesOrderUuid;
+            for (int i = 0; i < shippedItemCount; i++)
+            {
+                var orderItem = salesOrderData.SalesOrderItems[i];
+                var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
+                shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
+                orderItem.ShipQty = 0;
+            }
+            //for (int i = partialShippedCount; i < partialShippedCount + cancelledShippedCount; i++)
+            //{
+            //    var orderItem = salesOrderData.SalesOrderItems[i];
+            //    orderItem.ShipQty = 0;
+
+            //    var cancelledShippedItem = shipmentData.OrderShipmentCanceledItem[i - partialShippedCount];
+            //    cancelledShippedItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
+            //    cancelledShippedItem.CanceledQty = 1;
+
+            //    var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
+            //    shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid; 
+            //}
+            var shipmentService = new OrderShipmentService(DataBaseFactory);
+            shipmentService.Add();
+            shipmentService.AttachData(shipmentData);
+            success = await shipmentService.SaveDataAsync();
+            Assert.True(success, "save shipmentData failed");
+
+            return orderService.Data.SalesOrderHeader.SalesOrderUuid;
+        }
+
+        protected async Task<string> GetSalesOrderUuidWithPartialItemShippedAsync()
+        {
+            return await GetSalesOrderUuidWithItemCountAsync(5, 3, 0);
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateOrderStautsToShippedAsync_AllShipped_Test()
+        {
+            var salesOrderUuid = await GetSalesOrderUuidWithAllItemShippedAsync();
+            var service = new SalesOrderService(DataBaseFactory);
+            var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
+            Assert.True(success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            success = await orderService.GetDataByIdAsync(salesOrderUuid);
+            Assert.True(success, "GetDataByIdAsync:" + service.Messages.ObjectToString());
+
+            Assert.True(orderService.Data.SalesOrderHeader.OrderStatus == (int)SalesOrderStatus.Shipped, $"order status is {orderService.Data.SalesOrderHeader.OrderStatus}, expected order status is {(int)SalesOrderStatus.Shipped}");
+        } 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateOrderStautsToShippedAsync_PartialShipped_Test()
+        {
+            SalesOrderStatus orderStatus_Processing = SalesOrderStatus.Processing;
+            var salesOrderUuid = await GetSalesOrderUuidWithPartialItemShippedAsync();
+            var service = new SalesOrderService(DataBaseFactory);
+
+            var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
+            
+            // no data was updated.
+            Assert.True(!success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            success = await orderService.GetDataByIdAsync(salesOrderUuid);
+            Assert.True(success, "GetDataByIdAsync:" + service.Messages.ObjectToString());
+
+            Assert.True(orderService.Data.SalesOrderHeader.OrderStatus == (int)orderStatus_Processing, $"order status is {orderService.Data.SalesOrderHeader.OrderStatus}, expected order status is {orderStatus_Processing}");
+        }
+
+        #endregion
+
     }
 }
 

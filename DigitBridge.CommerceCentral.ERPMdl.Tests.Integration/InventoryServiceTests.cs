@@ -282,8 +282,8 @@ WHERE itm.cnt > 0
         {
             var service = new InventoryService(DataBaseFactory);
 
-            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(DataBaseFactory);
-            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(DataBaseFactory);
+            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(10001,10001,DataBaseFactory);
+            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(10001,10001,DataBaseFactory);
             var inventoryData = InventoryDataTests.GetInventories(DataBaseFactory, salesOrderData.SalesOrderItems.Count);
 
 

@@ -124,7 +124,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
 
-                    await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                    }
                 }
             }
             catch (Exception)
@@ -825,6 +828,52 @@ WHERE shippedItem.OrderShipmentUuid=@0
                 shipmentUuid.ToSqlParameter("@0")
             ) > 0;
         }
+        /// <summary>
+        /// update s/o status to shipped 
+        /// SalesOrderStatus
+        /// </summary>
+        /// <param name="salesOrderUuid"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateOrderStautsToShippedAsync(string salesOrderUuid)
+        {
+            var sql = $@"
+
+--declare @0 varchar(50)='a6cef76f-7049-4759-89b1-e7390d76a58d' --@SalesOrderUuid 
+--declare @4 int=16 --@shipmentStatus_Cancelled int --16
+--declare @1 int =255--@orderStatus_Cancelled int --255
+--declare @2 int =100 --@orderStatus_Hold int --100
+--declare @3 int=4 --@orderStatus_Shipped int --4
+
+update SalesOrderHeader 
+set OrderStatus=@3
+where SalesOrderUuid=@0 
+and not exists(
+	select shippedOrderItem.ShippedQty,orderItem.ShipQty,orderItem.SalesOrderItemsUuid,shippedOrderItem.SalesOrderItemsUuid,orderItem.SalesOrderUuid
+	FROM SalesOrderHeader orderHeader
+	join SalesOrderItems orderItem on orderItem.SalesOrderUuid=orderHeader.SalesOrderUuid
+	left join (
+		select shippedItem.SalesOrderItemsUuid,sum(COALESCE(shippedItem.ShippedQty,0)) as ShippedQty
+		from OrderShipmentHeader shipmentHeader
+		join OrderShipmentShippedItem shippedItem on shippedItem.OrderShipmentUuid=shipmentHeader.OrderShipmentUuid
+		where SalesOrderUuid=@0 and shipmentHeader.ShipmentStatus != @4 -- cancelled.
+		group by shippedItem.SalesOrderItemsUuid
+	) shippedOrderItem on shippedOrderItem.SalesOrderItemsUuid=orderItem.SalesOrderItemsUuid --and shippedOrderItem.ShippedQty=orderItem.ShipQty
+	where orderHeader.SalesOrderUuid=@0
+	and orderHeader.OrderStatus !=@1
+	AND orderHeader.OrderStatus !=@2 
+	and coalesce(shippedOrderItem.ShippedQty,0) !=orderItem.ShipQty 
+)
+";
+            var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                salesOrderUuid.ToSqlParameter("@0"),
+                ((int)SalesOrderStatus.Cancelled).ToSqlParameter("@1"),
+                ((int)SalesOrderStatus.Hold).ToSqlParameter("@2"),
+                ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3"),
+                ((int)OrderShipmentStatusEnum.Cancelled).ToSqlParameter("@4")
+            );
+            return result > 0;
+        }
 
         public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
         {
@@ -836,6 +885,5 @@ WHERE shippedItem.OrderShipmentUuid=@0
         }
     }
 }
-
 
 
