@@ -73,15 +73,15 @@ WHERE itm.cnt > 0
         }
 
 
-        public static SalesOrderData GetSalesOrderFromDB(IDataBaseFactory dbFactory)
+        public static SalesOrderData GetSalesOrderFromDB(int masterAccountNum, int profileNum, IDataBaseFactory dbFactory)
         {
-            var salesOrderUuid = dbFactory.GetValue<SalesOrderHeader, string>(@"
+            var salesOrderUuid = dbFactory.GetValue<SalesOrderHeader, string>($@"
 SELECT TOP 1 ins.SalesOrderUuid 
 FROM SalesOrderHeader ins 
 INNER JOIN (
     SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
 ) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
-WHERE itm.cnt > 0
+WHERE itm.cnt > 0 and masterAccountNum={masterAccountNum} and profileNum={profileNum}
 ");
             var data = new SalesOrderData(dbFactory);
             var success = data.GetById(salesOrderUuid);

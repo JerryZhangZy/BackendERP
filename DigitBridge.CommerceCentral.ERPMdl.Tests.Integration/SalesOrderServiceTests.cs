@@ -402,8 +402,8 @@ WHERE itm.cnt > 0
             var service = new OrderShipmentService(DataBaseFactory);
             service.Edit();
 
-            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(DataBaseFactory);
-            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(DataBaseFactory);
+            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(10001, 10001, DataBaseFactory);
+            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(10001, 10001, DataBaseFactory);
 
             int index = 0;
 
@@ -424,8 +424,84 @@ WHERE itm.cnt > 0
             Assert.True(success, service.Messages.ObjectToString());
 
             return shipmentData.OrderShipmentHeader.OrderShipmentUuid;
-        }  
+        }
         #endregion
+
+        #region Test update salesorder status to shipped
+
+        protected string GetSalesOrderUuidWithAllItemShipped()
+        { 
+            var salesOrderData = SalesOrderDataTests.GetFakerData();
+            var shipmentData = OrderShipmentDataTests.GetFakerData();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var orderItem = salesOrderData.SalesOrderItems[i];
+                var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
+                shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
+                orderItem.ShipQty = 0;
+            }
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            orderService.Add();
+            orderService.AttachData(salesOrderData);
+            var success = orderService.SaveData();
+            Assert.True(success, "save salesorder failed");
+
+            var shipmentService = new OrderShipmentService(DataBaseFactory);
+            shipmentService.Add();
+            shipmentService.AttachData(shipmentData);
+            success = shipmentService.SaveData();
+            Assert.True(success, "save shipmentData failed");
+
+            return orderService.Data.SalesOrderHeader.SalesOrderUuid; 
+        }
+
+        protected string GetSalesOrderUuidWithPartialItemShipped()
+        { 
+            var salesOrderData = SalesOrderDataTests.GetFakerData();
+            var shipmentData = OrderShipmentDataTests.GetFakerData();
+
+            for (int i = 0; i < 3; i++)
+            {
+                var orderItem = salesOrderData.SalesOrderItems[i];
+                var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
+                shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
+                orderItem.ShipQty = 0;
+            }
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            orderService.Add();
+            orderService.AttachData(salesOrderData);
+            var success = orderService.SaveData();
+            Assert.True(success, "save salesorder failed");
+
+            var shipmentService = new OrderShipmentService(DataBaseFactory);
+            shipmentService.Add();
+            shipmentService.AttachData(shipmentData);
+            success = shipmentService.SaveData();
+            Assert.True(success, "save shipmentData failed");
+
+            return orderService.Data.SalesOrderHeader.SalesOrderUuid;
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateOrderStautsToShippedAsync_Test()
+        {
+            var salesOrderData = SalesOrderDataTests.GetFakerData();
+            var shipmentData = OrderShipmentDataTests.GetFakerData();
+
+            var orderShipmentUuid = await MakeRealtionForShipmentAndSalesOrder();
+
+            var service = new SalesOrderService(DataBaseFactory);
+            var success = await service.UpdateShippedQtyFromShippedItemAsync(orderShipmentUuid);
+            Assert.True(success, service.Messages.ObjectToString());
+
+        }
+
+        #endregion
+
     }
 }
 
