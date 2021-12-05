@@ -13,11 +13,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
 {
     public interface ICsvHelper<T> where T: new()
     {
-        public CsvAutoMapper<T> Mapper { get; }
+        public IList<ClassMap> CsvMappers { get; }
         public CsvFormat Format { get; set; }
 
         CsvConfiguration GetConfiguration();
         void GetFormat();
+        void GetMapper();
         void RegisterMapper(CsvContext context);
 
         string Export(IEnumerable<T> data, string fileName);

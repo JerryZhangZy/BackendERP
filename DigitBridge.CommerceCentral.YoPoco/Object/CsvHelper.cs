@@ -15,14 +15,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
 {
     public class CsvHelper<T> : ICsvHelper<T> where T : class, new()
     {
-        protected CsvAutoMapper<T> _mapper;
-        public CsvAutoMapper<T> Mapper => _mapper;
+        protected IList<ClassMap> _mappers;
+        public IList<ClassMap> CsvMappers => _mappers;
         public CsvFormat Format { get; set; }
 
         public CsvHelper()
         {
-            _mapper = new CsvAutoMapper<T>();
+            GetMapper();
         }
+        public CsvHelper(CsvFormat format)
+        {
+            Format = format;
+            GetMapper();
+        }
+
+        public virtual void GetMapper() => _mappers = new List<ClassMap>() { new CsvAutoMapper<T>() };
 
         public virtual void GetFormat() { }
 
@@ -39,7 +46,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return config;
         }
 
-        public virtual void RegisterMapper(CsvContext context) => context.RegisterClassMap(_mapper);
+        public virtual void RegisterMapper(CsvContext context) {
+            if (CsvMappers == null || CsvMappers.Count == 0) return;
+            foreach(var mapper in CsvMappers.Where(x => x != null)) 
+                context.RegisterClassMap(mapper);
+        }
 
         public virtual string Export(IEnumerable<T> data, string fileName)
         {
@@ -81,6 +92,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var props = new List<KeyValuePair<string, object>>();
             if (Format?.ParentObject == null || Format?.ParentObject?.Count == 0)
                 props = ((ExpandoObject)records[0]).GetPropertyNames().ToList();
+
             // add RecordType column at first
             props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
 

@@ -41,6 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         protected IDataBaseFactory dbFactory { get; set; }
+        protected ISalesOrderService service { get; set; }
 
         //
 

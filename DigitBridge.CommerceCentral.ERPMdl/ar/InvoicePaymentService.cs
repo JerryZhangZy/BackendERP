@@ -853,13 +853,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = pay1.MasterAccountNum,
                 PaymentUuid = pay1.PaymentUuid,
                 PaymentNumber = pay1.PaymentNumber,
+                CustomerCode = pay1.CustomerCode,
+                TransDate = pay1.TransDate,
                 PaidBy = pay1.PaidBy,
                 BankAccountUuid = pay1.BankAccountUuid,
                 BankAccountCode = pay1.BankAccountCode,
                 CheckNum = pay1.CheckNum,
                 AuthCode = pay1.AuthCode,
                 Currency = pay1.Currency,
-                TotalAmount = 0,
+                TotalAmount = 0
             };
 
             // load first invoice
@@ -907,6 +909,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ins.pay = pay.TotalAmount;
                 ins.paidAmount -= ins.pay;
                 ins.balance += ins.pay;
+
+                payload.InvoiceTransaction.TotalAmount += pay.TotalAmount;
             }
             payload.InvoiceList = payload.InvoiceList
                 .OrderByDescending(x => x.pay)
