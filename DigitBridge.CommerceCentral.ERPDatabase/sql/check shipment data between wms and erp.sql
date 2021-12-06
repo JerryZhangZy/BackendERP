@@ -152,7 +152,7 @@ shipment.InvoiceUuid
 
 ,invoice.SubTotalAmount as SubTotalAmountInInvoice
 ,orderHeader.SubTotalAmount as SubTotalAmountInOrder
-
+,orderHeader.OrderStatus
 into #compareHeader 
 from #wmsshipment wmsShipment  
 left join OrderShipmentHeader  shipment on shipment.ShipmentID=wmsShipment.shipmentID
@@ -163,6 +163,8 @@ left join InvoiceHeaderInfo invoiceInfo on invoiceInfo.InvoiceUuid=invoice.Invoi
 
 select * from  #compareHeader
 where isnull(SubTotalAmountInInvoice,0)!=isnull(SubTotalAmountInOrder,1)
+
+select * from #compareHeader where OrderStatus  !=4  --shipped
 
  -- no result means all data matched.
 select * from #compareHeader c
