@@ -144,13 +144,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string TransUuid { get; set; }
         public long  TransNum { get; set; }
         public string PoUuid { get; set; }
+        public string VendorUuid { get; set; }
         public string VendorName { get; set; }
-
+        public string VendorInvoiceNumFrom { get; set; }
+        public string VendorInvoiceNumTo { get; set; }
+        public DateTime VendorInvoiceDateFrom { get; set; }
+        public DateTime VendorInvoiceDateTo { get; set; }
+        public DateTime DueDateFrom { get; set; }
+        public DateTime DueDateTo { get; set; }
+        public int TransType { get; set; }
+        public int TransStatus { get; set; }
         public string PoNumFrom { get; set; }
         public string PoNumTo { get; set; }
-
         public DateTime TransDateFrom { get; set; }
-
         public DateTime TransDateTo { get; set; }
 
         public static Faker<PoReceiveFilter> GetFaker()

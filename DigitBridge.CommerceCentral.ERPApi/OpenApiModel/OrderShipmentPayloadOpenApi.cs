@@ -138,26 +138,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public class OrderShipmentFilter
     {
         public string ChannelNum { get; set; }
-
         public string ChannelAccountNum { get; set; }
-
         public string OrderDCAssigmentNum { get; set; }
-
         public string CentralOrderNum { get; set; }
-
         public string ChannelOrderID { get; set; }
-
         public string ShipmentID { get; set; }
-
         public string WarehouseID { get; set; }
-
-        public int ShipmentType { get; set; }
-
         public string MainTrackingNumber { get; set; }
-
         public string MainReturnTrackingNumber { get; set; }
+        public int ShipmentType { get; set; }
+        public int ProcessStatus { get; set; }
+        public string ShippingClass { get; set; }
+        public string ShippingCarrier { get; set; }
+        public DateTime ShipDateFrom { get; set; }
+        public DateTime ShipDateTo { get; set; }
 
-        public string ProcessStatus { get; set; }
 
         public static Faker<OrderShipmentFilter> GetFaker()
         {
@@ -173,7 +168,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.ShipmentType, f =>0)
                 .RuleFor(u => u.MainTrackingNumber, f => string.Empty)
                 .RuleFor(u => u.MainReturnTrackingNumber, f => string.Empty)
-                .RuleFor(u => u.ProcessStatus, f =>string.Empty)
+                .RuleFor(u => u.ProcessStatus, f =>f.Random.Number())
                 ;
             #endregion faker data rules
         }

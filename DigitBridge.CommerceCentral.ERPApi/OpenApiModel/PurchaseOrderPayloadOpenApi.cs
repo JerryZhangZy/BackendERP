@@ -135,14 +135,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class PurchaseOrderFilter
     {
-
         public DateTime PoDateFrom { get; set; }
-
         public DateTime PoDateTo { get; set; }
-
-        public string PoStatus { get; set; }
-
-        public string PoType { get; set; }
+        public int PoStatus { get; set; }
+        public int PoType { get; set; }
+        public string VendorCode { get; set; }
+        public string VendorName { get; set; }
+        public string PoNum { get; set; }
 
         public static Faker<PurchaseOrderFilter> GetFaker()
         {
@@ -150,8 +149,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new Faker<PurchaseOrderFilter>()
                 .RuleFor(u => u.PoDateTo, f => f.Date.Past(0).Date.Date)
                 .RuleFor(u => u.PoDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
-                .RuleFor(u => u.PoStatus, f => "")
-                .RuleFor(u => u.PoType, f => "")
+                .RuleFor(u => u.PoStatus, f => f.Random.Number())
+                .RuleFor(u => u.PoType, f => f.Random.Number())
                 ;
             #endregion faker data rules
         }

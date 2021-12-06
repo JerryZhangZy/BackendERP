@@ -156,18 +156,34 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public class InventoryFilter
     {
         public string ProductUuid { get; set; }
-
         public string SKU { get; set; }
-
         public string Brand { get; set; }
-
         public string Manufacturer { get; set; }
-
         public string ProductTitle { get; set; }
-        
-        private string FNSku { get; set; }
-
         public string UPC { get; set; }
+
+        public string ClassCode { get; set; }
+        public string SubClassCode { get; set; }
+        public string DepartmentCode { get; set; }
+        public string DivisionCode { get; set; }
+        public string OEMCode { get; set; }
+        public string AlternateCode { get; set; }
+        public string Remark { get; set; }
+        public string Model { get; set; }
+        public string CategoryCode { get; set; }
+        public string GroupCode { get; set; }
+        public string SubGroupCode { get; set; }
+
+        public string InventoryUuid { get; set; }
+        public string StyleCode { get; set; }
+        public string ColorPatternCode { get; set; }
+        public string SizeCode { get; set; }
+        public string WidthCode { get; set; }
+        public string LengthCode { get; set; }
+        public string WarehouseCode { get; set; }
+        public string LotNum { get; set; }
+        public string LpnNum { get; set; }
+
 
         public static Faker<InventoryFilter> GetFaker()
         {
@@ -175,7 +191,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new Faker<InventoryFilter>()
                 .RuleFor(u => u.ProductUuid, f => string.Empty)
                 .RuleFor(u => u.SKU, f => string.Empty)
-                .RuleFor(u => u.FNSku, f => string.Empty)
                 .RuleFor(u => u.Brand, f => string.Empty)
                 .RuleFor(u => u.Manufacturer, f => string.Empty)
                 .RuleFor(u => u.ProductTitle, f => string.Empty)

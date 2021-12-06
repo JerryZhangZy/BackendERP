@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<int> _ShipmentType = new QueryFilter<int>("ShipmentType", "ShipmentType", PREFIX, FilterBy.eq,0);
         public QueryFilter<int> ShipmentType => _ShipmentType;
 
-        protected QueryFilter<int> _ProcessStatus = new QueryFilter<int>("ProcessStatus", "ProcessStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _ProcessStatus = new QueryFilter<int>("ProcessStatus", "ProcessStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> ProcessStatus => _ProcessStatus;
 
         protected QueryFilter<int> _ShipmentStatus = new QueryFilter<int>("ShipmentStatus", "ShipmentStatus", PREFIX, FilterBy.eq, 0);
