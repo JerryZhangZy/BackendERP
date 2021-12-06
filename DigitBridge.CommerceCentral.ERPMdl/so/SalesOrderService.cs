@@ -123,7 +123,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.SalesOrderHeader != null)
                 {
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
- 
+
                 }
             }
             catch (Exception)
@@ -165,7 +165,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.SaveSuccessAsync();
                 if (this.Data?.SalesOrderHeader != null)
                 {
-                    
+
                     if (_ProcessMode == ProcessingMode.Add)
                     {
                         await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
@@ -192,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                     if (_ProcessMode == ProcessingMode.Add)
                     {
-                       var result= initNumbersService.UpdateMaxNumber(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                        var result = initNumbersService.UpdateMaxNumber(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
                     }
                 }
             }
@@ -829,15 +829,29 @@ WHERE RowNum=@1
             var op = isReturnBack ? "-" : "+";
 
             var sql = $@"
+--declare @0  varchar(50)='a48952a0-7829-2d26-425d-e18e1a552a0b'
+--declare @1 int=3 -- @shipemntStatus_Cancelled is 3
+
 UPDATE soItem 
-SET soItem.ShipQty=soItem.ShipQty {op} shippedItem.ShippedQty
-FROM SalesOrderItems soItem 
-INNER JOIN OrderShipmentShippedItem shippedItem on  shippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid 
-WHERE shippedItem.OrderShipmentUuid=@0  
+SET soItem.ShipQty=soItem.ShipQty {op} finalShippedItem.FinalShippedQty
+FROM SalesOrderItems soItem  
+JOIN 
+(
+	SELECT shippedItem.SalesOrderItemsUuid, sum((COALESCE(shippedItem.ShippedQty,0)-COALESCE(cancelledItem.CanceledQty,0))) as FinalShippedQty
+	FROM OrderShipmentHeader shipmentHeader 
+	LEFT JOIN OrderShipmentShippedItem shippedItem on shipmentHeader.OrderShipmentUuid=shippedItem.OrderShipmentUuid  
+	LEFT JOIN OrderShipmentCanceledItem cancelledItem 
+		   on cancelledItem.SalesOrderItemsUuid=shippedItem.SalesOrderItemsUuid
+		  and cancelledItem.OrderShipmentUuid=shipmentHeader.OrderShipmentUuid
+	WHERE shipmentHeader.OrderShipmentUuid = @0 and shipmentHeader.ProcessStatus!=@1--except cancelled shipment
+	group by shippedItem.SalesOrderItemsUuid
+) finalShippedItem on finalShippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid
+where COALESCE(finalShippedItem.FinalShippedQty,0) !=0 
 ";
             return await dbFactory.Db.ExecuteAsync(
                 sql,
-                shipmentUuid.ToSqlParameter("@0")
+                shipmentUuid.ToSqlParameter("@0"),
+                ((int)OrderShipmentStatusEnum.Cancelled).ToParameter("@1")
             ) > 0;
         }
 
@@ -848,6 +862,7 @@ WHERE shippedItem.OrderShipmentUuid=@0
         /// <returns></returns>
         public async Task<bool> UpdateOrderStautsFromShipmentAsync(string salesOrderUuid)
         {
+            if (salesOrderUuid.IsZero()) return false;
             var sql = $@"
 --declare @0 varchar(50)='a6cef76f-7049-4759-89b1-e7390d76a58d' --@SalesOrderUuid 
 --declare @1 int =255--@orderStatus_Cancelled int --255

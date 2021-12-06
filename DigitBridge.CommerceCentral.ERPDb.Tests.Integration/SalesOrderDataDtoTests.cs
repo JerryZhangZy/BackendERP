@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             try
             {
-                csvHelper.Export(dtolist, fileName);
+                //csvHelper.Export(dtolist, fileName);
             }
             catch (Exception e)
             {
@@ -118,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             try
             {
-                data = csvHelper.Import(fileName).ToList();
+                //data = csvHelper.Import(fileName).ToList();
             }
             catch (Exception e)
             {
