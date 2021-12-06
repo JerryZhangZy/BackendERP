@@ -51,12 +51,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual bool Disable { get; set; }
 
         /// <summary>
+        /// text format for Date, number
+        /// </summary>
+        public virtual string TextFormat { get; set; }
+
+        /// <summary>
         /// Enable this column mapper
         /// </summary>
         [JsonIgnore]
         public virtual bool IsEnable 
         {
-            get => !string.IsNullOrEmpty(Name) && !Ignore && !Disable;
+            get => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(HeaderName) && !Ignore && !Disable;
         }
 
         public CsvFormatColumn() { }
@@ -69,6 +74,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             Ignore = ignore;
             DefaultValue = defaultValue;
             ConstantValue = constantValue;
+            TextFormat = TextFormat;
         }
 
         public virtual CsvFormatColumn Clone(CsvFormatColumn source)
@@ -79,6 +85,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (source.Ignore == true) Ignore = source.Ignore;
             if (!string.IsNullOrEmpty(source.DefaultValue)) DefaultValue = source.DefaultValue;
             if (!string.IsNullOrEmpty(source.ConstantValue)) ConstantValue = source.ConstantValue;
+            if (!string.IsNullOrEmpty(source.TextFormat)) TextFormat = source.TextFormat;
             Disable = source.Disable;
             return this;
         }
@@ -131,6 +138,31 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return this;
         }
+
+        public virtual void SortByIndex()
+        {
+            if (!HasColumns()) return;
+            // get enable columns
+            var colEnable = Columns.Where(x => x.IsEnable).ToList();
+            // sort by index
+            colEnable = colEnable.OrderBy(x => x.Index).ToList();
+            // reset index for zero index
+            var idx = 1;
+            foreach (var item in colEnable)
+            {
+                item.Index = idx;
+                idx++;
+            }
+            // remove enable column from Columns list
+            foreach (var rem in colEnable)
+                Columns.Remove(rem);
+
+            // add sortted enable list back to Columns at start
+            for (int i = colEnable.Count - 1; i >= 0; i--)
+            {
+                Columns.Insert(0, colEnable[i]);
+            }
+        }
     }
 
     public class CsvFormat
@@ -144,9 +176,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual bool HasHeaderRecord { get; set; } = true;
         public virtual string Delimiter { get; set; } = ",";
         [JsonIgnore] public virtual Encoding Encoding { get; set; } = Encoding.UTF8;
+
         public virtual IList<CsvFormatParentObject> ParentObject { get; set; } = new List<CsvFormatParentObject>();
         public virtual bool HasParentObject() => ParentObject != null && ParentObject.Count > 0;
-
         protected virtual CsvFormatParentObject InitParentObject<T>() where T : class, new()
         {
             var t = typeof(T);
@@ -200,15 +232,57 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return found > 1;
         }
 
-        public virtual IList<string> GetHeaderNames() 
+        public virtual void SortByIndex()
+        {
+            if (HasParentObject()) 
+                ParentObject.SortByIndex();
+        }
+
+        public virtual IList<string> GetHeaderNames(bool firstNameOnly = false) 
             => !HasParentObject()
                 ? null
-                : ParentObject.GetHeaderNames();
+                : ParentObject.GetHeaderNames(firstNameOnly);
 
         public virtual IList<string> GetNames()
             => !HasParentObject()
                 ? null
                 : ParentObject.GetNames();
+
+        public virtual (IList<string>, IList<string>) GetHeaderAndData<T>(T data)
+        {
+            var result = new List<string>();
+            var parent = ParentObject.FindByType(typeof(T));
+            if (parent == null || !parent.HasColumns())
+                return (null, null);
+            var headers = parent.Columns.GetNames();
+            if (headers == null || headers.Count == 0)
+                return (null, null);
+
+            var properties = parent.Columns.Where(x => x.IsEnable).Select(x => x.Name);
+            var values = ObjectSchema.GetPropertieValues<T>(data, properties);
+
+            foreach (var header in headers)
+            {
+                // export empty if header is empty
+                if (string.IsNullOrEmpty(header))
+                {
+                    result.Add(string.Empty);
+                    continue;
+                }
+                // export empty if column is not enable
+                var col = parent.Columns.FindByHeaderName(header);
+                if (col == null || !col.IsEnable)
+                {
+                    result.Add(string.Empty);
+                    continue;
+                }
+                if (values.TryGetValue(col.Name, out var val))
+                    result.Add(val.ToFormatString(col.TextFormat));
+                else
+                    result.Add(string.Empty);
+            }
+            return (headers, result);
+        }
 
     }
 
@@ -219,7 +293,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static CsvFormatParentObject FindByName(this IList<CsvFormatParentObject> list, string name)
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name) && x.Name.EqualsIgnoreSpace(name));
 
-        public static IList<string> GetHeaderNames(this IList<CsvFormatParentObject> list)
+        public static IList<string> GetHeaderNames(this IList<CsvFormatParentObject> list, bool firstNameOnly = false)
         {
             if (list == null || list.Count == 0)
                 return new List<string>();
@@ -228,7 +302,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 if (item == null || !item.HasColumns())
                     continue;
-                result.AddRange(item.Columns.GetHeaderNames());
+                result.AddRange(item.Columns.GetHeaderNames(firstNameOnly));
             }
             return result;
         }
@@ -245,6 +319,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return result;
         }
+        public static void SortByIndex(this IList<CsvFormatParentObject> list)
+        {
+            foreach (var item in list)
+                item.SortByIndex();
+        }
 
     }
 
@@ -259,7 +338,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static CsvFormatColumn FindByIndex(this IList<CsvFormatColumn> list, int index)
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => x.Index == index);
 
-        public static IList<string> GetHeaderNames(this IList<CsvFormatColumn> list)
+        public static IList<string> GetHeaderNames(this IList<CsvFormatColumn> list, bool firstNameOnly = false)
         {
             if (list == null || list.Count == 0)
                 return new List<string>();
@@ -268,7 +347,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 if (item == null || string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.HeaderName))
                     continue;
-                result.AddRange(item.HeaderName.Split(","));
+                if (firstNameOnly)
+                    result.Add(item.HeaderName.Split(",")[0]);
+                else
+                    result.AddRange(item.HeaderName.Split(","));
             }
             return result;
         }

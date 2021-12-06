@@ -58,6 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
+        #region import
         public override async Task ReadEntitiesAsync(CsvReader csv, IList<SalesOrderDataDto> data)
         {
             var hasReadSummary = false;
@@ -111,7 +112,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 data.Add(dto);
         }
 
-
         protected virtual async Task<bool> ReadSummaryRecordAsync(CsvReader csv, SalesOrderDataDto dto)
         {
             try
@@ -144,18 +144,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //throw;
             }
         }
+        #endregion import
 
+        #region export
         protected override async Task WriteCsvAsync(SalesOrderDataDto data, CsvWriter csv)
         {
-            // combine multiple Dto to one dynamic object
-            var headerRecords = data.MergeHeaderRecord(true).ToList();
-            await WriteEntitiesAsync(csv, headerRecords, "H");
+            //GetHeaderAndData
+            //// combine multiple Dto to one dynamic object
+            //var headerRecords = data.MergeHeaderRecord(true).ToList();
+            //await WriteEntitiesAsync(csv, headerRecords, "H");
 
-            var detailRecords = data.MergeDetailRecord(true).ToList();
+            //var detailRecords = data.MergeDetailRecord(true).ToList();
 
-            await WriteEntitiesAsync(csv, detailRecords, "L");
+            //await WriteEntitiesAsync(csv, detailRecords, "L");
         }
-
+        #endregion export
     }
 }
 

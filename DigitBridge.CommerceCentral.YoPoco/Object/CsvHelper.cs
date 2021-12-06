@@ -48,6 +48,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             config.HeaderValidated = null;
             config.MissingFieldFound = null;
             config.IgnoreBlankLines = true;
+            config.TrimOptions = TrimOptions.Trim;
 
             return config;
         }
@@ -131,6 +132,45 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return ms.ToArray();
             }
         }
+
+        public virtual async Task<byte[]> ExportAsync(IEnumerable<IEnumerable<string>> lines, IEnumerable<string> headers = null)
+        {
+            var config = GetConfiguration();
+            config.HasHeaderRecord = false;
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    // write header
+                    if (config.HasHeaderRecord && headers != null && headers.Any())
+                    {
+                        foreach (var item in headers)
+                        {
+                            csv.WriteField(item);
+                        }
+                        csv.NextRecord();
+                    }
+
+                    // write lines
+                    if (lines != null && lines.Any())
+                    {
+                        foreach (var ln in lines)
+                        {
+                            if (ln == null || !ln.Any()) continue;
+                            foreach (var item in ln)
+                            {
+                                csv.WriteField(item);
+                            }
+                            csv.NextRecord();
+                        }
+                    }
+                    await csv.FlushAsync();
+                }
+                return ms.ToArray();
+            }
+        }
+
         protected virtual async Task WriteCsvAsync(T data, CsvWriter csv)
         {
             throw new Exception("must override WriteCsv  Method");
@@ -158,7 +198,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             await csv.WriteRecordsAsync(records);
         }
 
-
+        #region import 
         public virtual IEnumerable<T> Import(string fileName)
         {
             using (var reader = new FileStream(fileName, FileMode.Open))
@@ -257,6 +297,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-
+        #endregion import 
     }
 }

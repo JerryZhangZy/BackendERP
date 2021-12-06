@@ -353,6 +353,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     var AValue = colA.GetValue(A);
 
                     var colB = allPropertiesTarget.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(colA.Name));
+                    if (colB == null || !colB.CanCompare)
+                        return false;
+
                     var BValue = colB.GetValue(B);
 
                     if (AValue != BValue && (AValue == null || !AValue.Equals(BValue)))
@@ -429,6 +432,36 @@ namespace DigitBridge.CommerceCentral.YoPoco
             catch (Exception)
             {
                 return;
+            }
+        }
+
+        public static IDictionary<string, object> GetPropertieValues<T>(object A, IEnumerable<string> names)
+        {
+            if (A == null || names == null || !names.Any()) return null;
+            var result = new Dictionary<string, object>();
+            try
+            {
+                var schema = ObjectSchema.ForType(typeof(T));
+                if (!schema.Properties.Any()) return null;
+
+                var allProperties = schema.Properties
+                    .Select(x => x.Value);
+
+                foreach (var name in names)
+                {
+                    if (string.IsNullOrEmpty(name)) continue;
+
+                    var col = allProperties.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name));
+                    if (col == null) continue;
+
+                    var AValue = col.GetValue(A);
+                    result.Add(name, AValue);
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

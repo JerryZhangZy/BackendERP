@@ -71,7 +71,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             try
             {
                 ObjectSchema.CopyProperties<SalesOrderHeaderDto, SalesOrderHeaderInfoDto>(salesOrderHeaderDto, salesOrderHeaderInfoDto);
+                var result1 = ObjectSchema.CompareProperties<SalesOrderHeaderDto, SalesOrderHeaderInfoDto>(salesOrderHeaderDto, salesOrderHeaderInfoDto);
+
                 ObjectSchema.CopyProperties<SalesOrderHeaderInfoDto>(salesOrderHeaderInfoDto, disc);
+                var result2 = ObjectSchema.CompareProperties<SalesOrderHeaderInfoDto>(salesOrderHeaderInfoDto, disc);
 
                 Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
             }
