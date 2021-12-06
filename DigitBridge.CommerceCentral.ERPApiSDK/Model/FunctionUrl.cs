@@ -19,10 +19,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         internal static string CreateSalesOrderByCentralOrder = "/api/erpevents/addCreateSalesOrderByCentralOrder";
         internal static string CreateInvoiceByOrderShipment = "/api/erpevents/addCreateInvoiceByOrderShipment";
+        
 
         internal const string GetSalesOrderOpenList = "/api/wms/salesOrders/find";
         internal const string AckReceiveSalesOrders = "/api/wms/salesOrders/AckReceive";
         internal const string AckProcessSalesOrders = "/api/wms/salesOrders/AckProcess";
+        internal const string ResendWMSShipment = "/api/wms/shipments/resend";
 
         internal const string GetPurchaseOrderList = "/api/wms/purchaseOrders/find";
         internal const string AckReceivePurchaseOrders = "/api/wms/purchaseOrders/AckReceive";

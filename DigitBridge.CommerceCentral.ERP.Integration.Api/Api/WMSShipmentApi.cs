@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         //// <summary>
-        /// Add Shipment list
+        /// Get WMS shipment list
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
@@ -72,5 +72,30 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             return new JsonNetResponse<WMSOrderShipmentPayload>(result);
         }
 
+
+        //// <summary>
+        /// ResendByShipmentIDs
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(ResendByShipmentIDs))]
+        [OpenApiOperation(operationId: "ResendByShipmentIDs", tags: new[] { "WMSShipments" }, Summary = "Resend wms shipment by array of shipment id  ")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(string[]), Required = true, Description = "Array of WMS ShipmentID")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WSMShipmentResendPayload))]
+        public static async Task<JsonNetResponse<WSMShipmentResendPayload>> ResendByShipmentIDs(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/shipments/resend")] HttpRequest req)
+        {
+            var shipmentIDs = await req.GetBodyObjectAsync<IList<string>>();
+            var masterAccountNum = req.MasterAccountNum();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var service = new OrderShipmentManager(dataBaseFactory);
+
+            var result = await service.ResendByShipmentIDAsync(shipmentIDs);
+
+            return new JsonNetResponse<WSMShipmentResendPayload>(result);
+        }
     }
 }
