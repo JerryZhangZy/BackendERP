@@ -825,39 +825,41 @@ WHERE shippedItem.OrderShipmentUuid=@0
                 shipmentUuid.ToSqlParameter("@0")
             ) > 0;
         }
+
         /// <summary>
-        /// update s/o status to shipped 
-        /// SalesOrderStatus
+        /// If all item shipped then update order status to shipped. else set order status to open.
         /// </summary>
         /// <param name="salesOrderUuid"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateOrderStautsToShippedAsync(string salesOrderUuid)
+        public async Task<bool> UpdateOrderStautsFromShipmentAsync(string salesOrderUuid)
         {
             var sql = $@"
-
 --declare @0 varchar(50)='a6cef76f-7049-4759-89b1-e7390d76a58d' --@SalesOrderUuid 
---declare @3 int=4 --@orderstatus_shipped int --4
 --declare @1 int =255--@orderStatus_Cancelled int --255
 --declare @2 int =100 --@orderStatus_Hold int --100 
+--declare @3 int=4 --@orderstatus_shipped int --4
+--declare @4 int=1 --@orderstatus_Open int --1
+
+declare @unShippedCount int;
+select  @unShippedCount= count(1)
+FROM SalesOrderItems orderItem
+WHERE orderItem.SalesOrderUuid= @0
+AND coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
+--select @unShippedCount
 
 update SalesOrderHeader 
-set OrderStatus=@3
+set OrderStatus= (case when @unShippedCount=0 then @3 else @4 end)
 where SalesOrderUuid=@0 
 AND OrderStatus !=@1
-AND OrderStatus !=@2 
-and not exists(
-	select 1
-	FROM SalesOrderItems orderItem 
-    WHERE orderItem.SalesOrderUuid= @0
-	AND coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
-)
+AND OrderStatus !=@2
 ";
             var result = await dbFactory.Db.ExecuteAsync(
                 sql,
                 salesOrderUuid.ToSqlParameter("@0"),
                 ((int)SalesOrderStatus.Cancelled).ToSqlParameter("@1"),
                 ((int)SalesOrderStatus.Hold).ToSqlParameter("@2"),
-                ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3")
+                ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3"),
+                ((int)SalesOrderStatus.Open).ToSqlParameter("@4")
             );
             return result > 0;
         }
@@ -866,9 +868,9 @@ and not exists(
         {
             return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
         }
-        public  string GetNextNumber(int masterAccountNum, int profileNum)
+        public string GetNextNumber(int masterAccountNum, int profileNum)
         {
-            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
+            return initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
         }
     }
 }

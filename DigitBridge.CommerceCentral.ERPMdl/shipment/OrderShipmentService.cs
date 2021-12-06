@@ -199,10 +199,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         await UpdateOrderShipmentNumReferenceAsync(this.Data.OrderShipmentHeader.OrderShipmentUuid);
                         // update inventoryLog and update instock
                         await inventoryLogService.UpdateByShipmentAsync(this.Data);
-                        // update salesorder status to shipped.
-                        await salesOrderService.UpdateOrderStautsToShippedAsync(this.Data.OrderShipmentHeader.SalesOrderUuid);
-
                     }
+                    // update salesorder status.
+                    await salesOrderService.UpdateOrderStautsFromShipmentAsync(this.Data.OrderShipmentHeader.SalesOrderUuid);
                 }
             }
             catch (Exception)
