@@ -212,19 +212,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAddData(CustomerData data)
         {
             var dbFactory = data.dbFactory;
-            #region Valid Customer
-            if (string.IsNullOrEmpty(data.Customer.CustomerCode) ||
-                dbFactory.Db.ExecuteScalar<int>(
-                    $"SELECT COUNT(1) FROM Customer WHERE CustomerCode=@0 AND MasterAccountNum = @1 AND ProfileNum = @2", 
-                    data.Customer.CustomerCode,
-                    data.Customer.MasterAccountNum,
-                    data.Customer.ProfileNum) > 0
-            )
-            {
-                IsValid = false;
-                AddError($"CustomerCode required and must be unique.");
-            }
-            #endregion
+            //#region Valid Customer
+            //if (string.IsNullOrEmpty(data.Customer.CustomerCode) ||
+            //    dbFactory.Db.ExecuteScalar<int>(
+            //        $"SELECT COUNT(1) FROM Customer WHERE CustomerCode=@0 AND MasterAccountNum = @1 AND ProfileNum = @2",
+            //        data.Customer.CustomerCode,
+            //        data.Customer.MasterAccountNum,
+            //        data.Customer.ProfileNum) > 0
+            //)
+            //{
+            //    IsValid = false;
+            //    AddError($"CustomerCode required and must be unique.");
+            //}
+            //#endregion
 
             #region Valid CustomerAddress
             #endregion
@@ -299,12 +299,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAllModeAsync(CustomerData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.Customer.CustomerCode))
-            {
-                IsValid = false;
-                AddError($"Customer Code cannot be empty.");
-                return IsValid;
-            }
+            //if (string.IsNullOrEmpty(data.Customer.CustomerCode))
+            //{
+            //    IsValid = false;
+            //    AddError($"Customer Code cannot be empty.");
+            //    return IsValid;
+            //}
             //if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
             //{
             //    IsValid = false;

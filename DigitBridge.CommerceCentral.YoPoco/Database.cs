@@ -3056,9 +3056,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (cmd is DbCommand dbCommand)
             {
                 DoPreExecute(dbCommand);
-                var result = await dbCommand.ExecuteNonQueryAsync();
-                OnExecutedCommand(dbCommand);
-                return (int)result;
+                try
+                {
+                    var result = await dbCommand.ExecuteNonQueryAsync();
+                    OnExecutedCommand(dbCommand);
+                    return (int)result;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
+               
 
                 //var task = CommandHelper(cancellationToken, dbCommand,
                 //    async (t, c) => await c.ExecuteNonQueryAsync(t));
