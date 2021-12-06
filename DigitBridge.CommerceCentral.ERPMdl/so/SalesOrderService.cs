@@ -844,21 +844,12 @@ WHERE shippedItem.OrderShipmentUuid=@0
 update SalesOrderHeader 
 set OrderStatus=@3
 where SalesOrderUuid=@0 
+AND OrderStatus !=@1
+AND OrderStatus !=@2 
 and not exists(
-	select shippedOrderItem.ShippedQty,orderItem.ShipQty,orderItem.SalesOrderItemsUuid,shippedOrderItem.SalesOrderItemsUuid,orderItem.SalesOrderUuid
-	FROM SalesOrderHeader orderHeader
-	join SalesOrderItems orderItem on orderItem.SalesOrderUuid=orderHeader.SalesOrderUuid
-	left join (
-		select shippedItem.SalesOrderItemsUuid,sum(COALESCE(shippedItem.ShippedQty,0)) as ShippedQty
-		from OrderShipmentHeader shipmentHeader
-		join OrderShipmentShippedItem shippedItem on shippedItem.OrderShipmentUuid=shipmentHeader.OrderShipmentUuid
-		where SalesOrderUuid=@0 and shipmentHeader.ShipmentStatus != @4 -- cancelled.
-		group by shippedItem.SalesOrderItemsUuid
-	) shippedOrderItem on shippedOrderItem.SalesOrderItemsUuid=orderItem.SalesOrderItemsUuid --and shippedOrderItem.ShippedQty=orderItem.ShipQty
-	where orderHeader.SalesOrderUuid=@0
-	and orderHeader.OrderStatus !=@1
-	AND orderHeader.OrderStatus !=@2 
-	and coalesce(shippedOrderItem.ShippedQty,0) !=orderItem.ShipQty 
+	select 1
+	FROM SalesOrderItems orderItem on orderItem.SalesOrderUuid= @0
+	where coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
 )
 ";
             var result = await dbFactory.Db.ExecuteAsync(
