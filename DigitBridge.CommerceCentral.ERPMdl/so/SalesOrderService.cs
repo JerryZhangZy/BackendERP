@@ -850,7 +850,7 @@ and not exists(
 	select 1
 	FROM SalesOrderItems orderItem 
     WHERE orderItem.SalesOrderUuid= @0
-	where coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
+	AND coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
 )
 ";
             var result = await dbFactory.Db.ExecuteAsync(
