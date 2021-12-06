@@ -48,11 +48,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> TransType => _TransType;
 
 
-        protected QueryFilter<int> _TransStatus = new QueryFilter<int>("TransStatus", "TransStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _TransStatus = new QueryFilter<int>("TransStatus", "TransStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> TransStatus => _TransStatus;
 
 
