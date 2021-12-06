@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         void GetMapper();
         void RegisterMapper(CsvContext context);
 
-        Task<byte[]> ExportAsync(IEnumerable<string> lines, IEnumerable<string> headers = null);
+        Task<byte[]> ExportAsync(IEnumerable<IEnumerable<string>> lines, IEnumerable<string> headers = null);
         string Export(IEnumerable<T> data, string fileName);
         IEnumerable<T> Import(string fileName);
 
