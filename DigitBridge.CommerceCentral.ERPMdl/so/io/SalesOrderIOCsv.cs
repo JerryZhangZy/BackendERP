@@ -37,15 +37,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
-        //public override void RegisterMapper(CsvContext context)
-        //{
-        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderHeaderDto>(Format));
-        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderHeaderInfoDto>(Format));
-        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderHeaderAttributesDto>(Format));
-        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderItemsDto>(Format));
-        //    context.RegisterClassMap(new CsvFormatMapper<SalesOrderItemsAttributesDto>(Format));
-        //}
-
         public override void GetMapper()
         {
             _mappers = new List<ClassMap>() 
@@ -147,17 +138,73 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion import
 
         #region export
-        protected override async Task WriteCsvAsync(SalesOrderDataDto data, CsvWriter csv)
+        public override async Task<byte[]> ExportAsync(IEnumerable<SalesOrderDataDto> datas)
         {
-            //GetHeaderAndData
-            //// combine multiple Dto to one dynamic object
-            //var headerRecords = data.MergeHeaderRecord(true).ToList();
-            //await WriteEntitiesAsync(csv, headerRecords, "H");
+            if (Format == null || datas == null || !datas.Any()) return null;
 
-            //var detailRecords = data.MergeDetailRecord(true).ToList();
+            Format.SortByIndex();
+            var dataList = datas.ToList();
+            var lines = new List<IList<string>>();
+            var headers = GetHeader(datas);
 
-            //await WriteEntitiesAsync(csv, detailRecords, "L");
+            foreach (var data in dataList)
+            {
+                if (data == null) continue;
+                var lns = GetDataLines(data);
+                if (lns == null || lns.Count == 0) continue;
+                lines.Concat(lns);
+            }
+            return await ExportAsync(lines, headers);
         }
+
+        protected virtual IList<string> GetHeader(IEnumerable<SalesOrderDataDto> datas)
+        {
+            if (Format == null || datas == null || !datas.Any()) return null;
+
+            var dataList = datas.ToList();
+            var headers = new List<string>();
+
+            // build salesOrderHeader header and data
+            var (header1, values1) = Format.GetHeaderAndData<SalesOrderHeaderDto>(dataList[0].SalesOrderHeader);
+            if (header1 != null) headers.AddRange(header1);
+
+            // build salesOrderHeaderInfo header and data
+            var (header2, values2) = Format.GetHeaderAndData<SalesOrderHeaderInfoDto>(dataList[0].SalesOrderHeaderInfo);
+            if (header2 != null) headers.AddRange(header2);
+
+            // build salesOrderHeaderItems header and data
+            var (header3, values3) = Format.GetHeaderAndData<SalesOrderItemsDto>(dataList[0].SalesOrderItems[0]);
+            if (header3 != null) headers.AddRange(header3);
+            return headers;
+        }
+
+        protected virtual IList<IList<string>> GetDataLines(SalesOrderDataDto data)
+        {
+            if (Format == null || data == null) return null;
+
+            var lines = new List<IList<string>>();
+            var lnSummary = new List<string>();
+
+            // build salesOrderHeader data
+            var (header1, values1) = Format.GetHeaderAndData<SalesOrderHeaderDto>(data.SalesOrderHeader);
+            if (values1 != null) lnSummary.AddRange(values1);
+
+            // build salesOrderHeaderInfo data
+            var (header2, values2) = Format.GetHeaderAndData<SalesOrderHeaderInfoDto>(data.SalesOrderHeaderInfo);
+            if (values2 != null) lnSummary.AddRange(values2);
+
+            // build SalesOrderItems data
+            foreach (var item in data.SalesOrderItems)
+            {
+                if (item == null || string.IsNullOrEmpty(item.SKU)) continue;
+                var (headerLine, valuesLine) = Format.GetHeaderAndData<SalesOrderItemsDto>(item);
+                var ln = new List<string>(lnSummary);
+                if (valuesLine != null) ln.AddRange(valuesLine);
+                lines.Add(ln);
+            }
+            return lines;
+        }
+
         #endregion export
     }
 }

@@ -248,7 +248,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 ? null
                 : ParentObject.GetNames();
 
-        public virtual (IList<string>, IList<string>) GetHeaderAndData<T>(T data)
+        public virtual (IList<string> headers, IList<string> values) GetHeaderAndData<T>(T data)
         {
             var result = new List<string>();
             var parent = ParentObject.FindByType(typeof(T));
