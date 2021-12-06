@@ -173,7 +173,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.CustomerName, f =>"")
                 .RuleFor(u => u.Area, f => "")
                 .RuleFor(u => u.Region, f =>"")
-                .RuleFor(u => u.ShippingCarrier, f => "")
                 ;
             #endregion faker data rules
         }
