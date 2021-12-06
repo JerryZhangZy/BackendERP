@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> RefNum => _RefNum;
 
         protected QueryFilter<string> _CustomerPoNum = new QueryFilter<string>("CustomerPoNum", "CustomerPoNum", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> CustomerPoNum => _CustomerPoNum;
+        public QueryFilter<string> CustomerPoNum => _CustomerPoNum; 
 
         protected QueryFilter<string> _ShipToName = new QueryFilter<string>("ShipToName", "ShipToName", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToName => _ShipToName;
