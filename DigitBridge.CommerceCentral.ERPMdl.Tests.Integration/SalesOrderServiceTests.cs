@@ -429,105 +429,113 @@ WHERE itm.cnt > 0
 
         #region Test update salesorder status to shipped
 
-        protected async Task<string> GetSalesOrderUuidWithAllItemShippedAsync()
+        protected SalesOrderData GetFackerSalesOrderData_NoShipAndCancelledQty(int orderItemCount = 10)
         {
-            return await GetSalesOrderUuidWithItemCountAsync();
-        }
-
-        private async Task<string> GetSalesOrderUuidWithItemCountAsync(int orderItemCount = 3, int shippedItemCount = 3, int cancelledShippedCount = 0)
-        {
-            //int orderItemCount = 5;
-            //var partialShippedCount = 3;
-            //var cancelledShippedCount = 0;
-
-            if (shippedItemCount > orderItemCount) shippedItemCount = orderItemCount;
-
             var salesOrderData = SalesOrderDataTests.GetFakerDataWithCountItem(orderItemCount);
             salesOrderData.SalesOrderHeader.OrderStatus = (int)SalesOrderStatus.Processing;
-            for (int i = 0; i < shippedItemCount; i++)
+            for (int i = 0; i < orderItemCount; i++)
             {
                 var orderItem = salesOrderData.SalesOrderItems[i];
                 orderItem.ShipQty = 0;
+                orderItem.CancelledQty = 0;
             }
+            return salesOrderData;
+        }
+        protected OrderShipmentData GetFackerOrderShipmentData_ConnectedToSalesOrder(SalesOrderData salesOrderData, int shippedItemCount_PerPackage = 10, int packageCount = 1, int cancelledShippedCount = 0)
+        {
+            // reset shippedItemCount_PerPackage
+            if (shippedItemCount_PerPackage > salesOrderData.SalesOrderItems.Count)
+                shippedItemCount_PerPackage = salesOrderData.SalesOrderItems.Count;
+            // reset shippedItemCount_PerPackage
+            if (cancelledShippedCount > shippedItemCount_PerPackage * packageCount)
+                cancelledShippedCount = shippedItemCount_PerPackage * packageCount;
+
+            //get shippmentData
+            var shipmentData = OrderShipmentDataTests.GetFakerDataWithCountItem(packageCount, shippedItemCount_PerPackage, cancelledShippedCount);
+
+            //connect each package shipped item to salesorder item
+            shipmentData.OrderShipmentHeader.ShipmentStatus = (int)OrderShipmentStatusEnum.Shipped;
+            shipmentData.OrderShipmentHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
+            foreach (var package in shipmentData.OrderShipmentPackage)
+            {
+                for (int i = 0; i < shippedItemCount_PerPackage; i++)
+                {
+                    var orderItem = salesOrderData.SalesOrderItems[i];
+                    var shipmentItem = package.OrderShipmentShippedItem[i];//read item from package.
+                    shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
+                    shipmentItem.ShippedQty = orderItem.OrderQty - orderItem.CancelledQty;
+                }
+            }
+
+            //connect cancelledShippedItem to shippedItem
+            for (int i = 0; i < cancelledShippedCount; i++)
+            {
+                var cancelledShippedItem = shipmentData.OrderShipmentCanceledItem[i];
+                var shippedItem = shipmentData.OrderShipmentShippedItem[i];//read item from shipmentData which includeds all shipped items
+                cancelledShippedItem.SalesOrderItemsUuid = shippedItem.SalesOrderItemsUuid;
+                cancelledShippedItem.CanceledQty = 1;
+            }
+
+            return shipmentData;
+        }
+
+        protected async Task<OrderShipmentData> SaveShipmentData(OrderShipmentData shipmentData)
+        {
+            var shipmentService = new OrderShipmentService(DataBaseFactory);
+            shipmentService.Add();
+            shipmentService.AttachData(shipmentData);
+            var success = await shipmentService.SaveDataAsync();
+            Assert.True(success, "save shipmentData failed");
+            return shipmentService.Data;
+        }
+        protected async Task<SalesOrderData> SaveSalesOrderData(SalesOrderData salesOrderData)
+        {
 
             var orderService = new SalesOrderService(DataBaseFactory);
             orderService.Add();
             orderService.AttachData(salesOrderData);
             var success = await orderService.SaveDataAsync();
             Assert.True(success, "save salesorder failed");
-
-
-
-
-            var shipmentData = OrderShipmentDataTests.GetFakerDataWithCountItem(1, shippedItemCount, cancelledShippedCount);
-            shipmentData.OrderShipmentHeader.ShipmentStatus = (int)OrderShipmentStatusEnum.Shipped;
-            shipmentData.OrderShipmentHeader.SalesOrderUuid = orderService.Data.SalesOrderHeader.SalesOrderUuid;
-            for (int i = 0; i < shippedItemCount; i++)
-            {
-                var orderItem = salesOrderData.SalesOrderItems[i];
-                var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
-                shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
-                orderItem.ShipQty = 0;
-            }
-            //for (int i = partialShippedCount; i < partialShippedCount + cancelledShippedCount; i++)
-            //{
-            //    var orderItem = salesOrderData.SalesOrderItems[i];
-            //    orderItem.ShipQty = 0;
-
-            //    var cancelledShippedItem = shipmentData.OrderShipmentCanceledItem[i - partialShippedCount];
-            //    cancelledShippedItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
-            //    cancelledShippedItem.CanceledQty = 1;
-
-            //    var shipmentItem = shipmentData.OrderShipmentShippedItem[i];
-            //    shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid; 
-            //}
-            var shipmentService = new OrderShipmentService(DataBaseFactory);
-            shipmentService.Add();
-            shipmentService.AttachData(shipmentData);
-            success = await shipmentService.SaveDataAsync();
-            Assert.True(success, "save shipmentData failed");
-
-            return orderService.Data.SalesOrderHeader.SalesOrderUuid;
+            return orderService.Data;
         }
 
-        protected async Task<string> GetSalesOrderUuidWithPartialItemShippedAsync()
-        {
-            return await GetSalesOrderUuidWithItemCountAsync(5, 3, 0);
-        }
+
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public async Task UpdateOrderStautsToShippedAsync_AllShipped_Test()
         {
-            var salesOrderUuid = await GetSalesOrderUuidWithAllItemShippedAsync();
-            var service = new SalesOrderService(DataBaseFactory);
-            var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
-            Assert.True(success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
+            var salesOrderData = GetFackerSalesOrderData_NoShipAndCancelledQty();
+            salesOrderData = await SaveSalesOrderData(salesOrderData);
+            var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData);
+            shipmentData = await SaveShipmentData(shipmentData);
 
             var orderService = new SalesOrderService(DataBaseFactory);
-            success = await orderService.GetDataByIdAsync(salesOrderUuid);
-            Assert.True(success, "GetDataByIdAsync:" + service.Messages.ObjectToString());
+            var success = await orderService.GetDataByIdAsync(salesOrderData.SalesOrderHeader.SalesOrderUuid);
+            Assert.True(success, "Get salesorder by SalesOrderUuid error:" + orderService.Messages.ObjectToString());
 
-            Assert.True(orderService.Data.SalesOrderHeader.OrderStatus == (int)SalesOrderStatus.Shipped, $"order status is {orderService.Data.SalesOrderHeader.OrderStatus}, expected order status is {(int)SalesOrderStatus.Shipped}");
-        } 
+            var orderStatus = orderService.Data.SalesOrderHeader.OrderStatus;
+            Assert.True(orderStatus == (int)SalesOrderStatus.Shipped, $"order status is {orderStatus}, expected order status is {(int)SalesOrderStatus.Shipped}");
+        }
+
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public async Task UpdateOrderStautsToShippedAsync_PartialShipped_Test()
         {
-            SalesOrderStatus orderStatus_Processing = SalesOrderStatus.Processing;
-            var salesOrderUuid = await GetSalesOrderUuidWithPartialItemShippedAsync();
-            var service = new SalesOrderService(DataBaseFactory);
+            var orderItemCount = 5;
+            var shippedItemCount = 3;//PartialShipped: shipped item count less than order item count;
+            var salesOrderData = GetFackerSalesOrderData_NoShipAndCancelledQty(orderItemCount);
+            salesOrderData = await SaveSalesOrderData(salesOrderData);
+            var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData, shippedItemCount);
+            shipmentData = await SaveShipmentData(shipmentData);
 
-            var success = await service.UpdateOrderStautsToShippedAsync(salesOrderUuid);
-            
-            // no data was updated.
-            Assert.True(!success, "UpdateOrderStautsToShippedAsync:" + service.Messages.ObjectToString());
-
+            var orderStatus_Processing = SalesOrderStatus.Processing;
             var orderService = new SalesOrderService(DataBaseFactory);
-            success = await orderService.GetDataByIdAsync(salesOrderUuid);
-            Assert.True(success, "GetDataByIdAsync:" + service.Messages.ObjectToString());
+            var success = await orderService.GetDataByIdAsync(salesOrderData.SalesOrderHeader.SalesOrderUuid);
+            Assert.True(success, "Get salesorder by SalesOrderUuid error:" + orderService.Messages.ObjectToString());
 
-            Assert.True(orderService.Data.SalesOrderHeader.OrderStatus == (int)orderStatus_Processing, $"order status is {orderService.Data.SalesOrderHeader.OrderStatus}, expected order status is {orderStatus_Processing}");
+            var orderStatus = orderService.Data.SalesOrderHeader.OrderStatus;
+            Assert.True(orderStatus == (int)orderStatus_Processing, $"order status is {orderStatus}, expected order status is {orderStatus_Processing}");
         }
 
         #endregion

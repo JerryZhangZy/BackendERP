@@ -836,9 +836,9 @@ WHERE shippedItem.OrderShipmentUuid=@0
             var sql = $@"
 
 --declare @0 varchar(50)='a6cef76f-7049-4759-89b1-e7390d76a58d' --@SalesOrderUuid 
---declare @4 int=16 --@shipmentStatus_Cancelled int --16
+--declare @3 int=4 --@orderstatus_shipped int --4
 --declare @1 int =255--@orderStatus_Cancelled int --255
---declare @2 int =100 --@orderStatus_Hold int --100
+--declare @2 int =100 --@orderStatus_Hold int --100 
 
 update SalesOrderHeader 
 set OrderStatus=@3
