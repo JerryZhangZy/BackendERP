@@ -139,6 +139,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.Customer != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Invoice, this.Data.Customer.CustomerCode);
+                    }
+                }
             }
             catch (Exception)
             {

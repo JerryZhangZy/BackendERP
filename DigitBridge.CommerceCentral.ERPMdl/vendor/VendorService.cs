@@ -125,6 +125,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.Vendor != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Vendor.MasterAccountNum, this.Data.Vendor.ProfileNum, ActivityLogType.Vendor, this.Data.Vendor.VendorCode);
+                    }
+                }
             }
             catch (Exception)
             {

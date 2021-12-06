@@ -152,6 +152,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.PoHeader != null)
+                {
+                  
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
+                    }
+
+                }
             }
             catch (Exception)
             {

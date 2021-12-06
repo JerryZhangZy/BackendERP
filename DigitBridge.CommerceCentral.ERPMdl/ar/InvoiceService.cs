@@ -150,6 +150,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+
+                if (this.Data?.InvoiceHeader != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.InvoiceHeader.MasterAccountNum, this.Data.InvoiceHeader.ProfileNum, ActivityLogType.Invoice, this.Data.InvoiceHeader.InvoiceNumber);
+                    }
+                }
             }
             catch (Exception)
             {
