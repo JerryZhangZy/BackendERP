@@ -848,7 +848,8 @@ AND OrderStatus !=@1
 AND OrderStatus !=@2 
 and not exists(
 	select 1
-	FROM SalesOrderItems orderItem on orderItem.SalesOrderUuid= @0
+	FROM SalesOrderItems orderItem 
+    WHERE orderItem.SalesOrderUuid= @0
 	where coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
 )
 ";
