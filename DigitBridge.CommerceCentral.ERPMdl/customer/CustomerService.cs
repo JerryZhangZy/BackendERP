@@ -98,13 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.AfterSaveAsync();
-                if (this.Data?.Customer != null)
-                {
-                    if (_ProcessMode == ProcessingMode.Add)
-                    {
-                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Invoice, this.Data.Customer.CustomerCode);
-                    }
-                }
+    
             }
             catch (Exception)
             {
@@ -139,6 +133,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.Customer != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Customer, this.Data.Customer.CustomerCode);
+                    }
+                }
             }
             catch (Exception)
             {
@@ -155,6 +156,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 base.SaveSuccess();
+                if (this.Data?.Customer != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                         initNumbersService.UpdateMaxNumber(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Invoice, this.Data.Customer.CustomerCode);
+                    }
+                }
             }
             catch (Exception)
             {

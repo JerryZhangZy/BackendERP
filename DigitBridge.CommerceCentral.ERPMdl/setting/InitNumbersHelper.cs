@@ -123,11 +123,22 @@ AND OrderNumber = @number
         {
             string sql = "Update InitNumbers Set MaxNumber=@MaxNumber where MasterAccountNum=@MasterAccountNum and ProfileNum=@ProfileNum and Type=@Type";
            return await SqlQuery.ExecuteNonQueryAsync(sql,
-                 maxNumber.ToSqlParameter("MaxNumber"),
+                 long.Parse(maxNumber).ToSqlParameter("MaxNumber"),
              masterAccountNum.ToSqlParameter("MasterAccountNum"),
              profileNum.ToSqlParameter("ProfileNum"),
                 ((int)activityLogType).ToString().ToSqlParameter("Type")
              )==1;
+        }
+
+        public static  bool UpdateMaxNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
+        {
+            string sql = "Update InitNumbers Set MaxNumber=@MaxNumber where MasterAccountNum=@MasterAccountNum and ProfileNum=@ProfileNum and Type=@Type";
+            return   SqlQuery.ExecuteNonQuery(sql,
+                  long.Parse(maxNumber).ToSqlParameter("MaxNumber"),
+              masterAccountNum.ToSqlParameter("MasterAccountNum"),
+              profileNum.ToSqlParameter("ProfileNum"),
+                 ((int)activityLogType).ToString().ToSqlParameter("Type")
+              ) == 1;
         }
 
         public static async Task<string> GetNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
