@@ -582,6 +582,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
+
+        #region Resend event process
+        public async Task<bool> ResendMessageToQueueAsync(EventProcessTypeEnum eventProcessType, string processUuid)
+        {
+            var success = await GetByProcessUuidAsync((int)eventProcessType, processUuid);
+            if (!success)
+            {
+                AddError($"Data not found for processUuid:{processUuid}");
+                return false;
+            }
+            return await InQueueAsync();
+        }
+        #endregion
     }
 }
 

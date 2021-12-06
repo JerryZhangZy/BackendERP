@@ -38,6 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 SELECT OrderNumber AS [value], '' AS [text], 1 AS [count]
 FROM InvoiceHeader tbl
 WHERE {this.QueryObject.GetSQL()}
+GROUP BY OrderNumber
 ORDER BY [value]
 ";
             return this.SQL_Select;

@@ -135,27 +135,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class MiscInvoiceFilter
     {
+        public string MiscInvoiceUuid { get; set; }
+        public string QboDocNumber { get; set; }
         public string MiscInvoiceNumber { get; set; }
-
-        public string MiscInvoiceType { get; set; }
-
-        public string MiscInvoiceStatus { get; set; }
-
+        public string MiscInvoiceNumberFrom { get; set; }
+        public string MiscInvoiceNumberTo { get; set; }
         public DateTime MiscInvoiceDateFrom { get; set; }
-
         public DateTime MiscInvoiceDateTo { get; set; }
-
+        public DateTime DueDateFrom { get; set; }
+        public DateTime DueDateTo { get; set; }
+        public int MiscInvoiceType { get; set; }
+        public int MiscInvoiceStatus { get; set; }
         public string CustomerCode { get; set; }
-
         public string CustomerName { get; set; }
+        public string BankAccountUuid { get; set; }
+        public string BankAccountCode { get; set; }
+        public int PaidBy { get; set; }
+        public string CheckNum { get; set; }
+        public string AuthCode { get; set; }
 
         public static Faker<MiscInvoiceFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<MiscInvoiceFilter>()
                 .RuleFor(u => u.MiscInvoiceNumber, f => string.Empty)
-                .RuleFor(u => u.MiscInvoiceType, f => string.Empty)
-                .RuleFor(u => u.MiscInvoiceStatus, f => string.Empty)
+                .RuleFor(u => u.MiscInvoiceType, f => f.Random.Number())
+                .RuleFor(u => u.MiscInvoiceStatus, f => f.Random.Number())
                 .RuleFor(u => u.MiscInvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
                 .RuleFor(u => u.MiscInvoiceDateTo, f => f.Date.Past(0).Date.Date)
                 .RuleFor(u => u.CustomerCode, f => string.Empty)

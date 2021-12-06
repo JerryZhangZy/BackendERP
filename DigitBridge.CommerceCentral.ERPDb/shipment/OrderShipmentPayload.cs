@@ -113,6 +113,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasOrderShipmentListSummary => OrderShipmentListSummary != null && OrderShipmentListSummary.Length > 0;
         public bool ShouldSerializeOrderShipmentListSummary() => HasOrderShipmentListSummary;
         #endregion
+
+        #region Re send wms shipment to erp
+
+        /// <summary>
+        /// (Request Parameter) Array of uuid that will be resend to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Request Parameter) Array of uuid that will be resend to erp.")]
+        public IList<string> WMSShipmentIDs { get; set; } = new List<string>();
+        [JsonIgnore]
+        public virtual bool HasWMSShipmentIDs => WMSShipmentIDs != null && WMSShipmentIDs.Count > 0;
+        public bool ShouldSerializeSalesOrderUuids() => HasWMSShipmentIDs;
+
+        /// <summary>
+        /// (Response Parameter) Array of WMSShipmentID which have been sent to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Response Parameter) Array of WMSShipmentID which have been sent to erp.")]
+        public List<string> SentWMSShipmentIDs { get; set; } = new List<string>();
+        [JsonIgnore]
+        public virtual bool HasSentWMSShipmentIDs => SentWMSShipmentIDs != null && SentWMSShipmentIDs.Count > 0;
+        public bool ShouldSerializeSentWMSShipmentIDs() => HasSentWMSShipmentIDs;
+        #endregion
     }
 }
 
