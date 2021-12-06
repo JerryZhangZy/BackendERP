@@ -96,7 +96,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return await InitNumbersHelper.UpdateMaxNumberAsync(masterAccountNum, profileNum, activityLogType, maxNumber);
             }
         }
-
+        public   bool UpdateMaxNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
+        {
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return  InitNumbersHelper.UpdateMaxNumber(masterAccountNum, profileNum, activityLogType, maxNumber);
+            }
+        }
 
         #endregion
 

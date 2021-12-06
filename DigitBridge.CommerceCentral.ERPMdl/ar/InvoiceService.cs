@@ -109,15 +109,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.AfterSaveAsync();
-                if (this.Data?.InvoiceHeader != null)
-                {
-                    if (_ProcessMode == ProcessingMode.Add)
-                    {
-                        await initNumbersService.UpdateMaxNumberAsync(this.Data.InvoiceHeader.MasterAccountNum, this.Data.InvoiceHeader.ProfileNum, ActivityLogType.Invoice, this.Data.InvoiceHeader.InvoiceNumber);
-                    }
-                }
+                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 AddWarning("Updating relative data caused an error after save.");
             }
@@ -159,7 +153,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 AddWarning("Updating relative data caused an error after save success.");
             }
@@ -174,6 +168,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 base.SaveSuccess();
+
+                if (this.Data?.InvoiceHeader != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                         initNumbersService.UpdateMaxNumber(this.Data.InvoiceHeader.MasterAccountNum, this.Data.InvoiceHeader.ProfileNum, ActivityLogType.Invoice, this.Data.InvoiceHeader.InvoiceNumber);
+                    }
+                }
             }
             catch (Exception)
             {
