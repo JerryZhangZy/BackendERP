@@ -17,8 +17,8 @@ namespace DigitBridge.Base.Common
         Cancelled = 3,
         [Description("Shipping")]
         Shipping = 9,
-        [Description("Canceled")]
-        Canceled = 16
+        //[Description("Canceled")]
+        //Canceled = 16
     }
     public enum OrderShipmentTypeEnum : int
     {

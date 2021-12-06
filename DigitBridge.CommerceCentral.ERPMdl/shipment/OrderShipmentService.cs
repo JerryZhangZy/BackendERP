@@ -191,6 +191,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         // update inventoryLog and update instock
                         await inventoryLogService.ClearInventoryLogByLogUuidAsync(this.Data.OrderShipmentHeader.OrderShipmentUuid);
+                        //TODO roll back order status to which one?
                     }
                     else
                     {
@@ -198,6 +199,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         await UpdateOrderShipmentNumReferenceAsync(this.Data.OrderShipmentHeader.OrderShipmentUuid);
                         // update inventoryLog and update instock
                         await inventoryLogService.UpdateByShipmentAsync(this.Data);
+                        // update salesorder status to shipped.
+                        await salesOrderService.UpdateOrderStautsToShippedAsync(this.Data.OrderShipmentHeader.SalesOrderUuid);
+
                     }
                 }
             }
