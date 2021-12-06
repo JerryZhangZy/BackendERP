@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 
             }
             catch (Exception ex)
-            {
+            { 
                 AddWarning("Updating relative data caused an error after save.");
             }
         }
