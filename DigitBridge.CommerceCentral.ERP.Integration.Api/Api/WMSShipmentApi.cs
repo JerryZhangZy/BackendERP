@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             var shipmentIDs = await req.GetBodyObjectAsync<IList<string>>();
             var masterAccountNum = req.MasterAccountNum();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
-            var service = new OrderShipmentManager(dataBaseFactory MySingletonAppSetting.AzureWebJobsStorage);
+            var service = new OrderShipmentManager(dataBaseFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
             var result = await service.ResendByShipmentIDAsync(shipmentIDs);
 

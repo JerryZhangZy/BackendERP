@@ -39,8 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<OrderShipmentPayload>(true);
             var svc = new IntegrationWMSShipmentApi();
-            payload.Success = await svc.ReSendWMSShipmentToErpAsync(payload);
-            payload.Messages = svc.Messages;
+            await svc.ReSendWMSShipmentToErpAsync(payload);
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
     }

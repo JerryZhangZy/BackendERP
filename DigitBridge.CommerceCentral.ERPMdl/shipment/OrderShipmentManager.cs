@@ -295,6 +295,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     payload.Success = false;
 
             }
+            payload.Messages = eventProcessERPService.Messages;
             return payload;
         }
 
