@@ -108,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     await InventoryService.UpdateOpenPoQtyFromPoUuidAsync(this.Data.PoHeader.PoUuid);
 
-                    await initNumbersService.UpdateMaxNumberAsync(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
+                    
 
                 }
             }
@@ -149,6 +149,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.PoHeader != null)
+                {
+                  
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
+                    }
+
+                }
             }
             catch (Exception)
             {
@@ -165,6 +174,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 base.SaveSuccess();
+                if (this.Data?.PoHeader != null)
+                {
+
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                          initNumbersService.UpdateMaxNumber(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
+                    }
+
+                }
             }
             catch (Exception)
             {

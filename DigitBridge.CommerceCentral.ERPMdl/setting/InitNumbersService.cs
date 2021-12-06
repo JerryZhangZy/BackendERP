@@ -91,12 +91,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> UpdateMaxNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
         {
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                return await InitNumbersHelper.UpdateMaxNumberAsync(masterAccountNum, profileNum, activityLogType, maxNumber);
-            }
+            
+                string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3";
+               
+            
+                return (await dbFactory.Db.ExecuteAsync(sql,
+                      maxNumber.ToLong().ToSqlParameter("@0"),
+                  masterAccountNum.ToSqlParameter("@1"),
+                  profileNum.ToSqlParameter("@2"),
+                     ((int)activityLogType).ToString().ToSqlParameter("@3")
+                  )) == 1;
         }
+        public   bool UpdateMaxNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
+        {
+            string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3";
 
+
+            return ( dbFactory.Db.Execute(sql,
+                  maxNumber.ToLong().ToSqlParameter("@0"),
+              masterAccountNum.ToSqlParameter("@1"),
+              profileNum.ToSqlParameter("@2"),
+                 ((int)activityLogType).ToString().ToSqlParameter("@3")
+              )) == 1;
+        }
 
         #endregion
 

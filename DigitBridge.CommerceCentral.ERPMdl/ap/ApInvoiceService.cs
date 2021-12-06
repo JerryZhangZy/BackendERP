@@ -91,9 +91,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 await base.AfterSaveAsync();
                 if (this.Data?.ApInvoiceHeader != null)
-                {
-
-                    await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                {   
+                  
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
@@ -134,6 +133,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                         
+                        var result=await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                    }
+                }
             }
             catch (Exception)
             {
@@ -150,6 +157,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 base.SaveSuccess();
+
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                          initNumbersService.UpdateMaxNumber(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                    }
+                }
             }
             catch (Exception)
             {
