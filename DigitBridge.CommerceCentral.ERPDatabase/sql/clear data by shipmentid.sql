@@ -9,6 +9,12 @@ where ShipmentID in
 (
  select * from #tmpProcessUuid
 )  
+
+--update SalesOrderHeader set OrderStatus=0 -- 0 : new,1 : open
+--where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
+
+update SalesOrderItems set ShipQty=0 
+where SalesOrderUuid in (select  SalesOrderUuid from #ToDeleteUuids)
  
 
 --delete invoice

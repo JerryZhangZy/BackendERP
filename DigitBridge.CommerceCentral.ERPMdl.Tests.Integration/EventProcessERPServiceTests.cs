@@ -324,7 +324,18 @@ FROM EventProcessERP ins
 
             Assert.True(result, srv.Messages.ObjectToString());
         }
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task ResendMessageToQueueAsync_Test()
+        {
+            // only test message to eventprocess table and to queue.
+            var shipmentID = "113-10000000496"; 
 
+            var srv = new EventProcessERPService(DataBaseFactory,MySingletonAppSetting.AzureWebJobsStorage);
+            var result = (await srv.ResendMessageToQueueAsync(EventProcessTypeEnum.ShipmentFromWMS,shipmentID));
+
+            Assert.True(result, srv.Messages.ObjectToString());
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]

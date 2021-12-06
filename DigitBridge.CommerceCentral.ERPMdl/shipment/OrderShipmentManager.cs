@@ -280,6 +280,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Add WMS shipment info to event process and queue
 
+        public async Task<WSMShipmentResendPayload> ResendByShipmentIDAsync(IList<string> shipmentIDs)
+        {
+            var payload = new WSMShipmentResendPayload() { WMSShipmentIDs = shipmentIDs };
+
+            foreach (var shipmentID in shipmentIDs)
+            {
+                var success = await eventProcessERPService.ResendMessageToQueueAsync(EventProcessTypeEnum.ShipmentFromWMS, shipmentID);
+                if (success)
+                {
+                    payload.SentWMSShipmentIDs.Add(shipmentID);
+                }
+                else
+                    payload.Success = false;
+
+            }
+            payload.Messages = eventProcessERPService.Messages;
+            return payload;
+        }
+
         /// <summary>
         /// Create multiple shipment and invoice
         /// </summary>
