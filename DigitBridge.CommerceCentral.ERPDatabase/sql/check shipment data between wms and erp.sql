@@ -150,6 +150,9 @@ shipment.InvoiceUuid
 ,wmsShipment.shippingClass as shippingClassInWMSShipment
 ,invoiceInfo.shippingClass as shippingClassInInvoice
 
+,invoice.SubTotalAmount as SubTotalAmountInInvoice
+,orderHeader.SubTotalAmount as SubTotalAmountInOrder
+
 into #compareHeader 
 from #wmsshipment wmsShipment  
 left join OrderShipmentHeader  shipment on shipment.ShipmentID=wmsShipment.shipmentID
@@ -157,7 +160,9 @@ left join SalesOrderHeader  orderHeader on orderHeader.SalesOrderUuid=shipment.S
 left join SalesOrderHeaderInfo orderInfo on orderInfo.SalesOrderUuid=orderHeader.SalesOrderUuid
 left join InvoiceHeader invoice on invoice.InvoiceUuid=shipment.InvoiceUuid 
 left join InvoiceHeaderInfo invoiceInfo on invoiceInfo.InvoiceUuid=invoice.InvoiceUuid 
- 
+
+select * from  #compareHeader
+where isnull(SubTotalAmountInInvoice,0)!=isnull(SubTotalAmountInOrder,1)
 
  -- no result means all data matched.
 select * from #compareHeader c
@@ -209,8 +214,14 @@ or c.shippingClassInWMSShipment!=c.shippingClassInInvoice
  or shippedQtyInWMS!=shippedQtyInOrder
  or salesOrderItemsUuidInWMS!=SalesOrderItemsUuidInOrder 
 
- -- todo check invoie.
-
+ --check invoie count is match wms shipment
+ select wmsshipment.shipmentID
+ from #wmsshipment wmsshipment 
+ left join OrderShipmentHeader erpshipment on wmsshipment.shipmentID=erpshipment.ShipmentID
+ left join InvoiceHeader invoice on invoice.InvoiceUuid=erpshipment.InvoiceUuid
+ where invoice.InvoiceUuid is null
+ 
+ --select * from #wmsshipment
 
  --select * from #comparewmsShipmentAndOrder
 drop table #wmsshipment
