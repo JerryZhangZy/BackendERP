@@ -839,7 +839,6 @@ WHERE shippedItem.OrderShipmentUuid=@0
 --declare @4 int=16 --@shipmentStatus_Cancelled int --16
 --declare @1 int =255--@orderStatus_Cancelled int --255
 --declare @2 int =100 --@orderStatus_Hold int --100
---declare @3 int=4 --@orderStatus_Shipped int --4
 
 update SalesOrderHeader 
 set OrderStatus=@3
@@ -858,8 +857,7 @@ and not exists(
                 salesOrderUuid.ToSqlParameter("@0"),
                 ((int)SalesOrderStatus.Cancelled).ToSqlParameter("@1"),
                 ((int)SalesOrderStatus.Hold).ToSqlParameter("@2"),
-                ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3"),
-                ((int)OrderShipmentStatusEnum.Cancelled).ToSqlParameter("@4")
+                ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3")
             );
             return result > 0;
         }
