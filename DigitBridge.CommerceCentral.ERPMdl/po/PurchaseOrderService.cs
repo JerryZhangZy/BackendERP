@@ -108,10 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     await InventoryService.UpdateOpenPoQtyFromPoUuidAsync(this.Data.PoHeader.PoUuid);
 
-                    if (_ProcessMode == ProcessingMode.Add)
-                    {
-                        await initNumbersService.UpdateMaxNumberAsync(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
-                    }
+                    
 
                 }
             }
