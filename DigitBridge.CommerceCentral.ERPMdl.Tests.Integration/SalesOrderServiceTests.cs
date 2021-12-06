@@ -529,13 +529,13 @@ WHERE itm.cnt > 0
             var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData, shippedItemCount);
             shipmentData = await SaveShipmentData(shipmentData);
 
-            var orderStatus_Processing = SalesOrderStatus.Processing;
+            var orderStatus_Open = SalesOrderStatus.Open;
             var orderService = new SalesOrderService(DataBaseFactory);
             var success = await orderService.GetDataByIdAsync(salesOrderData.SalesOrderHeader.SalesOrderUuid);
             Assert.True(success, "Get salesorder by SalesOrderUuid error:" + orderService.Messages.ObjectToString());
 
             var orderStatus = orderService.Data.SalesOrderHeader.OrderStatus;
-            Assert.True(orderStatus == (int)orderStatus_Processing, $"order status is {orderStatus}, expected order status is {orderStatus_Processing}");
+            Assert.True(orderStatus == (int)orderStatus_Open, $"order status is {orderStatus}, expected order status is {orderStatus_Open}");
         }
 
         #endregion
