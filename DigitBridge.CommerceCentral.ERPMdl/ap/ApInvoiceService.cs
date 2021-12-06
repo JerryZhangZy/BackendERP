@@ -137,7 +137,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     if (_ProcessMode == ProcessingMode.Add)
                     {
-                        await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                         
+                        var result=await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
                     }
                 }
             }
