@@ -37,6 +37,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _WarehouseID = new QueryFilter<string>("WarehouseID", "WarehouseID", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> WarehouseID => _WarehouseID;
 
+        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> WarehouseCode => _WarehouseCode;
+
+        protected QueryFilter<string> _OrderNumber = new QueryFilter<string>("OrderNumber", "OrderNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> OrderNumber => _OrderNumber;
+
+        protected QueryFilter<string> _InvoiceNumber = new QueryFilter<string>("InvoiceNumber", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> InvoiceNumber => _InvoiceNumber;
+
         protected QueryFilter<string> _MainTrackingNumber = new QueryFilter<string>("MainTrackingNumber", "MainTrackingNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> MainTrackingNumber => _MainTrackingNumber;
 
@@ -79,7 +88,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipmentStatus);
             AddFilter(_ShippingClass);
             AddFilter(_ShippingCarrier);
-            
+            AddFilter(_WarehouseCode);
+            AddFilter(_InvoiceNumber);
+            AddFilter(_OrderNumber);
         }
 
         protected override void SetAvailableOrderByList()

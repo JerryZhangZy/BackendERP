@@ -144,6 +144,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string ChannelOrderID { get; set; }
         public string ShipmentID { get; set; }
         public string WarehouseID { get; set; }
+        public string WarehouseCode { get; set; }
+        public string InvoiceNumber { get; set; }
+        public string OrderNumber { get; set; }
         public string MainTrackingNumber { get; set; }
         public string MainReturnTrackingNumber { get; set; }
         public int ShipmentType { get; set; }
