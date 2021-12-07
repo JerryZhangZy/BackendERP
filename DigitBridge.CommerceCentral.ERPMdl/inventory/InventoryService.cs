@@ -349,13 +349,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var find = new ProductFindClass()
             {
-                MasterAccountNum = (payload.Inventory.ProductBasic == null) ? payload.Inventory.ProductExt.MasterAccountNum.ToInt() : payload.Inventory.ProductBasic.MasterAccountNum.ToInt(),
-                ProfileNum = (payload.Inventory.ProductBasic == null) ? payload.Inventory.ProductExt.ProfileNum.ToInt() : payload.Inventory.ProductBasic.ProfileNum.ToInt(),
+                //MasterAccountNum = (payload.Inventory.ProductBasic == null) ? payload.Inventory.ProductExt.MasterAccountNum.ToInt() : payload.Inventory.ProductBasic.MasterAccountNum.ToInt(),
+                MasterAccountNum = payload.MasterAccountNum,
+                //ProfileNum = (payload.Inventory.ProductBasic == null) ? payload.Inventory.ProductExt.ProfileNum.ToInt() : payload.Inventory.ProductBasic.ProfileNum.ToInt(),
+                ProfileNum = payload.ProfileNum,
                 SKU = (payload.Inventory.ProductBasic == null || string.IsNullOrEmpty(payload.Inventory.ProductBasic.SKU)) ? payload.Inventory.ProductExt.SKU : payload.Inventory.ProductBasic.SKU,
             };
             var rowNum = await GetRowNumByProductFindAsync(find);
 
-            if (rowNum <= 0 || (await EditAsync(rowNum)))
+            if (rowNum <= 0 ||!(await EditAsync(rowNum)))
             {
                 AddError($"SKU {find.SKU} not found.");
                 return false;
