@@ -831,27 +831,32 @@ WHERE RowNum=@1
             var sql = $@"
 --declare @0  varchar(50)='a48952a0-7829-2d26-425d-e18e1a552a0b'
 --declare @1 int=3 -- @shipemntStatus_Cancelled is 3
+--declare @2 int=255 @orderStatus_Cancelled
 
 UPDATE soItem 
 SET soItem.ShipQty=soItem.ShipQty {op} finalShippedItem.FinalShippedQty
-FROM SalesOrderItems soItem  
+FROM SalesOrderHeader orderHeader
+join SalesOrderItems soItem  on soItem.SalesOrderUuid=orderHeader.SalesOrderUuid
 JOIN 
 (
-	SELECT shippedItem.SalesOrderItemsUuid, sum((COALESCE(shippedItem.ShippedQty,0)-COALESCE(cancelledItem.CanceledQty,0))) as FinalShippedQty
+	SELECT max(shipmentHeader.SalesOrderUuid) as SalesOrderUuid,COALESCE(shippedItem.SalesOrderItemsUuid,'') as SalesOrderItemsUuid, sum((COALESCE(shippedItem.ShippedQty,0)-COALESCE(cancelledItem.CanceledQty,0))) as FinalShippedQty
 	FROM OrderShipmentHeader shipmentHeader 
 	LEFT JOIN OrderShipmentShippedItem shippedItem on shipmentHeader.OrderShipmentUuid=shippedItem.OrderShipmentUuid  
 	LEFT JOIN OrderShipmentCanceledItem cancelledItem 
 		   on cancelledItem.SalesOrderItemsUuid=shippedItem.SalesOrderItemsUuid
 		  and cancelledItem.OrderShipmentUuid=shipmentHeader.OrderShipmentUuid
-	WHERE shipmentHeader.OrderShipmentUuid = @0 and shipmentHeader.ProcessStatus!=@1--except cancelled shipment
+	WHERE shipmentHeader.OrderShipmentUuid = @0 and shipmentHeader.ShipmentStatus!=@1--except cancelled shipment
 	group by shippedItem.SalesOrderItemsUuid
 ) finalShippedItem on finalShippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid
-where COALESCE(finalShippedItem.FinalShippedQty,0) !=0 
+where orderHeader.SalesOrderUuid=finalShippedItem.SalesOrderUuid
+AND orderHeader.OrderStatus!=@2
+and COALESCE(finalShippedItem.FinalShippedQty,0) !=0 
 ";
             return await dbFactory.Db.ExecuteAsync(
                 sql,
                 shipmentUuid.ToSqlParameter("@0"),
-                ((int)OrderShipmentStatusEnum.Cancelled).ToParameter("@1")
+                ((int)OrderShipmentStatusEnum.Cancelled).ToParameter("@1"),
+                ((int)SalesOrderStatus.Cancelled).ToParameter("@2")
             ) > 0;
         }
 

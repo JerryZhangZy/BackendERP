@@ -94,6 +94,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new ApInvoiceService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
+            if (payload.Success)
+                payload.ApInvoice = srv.ToDto();
             payload.Messages = srv.Messages;
 
             //Directly return without waiting this result. 

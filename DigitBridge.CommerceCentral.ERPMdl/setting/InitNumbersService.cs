@@ -91,8 +91,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> UpdateMaxNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
         {
-            
-                string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3";
+            if (maxNumber.ToLong() <= 0)
+                return true;
+
+            string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3 and MaxNumber<@0";
                
             
                 return (await dbFactory.Db.ExecuteAsync(sql,
@@ -104,7 +106,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public   bool UpdateMaxNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
         {
-            string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3";
+            if (maxNumber.ToLong() <= 0)
+                return true;
+
+            string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3 and MaxNumber<@0";
 
 
             return ( dbFactory.Db.Execute(sql,

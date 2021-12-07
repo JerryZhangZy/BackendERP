@@ -20,11 +20,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Po unique key erp provided.
         /// </summary>
         public string PoUuid { get; set; }
-
+        private string poItemUuid { get; set; }
         /// <summary>
         /// Po item unique key erp provided.
         /// </summary>
-        public string PoItemUuid { get; set; }
+        public string PoItemUuid
+        {
+            get
+            {
+                //PoItemUuid is zero means its a new one.
+                if (string.IsNullOrEmpty(poItemUuid))
+                    poItemUuid = Guid.NewGuid().ToString();
+                return poItemUuid;
+            }
+            set
+            {
+                poItemUuid = value;
+            }
+        }
 
         /// <summary>
         /// WMS Received WarehouseCode
