@@ -89,6 +89,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
             Disable = source.Disable;
             return this;
         }
+
+        public virtual void EnableColumn()
+        {
+            if (string.IsNullOrEmpty(Name)) return;
+            HeaderName = Name;
+            Ignore = false;
+            DefaultValue = string.Empty;
+            ConstantValue = string.Empty;
+            Disable = false;
+            return;
+        }
+
     }
 
     public class CsvFormatParentObject
@@ -170,6 +182,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 Columns.Insert(0, colEnable[i]);
             }
         }
+
+        public virtual void EnableAllColumns()
+        {
+            if (!HasColumns()) return;
+            var idx = 1;
+            foreach (var col in Columns)
+            {
+                if (col == null || string.IsNullOrEmpty(col.Name)) continue;
+                col.EnableColumn();
+                col.Index = idx;
+                idx++;
+            }
+        }
+
     }
 
     public class CsvFormat
@@ -179,6 +205,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual int SkipLines { get; set; } = 0;
         public virtual string KeyName { get; set; } = null;
+        public virtual string DefaultKeyName { get; set; } = null;
 
         public virtual bool HasHeaderRecord { get; set; } = true;
         public virtual string Delimiter { get; set; } = ",";
@@ -216,6 +243,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             FormatName = fmt.FormatName;
             SkipLines = fmt.SkipLines;
             KeyName = fmt.KeyName;
+            DefaultKeyName = fmt.DefaultKeyName;
         }
 
         public virtual void LoadParentObject(IList<CsvFormatParentObject> parents)
@@ -284,7 +312,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     result.Add(string.Empty);
                     continue;
                 }
-                if (values.TryGetValue(col.Name, out var val))
+                if (values != null && values.TryGetValue(col.Name, out var val))
                     result.Add(val.ToFormatString(col.TextFormat));
                 else
                     result.Add(string.Empty);
@@ -312,6 +340,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 result = result.Concat(parent.Columns).ToList();
             }
             return result;
+        }
+
+        public virtual void EnableAllColumns()
+        {
+            if (!HasParentObject()) return;
+            KeyName = DefaultKeyName;
+            foreach (var parent in ParentObject)
+            {
+                if (parent == null) continue;
+                parent.EnableAllColumns();
+            }
         }
 
     }

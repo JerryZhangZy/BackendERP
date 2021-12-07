@@ -372,7 +372,28 @@
         dir = Path.Combine(path,IOFolder);
         SaveOutputNotExists(dir, $"{IOFormatName}.cs", GenerateNewName);
 #>
+<#@ include file="GenerateIOCsv.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOCsvHelperName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManager.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManagerInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"I{IOServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManagerTester.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{IOServiceName}Tests.cs", GenerateNewName);
+#>
 <# } #>
+
 <#+
     public void SaveOutput(string destinationFolder, string outputFileName)
     {

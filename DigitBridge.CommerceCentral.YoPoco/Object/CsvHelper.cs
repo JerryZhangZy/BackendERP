@@ -88,6 +88,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return ms.ToArray();
             }
         } 
+
         protected virtual void WriteCsv(T data, CsvWriter csv)
         {
             throw new Exception("must override WriteCsv  Method");
@@ -199,6 +200,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             await csv.WriteRecordsAsync(records);
         }
 
+        public async Task<byte[]> ExportAllColumnsAsync(IList<T> dtos)
+        {
+            if (dtos == null || dtos.Count == 0)
+                return null;
+            Format.EnableAllColumns();
+            return await ExportAsync(dtos);
+        }
+
         #endregion export
 
         #region import 
@@ -298,6 +307,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return null;
                 //throw;
             }
+        }
+
+        public virtual async Task<IEnumerable<T>> ImportAllColumnsAsync(Stream stream)
+        {
+            Format.EnableAllColumns();
+            return await ImportAsync(stream);
+        }
+        public virtual async Task<IEnumerable<T>> ImportAllColumnsAsync(string fileName)
+        {
+            Format.EnableAllColumns();
+            return await ImportAsync(fileName);
         }
 
         #endregion import 

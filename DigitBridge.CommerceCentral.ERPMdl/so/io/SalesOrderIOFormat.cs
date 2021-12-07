@@ -46,6 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FormatNum = 1;
             FormatName = "SalesOrder Deafult Format";
             KeyName = "";
+			DefaultKeyName = "SalesOrderUuid";
             HasHeaderRecord = true;
         }
 

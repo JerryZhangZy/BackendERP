@@ -52,6 +52,7 @@ namespace <#= NamespaceService #>
             FormatNum = 1;
             FormatName = "<#= processName #> Deafult Format";
             KeyName = "";
+			DefaultKeyName = "<#= StructureClass.MainTable.UniqueKey #>";
             HasHeaderRecord = true;
         }
 

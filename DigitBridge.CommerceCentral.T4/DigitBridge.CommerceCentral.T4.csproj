@@ -36,12 +36,24 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
+    <None Update="T4\GenerateIOManagerTester.ttinclude">
+      <LastGenOutput>GenerateIOManagerTester.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateIOManagerInterface.ttinclude">
+      <LastGenOutput>GenerateIOManagerTester.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateIOManager.ttinclude">
+      <LastGenOutput>GenerateIOManagerInterface.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateIOCsv.ttinclude">
-      <LastGenOutput>GenerateIOCsv.cs</LastGenOutput>
+      <LastGenOutput>GenerateIOManager.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateIOFormat.ttinclude">
-      <LastGenOutput>GenerateIOCsv.cs</LastGenOutput>
+      <LastGenOutput>GenerateIOFormat.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateDtoFormatColumns.ttinclude">
@@ -388,15 +400,30 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateIOFormat - Copy.cs">
-      <DependentUpon>GenerateIOFormat.cs</DependentUpon>
+    <Compile Update="T4\GenerateIOCsv - Copy.cs">
+      <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="T4\GenerateIOCsv.cs">
+    <Compile Update="T4\GenerateIOFormat.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
+      <DependentUpon>GenerateIOFormat.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateIOManager - Copy - Copy.cs">
+      <DependentUpon>GenerateIOManager.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateIOManager - Copy.cs">
+      <DependentUpon>GenerateIOManager.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateIOManagerTester.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateIOManagerTester.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepository - Copy.cs">
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
