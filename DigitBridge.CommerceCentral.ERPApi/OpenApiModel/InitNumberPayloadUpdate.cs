@@ -76,18 +76,12 @@ namespace DigitBridge.CommerceCentral.ERPApi.OpenApiModel
     /// Request and Response payload object for GET multiple API
     /// </summary>
     [Serializable()]
-    public class InitNumberPayloadGetMultiple
+    public class InitNumberPayloadUpdateMultiple
     {
-        /// <summary>
-        /// (Request) Array of uuid to get multiple InitNumbers.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request) Array of uuid to get multiple InitNumbers.")]
-        public IList<string> InitNumberUuids { get; set; }
-
         /// <summary>
         /// (Response) Array of InitNumber which get by uuid array.
         /// </summary>
-        [OpenApiPropertyDescription("(Response) Array of ApInvoice which get by uuid array.")]
+        [OpenApiPropertyDescription("(Request) Array of ApInvoice which get by uuid array.")]
         public IList<InitNumbersDataDto> InitNumbers { get; set; }
     }
 
