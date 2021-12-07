@@ -599,23 +599,9 @@ where poi.PoUuid=@0;
             return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.PurchaseOrder);
         }
 
-        #region Get merged po data list by po item uuid list. 
-        /// <summary>
-        /// Get po data list by po item uuid list. then merge po by vendor
-        /// </summary>
-        /// <param name="masterAccountNum"></param>
-        /// <param name="profileNum"></param>
-        /// <param name="poItemUuids"></param>
-        /// <returns></returns>
-        public async Task<List<PurchaseOrderData>> GetMergedPoByPoItemUuidsAsync(int masterAccountNum, int profileNum, List<string> poItemUuids)
-        {
-            var poItems = await GetItems(masterAccountNum, profileNum, poItemUuids);
-            var poUuids = poItems.Select(i => i.PoUuid).ToList();
-            var poHeaders = await GetHeaders(masterAccountNum, profileNum, poUuids);
-            return MergePoByVendor(poHeaders, poItems);
-        }
+        #region Get merged po data list by po item uuid list 
 
-        protected async Task<IEnumerable<PoItems>> GetItems(int masterAccountNum, int profileNum, List<string> poItemUuids)
+        public async Task<IEnumerable<PoItems>> GetItems(int masterAccountNum, int profileNum, List<string> poItemUuids)
         {
             var sql_Item = $@" 
 select poi.* 
@@ -635,7 +621,7 @@ AND poh.ProfileNum=@2
             return poItems;
 
         }
-        protected async Task<IEnumerable<PoHeader>> GetHeaders(int masterAccountNum, int profileNum, List<string> poUuids)
+        public async Task<IEnumerable<PoHeader>> GetHeaders(int masterAccountNum, int profileNum, List<string> poUuids)
         {
             var sql_Item = $@" 
 select poh.* 
@@ -654,41 +640,7 @@ AND poh.ProfileNum=@2
             return poHeaders;
 
         }
-
-        protected List<PurchaseOrderData> MergePoByVendor(IEnumerable<PoHeader> poHeaders, IEnumerable<PoItems> poItems)
-        {
-            var result = new List<PurchaseOrderData>();
-            var vendorCodes = poHeaders.Select(i => i.VendorCode).Distinct();
-            foreach (var vendorCode in vendorCodes)
-            {
-                var matchHeaders = poHeaders.Where(i => i.VendorCode == vendorCode);
-                var vendorPoUuids = matchHeaders.Select(i => i.PoUuid);
-                var matchItems = poItems.Where(i => vendorPoUuids.Contains(i.PoUuid)).ToList(); 
-
-                var hasMultiPo = vendorPoUuids.Count() > 1;
-                var defaultHeader = matchHeaders.FirstOrDefault();
-                var poData = new PurchaseOrderData();
-                poData.PoItems = matchItems;
-
-                if (hasMultiPo)
-                {
-                    poData.PoHeader = new PoHeader()
-                    {
-                        VendorCode = defaultHeader.VendorCode,
-                        VendorName = defaultHeader.VendorName,
-                        VendorUuid = defaultHeader.VendorUuid,
-                    };
-                }
-                else
-                {
-                    poData.PoHeader = defaultHeader;
-                }
-
-                result.Add(poData);
-            }
-            return result;
-        }
-
+        
         #endregion
     }
 }

@@ -28,6 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
+                //PoItemUuid is zero means its a new one.
                 if (string.IsNullOrEmpty(poItemUuid))
                     poItemUuid = Guid.NewGuid().ToString();
                 return poItemUuid;
