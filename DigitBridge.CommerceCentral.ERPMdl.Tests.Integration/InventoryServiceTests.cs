@@ -280,17 +280,17 @@ WHERE itm.cnt > 0
         [Fact()]
         public async Task UpdateOpenSoQtyByOrderShipmentUuidAsync_Test()
         {
-            var service = new InventoryService(DataBaseFactory);
+            //var service = new InventoryService(DataBaseFactory);
 
-            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(10001,10001,DataBaseFactory);
-            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(10001,10001,DataBaseFactory);
-            var inventoryData = InventoryDataTests.GetInventories(DataBaseFactory, salesOrderData.SalesOrderItems.Count);
+            //var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(10001,10001,DataBaseFactory);
+            //var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(10001,10001,DataBaseFactory);
+            //var inventoryData = InventoryDataTests.GetInventories(DataBaseFactory, salesOrderData.SalesOrderItems.Count);
 
 
-            await MakeRealtionForInventoryAndSalesOrder(salesOrderData, inventoryData);
-            await MakeRealtionForShipmentAndSalesOrder(salesOrderData, shipmentData);
+            //await MakeRealtionForInventoryAndSalesOrder(salesOrderData, inventoryData);
+            //await MakeRealtionForShipmentAndSalesOrder(salesOrderData, shipmentData);
 
-            await service.UpdateOpenSoQtyByOrderShipmentUuidAsync(shipmentData.OrderShipmentHeader.OrderShipmentUuid);
+            //await service.UpdateOpenSoQtyByOrderShipmentUuidAsync(shipmentData.OrderShipmentHeader.OrderShipmentUuid);
 
         }
 

@@ -605,26 +605,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         private async Task UpdateAvgCostAsync(ItemCostClass cost)
         {
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"), cost.BaseCost.ToSqlParameter("BaseCost"), cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
-        }
-
-        public async Task UpdateOpenSoQtyByOrderShipmentUuidAsync(string orderShipmentUuid, bool isReturnBack = false)
-        {
-            string op = isReturnBack ? "-" : "+";
-            string command = $@"
-UPDATE inv SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
-FROM inventory inv INNER JOIN
-    (SELECT SUM(soItem.orderqty) as orderqty, 
-            SUM(soItem.shipqty) as shipqty, 
-            SUM(soItem.cancelledqty) as cancelledqty, 
-            soItem.inventoryuuid 
-     FROM salesorderitems soItem
-     JOIN OrderShipmentShippedItem shippedItem on shippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid
-     WHERE shippedItem.OrderShipmentUuid='{orderShipmentUuid}'  
-     GROUP BY soItem.InventoryUuid) soi
-ON inv.inventoryuuid=soi.inventoryuuid
-";
-            await dbFactory.Db.ExecuteAsync(command.ToString());
-        }
+        } 
 
         public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
         {
@@ -648,13 +629,18 @@ ON inv.inventoryuuid=soi.inventoryuuid
             string op = isReturnBack ? "-" : "+";
             string command = $@"
 UPDATE inv SET opensoqty=inv.OpenPoQty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
-FROM inventory inv INNER JOIN
-    (SELECT SUM(orderqty) as orderqty, 
-            SUM(shipqty) as shipqty, 
-            SUM(cancelledqty) as cancelledqty, 
-            inventoryuuid FROM salesorderitems 
-    WHERE SalesOrderUuid='{salesOrderUuid}'  
-    GROUP BY InventoryUuid) soi
+FROM inventory inv 
+INNER JOIN
+    (
+	SELECT SUM(orderqty) as orderqty, 
+		SUM(shipqty) as shipqty, 
+		SUM(cancelledqty) as cancelledqty, 
+		inventoryuuid 
+		FROM SalesOrderHeader orderHeader
+		JOIN salesorderitems orderItem on orderItem.SalesOrderUuid=orderHeader.SalesOrderUuid
+	WHERE orderHeader.SalesOrderUuid='{salesOrderUuid}' AND  orderHeader.OrderStatus={(int)SalesOrderStatus.Cancelled}
+	GROUP BY InventoryUuid
+    ) soi
 ON inv.inventoryuuid=soi.inventoryuuid
 ";
             await dbFactory.Db.ExecuteAsync(command.ToString());
