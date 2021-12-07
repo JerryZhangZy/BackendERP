@@ -48,6 +48,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             config.HeaderValidated = null;
             config.MissingFieldFound = null;
             config.IgnoreBlankLines = true;
+            config.ExceptionMessagesContainRawData = false;
             config.TrimOptions = TrimOptions.Trim;
 
             return config;
@@ -59,6 +60,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 context.RegisterClassMap(mapper);
         }
 
+        #region export
         public virtual string Export(IEnumerable<T> data, string fileName)
         {
             var exportData = Export(data);
@@ -136,7 +138,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual async Task<byte[]> ExportAsync(IEnumerable<IEnumerable<string>> lines, IEnumerable<string> headers = null)
         {
             var config = GetConfiguration();
-            config.HasHeaderRecord = false;
             using (var ms = new MemoryStream())
             {
                 using (var writer = new StreamWriter(ms))
@@ -198,10 +199,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
             await csv.WriteRecordsAsync(records);
         }
 
+        #endregion export
+
         #region import 
         public virtual IEnumerable<T> Import(string fileName)
         {
-            using (var reader = new FileStream(fileName, FileMode.Open))
+            using (var reader = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 return Import(reader);
         }
 
@@ -231,7 +234,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual async Task<IEnumerable<T>> ImportAsync(string fileName)
         {
-            using (var reader = new FileStream(fileName, FileMode.Open))
+            using (var reader = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 return await ImportAsync(reader);
         }
         public virtual async Task<IEnumerable<T>> ImportAsync(Stream stream)
@@ -277,7 +280,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     foreach (var parent in Format.ParentObject)
                     {
                         if (parent == null) continue;
-                        if (csv.TryGetField(parent.Type, key, out var value))
+                        if (csv.TryGetField(typeof(string), key, out var value))
                         {
                             if (!string.IsNullOrEmpty(value.ToString()))
                             {

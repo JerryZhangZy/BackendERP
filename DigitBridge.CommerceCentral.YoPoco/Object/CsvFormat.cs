@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public CsvFormatColumn() { }
 
-        public CsvFormatColumn(string name, string headerName, int index, bool ignore = false, string defaultValue = null, string constantValue = null)
+        public CsvFormatColumn(string name, string headerName, int index, string textFormat = null, bool ignore = false, string defaultValue = null, string constantValue = null)
         {
             Name = name;
             HeaderName = headerName;
@@ -74,18 +74,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
             Ignore = ignore;
             DefaultValue = defaultValue;
             ConstantValue = constantValue;
-            TextFormat = TextFormat;
+            TextFormat = textFormat;
         }
 
         public virtual CsvFormatColumn Clone(CsvFormatColumn source)
         {
             if (!string.IsNullOrEmpty(source.Name)) Name = source.Name;
-            if (!string.IsNullOrEmpty(source.HeaderName)) HeaderName = source.HeaderName;
+            HeaderName = source.HeaderName;
             if (source.Index >= 0) Index = source.Index;
-            if (source.Ignore == true) Ignore = source.Ignore;
-            if (!string.IsNullOrEmpty(source.DefaultValue)) DefaultValue = source.DefaultValue;
-            if (!string.IsNullOrEmpty(source.ConstantValue)) ConstantValue = source.ConstantValue;
-            if (!string.IsNullOrEmpty(source.TextFormat)) TextFormat = source.TextFormat;
+            Ignore = source.Ignore;
+            DefaultValue = source.DefaultValue;
+            ConstantValue = source.ConstantValue;
+            TextFormat = source.TextFormat;
             Disable = source.Disable;
             return this;
         }
@@ -125,9 +125,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (source.Type != null) Type = source.Type;
             if (!string.IsNullOrEmpty(source.Name)) Name = source.Name;
             Disable = source.Disable;
-            foreach (var col in source.Columns)
+            CloneColumns(source.Columns);
+            return this;
+        }
+
+        public virtual CsvFormatParentObject CloneColumns(IList<CsvFormatColumn> cols)
+        {
+            if (cols == null || cols.Count == 0) return this;
+            foreach (var col in cols)
             {
-                if (string.IsNullOrEmpty(col.Name) || string.IsNullOrEmpty(col.HeaderName)) continue;
+                if (string.IsNullOrEmpty(col.Name)) continue;
                 var obj = this.Columns.FindByName(col.Name);
                 if (obj == null)
                 {
@@ -190,6 +197,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return obj;
         }
+
 
         public virtual void LoadFormat(CsvFormat fmt)
         {
@@ -254,7 +262,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var parent = ParentObject.FindByType(typeof(T));
             if (parent == null || !parent.HasColumns())
                 return (null, null);
-            var headers = parent.Columns.GetNames();
+            var headers = parent.Columns.GetHeaderNames(true);
             if (headers == null || headers.Count == 0)
                 return (null, null);
 
@@ -282,6 +290,28 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     result.Add(string.Empty);
             }
             return (headers, result);
+        }
+
+        public virtual IList<CsvFormatColumn> GetColumnList()
+        {
+            var result = new List<CsvFormatColumn>();
+            foreach (var parent in ParentObject)
+            {
+                if (parent == null || !parent.HasColumns()) continue;
+                result = result.Concat(parent.Columns).ToList();
+            }
+            return result;
+        }
+
+        public virtual IList<CsvFormatColumn> SetColumnList(IList<CsvFormatColumn> source)
+        {
+            var result = new List<CsvFormatColumn>();
+            foreach (var parent in ParentObject)
+            {
+                if (parent == null || !parent.HasColumns()) continue;
+                result = result.Concat(parent.Columns).ToList();
+            }
+            return result;
         }
 
     }

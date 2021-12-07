@@ -36,6 +36,18 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
+    <None Update="T4\GenerateIOCsv.ttinclude">
+      <LastGenOutput>GenerateIOCsv.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateIOFormat.ttinclude">
+      <LastGenOutput>GenerateIOCsv.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateDtoFormatColumns.ttinclude">
+      <LastGenOutput>GenerateDtoFormatColumns.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\JsRepositoryGrid.ttinclude">
       <LastGenOutput>JsRepositoryGrid.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -134,6 +146,10 @@
     </None>
     <None Update="T4\GenerateServiceValidator.ttinclude">
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForCustomIOFormat.ttinclude">
+      <LastGenOutput>SettingForCustomIOFormat.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForSystemSetting.ttinclude">
@@ -372,6 +388,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateIOFormat - Copy.cs">
+      <DependentUpon>GenerateIOFormat.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateIOCsv.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateRepository - Copy.cs">
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -382,6 +408,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateDtoFormatColumns.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateDtoFormatColumns.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateServiceCalculator.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -391,11 +422,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateServicePartial.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructureDto - Copy.cs">
-      <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="T4\GenerateJsDocPayload.cs">
       <DesignTime>True</DesignTime>
@@ -466,6 +492,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForCustomIOFormat.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForCustomIOFormat.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

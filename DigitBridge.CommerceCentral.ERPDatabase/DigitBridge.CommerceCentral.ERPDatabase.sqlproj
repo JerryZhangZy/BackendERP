@@ -305,4 +305,7 @@
   <ItemGroup>
     <None Include="setting\InitNumbers_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\CustomIOFormat.sql" />
+  </ItemGroup>
 </Project>

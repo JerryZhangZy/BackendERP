@@ -34,6 +34,8 @@ SELECT
 {Helper.TransNum()}, 
 {Helper.InvoiceUuid()}, 
 {Helper.InvoiceNumber()}, 
+{Helper.PaymentNumber()}, 
+{Helper.PaymentUuid()}, 
 {Helper.TransType()},
 COALESCE(ptt.text, '') transTypeText, 
 {Helper.TransStatus()},
