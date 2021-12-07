@@ -108,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     await InventoryService.UpdateOpenPoQtyFromPoUuidAsync(this.Data.PoHeader.PoUuid);
 
-                    
+
 
                 }
             }
@@ -151,7 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.SaveSuccessAsync();
                 if (this.Data?.PoHeader != null)
                 {
-                  
+
                     if (_ProcessMode == ProcessingMode.Add)
                     {
                         await initNumbersService.UpdateMaxNumberAsync(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
@@ -179,7 +179,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                     if (_ProcessMode == ProcessingMode.Add)
                     {
-                          initNumbersService.UpdateMaxNumber(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
+                        initNumbersService.UpdateMaxNumber(this.Data.PoHeader.MasterAccountNum, this.Data.PoHeader.ProfileNum, ActivityLogType.PurchaseOrder, this.Data.PoHeader.PoNum);
                     }
 
                 }
@@ -512,18 +512,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.PurchaseOrders = result;
         }
 
-        
+
         //public virtual async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
         //{
         //    if (data == null || data.PoTransaction == null)
         //        return false;
-            
+
         //    await UpdatePoHeaderByPoReceiveAsync(data.PoTransaction.PoUuid);
         //    await UpdatePoItemsByPoReceiveAsync(data.PoTransaction.PoUuid);
 
         //    return true;
         //}
-        
+
         public virtual bool UpdateByPoReceive(PoTransactionData data)
         {
             if (data == null || data.PoTransaction == null)
@@ -598,6 +598,7 @@ where poi.PoUuid=@0;
         {
             return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.PurchaseOrder);
         }
+
         #region Get merged po data list by po item uuid list. 
         /// <summary>
         /// Get po data list by po item uuid list. then merge po by vendor
@@ -661,10 +662,10 @@ AND poh.ProfileNum=@2
             foreach (var vendorCode in vendorCodes)
             {
                 var matchHeaders = poHeaders.Where(i => i.VendorCode == vendorCode);
-                var matchItems = poItems.Where(i => matchHeaders.Count(h => h.PoUuid == i.PoUuid) > 0).ToList();
-                if (matchItems is null || matchItems.Count == 0) continue;
+                var vendorPoUuids = matchHeaders.Select(i => i.PoUuid);
+                var matchItems = poItems.Where(i => vendorPoUuids.Contains(i.PoUuid)).ToList(); 
 
-                var hasMultiPo = matchHeaders.Count() > 1;
+                var hasMultiPo = vendorPoUuids.Count() > 1;
                 var defaultHeader = matchHeaders.FirstOrDefault();
                 var poData = new PurchaseOrderData();
                 poData.PoItems = matchItems;
