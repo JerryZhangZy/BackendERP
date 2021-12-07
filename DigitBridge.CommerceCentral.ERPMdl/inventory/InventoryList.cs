@@ -181,7 +181,7 @@ SELECT
 {ExHelper.QtyPerBox()},
 {ExHelper.SalesCost()},
 {InvHelper.InventoryUuid()},
-{InvHelper.StyleCode()},
+{ExHelper.StyleCode()},
 {InvHelper.ColorPatternCode()},
 {InvHelper.SizeType()},
 {InvHelper.SizeCode()},
