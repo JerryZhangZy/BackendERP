@@ -143,6 +143,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
                 payload.InitNumbers = initNumber;
                 success = success & await srv.UpdateAsync(payload);
             }
+            payload.InitNumbers = null;
             payload.Success = success;
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InitNumbersPayload>(payload);
