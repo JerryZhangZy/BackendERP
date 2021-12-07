@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
     FROM
       [dbo].[SystemCodes] tbl
    
-    WHERE COALESCE(tbl.SystemCodeName,'') == '{Name}' 
+    WHERE COALESCE(tbl.SystemCodeName,'') = '{Name}' 
         AND {this.QueryObject.GetSQL()}
     ORDER BY tbl.SystemCodeName 
 ";
