@@ -140,57 +140,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return salesOrderDataDtoCsv.Export(dtoList);
         }
 
-        public byte[] Export(SalesOrderPayload payload)
-        {
-            var rowNumList = salesOrderList.GetRowNumList(payload);
-            var dtoList = new List<SalesOrderDataDto>();
-            foreach (var x in rowNumList)
-            {
-                if (salesOrderService.GetData(x))
-                    dtoList.Add(salesOrderService.ToDto());
-            };
-            if (dtoList.Count == 0)
-                dtoList.Add(new SalesOrderDataDto());
-            return salesOrderDataDtoCsv.Export(dtoList);
-        }
-
-        public void Import(SalesOrderPayload payload, IFormFileCollection files)
-        {
-            if (files == null || files.Count == 0)
-            {
-                AddError("no files upload");
-                return;
-            }
-            foreach (var file in files)
-            {
-                if (!file.FileName.ToLower().EndsWith("csv"))
-                {
-                    AddError($"invalid file type:{file.FileName}");
-                    continue;
-                }
-                var list = salesOrderDataDtoCsv.Import(file.OpenReadStream());
-                var readcount = list.Count();
-                var addsucccount = 0;
-                var errorcount = 0;
-                foreach (var item in list)
-                {
-                    payload.SalesOrder = item;
-                    if (salesOrderService.Add(payload))
-                        addsucccount++;
-                    else
-                    {
-                        errorcount++;
-                        foreach (var msg in salesOrderService.Messages)
-                            Messages.Add(msg);
-                        salesOrderService.Messages.Clear();
-                    }
-                }
-                if (payload.HasSalesOrder)
-                    payload.SalesOrder = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
-            }
-        }
-
         public async Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files)
         {
             if (files == null || files.Count == 0)

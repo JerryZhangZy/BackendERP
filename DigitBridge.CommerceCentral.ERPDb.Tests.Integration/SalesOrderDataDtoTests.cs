@@ -81,53 +81,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
 
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void ExportCsv_Test()
-        {
-            var mapper = new SalesOrderDataDtoMapperDefault();
-
-            var data = GetFakerData(100);
-            var dtolist = new List<SalesOrderDataDto>();
-            data.ForEach(x =>
-            {
-                dtolist.Add(mapper.WriteDto(x, null));
-            });
-            var fileName = "c:\\temp\\salesOrderDto.csv";
-            var csvHelper = new SalesOrderIOFormat();
-
-            try
-            {
-                //csvHelper.Export(dtolist, fileName);
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
-        }
-
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void ImportCsv_Test()
-        {
-            var fileName = "c:\\temp\\salesOrderDto.csv";
-            var csvHelper = new SalesOrderIOFormat();
-            IList<SalesOrderDataDto> data;
-
-            try
-            {
-                //data = csvHelper.Import(fileName).ToList();
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
-        }
-
 
         #region prepare dto
         public const int MasterAccountNum = 10001;

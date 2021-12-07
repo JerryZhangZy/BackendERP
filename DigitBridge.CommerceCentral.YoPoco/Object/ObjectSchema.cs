@@ -293,6 +293,179 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return;
         }
 
+        public static void CopyProperties<TSource, TTarget>(object A, object B, bool ignoreNull = true, IEnumerable<string> ignoreNames = null)
+        {
+            if (A is null || B is null) return;
+            try
+            {
+                var sourceSchema = ObjectSchema.ForType(typeof(TSource));
+                var targetSchema = ObjectSchema.ForType(typeof(TTarget));
+                if (!sourceSchema.Properties.Any() || !targetSchema.Properties.Any()) return;
+
+                var allPropertiesSource = sourceSchema.Properties
+                    .Select(x => x.Value)
+                    .Where(col => col.CanCopy);
+                var allPropertiesTarget = targetSchema.Properties
+                    .Select(x => x.Value)
+                    .Where(col => col.CanCopy);
+
+                ignoreNames = ignoreNames?.ToList() ?? null;
+                foreach (var colA in allPropertiesSource)
+                {
+                    if (ignoreNames != null && ignoreNames.Contains(colA.Name)) continue;
+                    var AValue = colA.GetValue(A);
+                    if (ignoreNull && AValue is null) continue;
+
+                    var colB = allPropertiesTarget.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(colA.Name));
+                    if (!colB.CanSet) continue;
+                    if (!colB.MemberInfo.GetPropertyType().Equals(colA.MemberInfo.GetPropertyType())) continue;
+
+                    colB.SetValue(B, AValue);
+                }
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
+        public static bool CompareProperties<TSource, TTarget>(object A, object B, IEnumerable<string> ignoreNames = null)
+        {
+            if (A == null && B == null || A.Equals(B)) return true;
+            if (A is null || B is null) return false;
+            try
+            {
+                var sourceSchema = ObjectSchema.ForType(typeof(TSource));
+                var targetSchema = ObjectSchema.ForType(typeof(TTarget));
+                if (!sourceSchema.Properties.Any() || !targetSchema.Properties.Any()) return false;
+
+                var allPropertiesSource = sourceSchema.Properties
+                    .Select(x => x.Value)
+                    .Where(col => col.CanCopy);
+                var allPropertiesTarget = targetSchema.Properties
+                    .Select(x => x.Value)
+                    .Where(col => col.CanCopy);
+
+                ignoreNames = ignoreNames?.ToList() ?? null;
+                foreach (var colA in allPropertiesSource)
+                {
+                    if (ignoreNames != null && ignoreNames.Contains(colA.Name)) continue;
+                    var AValue = colA.GetValue(A);
+
+                    var colB = allPropertiesTarget.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(colA.Name));
+                    if (colB == null || !colB.CanCompare)
+                        return false;
+
+                    var BValue = colB.GetValue(B);
+
+                    if (AValue != BValue && (AValue == null || !AValue.Equals(BValue)))
+                        return false;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+        public static bool CompareProperties<T>(object A, IDictionary<string, string> keyValues)
+        {
+            if (A == null || keyValues == null || keyValues.Count == 0) return false;
+            try
+            {
+                var schema = ObjectSchema.ForType(typeof(T));
+                if (!schema.Properties.Any()) return true;
+
+                var allProperties = schema.Properties
+                    .Select(x => x.Value)
+                    .Where(col => col.CanCompare);
+
+                foreach (var item in keyValues)
+                {
+                    if (string.IsNullOrEmpty(item.Key)) continue;
+                    var name = item.Key;
+                    var BValue = item.Value;
+
+                    var col = allProperties.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name));
+                    if (col == null || !col.CanCompare)
+                        return false;
+                    var AValue = col.GetValue(A)?.ToString();
+
+                    if (!BValue.EqualsIgnoreSpace(AValue) && (AValue == null || !AValue.Equals(BValue)))
+                        return false;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static void CopyProperties<T>(object A, IDictionary<string, string> keyValues)
+        {
+            if (A == null || keyValues == null || keyValues.Count == 0) return;
+            try
+            {
+                var schema = ObjectSchema.ForType(typeof(T));
+                if (!schema.Properties.Any()) return;
+
+                var allProperties = schema.Properties
+                    .Select(x => x.Value)
+                    .Where(col => col.CanCopy && col.CanSet);
+
+                foreach (var item in keyValues)
+                {
+                    if (string.IsNullOrEmpty(item.Key)) continue;
+                    var name = item.Key;
+                    var BValue = item.Value;
+
+                    var col = allProperties.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name));
+                    if (col == null) continue;
+
+                    col.SetValue(A, BValue);
+                }
+                return;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
+        public static IDictionary<string, object> GetPropertieValues<T>(object A, IEnumerable<string> names)
+        {
+            if (A == null || names == null || !names.Any()) return null;
+            var result = new Dictionary<string, object>();
+            try
+            {
+                var schema = ObjectSchema.ForType(typeof(T));
+                if (!schema.Properties.Any()) return null;
+
+                var allProperties = schema.Properties
+                    .Select(x => x.Value);
+
+                foreach (var name in names)
+                {
+                    if (string.IsNullOrEmpty(name)) continue;
+
+                    var col = allProperties.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name));
+                    if (col == null) continue;
+
+                    var AValue = col.GetValue(A);
+                    result.Add(name, AValue);
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
         public static Dictionary<string, PocoColumn> GetProperties<T>() =>
             ObjectSchema.ForType(typeof(T))?.Properties;
 

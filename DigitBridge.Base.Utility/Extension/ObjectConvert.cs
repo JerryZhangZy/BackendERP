@@ -625,6 +625,16 @@ namespace DigitBridge.Base.Utility
         public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.UtcNow.Date : DateTime.UtcNow.Date + (TimeSpan)input;
         public static DateTime ToDateTime(this TimeSpan input) => DateTime.UtcNow.Date + input;
 
+        public static string ToDateString(this object input) => input.ToDateTime().ToShortDateString();
+        public static string ToTimeString(this object input) => input.ToDateTime().ToShortTimeString();
+        public static string ToISO8601_o(this object input) => 
+            input.ToDateTime().ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+        public static string ToISO8601_s(this object input) => 
+            input.ToDateTime().ToString("s", System.Globalization.CultureInfo.InvariantCulture);
+        public static string ToISO8601(this object input) => 
+            input.ToDateTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ", System.Globalization.CultureInfo.InvariantCulture);
+
+
         public static int ToInt(this int? input) => (input is null) ? default(int) : (int)input;
         public static int ToInt(this string input) =>
             string.IsNullOrWhiteSpace(input)
@@ -787,6 +797,31 @@ namespace DigitBridge.Base.Utility
         public static double ToRate(this double input) =>
             input < 0 ? 0 : (input > 100 ? 100 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
+        public static string ToFormatString(this object input, string format)
+        {
+            if (format.EqualsIgnoreSpace(FormatType.Qty))
+                return input.ToDecimal().ToQty().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Amount))
+                return input.ToDecimal().ToAmount().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Price))
+                return input.ToDecimal().ToPrice().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Cost))
+                return input.ToDecimal().ToCost().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Rate))
+                return input.ToDecimal().ToRate().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.TaxRate))
+                return input.ToDecimal().ToRate().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Weight))
+                return input.ToDecimal().ToAmount().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Date))
+                return input.ToDateString();
+            if (format.EqualsIgnoreSpace(FormatType.Time))
+                return input.ToTimeString();
+            if (format.EqualsIgnoreSpace(FormatType.IsoDate))
+                return input.ToISO8601();
+
+            return input.ToString();
+        }
 
         public static decimal RoundTo(this decimal? input, int decimalDigit = 2) =>
             (input is null) ? (decimal)0 : input.ToDecimal().RoundTo(decimalDigit);

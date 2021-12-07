@@ -302,4 +302,10 @@
     <None Include="sql\calculate_invoice_balance_and_status.sql" />
     <None Include="sql\check salesorder item.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="setting\InitNumbers_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\CustomIOFormat.sql" />
+  </ItemGroup>
 </Project>

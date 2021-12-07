@@ -33,6 +33,7 @@
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
     <Folder Include="companySummary\" />
+    <Folder Include="so\io\" />
     <Folder Include="warehouseTransfer\" />
   </ItemGroup>
 

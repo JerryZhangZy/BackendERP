@@ -163,6 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string ShipToName { get; set; }
         public string ShipToState { get; set; }
         public string ShipToPostalCode { get; set; }
+        public long PaymentNumber { get; set; }
 
         public static Faker<InvoicePaymentFilter> GetFaker()
         {

@@ -21,8 +21,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public interface ISalesOrderManager
     {
         Task<byte[]> ExportAsync(SalesOrderPayload payload);
-        byte[] Export(SalesOrderPayload payload);
-        void Import(SalesOrderPayload payload, IFormFileCollection files);
         Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files);
         Task<(bool,List<string>)> CreateSalesOrderByChannelOrderIdAsync(string centralOrderUuid);
         /// <summary>

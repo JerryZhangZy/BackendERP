@@ -39,6 +39,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<int> _PaidBy = new QueryFilter<int>("PaidBy", "PaidBy", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> PaidBy => _PaidBy;
 
+        protected QueryFilter<long> _PaymentNumber = new QueryFilter<long>("PaymentNumber", "PaymentNumber", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<long> PaymentNumber => _PaymentNumber;
 
 
         protected QueryFilter<string> _InvoiceUuid = new QueryFilter<string>("InvoiceUuid", "InvoiceUuid", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -122,6 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_TransType);
             AddFilter(_TransStatus);
             AddFilter(_PaidBy);
+            AddFilter(_PaymentNumber);
 
 
             AddFilter(_InvoiceUuid);
