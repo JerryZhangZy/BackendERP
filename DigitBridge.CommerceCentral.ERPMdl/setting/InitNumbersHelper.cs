@@ -161,10 +161,10 @@ AND OrderNumber = @number
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.OrderNumber+1 AS number
-    FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
+    FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
+		FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
 		WHERE t2.OrderNumber = t1.OrderNumber + 1
 	) 
 ) ot
@@ -176,10 +176,10 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.InvoiceNumber+1 AS number
-    FROM (SELECT CAST(InvoiceNumber AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t1
+    FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(InvoiceNumber AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t2 
+		FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t2 
 		WHERE t2.InvoiceNumber = t1.InvoiceNumber + 1
 	) 
 ) ot
@@ -191,10 +191,10 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.PoNum+1 AS number
-    FROM (SELECT CAST(PoNum AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t1
+    FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(PoNum AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t2 
+		FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t2 
 		WHERE t2.PoNum = t1.PoNum + 1
 	) 
 ) ot
@@ -206,10 +206,10 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.ApInvoiceNum+1 AS number
-    FROM (SELECT CAST(ApInvoiceNum AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t1
+    FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(ApInvoiceNum AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t2 
+		FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t2 
 		WHERE t2.ApInvoiceNum = t1.ApInvoiceNum + 1
 	) 
 ) ot
@@ -221,10 +221,10 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.VendorCode+1 AS number
-    FROM (SELECT CAST(VendorCode AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t1
+    FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(VendorCode AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t2 
+		FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t2 
 		WHERE t2.VendorCode = t1.VendorCode + 1
 	) 
 ) ot
@@ -235,10 +235,10 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.CustomerCode+1 AS number
-    FROM (SELECT CAST(CustomerCode AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t1
+    FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(CustomerCode AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t2 
+		FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t2 
 		WHERE t2.CustomerCode = t1.CustomerCode + 1
 	) 
 ) ot
