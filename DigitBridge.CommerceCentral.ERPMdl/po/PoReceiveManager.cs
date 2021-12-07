@@ -103,7 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var poTrans = GetPoTransactionByVendor(payload, vendorCode, poHeaders);
                 var vendorPoUuids = poHeaders.Where(i => i.VendorCode == vendorCode).Select(j => j.PoUuid).Distinct();
                 var poTransItems = poTransAllItems.Where(i => vendorPoUuids.Contains(i.PoUuid)).ToList();
-                
+
                 var poTransData = new PoTransactionData()
                 {
                     PoTransaction = poTrans,
@@ -146,6 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var poTransItem = new PoTransactionItems()
             {
                 TransItemUuid = Guid.NewGuid().ToString(),
+                PoUuid = wmsPoReceiveItem.PoUuid,
                 PoItemUuid = wmsPoReceiveItem.PoItemUuid,
                 TransQty = wmsPoReceiveItem.Qty,
                 WarehouseCode = wmsPoReceiveItem.WarehouseCode,
