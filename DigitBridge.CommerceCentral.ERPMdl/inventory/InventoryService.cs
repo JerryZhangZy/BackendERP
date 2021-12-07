@@ -627,13 +627,18 @@ ON inv.inventoryuuid=soi.inventoryuuid
             string op = isReturnBack ? "-" : "+";
             string command = $@"
 UPDATE inv SET opensoqty=inv.OpenPoQty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
-FROM inventory inv INNER JOIN
-    (SELECT SUM(orderqty) as orderqty, 
-            SUM(shipqty) as shipqty, 
-            SUM(cancelledqty) as cancelledqty, 
-            inventoryuuid FROM salesorderitems 
-    WHERE SalesOrderUuid='{salesOrderUuid}'  
-    GROUP BY InventoryUuid) soi
+FROM inventory inv 
+INNER JOIN
+    (
+	SELECT SUM(orderqty) as orderqty, 
+		SUM(shipqty) as shipqty, 
+		SUM(cancelledqty) as cancelledqty, 
+		inventoryuuid 
+		FROM SalesOrderHeader orderHeader
+		JOIN salesorderitems orderItem on orderItem.SalesOrderUuid=orderHeader.SalesOrderUuid
+	WHERE orderHeader.SalesOrderUuid='{salesOrderUuid}' AND  orderHeader.OrderStatus={(int)SalesOrderStatus.Cancelled}
+	GROUP BY InventoryUuid
+    ) soi
 ON inv.inventoryuuid=soi.inventoryuuid
 ";
             await dbFactory.Db.ExecuteAsync(command.ToString());

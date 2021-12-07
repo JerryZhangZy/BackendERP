@@ -389,41 +389,27 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public async Task UpdateShippedQtyFromShippedItemAsync_Test()
         {
-            var orderShipmentUuid = await MakeRealtionForShipmentAndSalesOrder();
+            var salesOrderData = GetFackerSalesOrderData_NoShipAndCancelledQty();
+            salesOrderData = await SaveSalesOrderData(salesOrderData);
+            var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData);
+            shipmentData = await SaveShipmentData(shipmentData);
+            var orderShipmentUuid = shipmentData.OrderShipmentHeader.OrderShipmentUuid;
 
             var service = new SalesOrderService(DataBaseFactory);
             var success = await service.UpdateShippedQtyFromShippedItemAsync(orderShipmentUuid);
-            Assert.True(success, service.Messages.ObjectToString());
+            Assert.True(success, "UpdateShippedQtyFromShippedItemAsync error:" + service.Messages.ObjectToString());
 
-        }
-
-        protected async Task<string> MakeRealtionForShipmentAndSalesOrder()
-        {
-            var service = new OrderShipmentService(DataBaseFactory);
-            service.Edit();
-
-            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(10001, 10001, DataBaseFactory);
-            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(10001, 10001, DataBaseFactory);
-
-            int index = 0;
-
-            foreach (var shipPackage in shipmentData.OrderShipmentPackage)
+            success = service.GetDataById(salesOrderData.SalesOrderHeader.SalesOrderUuid);
+            Assert.True(success, "Get salesorder error:" + service.Messages.ObjectToString());
+            salesOrderData = service.Data;
+            for (int i = 0; i < salesOrderData.SalesOrderItems.Count; i++)
             {
-                foreach (var shippedItem in shipPackage.OrderShipmentShippedItem)
-                {
-                    if (index >= salesOrderData.SalesOrderItems.Count) continue;
-                    shippedItem.SalesOrderItemsUuid = salesOrderData.SalesOrderItems[index].SalesOrderItemsUuid;
-                    index++;
-                }
+                var orderItem_ShipQty = salesOrderData.SalesOrderItems[i].ShipQty;
+                var shippedItem_ShipQty = shipmentData.OrderShipmentShippedItem[i].ShippedQty;
+                // due to the shipped qty updated twice.
+                Assert.True(orderItem_ShipQty == (2 * shippedItem_ShipQty), $"shipped qty result error. orderItem_ShipQty:{orderItem_ShipQty},shippedItem_ShipQty:{shippedItem_ShipQty}" );
             }
-            shipmentData.OrderShipmentHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
 
-            service.AttachData(shipmentData);
-
-            var success = await service.SaveDataAsync();
-            Assert.True(success, service.Messages.ObjectToString());
-
-            return shipmentData.OrderShipmentHeader.OrderShipmentUuid;
         }
         #endregion
 
