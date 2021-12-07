@@ -381,9 +381,9 @@ WHERE itm.cnt > 0
                 throw;
             }
 
-        }
+        } 
 
-        #region UpdateShippedQtyFromShippedItemAsync 
+        #region update so shipped qty test  
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -413,7 +413,7 @@ WHERE itm.cnt > 0
         }
         #endregion
 
-        #region Test update salesorder status to shipped
+        #region update so status to shipped or open  test
 
         protected SalesOrderData GetFackerSalesOrderData_NoShipAndCancelledQty(int orderItemCount = 10)
         {
