@@ -83,14 +83,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
-            if (payload.WMSPoReceiveItems.Count(i => i.PoItemUuid.IsZero()) > 0)
+            //PoItemUuid is zero means its a new one.
+            if (payload.WMSPoReceiveItems.Count(i => i.PoUuid.IsZero()) > 0)
             {
-                AddError("PoItemUuid cannot be empty");
+                AddError("PoUuid cannot be empty");
                 results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
 
-            var poItemUuids = payload.WMSPoReceiveItems.Select(i => i.PoItemUuid).Distinct().ToList();
+            var poItemUuids = payload.WMSPoReceiveItems.Select(i => i.PoItemUuid).Distinct().Where(i=>!i.IsZero()).ToList();
             // Get po data list by po item uuid list.
             var mergedPoDataList = await purchaseOrderService.GetMergedPoByPoItemUuidsAsync(payload.MasterAccountNum, payload.ProfileNum, poItemUuids);
 

@@ -41,11 +41,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             {
                 AddError("receiveItems cann't  be empty");
             }
-
-            if (receiveItems.Count(i => i.PoItemUuid.IsZero()) > 0)
-            {
-                AddError("PoItemUuid cann't  be empty");
-            }
+            //When PoItemUuid is zero means the item is new one.
+            //if (receiveItems.Count(i => i.PoItemUuid.IsZero()) > 0)
+            //{
+            //    AddError("PoItemUuid cann't  be empty");
+            //}
 
             if (!SetAccount(masterAccountNum, profileNum))
             {
