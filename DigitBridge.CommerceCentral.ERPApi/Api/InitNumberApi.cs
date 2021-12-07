@@ -29,44 +29,6 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     [ApiFilter(typeof(InitNumberApi))]
     public static class InitNumberApi
     {
-
-
-
-        /// <summary>
-        /// Get one  InitNumber
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="log"></param>
-        /// <param name="initNumbersUuid"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(GetInitNumber))]
-        [OpenApiOperation(operationId: "GetInitNumber", tags: new[] { "InitNumbers" }, Summary = "Get one InitNumber by initNumbersUuid")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "initNumbersUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "initNumbersUuid", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadGetSingle))]
-        public static async Task<JsonNetResponse<InitNumbersPayload>> GetInitNumber(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "initNumbers/{initNumbersUuid}")] Microsoft.AspNetCore.Http.HttpRequest req,
-            ILogger log,
-            string initNumbersUuid)
-        {
-            var payload = await req.GetParameters<InitNumbersPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InitNumbersService(dataBaseFactory);
-            payload.Success = await srv.GetByInitNumbersUuidAsync(payload.MasterAccountNum,payload.ProfileNum, initNumbersUuid);
-            if (payload.Success)
-            {
-                payload.InitNumbers = srv.ToDto(srv.Data);
-            }
-            else
-                payload.Messages = srv.Messages;
-            return new JsonNetResponse<InitNumbersPayload>(payload);
-        }
-
-
-
-
         ///// <summary>
         ///// Get one  InitNumber
         ///// </summary>
@@ -95,8 +57,6 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         //    payload.Messages = srv.Messages;
         //    return new JsonNetResponse<InitNumbersSinglePayload>(payload);
         //}
-
-
 
         ///  Update InitNumber 
         /// </summary>
@@ -150,33 +110,6 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<InitNumbersPayload>(payload);
         }
 
-
-
-        /// <summary>
-        /// Delete InitNumber 
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="initNumbersUuid"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(DeleteByInitNumbersUuid))]
-        [OpenApiOperation(operationId: "DeleteByInitNumbersUuid", tags: new[] { "InitNumbers" }, Summary = "Delete one InitNumbers by InitNumbersUuid.")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "initNumbersUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "initNumbersUuid", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadDelete))]
-        public static async Task<JsonNetResponse<InitNumbersPayload>> DeleteByInitNumbersUuid(
-           [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "initNumbers/{initNumbersUuid}")] Microsoft.AspNetCore.Http.HttpRequest req,
-           string initNumbersUuid)
-        {
-            var payload = await req.GetParameters<InitNumbersPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InitNumbersService(dataBaseFactory);
-            payload.Success = await srv.DeleteByInitNumbersUuidAsync(payload, initNumbersUuid);
-            payload.Messages = srv.Messages;
-            return new JsonNetResponse<InitNumbersPayload>(payload);
-        }
-
         /// <summary>
         /// Load InitNumbers list
         /// </summary>
@@ -197,33 +130,22 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<InitNumbersPayload>(payload);
         }
 
-
-        /// <summary>
-        /// Sample_InitNumbers_Post
-        /// </summary>
-        [FunctionName(nameof(Sample_InitNumbers_Post))]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "InitNumbersSample", tags: new[] { "Sample" }, Summary = "Get new sample of InitNumbers")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadAdd))]
-        public static async Task<JsonNetResponse<InitNumbersPayloadAdd>> Sample_InitNumbers_Post(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/initNumbers")] Microsoft.AspNetCore.Http.HttpRequest req)
+        [FunctionName(nameof(UpdateMulti))]
+        public static async Task<JsonNetResponse<InitNumbersPayload>> UpdateMulti(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "initNumbers/updateMulti")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
-            return new JsonNetResponse<InitNumbersPayloadAdd>(InitNumbersPayloadAdd.GetSampleData());
+            var payload = await req.GetParameters<InitNumbersPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InitNumbersService(dataBaseFactory);
+            var success = true;
+            foreach(var initNumber in payload.InitNumberss)
+            {
+                payload.InitNumbers = initNumber;
+                success = success & await srv.UpdateAsync(payload);
+            }
+            payload.Success = success;
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<InitNumbersPayload>(payload);
         }
-
-        [FunctionName(nameof(Sample_InitNumbers_Find))]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "InitNumberFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of InitNumber find")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadFind))]
-        public static async Task<JsonNetResponse<InitNumbersPayloadFind>> Sample_InitNumbers_Find(
-         [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/initNumbers/find")] Microsoft.AspNetCore.Http.HttpRequest req)
-        {
-            return new JsonNetResponse<InitNumbersPayloadFind>(InitNumbersPayloadFind.GetSampleData());
-        }
-
     }
 }
