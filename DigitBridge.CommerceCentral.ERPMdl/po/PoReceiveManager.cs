@@ -76,19 +76,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
         {
             var results = new List<WMSPoReceivePayload>();
-
-            if (!payload.HasWMSPoReceiveItems)
+            if (!ValidateReceiveItem(payload))
             {
-                AddError("WMSPoReceiveItems cannot be empty");
-                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
-                return results;
-            }
-
-            if (payload.WMSPoReceiveItems.Count(i => i.PoUuid.IsZero()) > 0)
-            {
-                AddError("PoUuid cannot be empty");
-                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
-                return results;
+                results.Add(new WMSPoReceivePayload()
+                {
+                    Success = false,
+                    Messages = this.Messages,
+                });
             }
 
             var poTransAllItems = await ConvertWmsReceiveItemsToPoTransItems(payload);
@@ -121,6 +115,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 });
             }
             return results;
+        }
+
+
+        protected bool ValidateReceiveItem(PoReceivePayload payload)
+        {
+            var validate = true;
+            if (!payload.HasWMSPoReceiveItems)
+            {
+                AddError("WMSPoReceiveItems cannot be empty");
+                validate = false;
+            }
+
+            if (payload.WMSPoReceiveItems.Count(i => i.PoUuid.IsZero()) > 0)
+            {
+                AddError("PoUuid cannot be empty");
+                validate = false;
+            }
+
+            if (payload.WMSPoReceiveItems.Count(i => i.WarehouseCode.IsZero()) > 0)
+            {
+                AddError("WarehouseCode cannot be empty");
+                validate = false;
+            }
+            if (payload.WMSPoReceiveItems.Count(i => i.SKU.IsZero()) > 0)
+            {
+                AddError("SKU cannot be empty");
+                validate = false;
+            }
+            return validate;
         }
 
         #region prepare po trans data
