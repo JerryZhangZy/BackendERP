@@ -38,10 +38,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _Email = new QueryFilter<string>("Email", "Email", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> Email => _Email;
 
-        protected EnumQueryFilter<VendorType> _VendorType = new EnumQueryFilter<VendorType>("VendorType", "VendorType", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<VendorType> _VendorType = new EnumQueryFilter<VendorType>("VendorType", "VendorType", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<VendorType> VendorType => _VendorType;
 
-        protected EnumQueryFilter<VendorStatus> _VendorStatus = new EnumQueryFilter<VendorStatus>("VendorStatus", "VendorStatus", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<VendorStatus> _VendorStatus = new EnumQueryFilter<VendorStatus>("VendorStatus", "VendorStatus", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<VendorStatus> VendorStatus => _VendorStatus;
 
         protected QueryFilter<string> _BusinessType = new QueryFilter<string>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);

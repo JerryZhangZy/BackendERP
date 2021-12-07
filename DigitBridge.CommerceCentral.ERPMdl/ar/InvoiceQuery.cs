@@ -39,10 +39,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _DueDateTo = new QueryFilter<DateTime>("DueDateTo", "DueDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> DueDateTo => _DueDateTo;
 
-        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceType> InvoiceType => _InvoiceType;
 
-        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceStatusEnum> InvoiceStatus => _InvoiceStatus; 
 
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> RefNum => _RefNum;
 
         protected QueryFilter<string> _CustomerPoNum = new QueryFilter<string>("CustomerPoNum", "CustomerPoNum", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> CustomerPoNum => _CustomerPoNum;
+        public QueryFilter<string> CustomerPoNum => _CustomerPoNum; 
 
         protected QueryFilter<string> _ShipToName = new QueryFilter<string>("ShipToName", "ShipToName", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToName => _ShipToName;

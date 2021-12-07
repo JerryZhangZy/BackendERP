@@ -119,37 +119,38 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class ApPaymentFilter
     {
-        public string InvoiceNumber { get; set; }
+        public string TransUuid { get; set; }
+        public DateTime TransDateFrom { get; set; }
+        public DateTime TransDateTo { get; set; }
+        public int TransType { get; set; }
+        public int TransStatus { get; set; }
+        public int PaidBy { get; set; }
 
-        public string InvoiceType { get; set; }
-
-        public string InvoiceStatus { get; set; }
-
-        public DateTime InvoiceDateFrom { get; set; }
-
-        public DateTime InvoiceDateTo { get; set; }
-
-        public string CustomerCode { get; set; }
-
-        public string CustomerName { get; set; }
-
+        public string InvoiceUuid { get; set; }
+        public string InvoiceNumberFrom { get; set; }
+        public string InvoiceNumberTo { get; set; }
+        public DateTime DueDateFrom { get; set; }
+        public DateTime DueDateTo { get; set; }
+        public int InvoiceType { get; set; }
+        public int InvoiceStatus { get; set; }
+        public string VendorCode { get; set; }
+        public string VendorName { get; set; }
         public string ShippingCarrier { get; set; }
-
-        public string WarehouseCode { get; set; }
+        public long DistributionCenterNum { get; set; }
+        public long CentralOrderNum { get; set; }
+        public int ChannelNum { get; set; }
+        public int ChannelAccountNum { get; set; }
+        public string ChannelOrderID { get; set; }
+        public string RefNum { get; set; }
+        public string CustomerPoNum { get; set; }
 
         public static Faker<ApPaymentFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<ApPaymentFilter>()
-                .RuleFor(u => u.InvoiceNumber, f => string.Empty)
-                .RuleFor(u => u.InvoiceType, f => string.Empty)
-                .RuleFor(u => u.InvoiceStatus, f => string.Empty)
-                .RuleFor(u => u.CustomerCode, f => string.Empty)
-                .RuleFor(u => u.CustomerName, f => string.Empty)
+                .RuleFor(u => u.InvoiceType, f => f.Random.Number())
+                .RuleFor(u => u.InvoiceStatus, f => f.Random.Number())
                 .RuleFor(u => u.ShippingCarrier, f => string.Empty)
-                .RuleFor(u => u.WarehouseCode, f => string.Empty)
-                .RuleFor(u => u.InvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
-                .RuleFor(u => u.InvoiceDateTo, f => f.Date.Past(0).Date.Date)
                 ;
             #endregion faker data rules
         }
