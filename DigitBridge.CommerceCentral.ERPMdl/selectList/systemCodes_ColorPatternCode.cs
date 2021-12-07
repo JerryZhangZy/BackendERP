@@ -1,4 +1,5 @@
-﻿using DigitBridge.CommerceCentral.YoPoco;
+﻿using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
 
         protected override void SetFilterSqlString()
         {
-            base.SetFilterSqlString();
+            this.QueryObject.LoadAll = false;
+            if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
+                this.QueryObject.SetTermSqlString(
+                    $"COALESCE(tbl.SystemCodeName, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                );
+            else
+                this.QueryObject.SetTermSqlString(null);
         }
     }
 }
