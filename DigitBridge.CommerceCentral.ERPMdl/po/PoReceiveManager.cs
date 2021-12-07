@@ -91,47 +91,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return results;
             }
 
-            var poTransItems = ConvertWmsReceiveItemsToPoTransItems(payload);
-            // var poTransactions = new List<PoTransaction>(); 
-            foreach (var wmsPoReceiveItem in payload.WMSPoReceiveItems)
+            var poTransAllItems = await ConvertWmsReceiveItemsToPoTransItems(payload);
+
+            var poUuids = payload.WMSPoReceiveItems.Select(i => i.PoUuid).Distinct().ToList();
+            //get poHeaders 
+            var poHeaders = await purchaseOrderService.GetHeaders(payload.MasterAccountNum, payload.ProfileNum, poUuids);
+
+            var vendorCodes = poHeaders.Select(i => i.VendorCode).Distinct();
+            foreach (var vendorCode in vendorCodes)
             {
-                //var poHeader = poHeaders.Where(i => i.PoUuid == wmsPoReceiveItem.PoUuid).FirstOrDefault();
-                //var findPoTrans = poTransactions.FirstOrDefault(i => i.VendorCode == poHeader.VendorCode);
-                //if (findPoTrans == null)
-                //{
-                //    var poTransaction = GetPoTransaction(payload, poHeader);
-                //    poTransactions.Add(poTransaction);
-                //}
-                //else
-                //{
-                //    //reset trans
-                //    findPoTrans = new PoTransaction()
-                //    {
-                //        TransUuid = Guid.NewGuid().ToString(),
-                //        VendorCode = poHeader.VendorCode,
-                //        VendorName = poHeader.VendorName,
-                //        VendorUuid = poHeader.VendorUuid,
-                //    };
-                //}
+                var poTrans = GetPoTransactionByVendor(payload, vendorCode, poHeaders);
+                var vendorPoUuids = poHeaders.Where(i => i.VendorCode == vendorCode).Select(j => j.PoUuid).Distinct();
+                var poTransItems = poTransAllItems.Where(i => vendorPoUuids.Contains(i.PoUuid)).ToList();
+                
+                var poTransData = new PoTransactionData()
+                {
+                    PoTransaction = poTrans,
+                    PoTransactionItems = poTransItems,
+                };
+
+                var success = await PoReceiveService.AddAsync(poTransData);
+
+                results.Add(new WMSPoReceivePayload()
+                {
+                    Messages = this.Messages,
+                    Success = success,
+                    PoItemUuidList = poTransData.PoTransactionItems.Select(i => i.PoItemUuid).ToList(),
+                    TransUuid = poTransData.PoTransaction.TransUuid,
+                });
             }
-
-            //foreach (var mergedPoData in mergedPoDataList)
-            //{
-            //    var data = GetPoTransData(payload, mergedPoData);
-
-            //    var success = await PoReceiveService.AddAsync(data);
-
-            //    results.Add(new WMSPoReceivePayload()
-            //    {
-            //        Messages = this.Messages,
-            //        Success = success,
-            //        PoItemUuidList = data.PoTransactionItems.Select(i => i.PoItemUuid).ToList(),
-            //        TransUuid = data.PoTransaction.TransUuid,
-            //    });
-            //}
             return results;
         }
+
         #region prepare po trans data
+
         protected async Task<IList<PoTransactionItems>> ConvertWmsReceiveItemsToPoTransItems(PoReceivePayload payload)
         {
             //get poitems 
@@ -168,20 +161,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return poTransItem;
         }
-        protected PoTransaction GetPoTransaction(PoReceivePayload payload, PoHeader header)
+        protected PoTransaction GetPoTransactionByVendor(PoReceivePayload payload, string vendorCode, IEnumerable<PoHeader> poHeaders)
         {
-            return new PoTransaction()
-            {
-                TransUuid = Guid.NewGuid().ToString(),
-                MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum,
-                VendorCode = header.VendorCode,
-                VendorName = header.VendorName,
-                VendorUuid = header.VendorUuid,
-                PoNum = header.PoNum,
-                PoUuid = header.PoUuid,
-                TransStatus = (int)PoTransStatus.StockReceive
-            };
+            return poHeaders.Where(i => i.VendorCode == vendorCode).GroupBy(j => (j.VendorCode, j.VendorName, j.VendorUuid))
+                  .Select(x => new PoTransaction()
+                  {
+                      TransUuid = Guid.NewGuid().ToString(),
+                      MasterAccountNum = payload.MasterAccountNum,
+                      ProfileNum = payload.ProfileNum,
+                      VendorUuid = x.Key.VendorUuid,
+                      VendorName = x.Key.VendorName,
+                      VendorCode = x.Key.VendorCode,
+                      PoNum = x.Count() > 1 ? string.Empty : x.Min(j => j.PoNum),
+                      PoUuid = x.Count() > 1 ? string.Empty : x.Min(j => j.PoUuid),
+                      TransStatus = (int)PoTransStatus.StockReceive
+                  }).FirstOrDefault();
         }
 
         #endregion 
