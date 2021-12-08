@@ -32,7 +32,7 @@ namespace <#= NamespaceService #>
     [Serializable()]
     public partial class <#= IOFormatName #> : CsvFormat
     {
-        public SalesOrderIOFormat() : base()
+        public <#= IOFormatName #>() : base()
         {
             InitConfig();
 <# // generate all fields

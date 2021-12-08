@@ -85,7 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ImportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\Dto_5.csv";
             var service = new SalesOrderIOManager(DataBaseFactory);
             IList<SalesOrderDataDto> data;
 
@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_4.csv";
+            var fileName = "c:\\temp\\Dto_5.csv";
             var service = new SalesOrderIOManager(DataBaseFactory);
             IList<SalesOrderDataDto> dtos = new List<SalesOrderDataDto>();
             var SalesOrderService = new SalesOrderService(DataBaseFactory);
