@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             {
                 return false;
             }
-            return await PostAsync(payload, "commercecentral/inventory");
+            return await PostAsync(payload, FunctionUrl.CCInventorySync);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
