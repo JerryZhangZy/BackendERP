@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// WMS download purchase order from erp, then send succeed downloaded purchaseOrderUuids back to erp.
+    /// </summary>
     public class WMSAckReceivePurchaseOrderClient : ApiClientBase<AcknowledgePayload>
     {
         /// <summary>

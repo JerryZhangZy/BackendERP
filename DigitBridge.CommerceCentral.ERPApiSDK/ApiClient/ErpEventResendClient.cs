@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// Resend existing event to queue.
+    /// </summary>
     public class ErpEventResendClient : ApiClientBase<ErpEventResendResponsePayload>
     {
         public ErpEventResendClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
