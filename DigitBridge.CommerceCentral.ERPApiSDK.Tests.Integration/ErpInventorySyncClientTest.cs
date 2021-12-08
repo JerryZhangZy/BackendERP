@@ -12,9 +12,9 @@ using Xunit;
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
 
-    public partial class ErpProductSyncClientTest : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class ErpInventorySyncClientTest : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        protected const string SkipReason = "Debug ErpProductSyncClient Function";
+        protected const string SkipReason = "Debug ErpInventorySyncClientTest Function";
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
 
-        public ErpProductSyncClientTest(TestFixture<StartupTest> fixture)
+        public ErpInventorySyncClientTest(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -45,12 +45,19 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
 
         [Fact()]
-        public async Task SyncFromProductBasicAsync_Test()
+        public async Task SendAddData_Test()
         {
-            var client = new ErpProductSyncClient(_baseUrl, _code);
+            var client = new ErpInventorySyncClient(_baseUrl, _code);
 
-            var result = await client.SyncFromProductBasicAsync(MasterAccountNum, ProfileNum);
+            var result = await client.InventorySyncAsync(MasterAccountNum, ProfileNum, new InventorySyncUpdatePayload()
+            {
+                InventorySyncItems = new List<InventorySyncItem>()
+                {
+                    new InventorySyncItem() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 }
+                }
+            });
             Assert.True(result, "succ");
+            Assert.True(client.Messages.Count == 0, "succ");
 
         }
 

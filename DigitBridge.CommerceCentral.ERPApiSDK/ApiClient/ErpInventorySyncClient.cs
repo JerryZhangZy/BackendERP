@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class ErpInventorySyncClient : ApiClientBase<ResponsePayloadBase>
+    public class ErpInventorySyncClient : ApiClientBase<InventorySyncUpdatePayload>
     {
 
         public ErpInventorySyncClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)

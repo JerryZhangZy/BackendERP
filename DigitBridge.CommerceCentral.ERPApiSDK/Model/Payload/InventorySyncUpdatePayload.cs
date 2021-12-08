@@ -15,7 +15,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     /// Request and Response payload object for Patch API
     /// </summary>
     [Serializable()]
-    public class InventorySyncUpdatePayload
+    public class InventorySyncUpdatePayload : ResponsePayloadBase
     {
 
         /// <summary>
