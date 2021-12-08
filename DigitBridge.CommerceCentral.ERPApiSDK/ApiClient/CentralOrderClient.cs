@@ -33,5 +33,15 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             };
             return await AddEventERPAsync(data, FunctionUrl.CreateSalesOrderByCentralOrder);
         }
+
+        /// <summary>
+        /// Transfer channel order to erp
+        /// </summary>
+        /// <param name="eventDto"></param>
+        /// <returns></returns>
+        public async Task<bool> CentralOrderToErpAsync(AddErpEventDto eventDto)
+        {
+            return await AddEventERPAsync(eventDto, FunctionUrl.CreateSalesOrderByCentralOrder);
+        }
     }
 }
