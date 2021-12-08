@@ -190,12 +190,12 @@ ordi.BillToNightPhone as 'BillToNightPhone',
         }
 
 
-        protected override string GetSQL_where()
-        {
-            var whereSql = base.GetSQL_where();
-            whereSql += $" AND ord.OrderStatus not in ({(int)SalesOrderStatus.Hold},{(int)SalesOrderStatus.Cancelled})";
-            return whereSql;
-        }
+        //protected override string GetSQL_where()
+        //{
+        //    var whereSql = base.GetSQL_where();
+        //    whereSql += $" AND ord.OrderStatus not in ({(int)SalesOrderStatus.Hold},{(int)SalesOrderStatus.Cancelled})";
+        //    return whereSql;
+        //}
 
         #endregion override methods 
 

@@ -35,6 +35,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<EventProcessTypeEnum> _ERPEventProcessType = new EnumQueryFilter<EventProcessTypeEnum>("ERPEventProcessType", "ERPEventProcessType", PREFIX_Event, FilterBy.eq, -1);
         public EnumQueryFilter<EventProcessTypeEnum> ERPEventProcessType => _ERPEventProcessType;
 
+
+        protected EnumQueryFilter<SalesOrderStatus> _OrderStatus_Cancelled = new EnumQueryFilter<SalesOrderStatus>("OrderStatus_Cancelled", "OrderStatus", PREFIX, FilterBy.ne, -1);
+        public EnumQueryFilter<SalesOrderStatus> OrderStatus_Cancelled => _OrderStatus_Cancelled;
+
+        protected EnumQueryFilter<SalesOrderStatus> _OrderStatus_Hold = new EnumQueryFilter<SalesOrderStatus>("OrderStatus_Hold", "OrderStatus", PREFIX, FilterBy.ne, -1);
+        public EnumQueryFilter<SalesOrderStatus> OrderStatus_Hold => _OrderStatus_Hold;
+
         #endregion 
 
         public SalesOrderOpenQuery() : base(PREFIX_Event)
@@ -52,6 +59,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //_OrderStatus.FilterValue = (int)SalesOrderStatus.Open;
             _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Pending;
             _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.SalesOrderToWMS;
+            _OrderStatus_Hold.FilterValue = (int)SalesOrderStatus.Hold;
+            _OrderStatus_Cancelled.FilterValue = (int)SalesOrderStatus.Cancelled;
         }
     }
 }
