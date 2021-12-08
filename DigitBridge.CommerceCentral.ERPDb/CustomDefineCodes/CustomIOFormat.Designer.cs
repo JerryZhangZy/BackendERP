@@ -66,8 +66,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Description",SqlDbType.NVarChar,NotNull=true)]
         private string _description;
 
-        [Column("JsonFields",SqlDbType.VarChar)]
-        private string _jsonFields;
+        [Column("FormatObject", SqlDbType.VarChar)]
+        private string _formatObject;
 
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
@@ -220,20 +220,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// JSON string, format define
 		/// </summary>
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public virtual string JsonFields
+        public virtual string FormatObject
         {
             get
             {
-				if (!AllowNull && _jsonFields is null) 
-					_jsonFields = String.Empty; 
-				return _jsonFields?.TrimEnd(); 
+				if (!AllowNull && _formatObject is null)
+                    _formatObject = String.Empty; 
+				return _formatObject?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_jsonFields = value.TrimEnd(); 
-					OnPropertyChanged("JsonFields", value);
+                    _formatObject = value.TrimEnd(); 
+					OnPropertyChanged("FormatObject", value);
 				}
             }
         }
@@ -343,8 +343,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_formatType = String.Empty; 
 			_formatNumber = default(int); 
 			_formatName = String.Empty; 
-			_description = String.Empty; 
-			_jsonFields = AllowNull ? (string)null : String.Empty; 
+			_description = String.Empty;
+            _formatObject = AllowNull ? (string)null : String.Empty; 
 			Fields.Clear(); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
@@ -380,13 +380,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public override CustomIOFormat ConvertDbFieldsToData()
 		{
 			base.ConvertDbFieldsToData();
-			Fields.LoadFromValueString(JsonFields);
+			Fields.LoadFromValueString(FormatObject);
 			return this;
 		}
 		public override CustomIOFormat ConvertDataFieldsToDb()
 		{
 			base.ConvertDataFieldsToDb();
-			JsonFields = Fields.ToValueString();
+            FormatObject = Fields.ToValueString();
 			UpdateDateUtc =DateTime.UtcNow;
 			return this;
 		}
