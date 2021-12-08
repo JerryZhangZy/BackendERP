@@ -126,5 +126,58 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
         }
 
+
+        /// <summary>
+        /// Load CustomIOFormat list
+        /// </summary>
+        [FunctionName(nameof(CustomIOFormatList))]
+        [OpenApiOperation(operationId: "CustomIOFormatList", tags: new[] { "CustomIOFormats" }, Summary = "Load CustomIOFormat list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadFind))]
+        public static async Task<JsonNetResponse<CustomIOFormatPayload>> CustomIOFormatList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customIOFormats/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomIOFormatPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new CustomIOFormatList(dataBaseFactory, new CustomIOFormatQuery());
+            await srv.GetCustomIOFormatListAsync(payload);
+            return new JsonNetResponse<CustomIOFormatPayload>(payload);
+        }
+
+
+
+
+        ///// <summary>
+        ///// Add customer
+        ///// </summary>
+        //[FunctionName(nameof(Sample_Customer_Post))]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiOperation(operationId: "CustomerAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of customer")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadAdd))]
+        //public static async Task<JsonNetResponse<CustomerPayloadAdd>> Sample_Customer_Post(
+        //    [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customers")] HttpRequest req)
+        //{
+        //    return new JsonNetResponse<CustomerPayloadAdd>(CustomerPayloadAdd.GetSampleData());
+        //}
+
+        /// <summary>
+        /// find CustomIOFormat
+        /// </summary>
+        [FunctionName(nameof(Sample_CustomIOFormat_Find))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "Sample_CustomIOFormat_Find", tags: new[] { "Sample" }, Summary = "Get new sample of CustomIOFormat find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadFind))]
+        public static async Task<JsonNetResponse<CustomIOFormatPayloadFind>> Sample_CustomIOFormat_Find(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customIOFormats/find")] HttpRequest req)
+        {
+            return new JsonNetResponse<CustomIOFormatPayloadFind>(CustomIOFormatPayloadFind.GetSampleData());
+        }
     }
 }
