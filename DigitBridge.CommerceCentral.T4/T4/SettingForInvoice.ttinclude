@@ -76,7 +76,7 @@
     var IOCsvHelperName = $"{processName}IOCsv";
     var IOFolder = $"DigitBridge.CommerceCentral.ERPMdl\\{processForlderName}\\io";
 
-        var generateStructureFindList=true;
+    var generateStructureFindList=true;
     var generateServiceTester = true;
 
     var indent = 2;

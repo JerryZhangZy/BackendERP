@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -42,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Digit_seller_id, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.CustomerCode, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
 					.RuleFor(u => u.CustomerName, f => f.Company.CompanyName())
 					.RuleFor(u => u.Contact, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.Contact2, f => f.Lorem.Sentence().TruncateTo(200))
@@ -53,6 +51,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.Phone4, f => f.Phone.PhoneNumber())
 					.RuleFor(u => u.Email, f => f.Internet.Email())
 					.RuleFor(u => u.WebSite, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.CustomerType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.CustomerStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.BusinessType, f => f.Random.AlphaNumeric(50))

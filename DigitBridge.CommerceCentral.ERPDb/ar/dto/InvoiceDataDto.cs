@@ -41,6 +41,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceItems => InvoiceItems != null;
 
+        public InvoiceDataDto NewData()
+        {
+            InvoiceHeader = new InvoiceHeaderDto();
+            InvoiceHeaderInfo = new InvoiceHeaderInfoDto();
+            InvoiceHeaderAttributes = new InvoiceHeaderAttributesDto();
+            InvoiceItems = new List<InvoiceItemsDto>();
+
+            return this;
+        }
     }
 }
 
