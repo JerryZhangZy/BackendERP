@@ -150,20 +150,20 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
 
 
 
-        ///// <summary>
-        ///// Add customer
-        ///// </summary>
-        //[FunctionName(nameof(Sample_Customer_Post))]
-        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiOperation(operationId: "CustomerAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of customer")]
-        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadAdd))]
-        //public static async Task<JsonNetResponse<CustomerPayloadAdd>> Sample_Customer_Post(
-        //    [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customers")] HttpRequest req)
-        //{
-        //    return new JsonNetResponse<CustomerPayloadAdd>(CustomerPayloadAdd.GetSampleData());
-        //}
+        /// <summary>
+        /// Add CustomIOFormat
+        /// </summary>
+        [FunctionName(nameof(Sample_CustomIOFormat_Post))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "CustomIOFormatAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of CustomIOFormat")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadAdd))]
+        public static async Task<JsonNetResponse<CustomIOFormatPayloadAdd>> Sample_CustomIOFormat_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customIOFormat")] HttpRequest req)
+        {
+            return new JsonNetResponse<CustomIOFormatPayloadAdd>(CustomIOFormatPayloadAdd.GetSampleData());
+        }
 
         /// <summary>
         /// find CustomIOFormat
