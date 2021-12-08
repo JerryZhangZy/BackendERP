@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string FormatNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.FormatNumber AS {name ?? "FormatNumber".ToCamelCase(camelCase)} ";
         public static string FormatName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.FormatName) AS {name ?? "FormatName".ToCamelCase(camelCase)} ";
         public static string Description(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Description) AS {name ?? "Description".ToCamelCase(camelCase)} ";
-        public static string JsonFields(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.JsonFields) AS {name ?? "JsonFields".ToCamelCase(camelCase)} ";
+        public static string FormatObject(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.FormatObject) AS {name ?? "FormatObject".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
@@ -68,7 +68,7 @@ RTRIM({allies}FormatType) AS FormatType,
 {allies}FormatNumber AS FormatNumber,
 RTRIM({allies}FormatName) AS FormatName,
 RTRIM({allies}Description) AS Description,
-RTRIM({allies}JsonFields) AS JsonFields,
+RTRIM({allies}FormatObject) AS FormatObject,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,

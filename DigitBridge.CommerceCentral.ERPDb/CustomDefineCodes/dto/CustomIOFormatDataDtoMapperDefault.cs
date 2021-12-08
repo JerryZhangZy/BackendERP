@@ -61,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasFormatNumber) data.FormatNumber = dto.FormatNumber.ToInt();
 			if (dto.HasFormatName) data.FormatName = dto.FormatName;
 			if (dto.HasDescription) data.Description = dto.Description;
-			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
+			if (dto.HasFormatObject) data.FormatObject = dto.FormatObject;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -111,7 +111,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.FormatNumber = data.FormatNumber;
 			dto.FormatName = data.FormatName;
 			dto.Description = data.Description;
-			dto.Fields = data.Fields.ToJson();
+			dto.FormatObject = data.FormatObject;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;

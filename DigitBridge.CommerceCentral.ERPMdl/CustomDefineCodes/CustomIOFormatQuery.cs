@@ -22,29 +22,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         // Table prefix which use in this sql query
         protected static string PREFIX = Helper.TableAllies;
 
-        // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+       
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<string> _FormatType = new QueryFilter<string>("FormatType", "FormatType", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> FormatType => _FormatType;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
+        protected QueryFilter<int> _FormatNumber = new QueryFilter<int>("FormatNumber", "FormatNumber", PREFIX, FilterBy.eq, -1);
+        public QueryFilter<int> FormatNumber => _FormatNumber;
 
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+
+        protected QueryFilter<string> _FormatName = new QueryFilter<string>("FormatName", "FormatName", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> FormatName => _FormatName;
+ 
 
         public CustomIOFormatQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_FormatType);
+            AddFilter(_FormatNumber);
+            AddFilter(_FormatName);
         }
 
         public override void InitQueryFilter()
