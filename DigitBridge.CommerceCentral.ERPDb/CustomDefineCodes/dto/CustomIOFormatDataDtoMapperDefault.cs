@@ -66,6 +66,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
+			dto.Format.UpdateParentObjectColumns(dto.FormatColumns);
+			data.SetFormatObject(dto.Format);
+
 			#endregion read properties
 
 			data.CheckIntegrity();
@@ -118,6 +121,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UpdateBy = data.UpdateBy;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
+			dto.Format = data.GetFormatObject();
+			dto.FormatColumns = dto.Format.GetColumnList();
 			#endregion read properties
 
 			return;

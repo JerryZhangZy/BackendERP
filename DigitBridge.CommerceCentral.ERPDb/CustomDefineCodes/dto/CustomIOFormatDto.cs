@@ -121,6 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// JSON string, format define
 		/// </summary>
 		[OpenApiPropertyDescription("JSON string, format define")]
+        [JsonIgnore, XmlIgnore]
         public string FormatObject { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -156,13 +157,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateBy => UpdateBy != null;
 
-
-
         #endregion Properties - Generated 
 
         #region Children - Generated 
 
         #endregion Children - Generated 
+
+        public CsvFormat Format { get; set; }
+        public IList<CsvFormatColumn> FormatColumns { get; set; }
 
     }
 }
