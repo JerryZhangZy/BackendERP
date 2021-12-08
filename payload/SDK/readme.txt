@@ -49,6 +49,11 @@
 3.9 Create invoice by ordershipment (Use 2.1 configuration)
 3.9.1 InvoiceClient：Create erp invoice by OrderShipmentUuid
 
+3.10 Add qbo event and queue message (Use 2.1 configuration)
+3.10.1 QboInvoiceClient:Add event and add message to queue to create qbo invoice.
+3.10.2 QboPaymentClient:Add event and add message to queue to create qbo payment.
+3.10.3 QboReturnClient: Add event and add message to queue to create qbo refund.
+
 4, Two ways to create a client 
    1,//Add config to config file
      var client = new CommerceCentralInvoiceClient(); 
