@@ -263,7 +263,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        public async Task<bool> UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
+        public async Task<bool> UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload, string process="WMS")
         {
             if (!inventorySyncUpdatePayload.HasInventorySyncItems)
             {
@@ -282,7 +282,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     CountQty = item.Qty.ToQty(),
                 });
             }
-            if (!(await inventoryUpdateService.AddCountAsync(items, masterAccountNum, profileNum)))
+            if (!(await inventoryUpdateService.AddCountAsync(items, masterAccountNum, profileNum, true, process)))
                 return inventorySyncUpdatePayload.ReturnError(inventoryUpdateService.Messages);
 
             return true;
