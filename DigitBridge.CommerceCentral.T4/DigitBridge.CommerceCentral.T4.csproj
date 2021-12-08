@@ -45,11 +45,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateIOManager.ttinclude">
-      <LastGenOutput>GenerateIOManagerInterface.cs</LastGenOutput>
+      <LastGenOutput>GenerateIOManager.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateIOCsv.ttinclude">
-      <LastGenOutput>GenerateIOManager.cs</LastGenOutput>
+      <LastGenOutput>GenerateIOCsv.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateIOFormat.ttinclude">
@@ -405,6 +405,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="T4\GenerateIOCsv.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateIOFormat.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -419,6 +424,11 @@
       <DependentUpon>GenerateIOManager.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateIOManager.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateIOManager.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateIOManagerTester.cs">
       <DesignTime>True</DesignTime>
@@ -514,6 +524,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForPurchaseOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForPurchaseOrder.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForSalesOrder.cs">
       <DesignTime>True</DesignTime>

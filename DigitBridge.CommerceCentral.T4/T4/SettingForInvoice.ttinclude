@@ -69,7 +69,14 @@
     var ServiceName = $"{processName}Service";
     var ServiceHelperName = $"{processName}Helper";
     
-    var generateStructureFindList=true;
+    // generate IO functions
+    var generateIO = true;
+    var IOServiceName = $"{processName}IOManager";
+    var IOFormatName = $"{processName}IOFormat";
+    var IOCsvHelperName = $"{processName}IOCsv";
+    var IOFolder = $"DigitBridge.CommerceCentral.ERPMdl\\{processForlderName}\\io";
+
+        var generateStructureFindList=true;
     var generateServiceTester = true;
 
     var indent = 2;
