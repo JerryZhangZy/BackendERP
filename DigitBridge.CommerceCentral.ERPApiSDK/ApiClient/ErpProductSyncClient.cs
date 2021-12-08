@@ -29,8 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 using var httpClient = await CreateHttpClientAsync();
 
                 var response = await httpClient.GetAsync(BuildRequestUri(FunctionUrl.SyncFromProductBasic));
-                var responseData = await response.Content.ReadAsStringAsync();
-                success = await AnalysisResponseAsync(responseData);
+                success = response.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {
