@@ -31,23 +31,100 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "formatType", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "formatType", Description = "formatType", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "formatNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "formatNumber", Description = "formatNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "formatNumber", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "formatNumber", Description = "formatNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadGetSingle))]
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> GetCustomIOFormat(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customIOFormats/{formatType}/{formatNumber}")] HttpRequest req,
-            string formatType ,string formatNumber)
+            string formatType ,int formatNumber)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomIOFormatService(dbFactory);
 
-           
-            //if (await svc.GetCustomerByCustomerCodeAsync(payload, customerCode))
-            //    payload.Customer = svc.ToDto();
-            //else
-            //    payload.Messages = svc.Messages;
+
+            payload.Success = await svc.GetAsync(payload, formatType, formatNumber);
+            if(payload.Success)
+                payload.CustomIOFormat = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
 
         }
+
+
+
+        [FunctionName(nameof(AddCustomIOFormat))]
+        [OpenApiOperation(operationId: "AddCustomIOFormat", tags: new[] { "CustomIOFormats" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadAdd), Description = "CustomIOFormatDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadAdd))]
+        public static async Task<JsonNetResponse<CustomIOFormatPayload>> AddCustomIOFormat(
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customIOFormats")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomIOFormatPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new CustomIOFormatService(dbFactory);
+            payload.Success = await svc.AddAsync(payload);
+            if(payload.Success)
+                payload.CustomIOFormat = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
+            return new JsonNetResponse<CustomIOFormatPayload>(payload);
+        }
+
+
+
+
+        [FunctionName(nameof(UpdateCustomIOFormat))]
+        [OpenApiOperation(operationId: "UpdateCustomIOFormat", tags: new[] { "CustomIOFormats" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadUpdate), Description = "CustomIOFormatDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadUpdate))]
+        public static async Task<JsonNetResponse<CustomIOFormatPayload>> UpdateCustomIOFormat(
+          [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "customIOFormats")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomIOFormatPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new CustomIOFormatService(dbFactory);
+            payload.Success = await svc.UpdateAsync(payload);
+            if(payload.Success)
+                payload.CustomIOFormat = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
+ 
+            return new JsonNetResponse<CustomIOFormatPayload>(payload);
+        }
+
+
+
+
+
+        [FunctionName(nameof(DeleteCustomIOFormat))]
+        [OpenApiOperation(operationId: "DeleteCustomIOFormat", tags: new[] { "CustomIOFormats" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "formatNumber", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "formatNumber", Description = "formatNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadDelete), Description = "The OK response")]
+        public static async Task<JsonNetResponse<CustomIOFormatPayload>> DeleteCustomIOFormat(
+          [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customIOFormats/{formatNumber}")] HttpRequest req,
+          int formatNumber)
+        {
+            var payload = await req.GetParameters<CustomIOFormatPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new CustomIOFormatService(dbFactory);
+
+            payload.Success = await svc.DeleteByNumberAsync(payload, formatNumber.ToString());
+            if (payload.Success)
+                payload.CustomIOFormat = svc.ToDto();
+           else
+                payload.Messages = svc.Messages;
+            return new JsonNetResponse<CustomIOFormatPayload>(payload);
+        }
+
     }
 }
