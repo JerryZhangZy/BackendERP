@@ -135,13 +135,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class CustomIOFormatFilter
     {
-        //public string City { get; set; }
+        public string FormatType { get; set; }
+        public int FormatNumber { get; set; }
+
+        public string FormatName { get; set; }
+
 
         public static Faker<CustomIOFormatFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<CustomIOFormatFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.FormatType, f => "SalesOrder")
+                 .RuleFor(u => u.FormatNumber, f => 0)
+                  .RuleFor(u => u.FormatName, f => "")
                 ;
             #endregion faker data rules
         }

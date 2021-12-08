@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// Commerce central download unprocess invoice from erp, then send succeed downloaded invoiceuuids back to erp.
+    /// </summary>
     public class CommerceCentralAckReceiveInvoiceClient : ApiClientBase<AcknowledgePayload>
     {
         /// <summary>
@@ -29,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
 
         /// <summary>
-        /// Wms data downloaded then send ack to erp.
+        /// Commerce central download unprocess invoice, then ack this batch invoice downloaded succeeded.
         /// </summary>
         /// <param name="masterAccountNum"></param>
         /// <param name="profileNum"></param>

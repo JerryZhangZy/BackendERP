@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// Create erp invoice by OrderShipmentUuid
+    /// </summary>
     public class InvoiceClient:ErpEventClient
     {
 

@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -263,6 +264,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        //public virtual async Task<bool> GetDataTemplateAsync(int masterAccountNum, int profileNum, string formatType)
+        //{
+        //    NewData();
+
+        //    switch (formatType.ToLower())
+        //    {
+        //        case "salesorder":
+        //            SalesOrderIOFormat salesOrderIOFormat = new
+        //                  SalesOrderIOFormat();
+        //            this._data.CustomIOFormat.FormatObject = JsonConvert.SerializeObject(salesOrderIOFormat);
+        //            break;
+        //    }
+
+          
+        //}
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="formatType">formatType</param>
+        /// <param name="formatNumber">formatNumber</param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetAsync(CustomIOFormatPayload payload, string formatType, int formatNumber)
+        {
+            var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND FormatType=@2 AND FormatNumber=@3"
+                ,
+                payload.MasterAccountNum.ToSqlParameter("0"),
+                payload.ProfileNum.ToSqlParameter("1"),
+                formatType.ToSqlParameter("2"),
+                formatNumber.ToSqlParameter("3")
+                );
+           if (rownum == 0)
+            {
+                AddError($"Data not found for formatType:{formatType}formatNumber{formatNumber} .");
+                return false;
+            }
+
+            return _data.Get(rownum);
+        }
+
         /// <summary>
         ///  get data by number
         /// </summary>
@@ -289,6 +333,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
             return success;
+        }
+
+        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1    AND FormatNumber=@2"
+                 ,
+                 masterAccountNum.ToSqlParameter("0"),
+                 profileNum.ToSqlParameter("1"),
+                 number.ToSqlParameter("2")
+                 );
+            if (rownum == 0)
+            {
+                AddError($"Data not found for formatNumber:{number} .");
+                return false;
+            }
+
+            return _data.Get(rownum);
         }
 
     }

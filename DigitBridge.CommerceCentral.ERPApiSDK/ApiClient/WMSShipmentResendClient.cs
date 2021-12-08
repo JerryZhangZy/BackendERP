@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// Resend existing WMS shipment to queue by WMS shipmentID
+    /// </summary>
     public class WMSShipmentResendClient : ApiClientBase<WMSShipmentResendResponsePayload>
     {
 

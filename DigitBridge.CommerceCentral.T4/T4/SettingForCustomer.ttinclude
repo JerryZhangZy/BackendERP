@@ -71,6 +71,13 @@
     var generateStructureFindList=true;
     var generateServiceTester = true;
 
+    // generate IO functions
+    var generateIO = true;
+    var IOServiceName = $"{processName}IOManager";
+    var IOFormatName = $"{processName}IOFormat";
+    var IOCsvHelperName = $"{processName}IOCsv";
+    var IOFolder = $"DigitBridge.CommerceCentral.ERPMdl\\{processForlderName}\\io";
+
     var indent = 2;
     var dir = string.Empty;
 

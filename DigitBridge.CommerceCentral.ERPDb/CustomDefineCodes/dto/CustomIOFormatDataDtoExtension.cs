@@ -115,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.FormatNumber, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.FormatName, f => f.Company.CompanyName())
 				.RuleFor(u => u.Description, f => f.Commerce.ProductName())
-				.RuleFor(u => u.Fields, f => f.Random.JObject())
+				.RuleFor(u => u.FormatObject, f => "")
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				.RuleFor(u => u.EnterBy, f => null)
 				.RuleFor(u => u.UpdateBy, f => null)
