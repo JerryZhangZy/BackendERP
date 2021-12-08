@@ -233,14 +233,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TaxRate = 0;
             sum.TaxAmount = 0;
 
-            sum.TotalAmount = (
-                sum.SubTotalAmount - sum.DiscountAmount +
-                sum.TaxAmount +
-                sum.ShippingAmount +
-                sum.MiscAmount +
-                sum.ChargeAndAllowanceAmount
-                ).ToAmount();
+            //sum.TotalAmount = (
+            //    sum.SubTotalAmount - sum.DiscountAmount +
+            //    sum.TaxAmount +
+            //    sum.ShippingAmount +
+            //    sum.MiscAmount +
+            //    sum.ChargeAndAllowanceAmount
+            //    ).ToAmount();
 
+            //Po only caculate item amount
+            sum.TotalAmount = sum.SubTotalAmount;
             return true;
         }
 
@@ -319,7 +321,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // if item is taxable, need add taxAmount to extAmount
             if (!item.TaxRate.IsZero())
                 item.TaxAmount = (item.ExtAmount * item.TaxRate).ToAmount();
-            item.ExtAmount += item.TaxAmount.ToAmount();
 
             // this item total amount is item reference total
             item.ItemTotalAmount = item.ExtAmount;
