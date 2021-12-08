@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// WMS upload shipment to erp.
+    /// </summary>
     public class WMSShipmentClient : ApiClientBase<List<WmsOrderShipmentPayload>>
     {
         /// <summary>

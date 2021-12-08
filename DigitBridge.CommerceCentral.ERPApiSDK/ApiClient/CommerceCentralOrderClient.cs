@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class CentralOrderClient : ErpEventClient
+    /// <summary>
+    /// Create ERP sales order by centralOrderUuid
+    /// </summary>
+    public class CommerceCentralOrderClient : ErpEventClient
     {
 
-        public CentralOrderClient() : base()
+        public CommerceCentralOrderClient() : base()
         { }
-        public CentralOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public CommerceCentralOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
         /// <summary>
@@ -29,6 +32,16 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 ProcessUuid = centralOrderUuid,
             };
             return await AddEventERPAsync(data, FunctionUrl.CreateSalesOrderByCentralOrder);
+        }
+
+        /// <summary>
+        /// Transfer channel order to erp
+        /// </summary>
+        /// <param name="eventDto"></param>
+        /// <returns></returns>
+        public async Task<bool> CentralOrderToErpAsync(AddErpEventDto eventDto)
+        {
+            return await AddEventERPAsync(eventDto, FunctionUrl.CreateSalesOrderByCentralOrder);
         }
     }
 }

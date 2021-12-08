@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// Add event and add message to queue to create qbo invoice
+    /// </summary>
     public class QboInvoiceClient:ErpEventClient
     {
 

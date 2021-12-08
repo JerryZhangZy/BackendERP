@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public IntegrationCentralOrderApi(string baseUrl, string authCode)
         {
-            _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
+            _centralOrderClient = new CommerceCentralOrderClient(baseUrl, authCode);
         }
 
         #region DataBase
@@ -49,13 +49,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         #region Service
-        private CentralOrderClient _centralOrderClient;
-        protected CentralOrderClient centralOrderClient
+        private CommerceCentralOrderClient _centralOrderClient;
+        protected CommerceCentralOrderClient centralOrderClient
         {
             get
             {
                 if (_centralOrderClient is null)
-                    _centralOrderClient = new CentralOrderClient();
+                    _centralOrderClient = new CommerceCentralOrderClient();
                 return _centralOrderClient;
             }
         }

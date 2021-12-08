@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// WMS process downloaded salesorder, then send the process result back to erp
+    /// </summary>
     public class WMSAckProcessSalesOrderClient : ApiClientBase<AcknowledgeProcessPayload>
     {
         /// <summary>

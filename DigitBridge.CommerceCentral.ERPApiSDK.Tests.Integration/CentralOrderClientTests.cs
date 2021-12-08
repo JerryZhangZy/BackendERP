@@ -13,8 +13,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        //private string _baseUrl = "http://localhost:7073";
-        private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.neterpevents";
+        private string _baseUrl = "http://localhost:7073";
+        //private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.net";
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
         protected const int MasterAccountNum = 10002;
         protected const int ProfileNum = 10003;
@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendAddData_Test()
         {
-            var client = new CentralOrderClient(_baseUrl, _code);
+            var client = new CommerceCentralOrderClient(_baseUrl, _code);
             var centralOrderUuid = "44fb1ae8-83ea-4b34-9eec-b358f94953df";
             var result = await client.CentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
             Assert.True(client.Data != null, "succ");
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResult_Test()
         {
-            var client = new CentralOrderClient(_baseUrl, _code);
+            var client = new CommerceCentralOrderClient(_baseUrl, _code);
             var data = new UpdateErpEventDto
             {
                 MasterAccountNum = 10001,
@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResultWithConfig_Test()
         {
-            var client = new CentralOrderClient();
+            var client = new CommerceCentralOrderClient();
             var data = new UpdateErpEventDto
             {
                 MasterAccountNum = 10001,

@@ -5,7 +5,7 @@
     "LocalHttpPort": 7073
   },
   "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Server=tcp:bolanyououtlooksql01.database.windows.net,12433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
 

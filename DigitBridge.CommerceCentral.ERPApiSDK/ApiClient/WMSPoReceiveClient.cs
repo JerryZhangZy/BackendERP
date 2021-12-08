@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// WSM upload purchase order received items to erp.
+    /// </summary>
     public class WMSPoReceiveClient : ApiClientBase<IList<WMSPoReceivePayload>>
     {
         /// <summary>
