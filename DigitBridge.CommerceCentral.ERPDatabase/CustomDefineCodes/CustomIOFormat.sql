@@ -10,7 +10,7 @@
 	[FormatNumber] INT NOT NULL DEFAULT 0, --Format number, 
 	[FormatName] VARCHAR(50) NOT NULL DEFAULT '', --Format name, 
 	[Description] NVARCHAR(200) NOT NULL, --Format description, 
-	[JsonFields] VARCHAR(max) NULL, --JSON string, format define
+	[FormatObject] VARCHAR(max) NULL, --JSON string, format define
 
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
