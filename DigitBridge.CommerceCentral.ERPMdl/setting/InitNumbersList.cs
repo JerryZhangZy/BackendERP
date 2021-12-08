@@ -110,7 +110,14 @@ SELECT
                 payload.InitNumbersListCount = await CountAsync();
                 result = await ExcuteJsonAsync(sb);
                 if (result)
+                {
+                    for(int type = 0;type<(int)ActivityLogType.InitNumber;++type)
+                    {
+                        var typeName = ((ActivityLogType)type).ToString();
+                        sb.Replace(@$"""type"":""{type}""", @$"""type"":""{type}"",""typeName"":""{typeName}""");
+                    }
                     payload.InitNumbersList = sb;
+                }
             }
             catch (Exception ex)
             {
