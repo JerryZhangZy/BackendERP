@@ -12,7 +12,7 @@
     "ERP_Integration_Api_AuthCode": "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==",  
  
 
-3, API instruction
+3, API instructions
 
 3.1 Central order to ERP sales order (Use 2.1 configuration)
    3.1.1 CommerceCentralOrderClient: Create ERP sales order by centralOrderUuid
@@ -45,6 +45,9 @@
 
 3.8 Resend event (Use 2.1 configuration)
 3.8.1 ErpEventResendClient: Resend existing event to queue.
+
+3.9 Create invoice by ordershipment (Use 2.1 configuration)
+3.9.1 InvoiceClient：Create erp invoice by OrderShipmentUuid
 
 4, Two ways to create a client 
    1,//Add config to config file
