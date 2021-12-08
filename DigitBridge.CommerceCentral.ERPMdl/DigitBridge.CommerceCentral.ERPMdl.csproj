@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="po\io\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
