@@ -141,7 +141,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return this;
         }
 
-        public virtual CsvFormatParentObject CloneColumns(IList<CsvFormatColumn> cols)
+        public virtual CsvFormatParentObject CloneColumns(IList<CsvFormatColumn> cols, bool insertNew = true)
         {
             if (cols == null || cols.Count == 0) return this;
             foreach (var col in cols)
@@ -150,6 +150,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 var obj = this.Columns.FindByName(col.Name);
                 if (obj == null)
                 {
+                    // if insertNew = false, only update exist columns, otherwise can add new columns
+                    if (!insertNew) continue;
                     obj = new CsvFormatColumn();
                     this.Columns.Add(obj);
                 }
@@ -231,8 +233,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (fmt == null) return;
             LoadFormatHeader(fmt);
             LoadParentObject(fmt.ParentObject);
-            LoadFormatHeader(fmt);
-            LoadFormatHeader(fmt);
         }
 
         public virtual void LoadFormatHeader(CsvFormat fmt)
@@ -256,6 +256,32 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 if (obj == null) continue;
                 obj.Clone(parent);
             }
+        }
+
+        /// <summary>
+        /// Update each columns of parent object from one columns list 
+        /// </summary>
+        public virtual void UpdateParentObjectColumns(IList<CsvFormatColumn> columnList)
+        {
+            if (columnList == null || columnList.Count == 0) return;
+            foreach (var parent in ParentObject)
+            {
+                if (string.IsNullOrEmpty(parent.Name)) continue;
+                parent.CloneColumns(columnList, false);
+            }
+        }
+        /// <summary>
+        /// Load all columns of parent object to one list 
+        /// </summary>
+        public virtual IList<CsvFormatColumn> GetParentObjectColumns()
+        {
+            var columnList = new List<CsvFormatColumn>();
+            foreach (var parent in ParentObject)
+            {
+                if (string.IsNullOrEmpty(parent.Name)) continue;
+                columnList = columnList.Concat(parent.Columns).ToList();
+            }
+            return columnList;
         }
 
         public virtual bool IsheaderLine(CsvReader csv)
