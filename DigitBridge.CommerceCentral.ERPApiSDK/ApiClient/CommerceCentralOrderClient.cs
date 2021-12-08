@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     /// <summary>
-    /// create sales order by centralOrderUuid
+    /// Create ERP sales order by centralOrderUuid
     /// </summary>
-    public class CentralOrderClient : ErpEventClient
+    public class CommerceCentralOrderClient : ErpEventClient
     {
 
-        public CentralOrderClient() : base()
+        public CommerceCentralOrderClient() : base()
         { }
-        public CentralOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public CommerceCentralOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
         /// <summary>

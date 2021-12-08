@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendAddData_Test()
         {
-            var client = new CentralOrderClient(_baseUrl, _code);
+            var client = new CommerceCentralOrderClient(_baseUrl, _code);
             var centralOrderUuid = "44fb1ae8-83ea-4b34-9eec-b358f94953df";
             var result = await client.CentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
             Assert.True(client.Data != null, "succ");
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResult_Test()
         {
-            var client = new CentralOrderClient(_baseUrl, _code);
+            var client = new CommerceCentralOrderClient(_baseUrl, _code);
             var data = new UpdateErpEventDto
             {
                 MasterAccountNum = 10001,
@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResultWithConfig_Test()
         {
-            var client = new CentralOrderClient();
+            var client = new CommerceCentralOrderClient();
             var data = new UpdateErpEventDto
             {
                 MasterAccountNum = 10001,

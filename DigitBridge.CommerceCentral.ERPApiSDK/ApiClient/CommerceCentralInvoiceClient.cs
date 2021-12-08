@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     /// <summary>
-    /// Providing unprocess invoices for Commerce central to download.
+    /// ERP providing unprocess invoices for Commerce central to download.
     /// </summary>
     public class CommerceCentralInvoiceClient : ApiClientBase<CommerceCentralInvoiceResponsePayload>
     {

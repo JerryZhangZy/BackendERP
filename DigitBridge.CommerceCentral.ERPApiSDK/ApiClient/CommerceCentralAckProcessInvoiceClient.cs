@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     /// <summary>
-    ///  Commerce central process downloaded invcoie, then send the process result back to erp.
+    ///  Commerce central process downloaded invoice, then send the process result back to erp.
     /// </summary>
     public class CommerceCentralAckProcessInvoiceClient : ApiClientBase<AcknowledgeProcessPayload>
     {

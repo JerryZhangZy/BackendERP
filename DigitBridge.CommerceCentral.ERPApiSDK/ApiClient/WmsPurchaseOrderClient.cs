@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     /// <summary>
-    /// Providing purchase order for WMS to download. 
+    /// ERP providing purchase order list for WMS to download. 
     /// </summary>
     public class WMSPurchaseOrderClient : ApiClientBase<WMSPurchaseOrderResponsePayload>
     {

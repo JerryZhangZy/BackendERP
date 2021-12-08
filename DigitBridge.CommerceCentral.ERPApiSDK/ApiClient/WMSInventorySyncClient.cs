@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.ApiClient
 {
+    /// <summary>
+    /// WMS upload inventory instock to ERP
+    /// </summary>
     public class WMSInventorySyncClient   : ApiClientBase<ResponsePayloadBase>
     {
         /// <summary>
