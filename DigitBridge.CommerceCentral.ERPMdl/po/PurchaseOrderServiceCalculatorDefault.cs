@@ -29,8 +29,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class PurchaseOrderServiceCalculatorDefault : ICalculator<PurchaseOrderData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-        protected IPurchaseOrderService  _purchaseOrderService;
-        public PurchaseOrderServiceCalculatorDefault(IPurchaseOrderService  purchaseOrderService, IDataBaseFactory dbFactory)
+        protected IPurchaseOrderService _purchaseOrderService;
+        public PurchaseOrderServiceCalculatorDefault(IPurchaseOrderService purchaseOrderService, IDataBaseFactory dbFactory)
         {
             this.ServiceMessage = (IMessage)purchaseOrderService;
             this._purchaseOrderService = purchaseOrderService;
@@ -126,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (string.IsNullOrEmpty(data.PoHeader.PoNum))
                 {
-                    data.PoHeader.PoNum =  _purchaseOrderService.GetNextNumberAsync(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum).Result;
+                    data.PoHeader.PoNum = _purchaseOrderService.GetNextNumberAsync(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum).Result;
                 }
                 //for Add mode, always reset data's uuid
                 data.PoHeader.PoUuid = Guid.NewGuid().ToString();
@@ -265,7 +265,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 CalculateDetail(item, data, processingMode);
 
                 // sum all items EXtAmount to SubTotalAmount
-                sum.SubTotalAmount += item.ExtAmount;
+                if (!item.IsAp)
+                    sum.SubTotalAmount += item.ExtAmount;
             }
 
             return true;
