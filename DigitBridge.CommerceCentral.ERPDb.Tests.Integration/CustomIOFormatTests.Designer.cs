@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.FormatNumber, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.FormatName, f => f.Company.CompanyName())
 					.RuleFor(u => u.Description, f => f.Commerce.ProductName())
-					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
+					.RuleFor(u => u.FormatObject, f => f.Lorem.Sentence())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))

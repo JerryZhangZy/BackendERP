@@ -25,6 +25,36 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     {
 
 
+
+        //[FunctionName(nameof(GetCustomIOFormatData))]
+        //[OpenApiOperation(operationId: "GetCustomIOFormatData", tags: new[] { "CustomIOFormats" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "formatType", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "formatType", Description = "formatType", Visibility = OpenApiVisibilityType.Advanced)]
+       
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadGetSingle))]
+        //public static async Task<JsonNetResponse<CustomIOFormatPayload>> GetCustomIOFormatData(
+        //  [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customIOFormats/{formatType}")] HttpRequest req,
+        //  string formatType, int formatNumber)
+        //{
+        //    var payload = await req.GetParameters<CustomIOFormatPayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new CustomIOFormatService(dbFactory);
+
+
+        //    payload.Success = await svc.GetAsync(payload, formatType, formatNumber);
+        //    if (payload.Success)
+        //        payload.CustomIOFormat = svc.ToDto();
+        //    else
+        //        payload.Messages = svc.Messages;
+        //    return new JsonNetResponse<CustomIOFormatPayload>(payload);
+
+        //}
+
+
+
+
         [FunctionName(nameof(GetCustomIOFormat))]
         [OpenApiOperation(operationId: "GetCustomIOFormat", tags: new[] { "CustomIOFormats" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]

@@ -118,6 +118,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasDescription => Description != null;
 
 		/// <summary>
+		/// JSON string, format define
+		/// </summary>
+		[OpenApiPropertyDescription("JSON string, format define")]
+        public string FormatObject { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasFormatObject => FormatObject != null;
+
+		/// <summary>
 		/// 
 		/// </summary>
 		[OpenApiPropertyDescription("")]
@@ -147,12 +156,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateBy => UpdateBy != null;
 
-
-        [IgnoreCompare]
-        public JObject Fields { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasFields => Fields != null;
 
 
         #endregion Properties - Generated 

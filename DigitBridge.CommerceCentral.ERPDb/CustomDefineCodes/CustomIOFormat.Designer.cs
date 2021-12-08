@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Description",SqlDbType.NVarChar,NotNull=true)]
         private string _description;
 
-        [Column("FormatObject", SqlDbType.VarChar)]
+        [Column("FormatObject",SqlDbType.VarChar)]
         private string _formatObject;
 
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
@@ -219,20 +219,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// JSON string, format define
 		/// </summary>
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string FormatObject
         {
             get
             {
-				if (!AllowNull && _formatObject is null)
-                    _formatObject = String.Empty; 
+				if (!AllowNull && _formatObject is null) 
+					_formatObject = String.Empty; 
 				return _formatObject?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-                    _formatObject = value.TrimEnd(); 
+					_formatObject = value.TrimEnd(); 
 					OnPropertyChanged("FormatObject", value);
 				}
             }
@@ -292,23 +291,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        protected CustomAttributes _Fields;
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public virtual CustomAttributes Fields
-        {
-            get
-            {
-				if (_Fields is null) 
-					_Fields = new CustomAttributes(dbFactory, "CustomIOFormat"); 
-				return _Fields; 
-            }
-            set
-            {
-				_Fields = (value is null) ? new CustomAttributes(dbFactory, "CustomIOFormat") : value; 
-            }
-        }
-
 
         #endregion Properties - Generated 
 
@@ -343,9 +325,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_formatType = String.Empty; 
 			_formatNumber = default(int); 
 			_formatName = String.Empty; 
-			_description = String.Empty;
-            _formatObject = AllowNull ? (string)null : String.Empty; 
-			Fields.Clear(); 
+			_description = String.Empty; 
+			_formatObject = AllowNull ? (string)null : String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
@@ -380,13 +361,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public override CustomIOFormat ConvertDbFieldsToData()
 		{
 			base.ConvertDbFieldsToData();
-			Fields.LoadFromValueString(FormatObject);
 			return this;
 		}
 		public override CustomIOFormat ConvertDataFieldsToDb()
 		{
 			base.ConvertDataFieldsToDb();
-            FormatObject = Fields.ToValueString();
 			UpdateDateUtc =DateTime.UtcNow;
 			return this;
 		}
