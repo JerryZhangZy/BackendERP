@@ -580,7 +580,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region inventory update for one sku and warehouse
 
-        public virtual async Task<bool> AddCountAsync(IList<InventoryUpdateItems> items, int masterAccountNum, int profileNum, bool addNew = true)
+        public virtual async Task<bool> AddCountAsync(IList<InventoryUpdateItems> items, int masterAccountNum, int profileNum, bool addNew = true, string process="WMS")
         {
             this.Add();
             var header = this.Data.InventoryUpdateHeader;
@@ -593,7 +593,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             header.InventoryUpdateStatus = 0;
             header.UpdateDate = DateTime.UtcNow.Date;
             header.UpdateTime = DateTime.UtcNow.ToTimeSpan();
-            header.Processor = "WMS";
+            header.Processor = process;
 
             foreach (var item in items)
             {
