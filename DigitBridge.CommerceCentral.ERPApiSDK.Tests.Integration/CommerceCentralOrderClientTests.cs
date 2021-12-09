@@ -3,6 +3,7 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -38,10 +39,28 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task CentralOrderToErpAsync_Test()
         {
             var client = new CommerceCentralOrderClient(_baseUrl, _code);
-            var centralOrderUuid = "44fb1ae8-83ea-4b34-9eec-b358f94953df";
-            var success = await client.CentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
+            var centralOrderUuid = "638E9BB0-651E-487A-8E9E-D973E28272A2";
+            var success = await client.CentralOrderToErpAsync(10001, 10001, centralOrderUuid);
             Assert.True(success, client.Messages.ObjectToString());
-        } 
+        }
+
+        [Fact()]
+        public async Task CentralOrderToErpAsync_SendList_Test()
+        {
+            var list = dbFactory.Find<ERPDb.OrderDCAssignmentHeader>(
+                $"select top 2 * from OrderDCAssignmentHeader order by RowNum desc");
+            var centralOrderUuidList = list.Select(i => i.CentralOrderUuid).Distinct().ToList();
+            Assert.True(centralOrderUuidList!=null && centralOrderUuidList.Count > 0, "No centralOrderUuid found.");
+
+            
+            foreach (var centralOrderUuid in centralOrderUuidList)
+            {
+                var client = new CommerceCentralOrderClient(_baseUrl, _code);
+                var success = await client.CentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
+                Assert.True(success, client.Messages.ObjectToString());
+            }
+            
+        }
 
         //[Fact()]
         //public async Task SendActionResult_Test()
