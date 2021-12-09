@@ -21,12 +21,19 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         protected async Task<bool> AddEventERPAsync(AddErpEventDto eventDto, string functionUrl)
         {
-
+            if (!SetAccount(eventDto.MasterAccountNum, eventDto.ProfileNum))
+            {
+                return false;
+            }
             return await PostAsync(eventDto, functionUrl);
         }
 
         public async Task<bool> SendActionResultAsync(UpdateErpEventDto eventDto)
         {
+            if (!SetAccount(eventDto.MasterAccountNum, eventDto.ProfileNum))
+            {
+                return false;
+            }
             return await PatchAsync(eventDto);
         }
 
@@ -40,6 +47,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 ProfileNum = message.ProfileNum,
                 EventUuid = message.EventUuid,
             };
+            if (!SetAccount(eventDto.MasterAccountNum, eventDto.ProfileNum))
+            {
+                return false;
+            }
             return await PatchAsync(eventDto);
         }
 
