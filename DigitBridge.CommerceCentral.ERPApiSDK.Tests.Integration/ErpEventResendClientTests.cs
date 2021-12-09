@@ -1,4 +1,5 @@
 using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
@@ -40,7 +41,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task ResendEventAsync_Simple_Test()
         {
             var client = new ErpEventResendClient(_baseUrl, _code);
-            var eventUuids = new List<string>() { "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622" };
+            var eventuuid = dbFactory.GetValue<Event_ERP, string>("select top 1 eventuuid from event_erp ");
+            var eventUuids = new List<string>() { eventuuid };
             var success = await client.ResendEventAsync(MasterAccountNum, ProfileNum, eventUuids);
             Assert.True(success, client.Messages.ObjectToString());
 
@@ -48,8 +50,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task ResendEventAsync_Full_Test()
         {
+            var eventuuid = dbFactory.GetValue<Event_ERP, string>("select top 1 eventuuid from event_erp ");
             var client = new ErpEventResendClient(_baseUrl, _code);
-            var eventUuids = new List<string>() { "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622" };
+            var eventUuids = new List<string>() { eventuuid };
             var success = await client.ResendEventAsync(MasterAccountNum, ProfileNum, eventUuids);
 
             Assert.True(success, client.Messages.ObjectToString());
