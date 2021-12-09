@@ -28,12 +28,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class InvoiceTransactionIOManager : IInvoiceTransactionIOManager, IMessage
+    public partial class InvoicePaymentIOManager : IInvoicePaymentIOManager, IMessage
     {
-        public InvoiceTransactionIOManager(IDataBaseFactory dbFactory)
+        public InvoicePaymentIOManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            Format = new InvoiceTransactionIOFormat();
+            Format = new InvoicePaymentIOFormat();
         }
 
         #region Service Property
@@ -101,17 +101,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion Messages
 
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionIOFormat Format { get; set; }
+        public InvoicePaymentIOFormat Format { get; set; }
 
         [XmlIgnore, JsonIgnore]
-        protected InvoiceTransactionIOCsv _InvoiceTransactionIOCsv;
+        protected InvoicePaymentIOCsv _InvoiceTransactionIOCsv;
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionIOCsv InvoiceTransactionIOCsv
+        public InvoicePaymentIOCsv InvoiceTransactionIOCsv
         {
             get
             {
                 if (_InvoiceTransactionIOCsv is null)
-                    _InvoiceTransactionIOCsv = new InvoiceTransactionIOCsv(Format);
+                    _InvoiceTransactionIOCsv = new InvoicePaymentIOCsv(Format);
                 return _InvoiceTransactionIOCsv;
             }
         }

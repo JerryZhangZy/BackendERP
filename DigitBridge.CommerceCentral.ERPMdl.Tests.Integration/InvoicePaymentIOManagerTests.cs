@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     /// Represents a InvoiceTransactionIOManager Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public partial class InvoiceTransactionIOManagerTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InvoicePaymentIOManagerTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Manager Function";
 
@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceTransactionIOManagerTests(TestFixture<StartupTest> fixture)
+        public InvoicePaymentIOManagerTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -59,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ImportCsvAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_2.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
+            var service = new InvoicePaymentIOManager(DataBaseFactory);
             IList<InvoiceTransactionDataDto> data;
 
             try
@@ -86,7 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ImportAllColumnsAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_3.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
+            var service = new InvoicePaymentIOManager(DataBaseFactory);
             IList<InvoiceTransactionDataDto> data;
 
             try
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ExportAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_2.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
+            var service = new InvoicePaymentIOManager(DataBaseFactory);
             IList<InvoiceTransactionDataDto> dtos = new List<InvoiceTransactionDataDto>();
             var InvoiceTransactionService = new InvoiceTransactionService(DataBaseFactory);
             if (InvoiceTransactionService.List("179280c8-1795-466a-a1f9-93d17628ed42"))
@@ -146,7 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ExportAllColumnsAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_3.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
+            var service = new InvoicePaymentIOManager(DataBaseFactory);
             IList<InvoiceTransactionDataDto> dtos = new List<InvoiceTransactionDataDto>();
             var InvoiceTransactionService = new InvoiceTransactionService(DataBaseFactory);
             if (InvoiceTransactionService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))

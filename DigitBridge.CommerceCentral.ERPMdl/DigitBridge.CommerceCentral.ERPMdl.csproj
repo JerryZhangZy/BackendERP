@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ar\io\" />
     <Folder Include="customer\io\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
