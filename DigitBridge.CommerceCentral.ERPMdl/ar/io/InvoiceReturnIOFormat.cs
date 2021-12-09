@@ -30,9 +30,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class InvoiceTransactionIOFormat : CsvFormat
+    public partial class InvoiceReturnIOFormat : CsvFormat
     {
-        public InvoiceTransactionIOFormat() : base()
+        public InvoiceReturnIOFormat() : base()
         {
             InitConfig();
 			InitInvoiceTransaction();

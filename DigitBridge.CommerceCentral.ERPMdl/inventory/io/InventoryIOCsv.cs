@@ -24,13 +24,13 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InvoiceTransactionIOCsv Class.
+    /// Represents a InventoryIOCsv Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class InvoiceTransactionIOCsv : CsvHelper<InvoiceTransactionDataDto>
+    public partial class InventoryIOCsv : CsvHelper<InventoryDataDto>
     {
-        public InvoiceTransactionIOCsv(InvoiceTransactionIOFormat format): base(format)
+        public InventoryIOCsv(InventoryIOFormat format): base(format)
         {
         }
 
@@ -41,8 +41,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _mappers = new List<ClassMap>() 
             {
-				new CsvFormatMapper<InvoiceTransactionDto>(Format),
-				new CsvFormatMapper<InvoiceReturnItemsDto>(Format),
+				new CsvFormatMapper<ProductBasicDto>(Format),
+				new CsvFormatMapper<ProductExtDto>(Format),
+				new CsvFormatMapper<ProductExtAttributesDto>(Format),
+				new CsvFormatMapper<InventoryDto>(Format),
             };
         }
 
@@ -50,11 +52,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Read whole CSV content to Dto IList, use Format setting
         /// </summary>
-        public override async Task ReadEntitiesAsync(CsvReader csv, IList<InvoiceTransactionDataDto> data)
+        public override async Task ReadEntitiesAsync(CsvReader csv, IList<InventoryDataDto> data)
         {
             var hasReadSummary = false;
             var headerFound = false;
-            var dto = new InvoiceTransactionDataDto().NewData();
+            var dto = new InventoryDataDto().NewData();
             // store the last key values, if key values changed, need create new Dto object
             IDictionary<string, string> currentKeyValues = null;
 
@@ -99,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             if (hasReadSummary)
                             {
                                 data.Add(dto);
-                                dto = new InvoiceTransactionDataDto().NewData();
+                                dto = new InventoryDataDto().NewData();
                                 hasReadSummary = false;
                             }
                         }
@@ -122,11 +124,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Read CSV line and set value to Dto summary object depend on property name
         /// </summary>
-        protected virtual async Task<bool> ReadSummaryRecordAsync(CsvReader csv, InvoiceTransactionDataDto dto)
+        protected virtual async Task<bool> ReadSummaryRecordAsync(CsvReader csv, InventoryDataDto dto)
         {
             try
             {
-				dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
+				dto.ProductBasic = csv.GetRecord<ProductBasicDto>();
+				dto.ProductExt = csv.GetRecord<ProductExtDto>();
+				dto.ProductExtAttributes = csv.GetRecord<ProductExtAttributesDto>();
                 return true;
             }
             catch (Exception e)
@@ -140,14 +144,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Read CSV line and set value to Dto item object depend on property name
         /// And add item to Dto items list
         /// </summary>
-        protected virtual async Task<bool> ReadDetailRecordAsync(CsvReader csv, InvoiceTransactionDataDto dto)
+        protected virtual async Task<bool> ReadDetailRecordAsync(CsvReader csv, InventoryDataDto dto)
         {
             try
             {
-				var ln = csv.GetRecord<InvoiceReturnItemsDto>();
+				var ln = csv.GetRecord<InventoryDto>();
 				if (ln == null || !ln.HasSKU)
 					return false;
-				dto.InvoiceReturnItems.Add(ln);
+				dto.Inventory.Add(ln);
                 return true;
             }
             catch (Exception e)
@@ -162,7 +166,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Export List of Dto to CSV file byte[]
         /// </summary>
-        public override async Task<byte[]> ExportAsync(IEnumerable<InvoiceTransactionDataDto> datas)
+        public override async Task<byte[]> ExportAsync(IEnumerable<InventoryDataDto> datas)
         {
             if (Format == null || datas == null || !datas.Any()) return null;
 
@@ -189,59 +193,63 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Build header text list by Format define, this will combine multiple object to one line
         /// </summary>
-        protected virtual IList<string> GetHeader(IEnumerable<InvoiceTransactionDataDto> datas)
+        protected virtual IList<string> GetHeader(IEnumerable<InventoryDataDto> datas)
         {
             if (Format == null || datas == null || !datas.Any()) return null;
 
             var dataList = datas.ToList();
             var headers = new List<string>();
 
-			// build InvoiceTransaction header
-			var (header1, values1) = Format.GetHeaderAndData<InvoiceTransactionDto>(dataList[0].InvoiceTransaction);
+			// build ProductBasic header
+			var (header1, values1) = Format.GetHeaderAndData<ProductBasicDto>(dataList[0].ProductBasic);
 			if (header1 != null) headers.AddRange(header1);
 			
-			// build InvoiceReturnItems header
-            if (dataList.FirstOrDefault().InvoiceTransaction.TransType.ToInt() == 2)
-            {
-                var (header2, values2) = Format.GetHeaderAndData<InvoiceReturnItemsDto>(dataList[0].InvoiceReturnItems[0]);
-                if (header2 != null) headers.AddRange(header2);
-            }
-
+			// build ProductExt header
+			var (header2, values2) = Format.GetHeaderAndData<ProductExtDto>(dataList[0].ProductExt);
+			if (header2 != null) headers.AddRange(header2);
+			
+			// build ProductExtAttributes header
+			var (header3, values3) = Format.GetHeaderAndData<ProductExtAttributesDto>(dataList[0].ProductExtAttributes);
+			if (header3 != null) headers.AddRange(header3);
+			
+			// build Inventory header
+			var (header4, values4) = Format.GetHeaderAndData<InventoryDto>(dataList[0].Inventory[0]);
+			if (header4 != null) headers.AddRange(header4);
+			
             return headers;
         }
 
         /// <summary>
         /// Build value list by Format define, this will combine multiple object to one line
         /// </summary>
-        protected virtual IList<IList<string>> GetDataLines(InvoiceTransactionDataDto data)
+        protected virtual IList<IList<string>> GetDataLines(InventoryDataDto data)
         {
             if (Format == null || data == null) return null;
 
             var lines = new List<IList<string>>();
             var lnSummary = new List<string>();
 
-			// build InvoiceTransaction data
-			var (header1, values1) = Format.GetHeaderAndData<InvoiceTransactionDto>(data.InvoiceTransaction);
+			// build ProductBasic data
+			var (header1, values1) = Format.GetHeaderAndData<ProductBasicDto>(data.ProductBasic);
 			if (values1 != null) lnSummary.AddRange(values1);
 			
-            if (data.InvoiceReturnItems.Any())
-            {
-                // build InvoiceReturnItems data
-                foreach (var item in data.InvoiceReturnItems)
-                {
-                    if (item == null) continue;
-                    var (headerLine, valuesLine) = Format.GetHeaderAndData<InvoiceReturnItemsDto>(item);
-                    var ln = new List<string>(lnSummary);
-                    if (valuesLine != null) ln.AddRange(valuesLine);
-                    lines.Add(ln);
-                }
-            }
-            else
-            {
-                // invoice payment does not contains any return item
-                lines.Add(lnSummary);
-            }
-
+			// build ProductExt data
+			var (header2, values2) = Format.GetHeaderAndData<ProductExtDto>(data.ProductExt);
+			if (values2 != null) lnSummary.AddRange(values2);
+			
+			// build ProductExtAttributes data
+			var (header3, values3) = Format.GetHeaderAndData<ProductExtAttributesDto>(data.ProductExtAttributes);
+			if (values3 != null) lnSummary.AddRange(values3);
+			
+			// build Inventory data
+			foreach (var item in data.Inventory)
+			{
+				if (item == null) continue;
+				var (headerLine, valuesLine) = Format.GetHeaderAndData<InventoryDto>(item);
+				var ln = new List<string>(lnSummary);
+				if (valuesLine != null) ln.AddRange(valuesLine);
+				lines.Add(ln);
+			}
             return lines;
         }
 
