@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using System.Linq;
+using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
@@ -15,10 +17,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
     {
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-
-        //private string _baseUrl = "http://localhost:7074";
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
-        private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
         protected int MasterAccountNum = 10002;
         protected int ProfileNum = 10003;
 
@@ -28,8 +28,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             Configuration = fixture.Configuration;
             InitForTest();
         }
+        private IDataBaseFactory dbFactory { get; set; }
         protected void InitForTest()
         {
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
+            dbFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {
@@ -39,9 +43,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task GetWMSOrderShipmentListAsync_Simple_Test()
         {
-            var client = new WMSShipmentListClient(_baseUrl, _code);
-            var shipmentIDs = new List<string>()
-            { "113-10000001169","113-10000001170"};
+            var list = dbFactory.Find<ERPDb.EventProcessERP>(
+                $"select top 3 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS}");
+            var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
+            Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
+
+            var client = new WMSShipmentListClient(_baseUrl, _code); 
             var success = await client.GetWMSOrderShipmentListAsync(MasterAccountNum, ProfileNum, shipmentIDs);
             Assert.True(success, client.Messages.ObjectToString());
         }
@@ -49,9 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task GetWMSOrderShipmentListAsync_Full_Test()
         {
+            var list = dbFactory.Find<ERPDb.EventProcessERP>(
+                $"select top 2 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS} order by rownum desc");
+            var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
+            Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
+
             var client = new WMSShipmentListClient(_baseUrl, _code);
-            var shipmentIDs = new List<string>()
-            { "113-10000001169","113-10000001170"};
+
             var success = await client.GetWMSOrderShipmentListAsync(MasterAccountNum, ProfileNum, shipmentIDs);
             Assert.True(success, client.Messages.ObjectToString());
             Assert.True(client.ResopneData != null && client.ResopneData.WMSShipmentProcessesList != null);

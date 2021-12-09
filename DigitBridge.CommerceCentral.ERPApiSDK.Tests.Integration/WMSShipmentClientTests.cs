@@ -1,5 +1,6 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
+using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,12 +15,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
     {
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-
-        //private string _baseUrl = "http://localhost:7074";
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
-        private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
-        protected const int MasterAccountNum = 10001;
-        protected const int ProfileNum = 10001;
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
+        protected const int MasterAccountNum = 10002;
+        protected const int ProfileNum = 10003;
 
         public WMSShipmentClientTests(TestFixture<StartupTest> fixture)
         {
@@ -27,8 +26,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             Configuration = fixture.Configuration;
             InitForTest();
         }
+        private IDataBaseFactory dbFactory { get; set; }
         protected void InitForTest()
         {
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
+            dbFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {
@@ -92,6 +95,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
         protected InputOrderShipmentType GetWmsShipment()
         {
+            var salesOrderUuid = dbFactory.GetValue<ERPDb.SalesOrderHeader,string>(
+                $"select top 1 SalesOrderUuid from SalesOrderHeader where MasterAccountNum={MasterAccountNum} and ProfileNum={ProfileNum} order by rownum desc");
+
+            var salesOrderItemsUuid = dbFactory.GetValue<ERPDb.SalesOrderItems, string>(
+                $"select top 1 SalesOrderItemsUuid from SalesOrderItems where  salesOrderUuid='{salesOrderUuid}' order by rownum desc");
+
+
             return new InputOrderShipmentType()
             {
                 ShipmentHeader = new InputOrderShipmentHeaderType()
@@ -99,7 +109,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                     ChannelOrderID = new Random().Next(1, 100).ToString(),
                     ShipmentID = Guid.NewGuid().ToString(),
                     MainTrackingNumber = Guid.NewGuid().ToString(),
-
+                    SalesOrderUuid=salesOrderUuid,
+                    WarehouseCode="test warehouse code", 
                 },
                 PackageItems = new List<InputOrderShipmentPackageItemsType>()
                 {
@@ -118,7 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                                 CentralOrderLineNum=new Random().Next(1,100),
                                 ShippedQty=new Random().Next(1,100),
                                 SKU=Guid.NewGuid().ToString(),
-
+                                SalesOrderItemsUuid=salesOrderItemsUuid 
                             },
                         },
                     }
