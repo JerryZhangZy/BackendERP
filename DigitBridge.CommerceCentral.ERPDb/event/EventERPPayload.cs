@@ -105,6 +105,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeSentEventUuids() => HasSentEventUuids;
 
         #endregion
+
+        #region Add event and message to queue
+        /// <summary>
+        /// (Request) Single new event model.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Data) The event which will be send to queue")]
+        public NewEvent NewEvent { get; set; }
+        [JsonIgnore] public virtual bool HasNewEvent => NewEvent != null;
+        public bool ShouldSerializeNewEvent() => HasNewEvent;
+
+        /// <summary>
+        /// (Response) Event which sent to queue
+        /// </summary>
+        [OpenApiPropertyDescription("(Response) Event which sent to queue")]
+        public Event_ERP Event { get; set; }
+        [JsonIgnore] public virtual bool HasEvent => Event != null;
+        public bool ShouldSerializeEvent() => HasEvent;
+        #endregion
+    }
+
+    public class NewEvent
+    {
+        public int MasterAccountNum { get; set; }
+
+        public int ProfileNum { get; set; }
+
+        public string ProcessUuid { get; set; }
     }
 }
 

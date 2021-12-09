@@ -69,7 +69,7 @@ WHERE pb.MasterAccountNum={masterAccountNum} AND pb.ProfileNum={profileNum} AND 
             var payload = await req.GetParameters<InventorySyncUpdatePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InventoryUpdateManager(dataBaseFactory);
-            payload.Success = await srv.UpdateStockByList(payload);
+            payload.Success = await srv.UpdateStockByList(payload, "CommerceCentral");
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InventorySyncUpdatePayload>(payload);
 

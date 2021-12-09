@@ -19,7 +19,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         internal static string CreateSalesOrderByCentralOrder = "/api/erpevents/addCreateSalesOrderByCentralOrder";
         internal static string CreateInvoiceByOrderShipment = "/api/erpevents/addCreateInvoiceByOrderShipment";
-        
+
+        internal static string UpdateEvent = "/api/erpevents";
 
         internal const string GetSalesOrderOpenList = "/api/wms/salesOrders/find";
         internal const string AckReceiveSalesOrders = "/api/wms/salesOrders/AckReceive";
@@ -31,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string AckProcessPurchaseOrders = "/api/wms/purchaseOrders/AckProcess";
         internal const string PoReceive = "/api/wms/purchaseOrders/receive";
 
-        internal static string InventorySync = "/api/wms/inventory";
+        internal const string InventorySync = "/api/wms/inventory";
 
         internal const string AddShipments = "/api/wms/shipments";
         internal const string WMSShipmentList = "/api/wms/shipments/find";
@@ -39,6 +40,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string UnprocessList = "/api/commercecentral/invoices/list/unprocess";
         internal const string AckReceiveInvoices = "/api/commercecentral/invoices/AckReceive";
         internal const string AckProcessInvoices = "/api/commercecentral/invoices/AckProcess";
+
+        internal const string SyncFromProductBasic = "/api/syncProducts";
+        internal const string CCInventorySync = "/api/commercecentral/inventory";
 
     }
 }

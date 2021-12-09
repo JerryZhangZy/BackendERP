@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceTransactionIOManager interface.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public interface IInvoiceTransactionIOManager
+    public interface IInvoicePaymentIOManager
     {
         Task<IList<InvoiceTransactionDataDto>> ImportAsync(Stream stream);
         Task<IList<InvoiceTransactionDataDto>> ImportAllColumnsAsync(Stream stream);
