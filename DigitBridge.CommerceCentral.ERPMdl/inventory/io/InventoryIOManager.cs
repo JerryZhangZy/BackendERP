@@ -24,29 +24,29 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InvoiceTransactionIOManager Class.
+    /// Represents a InventoryIOManager Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class InvoiceTransactionIOManager : IInvoiceTransactionIOManager, IMessage
+    public partial class InventoryIOManager : IInventoryIOManager, IMessage
     {
-        public InvoiceTransactionIOManager(IDataBaseFactory dbFactory)
+        public InventoryIOManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            Format = new InvoiceTransactionIOFormat();
+            Format = new InventoryIOFormat();
         }
 
         #region Service Property
         [XmlIgnore, JsonIgnore]
-        protected InvoiceTransactionService _InvoiceTransactionService;
+        protected InventoryService _InventoryService;
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionService InvoiceTransactionService
+        public InventoryService InventoryService
         {
             get
             {
-                if (_InvoiceTransactionService is null)
-                    _InvoiceTransactionService = new InvoiceTransactionService(dbFactory);
-                return _InvoiceTransactionService;
+                if (_InventoryService is null)
+                    _InventoryService = new InventoryService(dbFactory);
+                return _InventoryService;
             }
         }
 
@@ -101,59 +101,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion Messages
 
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionIOFormat Format { get; set; }
+        public InventoryIOFormat Format { get; set; }
 
         [XmlIgnore, JsonIgnore]
-        protected InvoiceTransactionIOCsv _InvoiceTransactionIOCsv;
+        protected InventoryIOCsv _InventoryIOCsv;
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionIOCsv InvoiceTransactionIOCsv
+        public InventoryIOCsv InventoryIOCsv
         {
             get
             {
-                if (_InvoiceTransactionIOCsv is null)
-                    _InvoiceTransactionIOCsv = new InvoiceTransactionIOCsv(Format);
-                return _InvoiceTransactionIOCsv;
+                if (_InventoryIOCsv is null)
+                    _InventoryIOCsv = new InventoryIOCsv(Format);
+                return _InventoryIOCsv;
             }
         }
 
         /// <summary>
         /// Import csv file stream to IList of Dto, depend on format setting
         /// </summary>
-        public async Task<IList<InvoiceTransactionDataDto>> ImportAsync(Stream stream)
+        public async Task<IList<InventoryDataDto>> ImportAsync(Stream stream)
         {
             if (stream == null) return null;
-            var result = await InvoiceTransactionIOCsv.ImportAsync(stream);
+            var result = await InventoryIOCsv.ImportAsync(stream);
             return result.ToList();
         }
 
         /// <summary>
         /// Import csv file stream to IList of Dto, import all columns
         /// </summary>
-        public async Task<IList<InvoiceTransactionDataDto>> ImportAllColumnsAsync(Stream stream)
+        public async Task<IList<InventoryDataDto>> ImportAllColumnsAsync(Stream stream)
         {
             if (stream == null) return null;
-            var result = await InvoiceTransactionIOCsv.ImportAllColumnsAsync(stream);
+            var result = await InventoryIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
 
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
-        public async Task<byte[]> ExportAsync(IList<InvoiceTransactionDataDto> dtos)
+        public async Task<byte[]> ExportAsync(IList<InventoryDataDto> dtos)
         {
             if (dtos == null || dtos.Count == 0)
                 return null;
-            return await InvoiceTransactionIOCsv.ExportAsync(dtos);
+            return await InventoryIOCsv.ExportAsync(dtos);
         }
 
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
         /// </summary>
-        public async Task<byte[]> ExportAllColumnsAsync(IList<InvoiceTransactionDataDto> dtos)
+        public async Task<byte[]> ExportAllColumnsAsync(IList<InventoryDataDto> dtos)
         {
             if (dtos == null || dtos.Count == 0)
                 return null;
-            return await InvoiceTransactionIOCsv.ExportAllColumnsAsync(dtos);
+            return await InventoryIOCsv.ExportAllColumnsAsync(dtos);
         }
 
     }

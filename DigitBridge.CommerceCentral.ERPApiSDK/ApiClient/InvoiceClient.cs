@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         { }
 
 
-        public async Task<bool> SendCreateInvoiceByOrderShipmentAsync(AddErpEventDto eventDto)
+        public async Task<bool> CreateInvoiceByOrderShipmentAsync(AddErpEventDto eventDto)
         {
             return await AddEventERPAsync(eventDto, FunctionUrl.CreateInvoiceByOrderShipment);
         }

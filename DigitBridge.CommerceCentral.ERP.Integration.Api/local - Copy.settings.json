@@ -20,6 +20,11 @@
     "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
     "DefaultCacheExpireSlidingMins": "2",
 
+    // User account
+    "BackdoorMode": "True",
+    "BackdoorModePassword": "blabla",
+    "BackdoorModeEmail": "abc@123.com",
+
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
@@ -48,6 +53,7 @@
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
     "ERPCreateShipmentByWMSQueueName": "erp-create-shipment-by-wms",
     "ERPSyncInventoryByWmsQueueName": "erp-sync-inventory-by-wms",
+    "ERPSyncProductQueueName": "erp-sync-product-from-productbasic-queue",
     "ERPSummaryTableName": "ErpSummaryCache",
     "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
 
