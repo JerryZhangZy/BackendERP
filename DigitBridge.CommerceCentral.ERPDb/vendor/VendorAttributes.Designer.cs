@@ -74,7 +74,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// JSON string, store any document fields
-
 		/// </summary>
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields

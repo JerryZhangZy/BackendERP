@@ -17,6 +17,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Newtonsoft.Json;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -190,6 +191,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomIOFormat)
                 return false;
 
+            var mapper = new CustomIOFormatDataDtoMapperDefault();
+            var data = new CustomIOFormatData();
+            mapper.ReadDto(data, payload.CustomIOFormat);
+            payload.CustomIOFormat.CustomIOFormat.FormatObject = data.CustomIOFormat.FormatObject;
+
             // set Add mode and clear data
             Add();
 
@@ -244,7 +250,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomIOFormat)
                 return false;
             //set edit mode before validate
+            var mapper = new CustomIOFormatDataDtoMapperDefault();
+            var data = new CustomIOFormatData();
+            mapper.ReadDto(data, payload.CustomIOFormat);
+            payload.CustomIOFormat.CustomIOFormat.FormatObject = data.CustomIOFormat.FormatObject;
+
             Edit();
+
+
             if (!(await ValidateAccountAsync(payload)))
                 return false;
 
@@ -264,21 +277,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        //public virtual async Task<bool> GetDataTemplateAsync(int masterAccountNum, int profileNum, string formatType)
-        //{
-        //    NewData();
-
-        //    switch (formatType.ToLower())
-        //    {
-        //        case "salesorder":
-        //            SalesOrderIOFormat salesOrderIOFormat = new
-        //                  SalesOrderIOFormat();
-        //            this._data.CustomIOFormat.FormatObject = JsonConvert.SerializeObject(salesOrderIOFormat);
-        //            break;
-        //    }
-
-          
-        //}
+        public virtual async Task<bool> GetDataFomartAsync(CustomIOFormatPayload customIOFormatPayload, string formatType)
+        {
+            var mapper = new CustomIOFormatDataDtoMapperDefault();
+            var data = new CustomIOFormatData() { CustomIOFormat = new CustomIOFormat() { FormatType = formatType } };
+            var dto = mapper.WriteDto(data, null);
+            customIOFormatPayload.CustomIOFormat = dto;
+            return true;
+        }
 
 
 

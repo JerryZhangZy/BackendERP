@@ -21,6 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public CsvFormat GetFormatObject()
         {
             CsvFormat fmt = null;
+ 
             if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToString()))
             {
                 fmt = new SalesOrderIOFormat();
@@ -28,6 +29,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     fmt.LoadFormat(this.FormatObject.JsonToObject<SalesOrderIOFormat>());
                 return fmt;
             }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToString()))
+            {
+                fmt = new PurchaseOrderIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<PurchaseOrderIOFormat>());
+                return fmt;
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToString()))
+            {
+                fmt = new PoReceiveIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<PoReceiveIOFormat>());
+                return fmt;
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToString()))
+            {
+                fmt = new VendorIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<VendorIOFormat>());
+                return fmt;
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToString()))
+            {
+                fmt = new ApInvoiceIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<ApInvoiceIOFormat>());
+                return fmt;
+            }
+
+
             return fmt;
         }
 
@@ -40,9 +71,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 fmt.LoadFormat(csvFormat);
                 this.FormatObject = fmt.ObjectToString<CsvFormat>();
             }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToString()))
+            {
+                fmt = new PurchaseOrderIOFormat();
+                fmt.LoadFormat(csvFormat);
+                this.FormatObject = fmt.ObjectToString<CsvFormat>();
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToString()))
+            {
+                fmt = new PoReceiveIOFormat();
+                fmt.LoadFormat(csvFormat);
+                this.FormatObject = fmt.ObjectToString<CsvFormat>();
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToString()))
+            {
+                fmt = new VendorIOFormat();
+                fmt.LoadFormat(csvFormat);
+                this.FormatObject = fmt.ObjectToString<CsvFormat>();
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToString()))
+            {
+                fmt = new ApInvoiceIOFormat();
+                fmt.LoadFormat(csvFormat);
+                this.FormatObject = fmt.ObjectToString<CsvFormat>();
+            }
+        }
         }
     }
-}
 
 
 

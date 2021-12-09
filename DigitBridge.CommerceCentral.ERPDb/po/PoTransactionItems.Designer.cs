@@ -43,16 +43,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("TransItemUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _transItemUuid;
 
-        [Column("TransUuid",SqlDbType.VarChar,NotNull=true)]
+        [Column("TransUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _transUuid;
 
         [Column("Seq",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _seq;
 
-        [Column("PoUuid",SqlDbType.VarChar,NotNull=true)]
+        [Column("PoUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _poUuid;
 
-        [Column("PoNum",SqlDbType.VarChar,NotNull=true)]
+        [Column("PoNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _poNum;
 
         [Column("PoItemUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
@@ -76,19 +76,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InventoryUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _inventoryUuid;
 
-        [Column("SKU",SqlDbType.VarChar,NotNull=true)]
+        [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _sku;
 
-        [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true)]
+        [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseUuid;
 
         [Column("WarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseCode;
 
-        [Column("LotNum",SqlDbType.VarChar,NotNull=true)]
+        [Column("LotNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _lotNum;
 
-        [Column("LotDescription",SqlDbType.NVarChar,NotNull=true)]
+        [Column("LotDescription",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _lotDescription;
 
         [Column("LotInDate",SqlDbType.Date)]
@@ -97,10 +97,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("LotExpDate",SqlDbType.Date)]
         private DateTime? _lotExpDate;
 
-        [Column("Description",SqlDbType.NVarChar,NotNull=true)]
+        [Column("Description",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _description;
 
-        [Column("Notes",SqlDbType.NVarChar,NotNull=true)]
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _notes;
 
         [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]

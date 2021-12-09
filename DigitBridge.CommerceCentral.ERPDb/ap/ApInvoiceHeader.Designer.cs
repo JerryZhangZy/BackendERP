@@ -239,7 +239,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Link to PoHeader number, unique in same database and profile. <br /> Title: PoHeader Number, Display: true, Editable: false
+		/// Link to PoHeader number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false
 		/// </summary>
         public virtual string PoNum
         {
@@ -255,7 +255,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Link to PoTransaction uuid. <br /> Display: false, Editable: false.
+		/// Link to PoTransaction uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string TransUuid
         {
