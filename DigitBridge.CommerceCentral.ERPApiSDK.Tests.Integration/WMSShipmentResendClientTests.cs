@@ -1,9 +1,11 @@
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -39,8 +41,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task ResendEventAsync_Simple_Test()
         {
+            var list = dbFactory.Find<ERPDb.EventProcessERP>(
+               $"select top 3 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS} order by rownum desc");
+            var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
+            Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
+
             var client = new WMSShipmentResendClient(_baseUrl, _code);
-            var shipmentIDs = new List<string>() {"113-10000001139","113-10000001140",};
+            //var shipmentIDs = new List<string>() {"113-10000001139","113-10000001140",};
             var success = await client.ResendWMSShipmentToErpAsync(MasterAccountNum, ProfileNum, shipmentIDs);
             Assert.True(success, client.Messages.ObjectToString());
 
@@ -48,8 +55,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task ResendEventAsync_Full_Test()
         {
+            var list = dbFactory.Find<ERPDb.EventProcessERP>(
+               $"select top 3 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS} order by rownum desc");
+            var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
+            Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
+
             var client = new WMSShipmentResendClient(_baseUrl, _code);
-            var shipmentIDs = new List<string>() { "113-10000001139", "113-10000001140", };
+            //var shipmentIDs = new List<string>() { "113-10000001139", "113-10000001140", };
             var success = await client.ResendWMSShipmentToErpAsync(MasterAccountNum, ProfileNum, shipmentIDs);
 
             Assert.True(success, client.Messages.ObjectToString());
