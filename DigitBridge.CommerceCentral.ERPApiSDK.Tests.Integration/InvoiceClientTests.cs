@@ -63,22 +63,22 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             Assert.True(!result, "succ");
         }
 
-        [Fact()]
-        public async Task SendActionResultWithConfig_Test()
-        {
-            var client = new InvoiceClient();
-            var data = new UpdateErpEventDto
-            {
-                MasterAccountNum = 10001,
-                EventUuid = Guid.NewGuid().ToString(),
-                ProfileNum = 10001,
-                EventMessage = "Tester",
-                ActionStatus = 0
-            };
-            var result = await client.SendActionResultAsync(data);
-            Assert.True(client.Messages.Count > 0, "succ");
-            Assert.True(!result, "succ");
-        }
+        //[Fact()]
+        //public async Task SendActionResultWithConfig_Test()
+        //{
+        //    var client = new InvoiceClient();
+        //    var data = new UpdateErpEventDto
+        //    {
+        //        MasterAccountNum = 10001,
+        //        EventUuid = Guid.NewGuid().ToString(),
+        //        ProfileNum = 10001,
+        //        EventMessage = "Tester",
+        //        ActionStatus = 0
+        //    };
+        //    var result = await client.SendActionResultAsync(data);
+        //    Assert.True(client.Messages.Count > 0, "succ");
+        //    Assert.True(!result, "succ");
+        //}
 
         public void Dispose()
         {
