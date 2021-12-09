@@ -1,5 +1,6 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
+using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
@@ -23,12 +24,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             InitForTest();
         }
+        private IDataBaseFactory dbFactory { get; set; }
         protected void InitForTest()
         {
             _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
             _code = Configuration["ERP_Integration_Api_AuthCode"];
+            dbFactory = new DataBaseFactory(Configuration["dsn"]);
         }
-
 
         [Fact()]
         public async Task SendAddData_Test()
