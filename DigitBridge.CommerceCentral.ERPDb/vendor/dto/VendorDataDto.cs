@@ -36,6 +36,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasVendorAttributes => VendorAttributes != null;
 
+        public VendorDataDto NewData()
+        {
+            Vendor = new VendorDto();
+            VendorAddress = new List<VendorAddressDto>();
+            VendorAttributes = new VendorAttributesDto();
+ 
+            return this;
+        }
+
     }
 }
 

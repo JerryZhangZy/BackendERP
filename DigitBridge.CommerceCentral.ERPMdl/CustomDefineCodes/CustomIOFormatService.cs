@@ -17,6 +17,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Newtonsoft.Json;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -264,21 +265,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        //public virtual async Task<bool> GetDataTemplateAsync(int masterAccountNum, int profileNum, string formatType)
-        //{
-        //    NewData();
+        public virtual async Task<bool> GetDataFomartAsync(int masterAccountNum, int profileNum, string formatType)
+        {
+ 
+          //var ddd=  ActivityLogType.SalesOrder;
+            switch (formatType)
+            {
+                case "SalesOrder":
+                    var mapper = new CustomIOFormatDataDtoMapperDefault();
 
-        //    switch (formatType.ToLower())
-        //    {
-        //        case "salesorder":
-        //            SalesOrderIOFormat salesOrderIOFormat = new
-        //                  SalesOrderIOFormat();
-        //            this._data.CustomIOFormat.FormatObject = JsonConvert.SerializeObject(salesOrderIOFormat);
-        //            break;
-        //    }
+                    var data = new CustomIOFormatData() { CustomIOFormat = new CustomIOFormat() { FormatType = formatType } };
+                    var dto = mapper.WriteDto(data, null);
+                    var data2 = new CustomIOFormatData();
+                    mapper.ReadDto(data2, dto);
+                    break;
+            }
+            return true;
 
-          
-        //}
+        }
 
 
 
