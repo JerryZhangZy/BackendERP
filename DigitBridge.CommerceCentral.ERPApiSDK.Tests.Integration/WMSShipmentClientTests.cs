@@ -95,6 +95,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
         protected InputOrderShipmentType GetWmsShipment()
         {
+            var salesOrderUuid = dbFactory.GetValue<ERPDb.SalesOrderHeader,string>(
+                $"select top 1 SalesOrderUuid from SalesOrderHeader where MasterAccountNum={MasterAccountNum} and ProfileNum={ProfileNum} order by rownum desc");
+
+            var salesOrderItemsUuid = dbFactory.GetValue<ERPDb.SalesOrderItems, string>(
+                $"select top 1 SalesOrderItemsUuid from SalesOrderItems where  salesOrderUuid='{salesOrderUuid}' order by rownum desc");
+
+
             return new InputOrderShipmentType()
             {
                 ShipmentHeader = new InputOrderShipmentHeaderType()
@@ -102,7 +109,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                     ChannelOrderID = new Random().Next(1, 100).ToString(),
                     ShipmentID = Guid.NewGuid().ToString(),
                     MainTrackingNumber = Guid.NewGuid().ToString(),
-
+                    SalesOrderUuid=salesOrderUuid,
+                    WarehouseCode="test warehouse code"
                 },
                 PackageItems = new List<InputOrderShipmentPackageItemsType>()
                 {
@@ -121,7 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                                 CentralOrderLineNum=new Random().Next(1,100),
                                 ShippedQty=new Random().Next(1,100),
                                 SKU=Guid.NewGuid().ToString(),
-
+                                SalesOrderItemsUuid=salesOrderItemsUuid 
                             },
                         },
                     }

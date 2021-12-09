@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
@@ -42,9 +43,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task GetWMSOrderShipmentListAsync_Simple_Test()
         {
-            var client = new WMSShipmentListClient(_baseUrl, _code);
-            var shipmentIDs = new List<string>()
-            { "113-10000001169","113-10000001170"};
+            var list = dbFactory.Find<ERPDb.EventProcessERP>(
+                $"select top 3 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS}");
+            var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
+            Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
+
+            var client = new WMSShipmentListClient(_baseUrl, _code); 
             var success = await client.GetWMSOrderShipmentListAsync(MasterAccountNum, ProfileNum, shipmentIDs);
             Assert.True(success, client.Messages.ObjectToString());
         }
@@ -52,9 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task GetWMSOrderShipmentListAsync_Full_Test()
         {
+            var list = dbFactory.Find<ERPDb.EventProcessERP>(
+                $"select top 3 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS}");
+            var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
+            Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
+
             var client = new WMSShipmentListClient(_baseUrl, _code);
-            var shipmentIDs = new List<string>()
-            { "113-10000001169","113-10000001170"};
+
             var success = await client.GetWMSOrderShipmentListAsync(MasterAccountNum, ProfileNum, shipmentIDs);
             Assert.True(success, client.Messages.ObjectToString());
             Assert.True(client.ResopneData != null && client.ResopneData.WMSShipmentProcessesList != null);
