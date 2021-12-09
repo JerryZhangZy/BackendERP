@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task GetWMSOrderShipmentListAsync_Full_Test()
         {
             var list = dbFactory.Find<ERPDb.EventProcessERP>(
-                $"select top 3 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS}");
+                $"select top 2 * from EventProcessERP where ERPEventProcessType= {(int)EventProcessTypeEnum.ShipmentFromWMS} order by rownum desc");
             var shipmentIDs = list.Select(i => i.ProcessUuid).Distinct().ToList();
             Assert.True(shipmentIDs != null && shipmentIDs.Count > 0, "No shipmentIDs found in EventProcessERP");
 

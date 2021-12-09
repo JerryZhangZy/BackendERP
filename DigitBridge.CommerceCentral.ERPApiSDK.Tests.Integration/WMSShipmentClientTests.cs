@@ -17,8 +17,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public IConfiguration Configuration { get; }
         private string _baseUrl { get; set; }
         private string _code { get; set; }
-        protected const int MasterAccountNum = 10001;
-        protected const int ProfileNum = 10001;
+        protected const int MasterAccountNum = 10002;
+        protected const int ProfileNum = 10003;
 
         public WMSShipmentClientTests(TestFixture<StartupTest> fixture)
         {
@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                     ShipmentID = Guid.NewGuid().ToString(),
                     MainTrackingNumber = Guid.NewGuid().ToString(),
                     SalesOrderUuid=salesOrderUuid,
-                    WarehouseCode="test warehouse code"
+                    WarehouseCode="test warehouse code", 
                 },
                 PackageItems = new List<InputOrderShipmentPackageItemsType>()
                 {
