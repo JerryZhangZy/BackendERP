@@ -30,6 +30,7 @@
     <Folder Include="customer\io\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="inventory\io\" />
     <Folder Include="po\io\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
