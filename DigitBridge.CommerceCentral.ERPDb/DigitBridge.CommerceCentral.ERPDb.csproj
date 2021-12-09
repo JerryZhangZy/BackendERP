@@ -39,7 +39,6 @@
     <Folder Include="eventProcess\" />
     <Folder Include="setting\dto\" />
     <Folder Include="vendor\dto\" />
-    <Folder Include="vendor\io\" />
     <Folder Include="warehouseTransfer\dto\" />
   </ItemGroup>
 

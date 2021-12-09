@@ -191,6 +191,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomIOFormat)
                 return false;
 
+            var mapper = new CustomIOFormatDataDtoMapperDefault();
+            var data = new CustomIOFormatData();
+            mapper.ReadDto(data, payload.CustomIOFormat);
+            payload.CustomIOFormat.CustomIOFormat.FormatObject = data.CustomIOFormat.FormatObject;
+
             // set Add mode and clear data
             Add();
 
@@ -245,7 +250,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomIOFormat)
                 return false;
             //set edit mode before validate
+            var mapper = new CustomIOFormatDataDtoMapperDefault();
+            var data = new CustomIOFormatData();
+            mapper.ReadDto(data, payload.CustomIOFormat);
+            payload.CustomIOFormat.CustomIOFormat.FormatObject = data.CustomIOFormat.FormatObject;
+
             Edit();
+
+
             if (!(await ValidateAccountAsync(payload)))
                 return false;
 
@@ -265,23 +277,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        public virtual async Task<bool> GetDataFomartAsync(int masterAccountNum, int profileNum, string formatType)
+        public virtual async Task<bool> GetDataFomartAsync(CustomIOFormatPayload customIOFormatPayload, string formatType)
         {
- 
-          //var ddd=  ActivityLogType.SalesOrder;
-            switch (formatType)
-            {
-                case "SalesOrder":
-                    var mapper = new CustomIOFormatDataDtoMapperDefault();
-
-                    var data = new CustomIOFormatData() { CustomIOFormat = new CustomIOFormat() { FormatType = formatType } };
-                    var dto = mapper.WriteDto(data, null);
-                    var data2 = new CustomIOFormatData();
-                    mapper.ReadDto(data2, dto);
-                    break;
-            }
+            var mapper = new CustomIOFormatDataDtoMapperDefault();
+            var data = new CustomIOFormatData() { CustomIOFormat = new CustomIOFormat() { FormatType = formatType } };
+            var dto = mapper.WriteDto(data, null);
+            customIOFormatPayload.CustomIOFormat = dto;
             return true;
-
         }
 
 

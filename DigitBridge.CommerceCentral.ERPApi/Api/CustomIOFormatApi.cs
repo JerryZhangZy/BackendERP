@@ -43,11 +43,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var svc = new CustomIOFormatService(dbFactory);
 
 
-            payload.Success = await svc.GetDataFomartAsync(payload.MasterAccountNum, payload.ProfileNum, formatType);
-            if (payload.Success)
-                payload.CustomIOFormat = svc.ToDto();
-            else
-                payload.Messages = svc.Messages;
+            payload.Success = await svc.GetDataFomartAsync(payload, formatType);
+           payload.Messages = svc.Messages;
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
 
         }
@@ -97,7 +94,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomIOFormatService(dbFactory);
             payload.Success = await svc.AddAsync(payload);
-            if(payload.Success)
+ 
+            if (payload.Success)
                 payload.CustomIOFormat = svc.ToDto();
             else
                 payload.Messages = svc.Messages;
