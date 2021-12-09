@@ -1,10 +1,12 @@
 using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
@@ -37,5 +39,52 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public void Dispose()
         {
         }
+
+        [Fact()]
+        public async Task SendActionResult_DataProcess_Success_Test()
+        {
+            var eventuuid = dbFactory.GetValue<Event_ERP, string>("select top 1 eventuuid from event_erp ");
+            Assert.True(!eventuuid.IsZero(), "No event data.");
+
+            var client = new ErpEventClient(_baseUrl, _code);
+            var data = new UpdateErpEventDto
+            {
+                MasterAccountNum = 10001,
+                EventUuid = eventuuid,
+                ProfileNum = 10001,
+                EventMessage = "Tester",
+                ActionStatus = (int)ErpEventActionStatus.Success
+            };
+            var success = await client.SendActionResultAsync(data);
+            Assert.True(success, client.Messages.ObjectToString());
+
+            var checkEventuuid = dbFactory.GetValue<Event_ERP, string>($"select top 1 eventuuid from event_erp where eventuuid='{eventuuid}'");
+
+            Assert.True(checkEventuuid.IsZero(), "process result is success, data should not be existing in db");
+        }
+
+        [Fact()]
+        public async Task SendActionResult_DataProcess_Failed_Test()
+        {
+            var eventuuid = dbFactory.GetValue<Event_ERP, string>("select top 1 eventuuid from event_erp ");
+            Assert.True(!eventuuid.IsZero(), "No event data.");
+
+            var client = new ErpEventClient(_baseUrl, _code);
+            var data = new UpdateErpEventDto
+            {
+                MasterAccountNum = 10001,
+                EventUuid = eventuuid,
+                ProfileNum = 10001,
+                EventMessage = "Tester",
+                ActionStatus = (int)ErpEventActionStatus.Other
+            };
+            var success = await client.SendActionResultAsync(data);
+            Assert.True(success, client.Messages.ObjectToString());
+
+            var checkEventuuid = dbFactory.GetValue<Event_ERP, string>($"select top 1 eventuuid from event_erp where eventuuid='{eventuuid}'");
+
+            Assert.True(!checkEventuuid.IsZero(), "process result is failed, data should be existing in db");
+        }
+
     }
 }
