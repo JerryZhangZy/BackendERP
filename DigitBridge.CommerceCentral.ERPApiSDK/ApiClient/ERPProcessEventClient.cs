@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class ERPProcessEventClient : ApiClientBase<EventProcessERPPayload>
     {
-        public ERPProcessEventClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
+        public ERPProcessEventClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         { }
         public ERPProcessEventClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }

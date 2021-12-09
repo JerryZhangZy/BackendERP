@@ -15,7 +15,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     /// </summary>
     public class ErpEventResendClient : ApiClientBase<ErpEventResendResponsePayload>
     {
-        public ErpEventResendClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
+        public ErpEventResendClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         { }
         public ErpEventResendClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }  
