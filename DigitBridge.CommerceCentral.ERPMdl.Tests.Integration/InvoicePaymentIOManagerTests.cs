@@ -116,11 +116,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var service = new InvoicePaymentIOManager(DataBaseFactory);
             IList<InvoiceTransactionDataDto> dtos = new List<InvoiceTransactionDataDto>();
             var InvoiceTransactionService = new InvoiceTransactionService(DataBaseFactory);
-            if (InvoiceTransactionService.List("179280c8-1795-466a-a1f9-93d17628ed42"))
+            if (InvoiceTransactionService.List("9524fdd5-6271-49ac-bd1e-67d08d94168c"))
                 dtos.Add(InvoiceTransactionService.ToDto());
-            if (InvoiceTransactionService.List("d20324f6-72b6-4d96-905d-3a280ba8b44b"))
+            if (InvoiceTransactionService.List("f9e8a4e1-814f-4e5a-b8e8-b4c5d1ef9780"))
                 dtos.Add(InvoiceTransactionService.ToDto());
-            if (InvoiceTransactionService.List("a9997f83-0d3e-441c-b122-b9a002aa4670"))
+            if (InvoiceTransactionService.List("804e3c32-ad66-4054-9e0d-05b85a6235ba"))
                 dtos.Add(InvoiceTransactionService.ToDto());
 
 

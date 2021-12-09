@@ -36,7 +36,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             InitConfig();
 			InitInvoiceTransaction();
-			InitInvoiceReturnItems();
         }
 
         protected virtual void InitConfig()
@@ -100,62 +99,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 				new CsvFormatColumn("UpdateBy", "", idx++, null, false),
 			};
 		}
-
-
-
-    
-		protected virtual void InitInvoiceReturnItems()
-		{
-			var obj = this.InitParentObject<InvoiceReturnItemsDto>();
-			var idx = 0;
-			obj.Columns = new List<CsvFormatColumn>()
-			{
-				new CsvFormatColumn("ReturnItemUuid", "", idx++, null, false),
-				new CsvFormatColumn("Seq", "", idx++, null, false),
-				new CsvFormatColumn("InvoiceItemsUuid", "", idx++, null, false),
-				new CsvFormatColumn("ReturnItemType", "", idx++, null, false),
-				new CsvFormatColumn("ReturnItemStatus", "", idx++, null, false),
-				new CsvFormatColumn("ReturnDate", "", idx++, FormatType.Date, false),
-				new CsvFormatColumn("ReturnTime", "", idx++, FormatType.Time, false),
-				new CsvFormatColumn("ReceiveDate", "", idx++, FormatType.Date, false),
-				new CsvFormatColumn("StockDate", "", idx++, FormatType.Date, false),
-				new CsvFormatColumn("SKU", "", idx++, null, false),
-				new CsvFormatColumn("ProductUuid", "", idx++, null, false),
-				new CsvFormatColumn("InventoryUuid", "", idx++, null, false),
-				new CsvFormatColumn("InvoiceWarehouseUuid", "", idx++, null, false),
-				new CsvFormatColumn("InvoiceWarehouseCode", "", idx++, null, false),
-				new CsvFormatColumn("WarehouseUuid", "", idx++, null, false),
-				new CsvFormatColumn("WarehouseCode", "", idx++, null, false),
-				new CsvFormatColumn("LotNum", "", idx++, null, false),
-				new CsvFormatColumn("Reason", "", idx++, null, false),
-				new CsvFormatColumn("UOM", "", idx++, null, false),
-				new CsvFormatColumn("PackType", "", idx++, null, false),
-				new CsvFormatColumn("PackQty", "", idx++, FormatType.Qty, false),
-				new CsvFormatColumn("ReturnPack", "", idx++, null, false),
-				new CsvFormatColumn("ReceivePack", "", idx++, null, false),
-				new CsvFormatColumn("StockPack", "", idx++, null, false),
-				new CsvFormatColumn("NonStockPack", "", idx++, null, false),
-				new CsvFormatColumn("ReturnQty", "", idx++, FormatType.Qty, false),
-				new CsvFormatColumn("ReceiveQty", "", idx++, FormatType.Qty, false),
-				new CsvFormatColumn("StockQty", "", idx++, FormatType.Qty, false),
-				new CsvFormatColumn("NonStockQty", "", idx++, FormatType.Qty, false),
-				new CsvFormatColumn("PutBackWarehouseUuid", "", idx++, null, false),
-				new CsvFormatColumn("PutBackWarehouseCode", "", idx++, null, false),
-				new CsvFormatColumn("DamageWarehouseUuid", "", idx++, null, false),
-				new CsvFormatColumn("DamageWarehouseCode", "", idx++, null, false),
-				new CsvFormatColumn("InvoiceDiscountPrice", "", idx++, FormatType.Price, false),
-				new CsvFormatColumn("InvoiceDiscountAmount", "", idx++, FormatType.Amount, false),
-				new CsvFormatColumn("ReturnDiscountAmount", "", idx++, FormatType.Amount, false),
-				new CsvFormatColumn("Price", "", idx++, FormatType.Price, false),
-				new CsvFormatColumn("ExtAmount", "", idx++, FormatType.Amount, false),
-				new CsvFormatColumn("Stockable", "", idx++, null, false),
-				new CsvFormatColumn("IsAr", "", idx++, null, false),
-				new CsvFormatColumn("Taxable", "", idx++, null, false),
-			};
-		}
-
-
-
     }
 }
 

@@ -42,7 +42,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _mappers = new List<ClassMap>() 
             {
 				new CsvFormatMapper<InvoiceTransactionDto>(Format),
-				new CsvFormatMapper<InvoiceReturnItemsDto>(Format),
             };
         }
 
@@ -81,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         await ReadSummaryRecordAsync(csv, dto);
                         hasReadSummary = true;
                     }
-                    await ReadDetailRecordAsync(csv, dto);
+                    //await ReadDetailRecordAsync(csv, dto);
                 }
                 // if defined KeyName, create new Dto object depend on key values, and read lines to same key 
                 else
@@ -110,7 +109,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             hasReadSummary = true;
                         }
                         // read each detail lines
-                        await ReadDetailRecordAsync(csv, dto);
+                        //await ReadDetailRecordAsync(csv, dto);
                     }
 
                 }
@@ -223,24 +222,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 			// build InvoiceTransaction data
 			var (header1, values1) = Format.GetHeaderAndData<InvoiceTransactionDto>(data.InvoiceTransaction);
 			if (values1 != null) lnSummary.AddRange(values1);
-			
-            if (data.InvoiceReturnItems.Any())
-            {
-                // build InvoiceReturnItems data
-                foreach (var item in data.InvoiceReturnItems)
-                {
-                    if (item == null) continue;
-                    var (headerLine, valuesLine) = Format.GetHeaderAndData<InvoiceReturnItemsDto>(item);
-                    var ln = new List<string>(lnSummary);
-                    if (valuesLine != null) ln.AddRange(valuesLine);
-                    lines.Add(ln);
-                }
-            }
-            else
-            {
-                // invoice payment does not contains any return item
-                lines.Add(lnSummary);
-            }
+            lines.Add(lnSummary);
 
             return lines;
         }
