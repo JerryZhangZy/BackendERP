@@ -1,3 +1,4 @@
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -12,9 +13,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-
-        private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.neterpevents";
-        private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
 
         public QboPaymentClientTests(TestFixture<StartupTest> fixture)
         {
@@ -25,13 +25,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         }
         protected void InitForTest()
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
         }
 
 
@@ -44,45 +39,17 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                 ProcessUuid=Guid.NewGuid().ToString(),
                 ProfileNum=10001
             };
-            var result =await client.SendAddQboPaymentAsync(data);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
-            Assert.True(result, "succ");
+            var success = await client.SendAddQboPaymentAsync(data); 
+            Assert.True(success, client.Messages.ObjectToString());
 
             data =new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
                 ProfileNum=10001
             };
-            result =await client.SendDeleteQboPaymentAsync(data);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
-            Assert.True(result, "succ");
-        }
-        [Fact()]
-        public async Task SendAddDataWithConfig_Test()
-        {
-            var client = new QboPaymentClient();
-            var data=new AddErpEventDto{
-                MasterAccountNum=10001,
-                ProcessUuid=Guid.NewGuid().ToString(),
-                ProfileNum=10001
-            };
-            var result =await client.SendAddQboPaymentAsync(data);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
-            Assert.True(result, "succ");
-
-            data =new AddErpEventDto{
-                MasterAccountNum=10001,
-                ProcessUuid=Guid.NewGuid().ToString(),
-                ProfileNum=10001
-            };
-            result =await client.SendDeleteQboPaymentAsync(data);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
-            Assert.True(result, "succ");
-        }
+            success = await client.SendDeleteQboPaymentAsync(data);
+            Assert.True(success, client.Messages.ObjectToString());
+        } 
 
         [Fact()]
         public async Task SendActionResult_Test()

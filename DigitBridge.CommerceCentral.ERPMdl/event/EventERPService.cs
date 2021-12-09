@@ -367,7 +367,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="eventUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ResendEventAsync(string eventUuid, List<string> sentEventUuids)
+        public virtual async Task<bool> ResendEventAsync(string eventUuid)
         {
             if (string.IsNullOrEmpty(eventUuid))
             {
@@ -383,9 +383,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("Send event to queue failed.");
                 return false;
             }
-
-            sentEventUuids.Add(eventUuid);
-
             return true;
         }
 
@@ -403,15 +400,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("eventuuids cann't be emtpy.");
                 return false;
             }
-            var sentEventUuids = new List<string>();
+
             foreach (var eventUuid in payload.EventUuids)
             {
-                await ResendEventAsync(eventUuid, sentEventUuids);
+                var success = await ResendEventAsync(eventUuid);
+                if (success)
+                {
+                    payload.SentEventUuids.Add(eventUuid);
+                }
+                else
+                    payload.Success = false;
             }
 
-            payload.SentEventUuids = sentEventUuids;
-
-            return true;
+            return payload.Success;
         }
 
         #endregion

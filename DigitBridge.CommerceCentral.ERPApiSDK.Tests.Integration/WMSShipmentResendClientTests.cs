@@ -14,10 +14,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-
-        //private string _baseUrl = "http://localhost:7073";
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
-        private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
 
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
@@ -31,13 +29,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         }
         protected void InitForTest()
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
         }
 
 
