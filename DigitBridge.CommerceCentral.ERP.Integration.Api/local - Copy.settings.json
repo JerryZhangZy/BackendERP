@@ -20,6 +20,11 @@
     "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
     "DefaultCacheExpireSlidingMins": "2",
 
+    // User account
+    "BackdoorMode": "True",
+    "BackdoorModePassword": "blabla",
+    "BackdoorModeEmail": "abc@123.com",
+
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",

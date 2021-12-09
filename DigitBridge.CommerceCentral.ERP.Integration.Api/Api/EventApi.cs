@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiOperation(operationId: "AddQuickBooksInvoiceEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -38,7 +38,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoice")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
 
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
@@ -55,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -63,7 +64,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoiceVoid")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
@@ -79,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -87,7 +90,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturn")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
@@ -103,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -111,7 +116,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturnDelete")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
@@ -129,7 +136,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -137,7 +144,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPayment")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
@@ -153,7 +162,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -161,7 +170,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateSalesOrderByCentralOrder")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
@@ -177,7 +188,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -185,7 +196,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateInvoiceByOrderShipment")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
@@ -201,7 +214,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadNewEvent),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NewEvent),
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
@@ -209,7 +222,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPaymentDelete")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>(true);
+            var payload = await req.GetParameters<EventERPPayload>();
+            payload.NewEvent = await req.GetBodyObjectAsync<NewEvent>();
+
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
 
