@@ -7,6 +7,7 @@ namespace DigitBridge.Base.Common
 {
     public enum ErpEventActionStatus : int
     {
+        Pending=-1,
         Success = 0,
         Other = 1,
     }

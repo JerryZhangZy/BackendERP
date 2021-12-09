@@ -299,7 +299,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             // if (!(await ValidateAsync()))
             //     return false;
-            if (Data.Event_ERP.ActionStatus == 0)
+            if (Data.Event_ERP.ActionStatus == (int)ErpEventActionStatus.Success)
                 return await _data.DeleteAsync();
             return await SaveDataAsync();
         }
@@ -360,6 +360,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        #region Resend event 
         /// <summary>
         /// resend event by event uuid.
         /// </summary>
@@ -412,6 +413,55 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
+
+        #endregion
+
+        #region Add event and queue message
+
+        public virtual async Task<bool> AddAsync(EventERPPayload payload, ErpEventType eventType)
+        {
+            if (payload is null || !payload.HasNewEvent)
+                return false;
+
+            if (payload.NewEvent.ProcessUuid.IsZero())
+            {
+                AddError("ProcessUuid cannot be emtpy.");
+                return false;
+            }
+
+            var success = await AddEventAndQueueAsync(payload.NewEvent, eventType);
+            if (success)
+                payload.Event = this.Data.Event_ERP;
+
+            return success;
+        }
+
+        protected async Task<bool> AddEventAndQueueAsync(NewEvent newEvent, ErpEventType eventType)
+        {
+            Add();
+            _data = new EventERPData()
+            {
+                Event_ERP = new Event_ERP()
+                {
+                    MasterAccountNum = newEvent.MasterAccountNum,
+                    ProfileNum = newEvent.ProfileNum,
+                    ProcessUuid = newEvent.ProcessUuid,
+                    ActionStatus = (int)ErpEventActionStatus.Pending,
+                    ERPEventType = (int)eventType,
+                    ActionDateUtc = DateTime.UtcNow,
+                    EventUuid = Guid.NewGuid().ToString(),
+                }
+            };
+
+            if (!await SaveDataAsync())
+            {
+                AddError("Add event failed.");
+                return false;
+            }
+            return await InQueueAsync();
+        }
+
+        #endregion
     }
 }
 
