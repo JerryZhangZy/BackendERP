@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class CentralOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class CommerceCentralOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug TableUniversalTests Function";
 
@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
         protected const int MasterAccountNum = 10002;
         protected const int ProfileNum = 10003;
-        public CentralOrderClientTests(TestFixture<StartupTest> fixture)
+        public CommerceCentralOrderClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
