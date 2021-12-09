@@ -280,15 +280,13 @@ FROM Event_ERP ins
         {
             var servcie = new EventERPService(DataBaseFactory);
             var eventUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
-            var sentEventUuid = new List<string>();
-            var success = await servcie.ResendEventAsync(eventUuid, sentEventUuid);
+            var success = await servcie.ResendEventAsync(eventUuid);
             Assert.True(success, servcie.Messages.ObjectToString());
-            Assert.True(sentEventUuid.Contains(eventUuid), "resend event failed");
         }
         [Fact()]
         public async Task ResendEventsAsync_Test()
         {
-           
+
             var servcie = new EventERPService(DataBaseFactory, queueConn);
 
             var payload = new EventERPPayload()
@@ -304,6 +302,7 @@ FROM Event_ERP ins
 
             var success = await servcie.ResendEventsAsync(payload);
             Assert.True(success, servcie.Messages.ObjectToString());
+           
             foreach (var eventUuid in payload.EventUuids)
             {
                 Assert.True(payload.SentEventUuids.Contains(eventUuid), $"resend event failed, eventUuid:{eventUuid}.");

@@ -24,29 +24,29 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InvoiceTransactionIOManager Class.
+    /// Represents a ApInvoiceIOManager Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class InvoiceTransactionIOManager : IInvoiceTransactionIOManager, IMessage
+    public partial class ApInvoiceIOManager : IApInvoiceIOManager, IMessage
     {
-        public InvoiceTransactionIOManager(IDataBaseFactory dbFactory)
+        public ApInvoiceIOManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            Format = new InvoiceTransactionIOFormat();
+            Format = new ApInvoiceIOFormat();
         }
 
         #region Service Property
         [XmlIgnore, JsonIgnore]
-        protected InvoiceTransactionService _InvoiceTransactionService;
+        protected ApInvoiceService _ApInvoiceService;
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionService InvoiceTransactionService
+        public ApInvoiceService ApInvoiceService
         {
             get
             {
-                if (_InvoiceTransactionService is null)
-                    _InvoiceTransactionService = new InvoiceTransactionService(dbFactory);
-                return _InvoiceTransactionService;
+                if (_ApInvoiceService is null)
+                    _ApInvoiceService = new ApInvoiceService(dbFactory);
+                return _ApInvoiceService;
             }
         }
 
@@ -101,59 +101,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion Messages
 
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionIOFormat Format { get; set; }
+        public ApInvoiceIOFormat Format { get; set; }
 
         [XmlIgnore, JsonIgnore]
-        protected InvoiceTransactionIOCsv _InvoiceTransactionIOCsv;
+        protected ApInvoiceIOCsv _ApInvoiceIOCsv;
         [XmlIgnore, JsonIgnore]
-        public InvoiceTransactionIOCsv InvoiceTransactionIOCsv
+        public ApInvoiceIOCsv ApInvoiceIOCsv
         {
             get
             {
-                if (_InvoiceTransactionIOCsv is null)
-                    _InvoiceTransactionIOCsv = new InvoiceTransactionIOCsv(Format);
-                return _InvoiceTransactionIOCsv;
+                if (_ApInvoiceIOCsv is null)
+                    _ApInvoiceIOCsv = new ApInvoiceIOCsv(Format);
+                return _ApInvoiceIOCsv;
             }
         }
 
         /// <summary>
         /// Import csv file stream to IList of Dto, depend on format setting
         /// </summary>
-        public async Task<IList<InvoiceTransactionDataDto>> ImportAsync(Stream stream)
+        public async Task<IList<ApInvoiceDataDto>> ImportAsync(Stream stream)
         {
             if (stream == null) return null;
-            var result = await InvoiceTransactionIOCsv.ImportAsync(stream);
+            var result = await ApInvoiceIOCsv.ImportAsync(stream);
             return result.ToList();
         }
 
         /// <summary>
         /// Import csv file stream to IList of Dto, import all columns
         /// </summary>
-        public async Task<IList<InvoiceTransactionDataDto>> ImportAllColumnsAsync(Stream stream)
+        public async Task<IList<ApInvoiceDataDto>> ImportAllColumnsAsync(Stream stream)
         {
             if (stream == null) return null;
-            var result = await InvoiceTransactionIOCsv.ImportAllColumnsAsync(stream);
+            var result = await ApInvoiceIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
 
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
-        public async Task<byte[]> ExportAsync(IList<InvoiceTransactionDataDto> dtos)
+        public async Task<byte[]> ExportAsync(IList<ApInvoiceDataDto> dtos)
         {
             if (dtos == null || dtos.Count == 0)
                 return null;
-            return await InvoiceTransactionIOCsv.ExportAsync(dtos);
+            return await ApInvoiceIOCsv.ExportAsync(dtos);
         }
 
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
         /// </summary>
-        public async Task<byte[]> ExportAllColumnsAsync(IList<InvoiceTransactionDataDto> dtos)
+        public async Task<byte[]> ExportAllColumnsAsync(IList<ApInvoiceDataDto> dtos)
         {
             if (dtos == null || dtos.Count == 0)
                 return null;
-            return await InvoiceTransactionIOCsv.ExportAllColumnsAsync(dtos);
+            return await ApInvoiceIOCsv.ExportAllColumnsAsync(dtos);
         }
 
     }

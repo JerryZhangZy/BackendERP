@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -27,16 +27,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ap\io\" />
     <Folder Include="ar\io\" />
     <Folder Include="customer\io\" />
-    <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="inventoryUpdate\io\" />
+    <Folder Include="inventory\io\" />
     <Folder Include="po\io\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
     <Folder Include="companySummary\" />
     <Folder Include="so\io\" />
+    <Folder Include="vendor\io\" />
     <Folder Include="warehouseTransfer\" />
   </ItemGroup>
 

@@ -157,7 +157,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// (Request) Array of event uuids which will be resent.
         /// </summary>
-        [OpenApiPropertyDescription("(Request) Array of event uuids which will be resent.")] 
+        [OpenApiPropertyDescription("(Request) Array of event uuids which will be resent.")]
         public IList<string> EventUuids { get; set; }
     }
 
@@ -201,6 +201,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiPropertyDescription(" (Response Parameter) Array of EventUuid which have been sent to erp.")]
         public IList<string> SentEventUuids { get; set; }
 
+    }
+
+    /// <summary>
+    /// Request and Response payload object for Add API
+    /// </summary>
+    [Serializable()]
+    public class EventERPPayloadNewEvent
+    {
+        /// <summary>
+        /// (Request Data) EventERP object to add. 
+        /// </summary>
+        [OpenApiPropertyDescription("(Request) NewEvent object to add.")]
+        public NewEvent NewEvent { get; set; }
     }
 
 }
