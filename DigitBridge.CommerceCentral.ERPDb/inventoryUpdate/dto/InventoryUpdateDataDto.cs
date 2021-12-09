@@ -32,6 +32,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInventoryUpdateItems => InventoryUpdateItems != null;
 
+        public InventoryUpdateDataDto NewData()
+        {
+            InventoryUpdateHeader = new InventoryUpdateHeaderDto();
+            InventoryUpdateItems = new List<InventoryUpdateItemsDto>();
+
+            return this;
+        }
     }
 }
 

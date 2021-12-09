@@ -28,8 +28,8 @@
 
   <ItemGroup>
     <Folder Include="customer\io\" />
-    <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="inventoryUpdate\io\" />
     <Folder Include="inventory\io\" />
     <Folder Include="po\io\" />
     <Folder Include="shipmentInquiry\" />
