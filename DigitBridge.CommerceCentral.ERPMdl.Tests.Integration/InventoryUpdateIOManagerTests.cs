@@ -26,10 +26,10 @@ using System.IO;
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     /// <summary>
-    /// Represents a InvoiceTransactionIOManager Class.
+    /// Represents a InventoryUpdateIOManager Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public partial class InvoiceTransactionIOManagerTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InventoryUpdateIOManagerTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Manager Function";
 
@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceTransactionIOManagerTests(TestFixture<StartupTest> fixture)
+        public InventoryUpdateIOManagerTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -59,8 +59,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ImportCsvAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_2.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
-            IList<InvoiceTransactionDataDto> data;
+            var service = new InventoryUpdateIOManager(DataBaseFactory);
+            IList<InventoryUpdateDataDto> data;
 
             try
             {
@@ -86,8 +86,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ImportAllColumnsAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_3.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
-            IList<InvoiceTransactionDataDto> data;
+            var service = new InventoryUpdateIOManager(DataBaseFactory);
+            IList<InventoryUpdateDataDto> data;
 
             try
             {
@@ -113,15 +113,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ExportAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_2.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
-            IList<InvoiceTransactionDataDto> dtos = new List<InvoiceTransactionDataDto>();
-            var InvoiceTransactionService = new InvoiceTransactionService(DataBaseFactory);
-            if (InvoiceTransactionService.List("179280c8-1795-466a-a1f9-93d17628ed42"))
-                dtos.Add(InvoiceTransactionService.ToDto());
-            if (InvoiceTransactionService.List("d20324f6-72b6-4d96-905d-3a280ba8b44b"))
-                dtos.Add(InvoiceTransactionService.ToDto());
-            if (InvoiceTransactionService.List("a9997f83-0d3e-441c-b122-b9a002aa4670"))
-                dtos.Add(InvoiceTransactionService.ToDto());
+            var service = new InventoryUpdateIOManager(DataBaseFactory);
+            IList<InventoryUpdateDataDto> dtos = new List<InventoryUpdateDataDto>();
+            var InventoryUpdateService = new InventoryUpdateService(DataBaseFactory);
+            if (InventoryUpdateService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
+                dtos.Add(InventoryUpdateService.ToDto());
+            if (InventoryUpdateService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+                dtos.Add(InventoryUpdateService.ToDto());
+            if (InventoryUpdateService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+                dtos.Add(InventoryUpdateService.ToDto());
 
 
             try
@@ -146,15 +146,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task ExportAllColumnsAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_3.csv";
-            var service = new InvoiceTransactionIOManager(DataBaseFactory);
-            IList<InvoiceTransactionDataDto> dtos = new List<InvoiceTransactionDataDto>();
-            var InvoiceTransactionService = new InvoiceTransactionService(DataBaseFactory);
-            if (InvoiceTransactionService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
-                dtos.Add(InvoiceTransactionService.ToDto());
-            if (InvoiceTransactionService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
-                dtos.Add(InvoiceTransactionService.ToDto());
-            if (InvoiceTransactionService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(InvoiceTransactionService.ToDto());
+            var service = new InventoryUpdateIOManager(DataBaseFactory);
+            IList<InventoryUpdateDataDto> dtos = new List<InventoryUpdateDataDto>();
+            var InventoryUpdateService = new InventoryUpdateService(DataBaseFactory);
+            if (InventoryUpdateService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
+                dtos.Add(InventoryUpdateService.ToDto());
+            if (InventoryUpdateService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+                dtos.Add(InventoryUpdateService.ToDto());
+            if (InventoryUpdateService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+                dtos.Add(InventoryUpdateService.ToDto());
 
             try
             {
