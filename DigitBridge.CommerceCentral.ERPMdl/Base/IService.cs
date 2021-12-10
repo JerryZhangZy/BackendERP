@@ -56,6 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         TDto ToDto();
         TDto ToDto(TEntity data);
+        IList<TDto> ToDto(IList<TEntity> datas);
         TEntity FromDto(TDto dto);
         TEntity FromDto(TEntity data, TDto dto);
 
