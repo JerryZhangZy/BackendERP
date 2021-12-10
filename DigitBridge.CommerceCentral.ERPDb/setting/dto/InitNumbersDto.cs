@@ -125,19 +125,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasNumber => Number != null;
 
-
-        /// <summary>
-        /// The last assigned number, real number will be more than init number and not exist number
-        /// </summary>
-        [OpenApiPropertyDescription("The last assigned number, real number will be more than init number and not exist number")]
+		/// <summary>
+		/// The last assigned number, real number will be more than init number and not exist number
+		/// </summary>
+		[OpenApiPropertyDescription("The last assigned number, real number will be more than init number and not exist number")]
         public long? MaxNumber { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMaxNumber => MaxNumber != null;
-        /// <summary>
-        /// Prefix append to Init number
-        /// </summary>
-        [OpenApiPropertyDescription("Prefix append to Init number")]
+
+		/// <summary>
+		/// Prefix append to Init number
+		/// </summary>
+		[OpenApiPropertyDescription("Prefix append to Init number")]
         [StringLength(20, ErrorMessage = "The Prefix value cannot exceed 20 characters. ")]
         public string Prefix { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -185,6 +185,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasUpdateBy => UpdateBy != null;
 
 
+        /// <summary>
+        /// InitNumber type, like Invoice#, S/O#, P/O#
+        /// </summary>
+        [OpenApiPropertyDescription("InitNumber type, like Invoice#, S/O#, P/O#")]
+        [StringLength(20, ErrorMessage = "The Type value cannot exceed 20 characters. ")]
+        public string TypeName { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTypeName => TypeName != null;
 
         #endregion Properties - Generated 
 

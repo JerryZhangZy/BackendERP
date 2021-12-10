@@ -31,6 +31,30 @@ namespace DigitBridge.Base.Common
     public static class ActivityLogTypeExtensions
     {
         public static int ToInt(this ActivityLogType value) => (int)value;
-       
+        public static string ToName(this ActivityLogType value) => value switch
+        {
+            ActivityLogType.Customer => "Customer",
+            ActivityLogType.Inventory => "Inventory",
+            ActivityLogType.SalesOrder => "Sales Order",
+            ActivityLogType.Shipment => "Shipment",
+            ActivityLogType.Invoice => "Invoice",
+            ActivityLogType.InvoicePayment => "Invoice Payment",
+            ActivityLogType.InvoiceReturn => "Invoice Return",
+            ActivityLogType.MiscInvoice => "Pre Payment",
+            ActivityLogType.MiscInvoicePayment => "Pre Payment Apply",
+            ActivityLogType.InventoryUpdate => "Inventory Update",
+            ActivityLogType.WarehouseTransfer => "Warehouse Transfer",
+            ActivityLogType.PurchaseOrder => "Purchase Order",
+            ActivityLogType.PoReceive => "P/O Receive",
+            ActivityLogType.PoReceiveClose => "P/O Receive Close",
+            ActivityLogType.PoCancel => "P/O Cancel",
+            ActivityLogType.PoReturn => "P/O Return",
+            ActivityLogType.ApInvoice => "Bill",
+            ActivityLogType.ApInvoicePayment => "Bill Payment",
+            ActivityLogType.Vendor => "Vendor",
+            ActivityLogType.InitNumber => "Init Number Setup",
+            _ => string.Empty,
+        };
+
     }
 }

@@ -62,12 +62,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasType) data.Type = dto.Type;
 			if (dto.HasCurrentNumber) data.CurrentNumber = dto.CurrentNumber.ToInt();
 			if (dto.HasNumber) data.Number = dto.Number.ToInt();
+			if (dto.HasMaxNumber) data.MaxNumber = dto.MaxNumber.ToLong();
 			if (dto.HasPrefix) data.Prefix = dto.Prefix;
 			if (dto.HasSuffix) data.Suffix = dto.Suffix;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
-			if (dto.HasMaxNumber) data.MaxNumber = dto.MaxNumber.ToLong();
+
 			#endregion read properties
 
 			data.CheckIntegrity();
@@ -114,6 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Type = data.Type;
 			dto.CurrentNumber = data.CurrentNumber;
 			dto.Number = data.Number;
+			dto.MaxNumber = data.MaxNumber;
 			dto.Prefix = data.Prefix;
 			dto.Suffix = data.Suffix;
 			dto.EnterDateUtc = data.EnterDateUtc;
@@ -121,6 +123,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.TypeName = data.TypeName;
 
 			#endregion read properties
 

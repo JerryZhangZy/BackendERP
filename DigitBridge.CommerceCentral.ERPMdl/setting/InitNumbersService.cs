@@ -181,33 +181,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
            
         }
 
-
-        /// <summary>
-        /// Add new data from Dto object
-        /// </summary>
-        public virtual bool Add(InitNumbersDataDto dto)
-        {
-            if (dto is null) 
-                return false;
-            // set Add mode and clear data
-            Add();
-
-            if (!Validate(dto))
-                return false;
-
-            // load data from dto
-            FromDto(dto);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
-        }
-
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -228,88 +201,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
+            var result = await SaveDataAsync();
             if (result)
                 await AddActivityLogForCurrentDataAsync();
             return result;
-        }
-
-        public virtual bool Add(InitNumbersPayload payload)
-        {
-            if (payload is null || !payload.HasInitNumbers)
-                return false;
-
-            // set Add mode and clear data
-            Add();
-
-            if (!ValidateAccount(payload))
-                return false;
-
-            if (!Validate(payload.InitNumbers))
-                return false;
-
-            // load data from dto
-            FromDto(payload.InitNumbers);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-           return SaveData();
-           
- 
-        }
-
-        public virtual async Task<bool> AddAsync(InitNumbersPayload payload)
-        {
-            if (payload is null || !payload.HasInitNumbers)
-                return false;
-
-            // set Add mode and clear data
-            Add();
-
-            if (!(await ValidateAccountAsync(payload)))
-                return false;
-
-            if (!(await ValidateAsync(payload.InitNumbers)))
-                return false;
-
-            // load data from dto
-            FromDto(payload.InitNumbers);
-
-            // validate data for Add processing
-            if (!(await ValidateAsync()))
-                return false;
-
-            return await SaveDataAsync();
-            
-        }
-
-        /// <summary>
-        /// Update data from Dto object.
-        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
-        /// </summary>
-        public virtual bool Update(InitNumbersDataDto dto)
-        {
-            if (dto is null || !dto.HasInitNumbers)
-                return false;
-            //set edit mode before validate
-            Edit();
-            if (!Validate(dto))
-                return false;
-
-            // load data 
-            GetData(dto.InitNumbers.RowNum.ToLong());
-
-            // load data from dto
-            FromDto(dto);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            return SaveData();
-            
         }
 
         /// <summary>
@@ -340,64 +235,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// Update data from Payload object.
-        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
-        /// </summary>
-        public virtual bool Update(InitNumbersPayload payload)
-        {
-            if (payload is null || !payload.HasInitNumbers || payload.InitNumbers.InitNumbers.RowNum.ToLong() <= 0)
-                return false;
-            //set edit mode before validate
-            Edit();
-
-            if (!ValidateAccount(payload))
-                return false;
-
-            if (!Validate(payload.InitNumbers))
-                return false;
-
-            // load data 
-            GetData(payload.InitNumbers.InitNumbers.RowNum.ToLong());
-
-            // load data from dto
-            FromDto(payload.InitNumbers);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            return SaveData();
-            
-        }
-
-        /// <summary>
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
         public virtual async Task<bool> UpdateAsync(InitNumbersPayload payload)
         {
-            if (payload is null || !payload.HasInitNumbers)
-                return false;
-            //set edit mode before validate
-            Edit();
-            if (!(await ValidateAccountAsync(payload)))
+            if (payload is null || !payload.HasInitNumberss)
                 return false;
 
-            if (!(await ValidateAsync(payload.InitNumbers)))
-                return false;
+            var dataList = await GetAllInitNumbersAsync(payload.MasterAccountNum, payload.ProfileNum);
+            if (dataList == null || dataList.Count == 0)
+            {
+                dataList = await InitNumbersAsync(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
+            }
 
-            // load data 
-            await GetDataAsync(payload.InitNumbers.InitNumbers.RowNum.ToLong());
+            foreach (var initNumberDto in payload.InitNumbers)
+            {
+                var dto = initNumberDto.InitNumbers;
+                var existData = dataList.FirstOrDefault(x => x.Type.EqualsIgnoreSpace(dto.Type));
+                if (existData == null) continue;
+                if (
+                    dto.CustomerUuid == existData.CustomerUuid &&
+                    dto.InActive == existData.InActive &&
+                    dto.Type == existData.Type &&
+                    dto.CurrentNumber == existData.CurrentNumber &&
+                    dto.MaxNumber == existData.MaxNumber &&
+                    dto.Number == existData.Number &&
+                    dto.Prefix == existData.Prefix &&
+                    dto.Suffix == existData.Suffix
+                ) continue;
 
-            // load data from dto
-            FromDto(payload.InitNumbers);
+                dto.RowNum = existData.RowNum;
+                dto.DatabaseNum = existData.DatabaseNum;
+                dto.MasterAccountNum = existData.MasterAccountNum;
+                dto.ProfileNum = existData.ProfileNum;
+                dto.InitNumbersUuid = existData.InitNumbersUuid;
+                await UpdateAsync(initNumberDto);
+            }
 
-            // validate data for Add processing
-            if (!(await ValidateAsync()))
-                return false;
-
-            return await SaveDataAsync();
-           
+            return await GetAllInitNumbersAsync(payload);
         }
 
         /// <summary>
@@ -510,39 +386,75 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        public virtual async Task<bool> InitInitNumbersAsync(InitNumbersPayload payload)
+        public virtual async Task<bool> InitNumbersAsync(InitNumbersPayload payload)
         {
-            var types = new List<string>() { ((int)ActivityLogType.SalesOrder).ToString(),((int)ActivityLogType.Invoice).ToString(), ((int)ActivityLogType.Invoice).ToString() ,((int)ActivityLogType.Invoice).ToString() ,((int)ActivityLogType.Vendor).ToString() ,((int)ActivityLogType.Customer).ToString() };
-
-            foreach (var aType in types)
-            {
-
-                if ((await ExistInitNumberAsync( payload.MasterAccountNum, payload.ProfileNum, aType))) continue;
-                payload.InitNumbers = new InitNumbersDataDto();
-                payload.InitNumbers.InitNumbers = GetInitNumbers(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum, aType);
-                await AddAsync(payload);
-            }
+            await InitNumbersAsync(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
             return true;
         }
 
-    
-        public virtual InitNumbersDto GetInitNumbers(int databaseNum, int masterAccountNum, int profileNum, string type)
+        public virtual async Task<IList<InitNumbers>> InitNumbersAsync(int databaseNum, int masterAccountNum, int profileNum)
         {
-
-            return new InitNumbersDto()
+            var types = new List<string>()
             {
-                DatabaseNum = databaseNum,
-                MasterAccountNum = masterAccountNum,
-                ProfileNum = profileNum,
-                InActive = true,
-                Type = type,
-                InitNumbersUuid = System.Guid.NewGuid().ToString(),
-                CustomerUuid = string.Empty,
-                Number = 10000,
-                MaxNumber = 0,
-                EnterBy = string.Empty,
-                UpdateBy=string.Empty
+                ((int)ActivityLogType.SalesOrder).ToString(),
+                ((int)ActivityLogType.Invoice).ToString(),
+                ((int)ActivityLogType.Invoice).ToString(),
+                ((int)ActivityLogType.Invoice).ToString(),
+                ((int)ActivityLogType.Vendor).ToString(),
+                ((int)ActivityLogType.Customer).ToString()
+            };
 
+            foreach (var aType in types)
+            {
+                if ((await ExistInitNumberAsync(masterAccountNum, profileNum, aType))) continue;
+                await this.AddAsync(GetInitNumbers(databaseNum, masterAccountNum, profileNum, aType));
+            }
+            return await GetAllInitNumbersAsync(masterAccountNum, profileNum);
+        }
+
+        public virtual async Task<IList<InitNumbers>> GetAllInitNumbersAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = @"WHERE MasterAccountNum=@0 AND ProfileNum=@1";
+            return (await dbFactory.FindAsync<InitNumbers>(sql, masterAccountNum, profileNum)).ToList();
+        }
+
+        public virtual async Task<bool> GetAllInitNumbersAsync(InitNumbersPayload payload)
+        {
+            var lst = await GetAllInitNumbersAsync(payload.MasterAccountNum, payload.ProfileNum);
+            if (lst == null || lst.Count == 0)
+            {
+                lst = await InitNumbersAsync(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
+            }
+
+            var dataList = new List<InitNumbersData>();
+            foreach (var item in lst)
+            {
+                if (item == null) continue;
+                dataList.Add(new InitNumbersData() { InitNumbers = item });
+            }
+            payload.InitNumbers = this.ToDto(dataList);
+            return true;
+        }
+
+        public virtual InitNumbersDataDto GetInitNumbers(int databaseNum, int masterAccountNum, int profileNum, string type)
+        {
+            return new InitNumbersDataDto()
+            {
+                InitNumbers = new InitNumbersDto()
+                {
+                    DatabaseNum = databaseNum,
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    InActive = true,
+                    Type = type,
+                    InitNumbersUuid = System.Guid.NewGuid().ToString(),
+                    CustomerUuid = string.Empty,
+                    Number = 10000,
+                    MaxNumber = 0,
+                    EnterBy = string.Empty,
+                    UpdateBy = string.Empty
+
+                }
             };
         }
         public virtual async Task<bool> ExistInitNumberAsync(int masterAccountNum, int profileNum, string type)

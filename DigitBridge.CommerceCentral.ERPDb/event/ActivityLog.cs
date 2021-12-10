@@ -19,6 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     {
         public int ChannelNum { get; set; }
         public int ChannelAccountNum { get; set; }
+
     }
 }
 

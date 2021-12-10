@@ -83,60 +83,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InitNumbersPayload;
-            var dto = pl.InitNumbers;
-
-            if (processingMode == ProcessingMode.Add)
-            {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.InitNumbers.MasterAccountNum = pl.MasterAccountNum;
-                dto.InitNumbers.ProfileNum = pl.ProfileNum;
-                dto.InitNumbers.DatabaseNum = pl.DatabaseNum;
-            }
-            else
-            {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (!string.IsNullOrEmpty(number))
-                        isValid = InitNumbersHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.InitNumbers.RowNum.IsZero())
-                        isValid = InitNumbersHelper.ExistRowNum(dto.InitNumbers.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
-                }
-                if (!isValid)
-                    AddError($"Data not found.");
-            }
-            IsValid = isValid;
             return isValid;
         }
 
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InitNumbersPayload;
-            var dto = pl.InitNumbers;
-
-            if (processingMode == ProcessingMode.Add)
-            {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.InitNumbers.MasterAccountNum = pl.MasterAccountNum;
-                dto.InitNumbers.ProfileNum = pl.ProfileNum;
-                dto.InitNumbers.DatabaseNum = pl.DatabaseNum;
-            }
-            else
-            {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (!string.IsNullOrEmpty(number))
-                        isValid = await InitNumbersHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.InitNumbers.RowNum.IsZero())
-                        isValid = await InitNumbersHelper.ExistRowNumAsync(dto.InitNumbers.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
-                }
-                if (!isValid)
-                    AddError($"Data not found.");
-            }
-            IsValid = isValid;
             return isValid;
         }
 
