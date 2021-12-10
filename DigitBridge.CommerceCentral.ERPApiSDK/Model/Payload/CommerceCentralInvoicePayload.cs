@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Response payload object
     /// </summary>
     [Serializable()]
-    public class CommerceCentralInvoiceResponsePayload : CommerceCentralInvoiceRequestPayload, IResponsePayloadBase
+    public class CommerceCentralInvoiceResponseData : CommerceCentralInvoiceRequestPayload
     {
         #region list service
 
@@ -45,8 +45,15 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         public int InvoiceUnprocessListCount { get; set; }
 
-        #endregion list service
+        #endregion
+    }
 
+    /// <summary>
+    ///  Response payload object
+    /// </summary>
+    [Serializable()]
+    public class CommerceCentralInvoiceResponsePayload : CommerceCentralInvoiceResponseData, IResponsePayloadBase
+    {
         #region response base
 
         /// <summary>
@@ -66,7 +73,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public bool ShouldSerializeMessages() => HasMessages;
 
         #endregion
-
     }
 
     #region Model

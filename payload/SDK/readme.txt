@@ -15,7 +15,7 @@
          Method:CentralOrderToErpAsync
 		 Method reuslt->bool true->success;false->failed
 		 Error Messages:client.Messages
-		 Resopne:client.ResopneData EventERPPayload
+		 Resopne:client.ResopneData, type is EventERPPayload
 		 
 
 3.2 ERP sales order to WSM

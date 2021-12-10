@@ -13,6 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     /// </summary>
     public class WMSPurchaseOrderClient : ApiClientBase<WMSPurchaseOrderResponsePayload>
     {
+        public WMSPurchaseOrderResponseData Data { get; set; }
         /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
@@ -65,6 +66,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             if (!ResopneData.Success)
             {
                 this.Messages.Add(ResopneData.Messages);
+            }
+            else
+            {
+                Data = ResopneData;
             }
 
             return ResopneData.Success;

@@ -13,6 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     /// </summary>
     public class WMSShipmentClient : ApiClientBase<List<WmsOrderShipmentPayload>>
     {
+        public IList<WmsOrderShipmentPayload> Data { get; set; }
         /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
@@ -90,6 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             if (!success)
                 this.Messages.Add(errorResult.SelectMany(j => j.Messages).ToList());
 
+            Data = ResopneData;
             return success;
         }
     }

@@ -34,22 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Response payload object
     /// </summary>
     [Serializable()]
-    public class WMSSalesOrderResponsePayload : WMSSalesOrderRequestPayload, IResponsePayloadBase
+    public class WMSSalesOrderResponsePayload : WMSSalesOrderResponseData, IResponsePayloadBase
     {
-        #region list service
-
-        /// <summary>
-        /// (Response Data) List result which load filter and paging.
-        /// </summary>   
-        //[JsonConverter(typeof(StringBuilderConverter))]
-        public IList<AddOrderHeaderModel> SalesOrderOpenList { get; set; }
-
-        /// <summary>
-        /// (Response Data) List result count which load filter and paging.
-        /// </summary>
-        public int SalesOrderOpenListCount { get; set; }
-
-        #endregion list service
 
         #region response base
 
@@ -71,6 +57,28 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         #endregion
 
+    }
+
+    /// <summary>
+    ///  Response payload object include request payload
+    /// </summary>
+    [Serializable()]
+    public class WMSSalesOrderResponseData : WMSSalesOrderRequestPayload
+    {
+        #region list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>   
+        //[JsonConverter(typeof(StringBuilderConverter))]
+        public IList<AddOrderHeaderModel> SalesOrderOpenList { get; set; }
+
+        /// <summary>
+        /// (Response Data) List result count which load filter and paging.
+        /// </summary>
+        public int SalesOrderOpenListCount { get; set; }
+
+        #endregion list service
     }
 }
 

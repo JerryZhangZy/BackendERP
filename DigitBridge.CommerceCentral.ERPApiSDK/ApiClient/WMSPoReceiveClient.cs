@@ -14,6 +14,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class WMSPoReceiveClient : ApiClientBase<IList<WMSPoReceivePayload>>
     {
         /// <summary>
+        /// Upload result
+        /// </summary>
+        public IList<WMSPoReceivePayload> Data { get; set; }
+        /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
         /// </summary>
@@ -75,7 +79,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             var success = errorResult.Count() == 0;
             if (!success)
                 this.Messages.Add(errorResult.SelectMany(j => j.Messages).ToList());
-
+            else
+            {
+                Data = ResopneData;
+            }
             return success;
         }
     }

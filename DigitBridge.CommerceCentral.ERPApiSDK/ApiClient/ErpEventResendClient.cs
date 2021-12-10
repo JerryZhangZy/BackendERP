@@ -15,10 +15,14 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     /// </summary>
     public class ErpEventResendClient : ApiClientBase<ErpEventResendResponsePayload>
     {
+        /// <summary>
+        /// EventUuids which resent succeeded.
+        /// </summary>
+        public IList<string> Data { get; set; }
         public ErpEventResendClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         { }
         public ErpEventResendClient(string baseUrl, string authCode) : base(baseUrl, authCode)
-        { }  
+        { }
 
         /// <summary>
         /// resend array event uuids.
@@ -50,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             if (ResopneData == null)
             {
                 AddError(responseData);
-                
+
                 //Maybe the api throw exception.
                 //var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
                 //if (exception != null)
@@ -62,7 +66,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             {
                 this.Messages.Add(ResopneData.Messages);
             }
-
+            else
+            {
+                Data = ResopneData.SentEventUuids;
+            }
             return ResopneData.Success;
         }
     }

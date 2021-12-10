@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             }
             ;
 
-            var result = await client.InventoryDataAsync(MasterAccountNum, ProfileNum, inventorySyncItems);
+            var result = await client.UpdateStockAsync(MasterAccountNum, ProfileNum, inventorySyncItems);
             Assert.True(result, "succ");
             Assert.True(client.Messages.Count == 0, "succ");
 

@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="InvoiceUuids"></param>
         /// <returns></returns>
-        public async Task<bool> AckReceiveInvoicesAsync(int masterAccountNum, int profileNum, IList<string> InvoiceUuids)
+        public async Task<bool> AckReceiveInvoicesAsync(int masterAccountNum, int profileNum, IList<string> invoiceUuids)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {
@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             }
             var payload = new AcknowledgePayload()
             {
-                ProcessUuids = InvoiceUuids
+                ProcessUuids = invoiceUuids
             };
             return await PostAsync(payload, FunctionUrl.AckReceiveInvoices);
         }

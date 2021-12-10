@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="PurchaseOrderUuids"></param>
         /// <returns></returns>
-        public async Task<bool> AckReceivePurchaseOrdersAsync(int masterAccountNum, int profileNum, IList<string> PurchaseOrderUuids)
+        public async Task<bool> AckReceivePurchaseOrdersAsync(int masterAccountNum, int profileNum, IList<string> purchaseOrderUuids)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {
@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             }
             var payload = new AcknowledgePayload()
             {
-                ProcessUuids = PurchaseOrderUuids
+                ProcessUuids = purchaseOrderUuids
             };
             return await PostAsync(payload, FunctionUrl.AckReceivePurchaseOrders);
         }

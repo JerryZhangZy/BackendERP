@@ -29,7 +29,29 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Response payload object
     /// </summary>
     [Serializable()]
-    public class WMSPurchaseOrderResponsePayload : WMSPurchaseOrderRequestPayload, IResponsePayloadBase
+    public class WMSPurchaseOrderResponseData : WMSPurchaseOrderRequestPayload
+    {
+        #region list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>   
+        public IList<AddPoHeaderModel> PurchaseOrderList { get; set; }
+
+        /// <summary>
+        /// (Response Data) List result count which load filter and paging.
+        /// </summary>
+        public int PurchaseOrderListCount { get; set; }
+
+        #endregion  
+
+    }
+
+    /// <summary>
+    ///  Response payload object
+    /// </summary>
+    [Serializable()]
+    public class WMSPurchaseOrderResponsePayload : WMSPurchaseOrderResponseData, IResponsePayloadBase
     {
         #region list service
 
