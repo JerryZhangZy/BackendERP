@@ -23,7 +23,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using CsvHelper.Configuration;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPMdl
+namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a InventoryUpdateIOFormat Class.

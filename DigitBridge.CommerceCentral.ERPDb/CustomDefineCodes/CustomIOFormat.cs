@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public CsvFormat GetFormatObject()
         {
             CsvFormat fmt = null;
- 
+
             if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToString()))
             {
                 fmt = new SalesOrderIOFormat();
@@ -56,6 +56,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<ApInvoiceIOFormat>());
                 return fmt;
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToString()))
+            {
+                fmt = new InvoiceIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<InvoiceIOFormat>());
+                return fmt;
+
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToString()))
+            {
+                fmt = new InvoicePaymentIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<InvoicePaymentIOFormat>());
+                return fmt;
+
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToString()))
+            {
+                fmt = new InvoiceReturnIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<InvoiceReturnIOFormat>());
+                return fmt;
+
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToString()))
+            {
+                fmt = new CustomerIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<CustomerIOFormat>());
+                return fmt;
+
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToString()))
+            {
+                fmt = new InventoryIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryIOFormat>());
+                return fmt;
+
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToString()))
+            {
+                fmt = new InventoryUpdateIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryUpdateIOFormat>());
+                return fmt;
+
             }
 
 
