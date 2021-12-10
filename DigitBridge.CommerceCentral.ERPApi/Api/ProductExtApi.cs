@@ -45,7 +45,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 sku = sku.Substring(spilterIndex + 1);
             }
             payload.Skus.Add(sku);
-            if (await svc.GetInventoryBySkuAsync(payload, sku))
+            payload.Success = await svc.GetInventoryBySkuAsync(payload, sku);
+            if(payload.Success)
                 payload.Inventory = svc.ToDto();
             else
                 payload.Messages = svc.Messages;
