@@ -40,7 +40,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.ApiClient
         {
             if (ResopneData == null)
             {
-                AddError("Call event api has no resopne.");
+                AddError(responseData);
+
+                //Maybe the api throw exception.
+                //var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
+                //if (exception != null)
+                //    AddError(exception.ObjectToString());
                 return false;
             }
  

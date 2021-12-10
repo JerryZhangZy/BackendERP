@@ -53,10 +53,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         {
             if (ResopneData == null)
             {
+                AddError(responseData);
+
                 //Maybe the api throw exception.
-                var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
-                if (exception != null)
-                    AddError(exception.ObjectToString());
+                //var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
+                //if (exception != null)
+                //    AddError(exception.ObjectToString());
                 return false;
             }
 
