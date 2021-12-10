@@ -77,14 +77,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         [XmlIgnore, JsonIgnore]
-        protected SalesOrderTransfer _salesOrderTransfer;
+        protected SalesOrderTransferFromChannelOrder _salesOrderTransfer;
         [XmlIgnore, JsonIgnore]
-        public SalesOrderTransfer salesOrderTransfer
+        public SalesOrderTransferFromChannelOrder salesOrderTransfer
         {
             get
             {
                 if (_salesOrderTransfer is null)
-                    _salesOrderTransfer = new SalesOrderTransfer(this, string.Empty);
+                    _salesOrderTransfer = new SalesOrderTransferFromChannelOrder(this, string.Empty);
                 return _salesOrderTransfer;
             }
         }
@@ -124,7 +124,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
-
 
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
         {
@@ -330,7 +329,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return uuid;
             }
 
-            SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
+            SalesOrderTransferFromChannelOrder soTransfer = new SalesOrderTransferFromChannelOrder(this, "");
             dcAssigmentData.WarehouseCode = await GetWarehouseByDCAssignmentAsync(dcAssigmentData);
 
             var soSrv = new SalesOrderService(dbFactory);
@@ -457,9 +456,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
                 return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
-
-
-
 
 
         //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
