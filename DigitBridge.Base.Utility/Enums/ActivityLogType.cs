@@ -25,7 +25,8 @@ namespace DigitBridge.Base.Common
         ApInvoice = 16,
         ApInvoicePayment = 17,
         Vendor = 18,
-        InitNumber=19
+        InitNumber=19,
+        Unknow= 99
     }
 
     public static class ActivityLogTypeExtensions
