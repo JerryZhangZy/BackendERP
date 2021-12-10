@@ -8,6 +8,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Utility;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -284,6 +285,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null || DtoMapper is null)
                 return (TDto)null;
             return DtoMapper.WriteDto(data, null);
+        }
+        public virtual IList<TDto> ToDto(IList<TEntity> datas)
+        {
+            if (datas is null || datas .Count == 0 || DtoMapper is null)
+                return (IList<TDto>)null;
+            return datas.Select(x => ToDto(x)).ToList();
         }
 
         public virtual TEntity FromDto(TDto dto)

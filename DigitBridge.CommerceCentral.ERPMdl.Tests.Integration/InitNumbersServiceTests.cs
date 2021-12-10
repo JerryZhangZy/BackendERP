@@ -28,63 +28,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public void AddDto_Test()
-		{
-            var srv = new InitNumbersService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            
-
-            srv.Add(dto);
-
-            var id = dto.InitNumbers.InitNumbersUuid;
-
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            //srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public void UpdateDto_Test()
-		{
-            SaveData_Test();
-
-            var id = DataBaseFactory.GetValue<InitNumbers, string>(@"
-SELECT TOP 1 ins.InitNumbersUuid 
-FROM InitNumbers ins 
-");
-
-
-            var srv = new InitNumbersService(DataBaseFactory);
-            srv.Edit(id);
-            var rowNum = srv.Data.InitNumbers.RowNum;
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InitNumbers.RowNum = rowNum;
-            dto.InitNumbers.InitNumbersUuid = id;
-
-            srv.Clear();
-            srv.Update(dto);
-
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
 		public async Task AddDtoAsync_Test()
 		{
             var srv = new InitNumbersService(DataBaseFactory);
@@ -110,171 +53,62 @@ FROM InitNumbers ins
 		//[Fact(Skip = SkipReason)]
 		public async Task UpdateDtoAsync_Test()
 		{
-            await SaveDataAsync_Test();
-
-            var id = await DataBaseFactory.GetValueAsync<InitNumbers, string>(@"
-SELECT TOP 1 ins.InitNumbersUuid 
-FROM InitNumbers ins 
-");
-
+            var payload = new InitNumbersPayload()
+            {
+                DatabaseNum = 1,
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+            };
 
             var srv = new InitNumbersService(DataBaseFactory);
-            await srv.EditAsync(id);
-            var rowNum = srv.Data.InitNumbers.RowNum;
+            await srv.GetAllInitNumbersAsync(payload);
+            payload.InitNumbers[0].InitNumbers.MaxNumber += 1;
+            payload.InitNumbers[1].InitNumbers.MaxNumber += 2;
+            payload.InitNumbers[2].InitNumbers.MaxNumber += 3;
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InitNumbers.RowNum = rowNum;
-            dto.InitNumbers.InitNumbersUuid = id;
+            try
+            {
+                using (var b = new Benchmark("GetAllInitNumbersAsync_Test"))
+                {
+                    await srv.UpdateAsync(payload);
+                }
 
-            srv.Clear();
-            await srv.UpdateAsync(dto);
-
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            //srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
 		}
 
 
         [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public void AddPayload_Test()
-		{
+        //[Fact(Skip = SkipReason)]
+        public async Task GetAllInitNumbersAsync_Test()
+        {
+            var payload = new InitNumbersPayload()
+            {
+                DatabaseNum = 1,
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+            };
             var srv = new InitNumbersService(DataBaseFactory);
-            srv.Add();
+            try
+            {
+                using (var b = new Benchmark("GetAllInitNumbersAsync_Test"))
+                {
+                    await srv.GetAllInitNumbersAsync(payload);
+                }
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
 
-            var payload = new InitNumbersPayload();
-            payload.InitNumbers = dto;
-            payload.MasterAccountNum = 1;
-            payload.ProfileNum = 1;
-            payload.DatabaseNum = 1;
-
-            srv.Add(payload);
-            var id = dto.InitNumbers.InitNumbersUuid;
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            //srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public void UpdatePayload_Test()
-		{
-            SaveData_Test();
-
-            var id = DataBaseFactory.GetValue<InitNumbers, string>(@"
-SELECT TOP 1 ins.InitNumbersUuid 
-FROM InitNumbers ins 
-");
-
-
-            var srv = new InitNumbersService(DataBaseFactory);
-            srv.Edit(id);
-            var rowNum = srv.Data.InitNumbers.RowNum;
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InitNumbers.RowNum = rowNum;
-            dto.InitNumbers.InitNumbersUuid = id;
-
-            var payload = new InitNumbersPayload();
-            payload.InitNumbers = dto;
-            payload.MasterAccountNum = srv.Data.InitNumbers.MasterAccountNum;
-            payload.ProfileNum = srv.Data.InitNumbers.ProfileNum;
-            payload.DatabaseNum = srv.Data.InitNumbers.DatabaseNum;
-
-            srv.Clear();
-            srv.Update(payload);
-
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task AddPayloadAsync_Test()
-		{
-            var srv = new InitNumbersService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            
-            var payload = new InitNumbersPayload();
-            payload.InitNumbers = dto;
-            payload.MasterAccountNum = 1;
-            payload.ProfileNum = 1;
-            payload.DatabaseNum = 1;
-
-            await srv.AddAsync(payload);
-
-            var id = dto.InitNumbers.InitNumbersUuid;
-
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task UpdatePayloadAsync_Test()
-		{
-            await SaveDataAsync_Test();
-
-            var id = await DataBaseFactory.GetValueAsync<InitNumbers, string>(@"
-SELECT TOP 1 ins.InitNumbersUuid 
-FROM InitNumbers ins 
-");
-
-
-            var srv = new InitNumbersService(DataBaseFactory);
-            await srv.EditAsync(id);
-            var rowNum = srv.Data.InitNumbers.RowNum;
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InitNumbers.RowNum = rowNum;
-            dto.InitNumbers.InitNumbersUuid = id;
-
-            var payload = new InitNumbersPayload();
-            payload.InitNumbers = dto;
-            payload.MasterAccountNum = srv.Data.InitNumbers.MasterAccountNum;
-            payload.ProfileNum = srv.Data.InitNumbers.ProfileNum;
-            payload.DatabaseNum = srv.Data.InitNumbers.DatabaseNum;
-
-            srv.Clear();
-            await srv.UpdateAsync(payload);
-
-            var srvGet = new InitNumbersService(DataBaseFactory);
-            //srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
+        
     }
 }
 

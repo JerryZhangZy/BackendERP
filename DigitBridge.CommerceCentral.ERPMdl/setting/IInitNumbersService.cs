@@ -29,12 +29,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public interface IInitNumbersService : IService<InitNumbersService, InitNumbersData, InitNumbersDataDto>
     {
 
-        bool Add(InitNumbersDataDto dto);
         Task<bool> AddAsync(InitNumbersDataDto dto);
         
-        bool Update(InitNumbersDataDto dto);
         Task<bool> UpdateAsync(InitNumbersDataDto dto);
 
+        Task<bool> UpdateAsync(InitNumbersPayload payload);
+        Task<bool> GetAllInitNumbersAsync(InitNumbersPayload payload);
     }
 }
 
