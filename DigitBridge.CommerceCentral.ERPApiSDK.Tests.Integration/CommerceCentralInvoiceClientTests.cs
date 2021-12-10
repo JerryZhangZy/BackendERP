@@ -65,11 +65,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var success = await client.GetUnprocessedInvoicesAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
+            Assert.True(client.Data != null);
 
-            if (client.ResopneData.InvoiceUnprocessListCount <= 0) return;
+            if (client.Data.InvoiceUnprocessListCount <= 0) return;
 
-            Assert.True(client.ResopneData.InvoiceUnprocessList != null, $"Count:{client.ResopneData.InvoiceUnprocessListCount}, InvoiceUnprocessList:no data.");
+            Assert.True(client.Data.InvoiceUnprocessList != null, $"Count:{client.Data.InvoiceUnprocessListCount}, InvoiceUnprocessList:no data.");
 
         }
     }

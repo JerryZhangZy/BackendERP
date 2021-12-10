@@ -48,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var client = new WMSAckReceivePurchaseOrderClient(_baseUrl, _code);
             var PurchaseOrderUuids = new List<string>() { "15082ed6-b62f-4faf-9491-dc182d7bd4a9", "61F6B440-17B2-4A33-BD4F-27CD7C5C3F5D" };
             var success = await client.AckReceivePurchaseOrdersAsync(MasterAccountNum, ProfileNum, PurchaseOrderUuids);
-            Assert.True(client.ResopneData != null);
+            Assert.True(success);
         }
 
         [Fact()]
@@ -58,8 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var client = new WMSAckReceivePurchaseOrderClient(_baseUrl, _code);
             var success = await client.AckReceivePurchaseOrdersAsync(MasterAccountNum, ProfileNum, PurchaseOrderUuids);
-            Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
+            Assert.True(success, client.Messages.ObjectToString()); 
         }
 
         public async Task<IList<string>> GetOpenPurchaseOrderUuids()
@@ -76,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var PurchaseOrderUuids = client?.ResopneData?.PurchaseOrderList?.Select(i => i.PoUuid).ToList();
+            var PurchaseOrderUuids = client?.Data?.PurchaseOrderList?.Select(i => i.PoUuid).ToList();
 
             Assert.True(PurchaseOrderUuids != null, "no open PurchaseOrder.");
 

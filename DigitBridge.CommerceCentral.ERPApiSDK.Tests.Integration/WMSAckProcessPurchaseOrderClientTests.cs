@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             };
             processResults.Add(processResult);
             var success = await client.AckProcessPurchaseOrdersAsync(MasterAccountNum, ProfileNum, processResults);
-            Assert.True(client.ResopneData != null);
+            Assert.True(success);
         }
 
         [Fact()]
@@ -79,7 +79,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var success = await client.AckProcessPurchaseOrdersAsync(MasterAccountNum, ProfileNum, processResults);
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
         }
 
         public async Task<IList<string>> GetOpenPurchaseOrderUuids()
@@ -96,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var PurchaseOrderUuids = client?.ResopneData?.PurchaseOrderList?.Select(i => i.PoUuid).ToList();
+            var PurchaseOrderUuids = client?.Data?.PurchaseOrderList?.Select(i => i.PoUuid).ToList();
 
             Assert.True(PurchaseOrderUuids != null, "no open PurchaseOrder.");
 

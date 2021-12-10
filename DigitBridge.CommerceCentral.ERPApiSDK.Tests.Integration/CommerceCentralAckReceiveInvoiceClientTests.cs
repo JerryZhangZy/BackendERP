@@ -46,9 +46,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task AckReceiveInvoicesAsync_Simple_Test()
         {
             var client = new CommerceCentralAckReceiveInvoiceClient(_baseUrl, _code);
-            var InvoiceUuids = new List<string>() { "6adf4237-8c32-40b0-9edf-c462b91acf5f" };
+            var InvoiceUuids = await GetOpenInvoiceUuids();
+            //var InvoiceUuids = new List<string>() { "6adf4237-8c32-40b0-9edf-c462b91acf5f" };
             var success = await client.AckReceiveInvoicesAsync(MasterAccountNum, ProfileNum, InvoiceUuids);
-            Assert.True(client.ResopneData != null);
+            Assert.True(success);
         }
 
         [Fact()]
@@ -58,8 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var client = new CommerceCentralAckReceiveInvoiceClient(_baseUrl, _code);
             var success = await client.AckReceiveInvoicesAsync(MasterAccountNum, ProfileNum, InvoiceUuids);
-            Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
+            Assert.True(success, client.Messages.ObjectToString()); 
         }
 
         public async Task<IList<string>> GetOpenInvoiceUuids()
@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var InvoiceUuids = client?.ResopneData?.InvoiceUnprocessList?.Select(i => i.InvoiceHeader.InvoiceUuid).ToList();
+            var InvoiceUuids = client?.Data?.InvoiceUnprocessList?.Select(i => i.InvoiceHeader.InvoiceUuid).ToList();
 
             Assert.True(InvoiceUuids != null, "no unprocess Invoice.");
 
