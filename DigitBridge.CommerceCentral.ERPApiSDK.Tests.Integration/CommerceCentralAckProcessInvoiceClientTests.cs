@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             };
             processResults.Add(processResult);
             var success = await client.AckProcessInvoicesAsync(MasterAccountNum, ProfileNum, processResults);
-            Assert.True(client.ResopneData != null);
+            Assert.True(success);
         }
 
         [Fact()]
@@ -80,7 +80,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var success = await client.AckProcessInvoicesAsync(MasterAccountNum, ProfileNum, processResults);
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
         }
 
         public async Task<IList<string>> GetOpenInvoiceUuids()
@@ -97,7 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var InvoiceUuids = client?.ResopneData?.InvoiceUnprocessList?.Select(i => i.InvoiceHeader.InvoiceUuid).ToList();
+            var InvoiceUuids = client?.Data?.InvoiceUnprocessList?.Select(i => i.InvoiceHeader.InvoiceUuid).ToList();
 
             Assert.True(InvoiceUuids != null, "no unprocess Invoice.");
 

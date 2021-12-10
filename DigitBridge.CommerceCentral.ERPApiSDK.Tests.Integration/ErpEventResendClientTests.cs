@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var sentEventUuids = client.ResopneData?.SentEventUuids;
+            var sentEventUuids = client.Data;
             Assert.True(sentEventUuids != null && sentEventUuids.Count > 0, "All event send failed.");
 
             foreach (var eventUuid in eventUuids)
