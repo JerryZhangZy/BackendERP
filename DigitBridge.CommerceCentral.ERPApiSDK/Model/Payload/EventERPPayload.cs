@@ -23,21 +23,36 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     }
     public class EventERP
     {
+        /// <summary>
+        /// Auto increasing rownum of event
+        /// </summary>
         public int RowNum { get; set; }
-
+        
         public int ErpEventType { get; set; }
 
         /// <summary>
-        /// default = int.max;
+        /// pending -1; success:0, Other:1
         /// </summary>
         public int ActionStatus { get; set; }
 
+        /// <summary>
+        /// Process utc date.
+        /// </summary>
         public DateTime ActionDateUtc { get; set; }
 
+        /// <summary>
+        /// Process uuid supplied by invoker.
+        /// </summary>
         public string ProcessUuid { get; set; }
 
+        /// <summary>
+        /// Unique uuid of event.
+        /// </summary>
         public string EventUuid { get; set; }
 
+        /// <summary>
+        /// Process error message.
+        /// </summary>
         public string EventMessage { get; set; }
     }
 }

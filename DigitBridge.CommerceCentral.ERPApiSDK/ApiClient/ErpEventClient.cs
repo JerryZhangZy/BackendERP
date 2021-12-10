@@ -17,6 +17,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public ErpEventClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
+        public EventERP Data { get; set; }
+
         protected async Task<bool> AddEventERPAsync(AddErpEventDto eventDto, string functionUrl)
         {
 
@@ -70,6 +72,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             if (!success)
             {
                 this.Messages = this.Messages.Concat(ResopneData.Messages).ToList();
+            }
+            else
+            {
+                Data = ResopneData.Event;
             }
             return success;
         }
