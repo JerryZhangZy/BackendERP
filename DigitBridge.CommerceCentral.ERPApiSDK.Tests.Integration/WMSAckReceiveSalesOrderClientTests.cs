@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var client = new WMSAckReceiveSalesOrderClient(_baseUrl, _code);
             var salesorderUuids = new List<string>() { "15082ed6-b62f-4faf-9491-dc182d7bd4a9", "61F6B440-17B2-4A33-BD4F-27CD7C5C3F5D" };
             var success = await client.AckReceiveSalesOrdersAsync(MasterAccountNum, ProfileNum, salesorderUuids);
-            Assert.True(client.ResopneData != null);
+            Assert.True(success);
         }
 
         [Fact()]
@@ -60,7 +60,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var client = new WMSAckReceiveSalesOrderClient(_baseUrl, _code);
             var success = await client.AckReceiveSalesOrdersAsync(MasterAccountNum, ProfileNum, salesOrderUuids);
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
         }
 
         public async Task<IList<string>> GetOpenSalesOrderUuids()
@@ -77,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var salesOrderUuids = client?.ResopneData?.SalesOrderOpenList?.Select(i => i.SalesOrderUuid).ToList();
+            var salesOrderUuids = client?.Data?.SalesOrderOpenList?.Select(i => i.SalesOrderUuid).ToList();
 
             Assert.True(salesOrderUuids != null, "no open salesorder.");
 

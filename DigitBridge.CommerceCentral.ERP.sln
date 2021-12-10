@@ -112,6 +112,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms purchase order", "wms p
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration SDK", "Integration SDK", "{67394CE8-C236-437E-8909-072C11544946}"
 	ProjectSection(SolutionItems) = preProject
+		payload\SDK\readme.docx = payload\SDK\readme.docx
 		payload\SDK\readme.txt = payload\SDK\readme.txt
 	EndProjectSection
 EndProject

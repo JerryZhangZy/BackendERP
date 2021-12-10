@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var sentShipmentIDs = client.ResopneData?.SentWMSShipmentIDs;
+            var sentShipmentIDs = client.Data;
             Assert.True(sentShipmentIDs != null && sentShipmentIDs.Count > 0, "All shipmentID send failed.");
 
             foreach (var sentShipmentID in sentShipmentIDs)

@@ -65,11 +65,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var success = await client.GetWMSOrderShipmentListAsync(MasterAccountNum, ProfileNum, shipmentIDs);
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null && client.ResopneData.WMSShipmentProcessesList != null);
+            Assert.True(client.Data != null && client.Data != null);
 
-            if (client.ResopneData.WMSShipmentProcessesList.Count <= 0) return;
+            if (client.Data.Count <= 0) return;
 
-            success = client.ResopneData.WMSShipmentProcessesList.Count(i => shipmentIDs.Contains(i.ShipmentID)) > 0;
+            success = client.Data.Count(i => shipmentIDs.Contains(i.ShipmentID)) > 0;
 
             Assert.True(success, "GetWMSOrderShipmentListAsync no result.");
 

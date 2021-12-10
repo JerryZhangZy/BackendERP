@@ -376,6 +376,7 @@ FodyWeavers.xsd
 # Setting - json setting
 appsettings.test.json
 local.settings.json
+launchSettings.json
 
 /DigitBridge.CommerceCentral.ERPApi/Properties/launchSettings.json
 /DigitBridge.Base.Utility/Extension/FunctionAttributeExtensions.cs
@@ -389,3 +390,4 @@ local.settings.json
 /DigitBridge.CommerceCentral.ERPApi/local.settings.json
 /DigitBridge.CommerceCentral.ERPBroker/Properties/ServiceDependencies/DigitBridge-ERP-Broker-Func-Dev - Zip Deploy/profile.arm.json
 /DigitBridge.CommerceCentral.ERP.Integration.Api/Properties/launchSettings.json
+/DigitBridge.CommerceCentral.ERPEventApi/Properties/launchSettings.json

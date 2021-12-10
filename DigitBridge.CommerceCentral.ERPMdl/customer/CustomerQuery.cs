@@ -46,8 +46,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _BusinessType = new QueryFilter<string>("BusinessType", "BusinessType", PREFIX, FilterBy.bw, string.Empty);
         public QueryFilter<string> BusinessType => _BusinessType;
 
-        protected QueryFilter<string> _FirstDate = new QueryFilter<string>("FirstDate", "FirstDate", PREFIX, FilterBy.bw, string.Empty);
-        public QueryFilter<string> FirstDate => _FirstDate;
+ 
+ 
+
+        protected QueryFilter<DateTime> _FirstDateFrom = new QueryFilter<DateTime>("FirstDateFrom", "FirstDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> FirstDateFrom => _FirstDateFrom;
+
+        protected QueryFilter<DateTime> _FirstDateTo = new QueryFilter<DateTime>("FirstDateTo", "FirstDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> FirstDateDateTo => _FirstDateTo;
+
 
         protected QueryFilter<string> _Priority = new QueryFilter<string>("Priority", "Priority", PREFIX, FilterBy.bw, string.Empty);
         public QueryFilter<string> Priority => _Priority;
@@ -92,7 +99,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_CustomerType);
             AddFilter(_CustomerStatus);
             AddFilter(_BusinessType);
-            AddFilter(_FirstDate);
+            AddFilter(_FirstDateFrom);
+            AddFilter(_FirstDateTo);
             AddFilter(_Priority);
             AddFilter(_Area);
             AddFilter(_Region);

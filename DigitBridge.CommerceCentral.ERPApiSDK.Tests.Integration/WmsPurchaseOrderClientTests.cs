@@ -65,13 +65,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var success = await client.GetPurchaseOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
+            Assert.True(client.Data != null);
 
-            if (client.ResopneData.PurchaseOrderListCount <= 0) return;
+            if (client.Data.PurchaseOrderListCount <= 0) return;
 
-            Assert.True(client.ResopneData.PurchaseOrderList != null, $"Count:{client.ResopneData.PurchaseOrderListCount}, PurchaseOrderList:no data.");
+            Assert.True(client.Data.PurchaseOrderList != null, $"Count:{client.Data.PurchaseOrderListCount}, PurchaseOrderList:no data.");
 
-            //success = client.ResopneData.PurchaseOrderList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.PurchaseOrderListCount;
+            //success = client.Data.PurchaseOrderList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.Data.PurchaseOrderListCount;
 
             //Assert.True(success, "Filter by WarehouseCode reuslt is not correct.");
 
