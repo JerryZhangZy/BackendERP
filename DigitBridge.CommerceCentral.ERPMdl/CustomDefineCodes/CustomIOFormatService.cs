@@ -277,13 +277,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        public virtual async Task<bool> GetDataFomartAsync(CustomIOFormatPayload customIOFormatPayload, string formatType)
+        public virtual async Task<bool> NewDataFomartAsync(CustomIOFormatPayload customIOFormatPayload, string formatType)
         {
-            var mapper = new CustomIOFormatDataDtoMapperDefault();
-            var data = new CustomIOFormatData() { CustomIOFormat = new CustomIOFormat() { FormatType = formatType } };
-            var dto = mapper.WriteDto(data, null);
-            customIOFormatPayload.CustomIOFormat = dto;
-            return true;
+            this.Add();
+            this.Data.CustomIOFormat.FormatType = formatType;
+            customIOFormatPayload.CustomIOFormat = this.ToDto();
+            customIOFormatPayload.Success = true;
+            return customIOFormatPayload.Success;
         }
 
 
