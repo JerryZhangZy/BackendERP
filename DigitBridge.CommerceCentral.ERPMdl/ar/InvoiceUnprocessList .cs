@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoiceUnprocessList(IDataBaseFactory dbFactory, InvoiceUnprocessQuery queryObject)
             : base(dbFactory, queryObject)
         {
-        } 
+        }
 
         #region override methods
 
@@ -27,6 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
+ins.RowNum  as 'InvoiceHeader.OrderInvoiceNum',
 ins.InvoiceUuid as 'InvoiceHeader.InvoiceUuid',
 --ins.OrderInvoiceNum as 'InvoiceHeader.OrderInvoiceNum',
 ins.DatabaseNum as 'InvoiceHeader.DatabaseNum',
@@ -38,14 +39,14 @@ ins.InvoiceNumber as 'InvoiceHeader.InvoiceNumber',
 ins.InvoiceDate as 'InvoiceHeader.InvoiceDateUtc',
 insi.CentralOrderNum as 'InvoiceHeader.CentralOrderNum',
 insi.ChannelOrderID as 'InvoiceHeader.ChannelOrderID',
---insi.OrderDCAssignmentNum as 'InvoiceHeader.OrderDCAssignmentNum',
-insi.OrderShipmentNum as 'InvoiceHeader.OrderShipmentNum',--need join
---insi.ShipmentID as 'InvoiceHeader.ShipmentID',--need join
+insi.OrderDCAssignmentNum as 'InvoiceHeader.OrderDCAssignmentNum',
+insi.OrderShipmentNum as 'InvoiceHeader.OrderShipmentNum',
+shipment.ShipmentId as 'InvoiceHeader.ShipmentID',
 ins.ShipDate as 'InvoiceHeader.ShipmentDateUtc',
 insi.ShippingCarrier as 'InvoiceHeader.ShippingCarrier',
 insi.ShippingClass as 'InvoiceHeader.ShippingClass',
 ins.ShippingAmount as 'InvoiceHeader.ShippingCost',
---insi.MainTrackingNumber as 'InvoiceHeader.MainTrackingNumber',--need join
+shipment.MainTrackingNumber as 'InvoiceHeader.MainTrackingNumber',
 ins.SubTotalAmount as 'InvoiceHeader.InvoiceAmount',
 ins.TaxAmount as 'InvoiceHeader.InvoiceTaxAmount',
 ins.ChargeAndAllowanceAmount as 'InvoiceHeader.InvoiceHandlingFee',
@@ -54,7 +55,8 @@ ins.TotalAmount as 'InvoiceHeader.TotalAmount',
 --ins.InvoiceTermsType as 'InvoiceHeader.InvoiceTermsType',
 ins.Terms as 'InvoiceHeader.InvoiceTermsDescrption',
 ins.TermsDays as 'InvoiceHeader.InvoiceTermsDays',
---ins.DBChannelOrderHeaderRowID as 'InvoiceHeader.DBChannelOrderHeaderRowID',
+insi.DBChannelOrderHeaderRowID as 'InvoiceHeader.DBChannelOrderHeaderRowID',
+insi.RefNum as 'InvoiceHeader.ReferenceId',
 ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc', 
 
 ( 
@@ -63,11 +65,13 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
     --insl.DatabaseNum AS DatabaseNum,
     --insl.MasterAccountNum AS MasterAccountNum,
     --insl.ProfileNum AS ProfileNum,
-        --insl.ChannelNum AS ChannelNum,
+    --insl.ChannelNum AS ChannelNum,
     --insl.ChannelAccountNum AS ChannelAccountNum,
     --insl.OrderShipmentItemNum AS OrderShipmentItemNum,
     --insl.CentralOrderLineNum AS CentralOrderLineNum,
-    --insl.OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum,
+    insl.CentralOrderLineUuid  AS CentralOrderLineUuid,
+    insl.OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum,
+    insl.OrderDCAssignmentLineUuid AS OrderDCAssignmentLineUuid,
     insl.SKU AS SKU,
     --insl.ChannelItemID AS ChannelItemID,
     insl.ShipQty AS ShippedQty,
@@ -77,7 +81,7 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
     insl.ChargeAndAllowanceAmount AS LineHandlingFee,
     insl.DiscountAmount AS LineDiscountAmount,
     insl.ItemTotalAmount AS LineAmount,
-    --insl.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
+    insl.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
     insl.InvoiceItemStatus AS ItemStatus,
     insl.EnterDateUtc AS EnterDateUtc
     FROM InvoiceItems insl
@@ -99,9 +103,10 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
         and ins.ProfileNum=epe.ProfileNum
         and ins.InvoiceUuid=epe.ProcessUuid
  LEFT JOIN InvoiceHeaderInfo insi ON (ins.InvoiceUuid = insi.InvoiceUuid)
+ LEFT JOIN OrderShipmentHeader shipment on (shipment.OrderShipmentUuid=insi.OrderShipmentUuid) and shipment.ShipmentStatus!={(int)OrderShipmentStatusEnum.Cancelled}
 ";
             return this.SQL_From;
-        } 
+        }
 
         #endregion override methods
 
