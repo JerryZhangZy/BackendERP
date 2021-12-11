@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>, IMessage
     {
         protected ISalesOrderService _salesOrderService;
-        public SalesOrderServiceCalculatorDefault(ISalesOrderService  salesOrderService, IDataBaseFactory dbFactory)
+        public SalesOrderServiceCalculatorDefault(ISalesOrderService salesOrderService, IDataBaseFactory dbFactory)
         {
             this.ServiceMessage = (IMessage)salesOrderService;
             this._salesOrderService = salesOrderService;
@@ -152,14 +152,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.OrderDate = now.Date;
                 sum.OrderTime = now.TimeOfDay;
-            } 
+            }
             //EnterBy
             //UpdateBy
             if (processingMode == ProcessingMode.Add)
             {
                 if (string.IsNullOrEmpty(sum.OrderNumber))
                 {
-                    sum.OrderNumber = _salesOrderService.GetNextNumber(data.SalesOrderHeader.MasterAccountNum,data.SalesOrderHeader.ProfileNum);
+                    sum.OrderNumber = _salesOrderService.GetNextNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum);
                 }
                 //for Add mode, always reset data's uuid
                 sum.SalesOrderUuid = Guid.NewGuid().ToString();
@@ -180,7 +180,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             // (int)( (SalesOrderStatus) sum.OrderStatus)
             sum.DueDate = sum.OrderDate.AddDays(sum.TermsDays);
-             
+
             return true;
         }
 
@@ -201,13 +201,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //TODO: add set default for detail line logic
         //This is generated sample code
         protected virtual bool SetDefault(SalesOrderItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
-        { 
+        {
             if (item.ItemTime.IsZero()) item.ItemTime = now.TimeOfDay;
             if (item.ItemDate.IsZero())
             {
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
-            } 
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 item.SalesOrderItemsUuid = Guid.NewGuid().ToString();
@@ -223,6 +223,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
             item.UOM = inventoryData.ProductExt?.UOM;
+            item.UOM = item.UOM.IsZero() ? string.Empty : item.UOM;
 
             var inventory = inventoryData.FindInventoryByWarhouse(item.WarehouseCode);
             if (inventory == null)
@@ -334,7 +335,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (item is null || item.IsEmpty)
                     continue;
                 //var inv = GetInventoryData(data,item.ProductUuid);
-                
+
                 CalculateDetail(item, data, processingMode);
                 if (!item.IsAr)
                 {
