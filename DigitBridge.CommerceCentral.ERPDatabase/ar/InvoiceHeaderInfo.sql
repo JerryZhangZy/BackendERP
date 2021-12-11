@@ -19,6 +19,8 @@
 	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
 	[RefNum] VARCHAR(100) NOT NULL DEFAULT '', --Reference Number. <br> Title: Reference Number: Display: true, Editable: true
 	[CustomerPoNum] VARCHAR(100) NOT NULL DEFAULT '', --Customer P/O Number. <br> Title: Customer PO: Display: true, Editable: true
+	[DBChannelOrderHeaderRowID] VARCHAR(50) NOT NULL Default '',--(Readonly) Reference to OrderHeader rownum. <br> Display: false, Editable: false
+	[OrderDCAssignmentNum] [bigint] NOT NULL Default 0,--(Readonly) Reference to OrderDCAssignmentHeader OrderDCAssignmentNum. <br> Display: false, Editable: false
 
 	[EndBuyerUserId] VARCHAR(255) NOT NULL DEFAULT '', --(Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false
 	[EndBuyerName] NVARCHAR(255) NOT NULL DEFAULT '', --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Title: Buyer Name : Display: true, Editable: false
