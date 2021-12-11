@@ -67,6 +67,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("EtaArrivalDate",SqlDbType.Date)]
         private DateTime? _etaArrivalDate;
 
+        [Column("CentralOrderLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _centralOrderLineUuid;
+
+        [Column("DBChannelOrderLineRowID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _dBChannelOrderLineRowID;
+
+        [Column("OrderDCAssignmentLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _orderDCAssignmentLineUuid;
+
+        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentLineNum;
+
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _sku;
 
@@ -386,6 +398,70 @@ namespace DigitBridge.CommerceCentral.ERPDb
 					_etaArrivalDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
 					OnPropertyChanged("EtaArrivalDate", value);
 				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+        public virtual string CentralOrderLineUuid
+        {
+            get
+            {
+				return _centralOrderLineUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_centralOrderLineUuid = value.TruncateTo(50); 
+				OnPropertyChanged("CentralOrderLineUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+		/// </summary>
+        public virtual string DBChannelOrderLineRowID
+        {
+            get
+            {
+				return _dBChannelOrderLineRowID?.TrimEnd(); 
+            }
+            set
+            {
+				_dBChannelOrderLineRowID = value.TruncateTo(50); 
+				OnPropertyChanged("DBChannelOrderLineRowID", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+        public virtual string OrderDCAssignmentLineUuid
+        {
+            get
+            {
+				return _orderDCAssignmentLineUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_orderDCAssignmentLineUuid = value.TruncateTo(50); 
+				OnPropertyChanged("OrderDCAssignmentLineUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentLineNum
+        {
+            get
+            {
+				return _orderDCAssignmentLineNum; 
+            }
+            set
+            {
+				_orderDCAssignmentLineNum = value; 
+				OnPropertyChanged("OrderDCAssignmentLineNum", value);
             }
         }
 
@@ -1340,6 +1416,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_itemTime = new TimeSpan().MinValueSql(); 
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_centralOrderLineUuid = String.Empty; 
+			_dBChannelOrderLineRowID = String.Empty; 
+			_orderDCAssignmentLineUuid = String.Empty; 
+			_orderDCAssignmentLineNum = default(long); 
 			_sku = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 

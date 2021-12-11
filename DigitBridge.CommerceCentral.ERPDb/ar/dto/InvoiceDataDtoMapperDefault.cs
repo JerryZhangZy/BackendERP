@@ -150,6 +150,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasRefNum) data.RefNum = dto.RefNum;
 			if (dto.HasCustomerPoNum) data.CustomerPoNum = dto.CustomerPoNum;
+			if (dto.HasDBChannelOrderHeaderRowID) data.DBChannelOrderHeaderRowID = dto.DBChannelOrderHeaderRowID;
+			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum.ToLong();
 			if (dto.HasEndBuyerUserId) data.EndBuyerUserId = dto.EndBuyerUserId;
 			if (dto.HasEndBuyerName) data.EndBuyerName = dto.EndBuyerName;
 			if (dto.HasEndBuyerEmail) data.EndBuyerEmail = dto.EndBuyerEmail;
@@ -238,6 +240,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasItemTime) data.ItemTime = dto.ItemTime.ToTimeSpan();
 			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
+			if (dto.HasCentralOrderLineUuid) data.CentralOrderLineUuid = dto.CentralOrderLineUuid;
+			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
+			if (dto.HasOrderDCAssignmentLineUuid) data.OrderDCAssignmentLineUuid = dto.OrderDCAssignmentLineUuid;
+			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum.ToLong();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
@@ -291,7 +297,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
-            if (dto.HasTotalReturnQty) data.TotalReturnQty = dto.TotalReturnQty.ToDecimal();
 			#endregion read properties
 
 			#region read all grand children object
@@ -410,10 +415,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.InvoiceDate = data.InvoiceDate;
 			dto.InvoiceTime = data.InvoiceTime.ToDateTime();
 			dto.DueDate = data.DueDate;
-            if (!data.BillDate.IsZero())
-			dto.BillDate = data.BillDate;
-            if (!data.ShipDate.IsZero())
-			dto.ShipDate = data.ShipDate;
+			if (!data.BillDate.IsZero())
+				dto.BillDate = data.BillDate;
+			if (!data.ShipDate.IsZero())
+				dto.ShipDate = data.ShipDate;
 			dto.CustomerUuid = data.CustomerUuid;
 			dto.CustomerCode = data.CustomerCode;
 			dto.CustomerName = data.CustomerName;
@@ -478,6 +483,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.WarehouseCode = data.WarehouseCode;
 			dto.RefNum = data.RefNum;
 			dto.CustomerPoNum = data.CustomerPoNum;
+			dto.DBChannelOrderHeaderRowID = data.DBChannelOrderHeaderRowID;
+			dto.OrderDCAssignmentNum = data.OrderDCAssignmentNum;
 			dto.EndBuyerUserId = data.EndBuyerUserId;
 			dto.EndBuyerName = data.EndBuyerName;
 			dto.EndBuyerEmail = data.EndBuyerEmail;
@@ -566,10 +573,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.InvoiceItemStatus = data.InvoiceItemStatus;
 			dto.ItemDate = data.ItemDate;
 			dto.ItemTime = data.ItemTime.ToDateTime();
-            if (!data.ShipDate.IsZero())
-			dto.ShipDate = data.ShipDate;
-            if (!data.EtaArrivalDate.IsZero())
-			dto.EtaArrivalDate = data.EtaArrivalDate;
+			if (!data.ShipDate.IsZero())
+				dto.ShipDate = data.ShipDate;
+			if (!data.EtaArrivalDate.IsZero())
+				dto.EtaArrivalDate = data.EtaArrivalDate;
+			dto.CentralOrderLineUuid = data.CentralOrderLineUuid;
+			dto.DBChannelOrderLineRowID = data.DBChannelOrderLineRowID;
+			dto.OrderDCAssignmentLineUuid = data.OrderDCAssignmentLineUuid;
+			dto.OrderDCAssignmentLineNum = data.OrderDCAssignmentLineNum;
 			dto.SKU = data.SKU;
 			dto.ProductUuid = data.ProductUuid;
 			dto.InventoryUuid = data.InventoryUuid;
@@ -624,8 +635,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UpdateBy = data.UpdateBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-
-            dto.TotalReturnQty = data.TotalReturnQty;
+			dto.TotalReturnQty = data.TotalReturnQty;
 			#endregion read properties
 
 			#region write all grand children object
