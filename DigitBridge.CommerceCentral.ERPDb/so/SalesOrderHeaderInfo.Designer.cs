@@ -88,12 +88,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CustomerPoNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _customerPoNum;
 
-        [Column("DBChannelOrderHeaderRowID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _dBChannelOrderHeaderRowID;
-
-        [Column("OrderDCAssignmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
-        private long _orderDCAssignmentNum;
-
         [Column("EndBuyerUserID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _endBuyerUserID;
 
@@ -504,38 +498,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_customerPoNum = value.TruncateTo(100); 
 				OnPropertyChanged("CustomerPoNum", value);
-            }
-        }
-
-		/// <summary>
-		/// (Readonly) Reference to OrderHeader rownum. <br> Display: false, Editable: false
-		/// </summary>
-        public virtual string DBChannelOrderHeaderRowID
-        {
-            get
-            {
-				return _dBChannelOrderHeaderRowID?.TrimEnd(); 
-            }
-            set
-            {
-				_dBChannelOrderHeaderRowID = value.TruncateTo(50); 
-				OnPropertyChanged("DBChannelOrderHeaderRowID", value);
-            }
-        }
-
-		/// <summary>
-		/// (Readonly) Reference to OrderDCAssignmentHeader OrderDCAssignmentNum. <br> Display: false, Editable: false
-		/// </summary>
-        public virtual long OrderDCAssignmentNum
-        {
-            get
-            {
-				return _orderDCAssignmentNum; 
-            }
-            set
-            {
-				_orderDCAssignmentNum = value; 
-				OnPropertyChanged("OrderDCAssignmentNum", value);
             }
         }
 
@@ -1372,8 +1334,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_warehouseCode = String.Empty; 
 			_refNum = String.Empty; 
 			_customerPoNum = String.Empty; 
-			_dBChannelOrderHeaderRowID = String.Empty; 
-			_orderDCAssignmentNum = default(long); 
 			_endBuyerUserID = String.Empty; 
 			_endBuyerName = String.Empty; 
 			_endBuyerEmail = String.Empty; 
