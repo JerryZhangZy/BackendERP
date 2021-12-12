@@ -70,3 +70,10 @@ CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShi
 	[ShipmentID] ASC
 ) 
 GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_SalesOrderUuid')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_SalesOrderUuid] ON [dbo].[OrderShipmentHeader]
+(
+	[SalesOrderUuid] ASC
+) 
+GO

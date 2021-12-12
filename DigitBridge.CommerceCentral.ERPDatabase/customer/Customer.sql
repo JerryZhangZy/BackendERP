@@ -50,6 +50,15 @@
 	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms. <br> Title: Terms, Display: true, Editable: true
 	[TermsDays] INT NOT NULL DEFAULT 0, --Payment terms days. <br> Title: Days, Display: true, Editable: true
 
+    [SalesRep] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+    [SalesRep2] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+    [SalesRep3] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+    [SalesRep4] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate2] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate3] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate4] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
@@ -142,6 +151,16 @@ CREATE NONCLUSTERED INDEX [IX_Customer_MasterAccountNum_ChannelNum_ChannelAccoun
 	[ProfileNum] ASC,
 	[ChannelNum] ASC, 
 	[ChannelAccountNum] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_SalesRep1234')
+CREATE NONCLUSTERED INDEX [IX_Customer_SalesRep1234] ON [dbo].[Customer]
+(
+	[SalesRep] ASC,
+	[SalesRep2] ASC,
+	[SalesRep3] ASC,
+	[SalesRep4] ASC
 ) 
 GO
 

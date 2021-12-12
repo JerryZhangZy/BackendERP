@@ -413,6 +413,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             data.SalesOrderHeader.CustomerName = customerService.Data.Customer.CustomerName;
             data.SalesOrderHeader.Terms = customerService.Data.Customer.Terms;
             data.SalesOrderHeader.TermsDays = customerService.Data.Customer.TermsDays;
+
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep))
+            {
+                data.SalesOrderHeader.SalesRep = customerService.Data.Customer.SalesRep;
+                data.SalesOrderHeader.CommissionRate = customerService.Data.Customer.CommissionRate;
+            }
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep2))
+            {
+                data.SalesOrderHeader.SalesRep2 = customerService.Data.Customer.SalesRep2;
+                data.SalesOrderHeader.CommissionRate2 = customerService.Data.Customer.CommissionRate2;
+            }
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep3))
+            {
+                data.SalesOrderHeader.SalesRep3 = customerService.Data.Customer.SalesRep3;
+                data.SalesOrderHeader.CommissionRate3 = customerService.Data.Customer.CommissionRate3;
+            }
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep4))
+            {
+                data.SalesOrderHeader.SalesRep4 = customerService.Data.Customer.SalesRep4;
+                data.SalesOrderHeader.CommissionRate4 = customerService.Data.Customer.CommissionRate4;
+            }
             return true;
         }
 

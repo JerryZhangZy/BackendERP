@@ -1,27 +1,28 @@
 import * as util from '../../../util';
 import { StoreMobx } from '../../../store';
+import { setCurrentService, getService } from '../../../service';
 import { CustomerService } from './customerService';
 
-const services: any = { current: {} };
-
+/**
+* Set current service to current page service, 
+* if current page service is not exist, create new page service. 
+* @param {string} name - service object name
+* @param {StoreMobx} store - screen data store object
+* @param {StoreMobx} ui - screen ui design store object
+* @return {CustomerService} service object
+*/
 export const useService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): CustomerService | null => {
-    if (!name) return getCurrent();
-    if (!services[name] || !services[name][name]) {
-        services[name] = createService(name, store, ui);
-    }
-    services.current = services[name];
-    return services.current;
-};
-
-export const getCurrent = (): CustomerService | null => {
-    return (services.current.name) ? services.current as CustomerService : null;
+    let service = getService(name) || createService(name, store, ui);
+    setCurrentService(name, service);
+    return service as CustomerService;
 };
 
 /**
 * Create new service object
-* @return {SalesOrderService} service object
+* @return {CustomerService} service object
 */
 export const createService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): CustomerService | null => {
     return new CustomerService(name, store, ui);
 };
+
 

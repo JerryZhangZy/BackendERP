@@ -339,7 +339,7 @@ WHERE itm.cnt > 0
             dto.InvoiceHeader.ProfileNum = 1000;
             srv.Add(dto);
 
-            var result = await srv.ExistInvoiceNumber("test-invoice-number", 1001, 1000);
+            var result = await srv.ExistInvoiceNumberAsync("test-invoice-number", 1001, 1000);
 
             Assert.True(result);
 

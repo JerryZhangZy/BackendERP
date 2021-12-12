@@ -125,12 +125,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeader.MiscAmount = soHeader.MiscAmount;
             //MiscTaxAmount
             invoiceHeader.ChargeAndAllowanceAmount = soHeader.ChargeAndAllowanceAmount;
+            invoiceHeader.ChannelAmount = soHeader.ChannelAmount;
             //PaidAmount
             //CreditAmount
             //Balance
             //UnitCost
             //AvgCost
             //LotCost
+
+            invoiceHeader.SalesRep = soHeader.SalesRep;
+            invoiceHeader.SalesRep2 = soHeader.SalesRep2;
+            invoiceHeader.SalesRep3 = soHeader.SalesRep3;
+            invoiceHeader.SalesRep4 = soHeader.SalesRep4;
+            invoiceHeader.CommissionRate = soHeader.CommissionRate;
+            invoiceHeader.CommissionRate2 = soHeader.CommissionRate2;
+            invoiceHeader.CommissionRate3 = soHeader.CommissionRate3;
+            invoiceHeader.CommissionRate4 = soHeader.CommissionRate4;
+
             invoiceHeader.InvoiceSourceCode = "OrderShipmentUuid:" + osHeader.OrderShipmentUuid;
 
             invoiceHeader.EnterBy = _userId;
@@ -162,8 +173,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeaderInfo.ShippingCarrier = osHeader.ShippingCarrier;
             invoiceHeaderInfo.ShippingClass = osHeader.ShippingClass;
             invoiceHeaderInfo.WarehouseCode = osHeader.WarehouseCode;
-
-            invoiceHeaderInfo.RefNum = osHeader.ShipmentReferenceID;
 
             return invoiceHeaderInfo;
         }
@@ -242,6 +251,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         Taxable = soLine.Taxable,
                         Costable = soLine.Costable,
                         IsProfit = soLine.IsProfit,
+                        CommissionRate = soLine.CommissionRate,
+                        CommissionAmount = soLine.CommissionAmount,
                         //UnitCost
                         //AvgCost
                         //LotCost
