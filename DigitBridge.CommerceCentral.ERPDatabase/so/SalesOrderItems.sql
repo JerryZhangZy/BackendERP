@@ -80,7 +80,9 @@
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore) 
  
     [OrderDCAssignmentLineNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
-   
+	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+
    CONSTRAINT [PK_SalesOrderItems] PRIMARY KEY ([RowNum]), 
 ) 
 GO

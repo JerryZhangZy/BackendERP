@@ -203,6 +203,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, masterAccountNum, profileNum);
             }
+            if (rowNum <= 0)
+            {
+                AddError($"Data not found for {sku}.");
+                return false;
+            }
             return await GetDataAsync(rowNum);
         }
 

@@ -118,6 +118,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasOrderSourceCode) data.OrderSourceCode = dto.OrderSourceCode;
 			if (dto.HasDepositAmount) data.DepositAmount = dto.DepositAmount.ToDecimal();
 			if (dto.HasMiscInvoiceUuid) data.MiscInvoiceUuid = dto.MiscInvoiceUuid;
+			if (dto.HasSalesRep) data.SalesRep = dto.SalesRep;
+			if (dto.HasSalesRep2) data.SalesRep2 = dto.SalesRep2;
+			if (dto.HasSalesRep3) data.SalesRep3 = dto.SalesRep3;
+			if (dto.HasSalesRep4) data.SalesRep4 = dto.SalesRep4;
+			if (dto.HasCommissionRate) data.CommissionRate = dto.CommissionRate.ToDecimal();
+			if (dto.HasCommissionRate2) data.CommissionRate2 = dto.CommissionRate2.ToDecimal();
+			if (dto.HasCommissionRate3) data.CommissionRate3 = dto.CommissionRate3.ToDecimal();
+			if (dto.HasCommissionRate4) data.CommissionRate4 = dto.CommissionRate4.ToDecimal();
+			if (dto.HasCommissionAmount) data.CommissionAmount = dto.CommissionAmount.ToDecimal();
+			if (dto.HasCommissionAmount2) data.CommissionAmount2 = dto.CommissionAmount2.ToDecimal();
+			if (dto.HasCommissionAmount3) data.CommissionAmount3 = dto.CommissionAmount3.ToDecimal();
+			if (dto.HasCommissionAmount4) data.CommissionAmount4 = dto.CommissionAmount4.ToDecimal();
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -198,6 +210,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasBillToDaytimePhone) data.BillToDaytimePhone = dto.BillToDaytimePhone;
 			if (dto.HasBillToNightPhone) data.BillToNightPhone = dto.BillToNightPhone;
 			if (dto.HasNotes) data.Notes = dto.Notes;
+			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum.ToLong();
+			if (dto.HasDBChannelOrderHeaderRowID) data.DBChannelOrderHeaderRowID = dto.DBChannelOrderHeaderRowID;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -301,6 +315,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum.ToLong();
+			if (dto.HasCommissionRate) data.CommissionRate = dto.CommissionRate.ToDecimal();
+			if (dto.HasCommissionAmount) data.CommissionAmount = dto.CommissionAmount.ToDecimal();
 
 			#endregion read properties
 
@@ -453,6 +469,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderSourceCode = data.OrderSourceCode;
 			dto.DepositAmount = data.DepositAmount;
 			dto.MiscInvoiceUuid = data.MiscInvoiceUuid;
+			dto.SalesRep = data.SalesRep;
+			dto.SalesRep2 = data.SalesRep2;
+			dto.SalesRep3 = data.SalesRep3;
+			dto.SalesRep4 = data.SalesRep4;
+			dto.CommissionRate = data.CommissionRate;
+			dto.CommissionRate2 = data.CommissionRate2;
+			dto.CommissionRate3 = data.CommissionRate3;
+			dto.CommissionRate4 = data.CommissionRate4;
+			dto.CommissionAmount = data.CommissionAmount;
+			dto.CommissionAmount2 = data.CommissionAmount2;
+			dto.CommissionAmount3 = data.CommissionAmount3;
+			dto.CommissionAmount4 = data.CommissionAmount4;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
@@ -534,6 +562,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.BillToDaytimePhone = data.BillToDaytimePhone;
 			dto.BillToNightPhone = data.BillToNightPhone;
 			dto.Notes = data.Notes;
+			dto.OrderDCAssignmentNum = data.OrderDCAssignmentNum;
+			dto.DBChannelOrderHeaderRowID = data.DBChannelOrderHeaderRowID;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
@@ -641,6 +671,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 			dto.OrderDCAssignmentLineNum = data.OrderDCAssignmentLineNum;
+			dto.CommissionRate = data.CommissionRate;
+			dto.CommissionAmount = data.CommissionAmount;
 
 			#endregion read properties
 

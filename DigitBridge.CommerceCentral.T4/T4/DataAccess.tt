@@ -86,8 +86,8 @@
 <#@ include file="SettingForSalesOrder.ttinclude" #>
 <#
     var dtoSuf = "";
-    var GenerateNewName = string.Empty;
-    //var GenerateNewName = "_NEW";
+    //var GenerateNewName = string.Empty;
+    var GenerateNewName = "_NEW";
     
     var overridesetting = false;
     //rewrite setting config
@@ -369,7 +369,7 @@
 #>              
 <#@ include file="GenerateIOFormat.ttinclude" #>
 <# 
-        dir = Path.Combine(path,IOFolder);
+        dir = Path.Combine(path,DbIOFolder);
         SaveOutputNotExists(dir, $"{IOFormatName}.cs", GenerateNewName);
 #>
 <#@ include file="GenerateIOCsv.ttinclude" #>

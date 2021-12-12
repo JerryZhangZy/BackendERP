@@ -1,5 +1,6 @@
 
 
+
 import { types, getRoot, destroy, SnapshotIn, cast } from "mobx-state-tree";
 import { createModelActions } from '../../../store';
               
@@ -8,6 +9,7 @@ import { createModelActions } from '../../../store';
  */ 
 const Customer = types
 	.model('Customer', {
+		rowNum: types.optional(types.number, 0),
 		databaseNum: types.optional(types.number, 0),
 		masterAccountNum: types.optional(types.number, 0),
 		profileNum: types.optional(types.number, 0),
@@ -24,6 +26,8 @@ const Customer = types
 		phone4: types.optional(types.string, ''),
 		email: types.optional(types.string, ''),
 		webSite: types.optional(types.string, ''),
+		channelNum: types.optional(types.number, 0),
+		channelAccountNum: types.optional(types.number, 0),
 		customerType: types.optional(types.number, 0),
 		customerStatus: types.optional(types.number, 0),
 		businessType: types.optional(types.string, ''),
@@ -49,6 +53,14 @@ const Customer = types
 		sourceCode: types.optional(types.string, ''),
 		terms: types.optional(types.string, ''),
 		termsDays: types.optional(types.number, 0),
+		salesRep: types.optional(types.string, ''),
+		salesRep2: types.optional(types.string, ''),
+		salesRep3: types.optional(types.string, ''),
+		salesRep4: types.optional(types.string, ''),
+		commissionRate: types.optional(types.number, 0),
+		commissionRate2: types.optional(types.number, 0),
+		commissionRate3: types.optional(types.number, 0),
+		commissionRate4: types.optional(types.number, 0),
 		updateDateUtc: types.optional(types.string, ''),
 		enterBy: types.optional(types.string, ''),
 		updateBy: types.optional(types.string, ''),
@@ -65,6 +77,7 @@ const Customer = types
  */ 
 const CustomerAddress = types
 	.model('CustomerAddress', {
+		rowNum: types.optional(types.number, 0),
 		addressUuid: types.optional(types.string, ''),
 		customerUuid: types.optional(types.string, ''),
 		addressCode: types.optional(types.string, ''),
@@ -106,6 +119,7 @@ const CustomerAddress = types
  */ 
 const CustomerAttributes = types
 	.model('CustomerAttributes', {
+		rowNum: types.optional(types.number, 0),
 		customerUuid: types.optional(types.string, ''),
 		jsonFields: types.optional(types.string, ''),
 	})
@@ -151,6 +165,7 @@ export const CustomerDataModel = types
 export const customerDataInit = {
 	dataVersion: dataVersionInit,
 	customer: {
+		rowNum: 0,
 		databaseNum: 0,
 		masterAccountNum: 0,
 		profileNum: 0,
@@ -167,6 +182,8 @@ export const customerDataInit = {
 		phone4: '',
 		email: '',
 		webSite: '',
+		channelNum: 0,
+		channelAccountNum: 0,
 		customerType: 0,
 		customerStatus: 0,
 		businessType: '',
@@ -192,6 +209,14 @@ export const customerDataInit = {
 		sourceCode: '',
 		terms: '',
 		termsDays: 0,
+		salesRep: '',
+		salesRep2: '',
+		salesRep3: '',
+		salesRep4: '',
+		commissionRate: 0,
+		commissionRate2: 0,
+		commissionRate3: 0,
+		commissionRate4: 0,
 		updateDateUtc: '',
 		enterBy: '',
 		updateBy: '',
@@ -200,6 +225,7 @@ export const customerDataInit = {
 
 	},
 	customerAddress: [{
+		rowNum: 0,
 		addressUuid: '',
 		customerUuid: '',
 		addressCode: '',
@@ -233,6 +259,7 @@ export const customerDataInit = {
 
 	}], 
 	customerAttributes: {
+		rowNum: 0,
 		customerUuid: '',
 		jsonFields: '',
 

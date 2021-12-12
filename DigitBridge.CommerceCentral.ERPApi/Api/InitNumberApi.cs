@@ -26,33 +26,6 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     public static class InitNumberApi
     {
         /// <summary>
-        /// Add InitNumber
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(AddInitNumber))]
-        [OpenApiOperation(operationId: "AddInitNumber", tags: new[] { "InitNumbers" }, Summary = "Add one InitNumber")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitNumberPayloadAdd), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadAdd))]
-        public static async Task<JsonNetResponse<InitNumbersPayload>> AddInitNumber(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "initNumbers/add")] Microsoft.AspNetCore.Http.HttpRequest req)
-        {
-            var payload = await req.GetParameters<InitNumbersPayload>(true); 
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InitNumbersService(dataBaseFactory);
-            payload.Success = await srv.AddAsync(payload);
-            payload.Messages = srv.Messages;
-            payload.InitNumbers = srv.ToDto();
-
- 
-            return new JsonNetResponse<InitNumbersPayload>(payload);
-        }
-
-        /// <summary>
         /// Load InitNumbers list
         /// </summary>
         [FunctionName(nameof(InitNumbersList))]
@@ -60,15 +33,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitNumberPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadFind))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumbersPayload))]
         public static async Task<JsonNetResponse<InitNumbersPayload>> InitNumbersList(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "initNumbers")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InitNumbersPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InitNumbersList(dataBaseFactory, new InitNumbersQuery());
-            await srv.GetInitNumbersListAsync(payload);
+            var srv = new InitNumbersService(dataBaseFactory);
+            var success = await srv.GetAllInitNumbersAsync(payload);
             return new JsonNetResponse<InitNumbersPayload>(payload);
         }
 
@@ -77,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitNumberPayloadUpdateMultiple), Description = "Request Body in json format")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitNumbersPayload), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumbersPayload))]
         public static async Task<JsonNetResponse<InitNumbersPayload>> UpdateMulti(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "initNumbers")] Microsoft.AspNetCore.Http.HttpRequest req)
@@ -85,15 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<InitNumbersPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InitNumbersService(dataBaseFactory);
-            var success = true;
-            foreach(var initNumber in payload.InitNumberss)
-            {
-                payload.InitNumbers = initNumber;
-                success = success & await srv.UpdateAsync(payload);
-            }
-            payload.InitNumbers = null;
-            payload.Success = success;
-            payload.Messages = srv.Messages;
+            var success = await srv.UpdateAsync(payload);
             return new JsonNetResponse<InitNumbersPayload>(payload);
         }
     }

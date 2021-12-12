@@ -157,7 +157,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //UpdateBy
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(sum.OrderNumber))
+                if (string.IsNullOrEmpty(sum.OrderNumber) ||
+                    _salesOrderService.ExistOrderNumber(sum.OrderNumber, sum.MasterAccountNum, sum.ProfileNum)
+                    )
                 {
                     sum.OrderNumber = _salesOrderService.GetNextNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum);
                 }

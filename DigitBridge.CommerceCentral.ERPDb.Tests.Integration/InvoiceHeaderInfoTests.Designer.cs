@@ -98,6 +98,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.BillToDaytimePhone, f => f.Phone.PhoneNumber())
 					.RuleFor(u => u.BillToNightPhone, f => f.Phone.PhoneNumber())
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(1000))
+					.RuleFor(u => u.OrderDCAssignmentNum, f => default(long))
+					.RuleFor(u => u.DBChannelOrderHeaderRowID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))

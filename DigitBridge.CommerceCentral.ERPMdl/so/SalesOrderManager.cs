@@ -77,14 +77,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         [XmlIgnore, JsonIgnore]
-        protected SalesOrderTransfer _salesOrderTransfer;
+        protected SalesOrderTransferFromChannelOrder _salesOrderTransfer;
         [XmlIgnore, JsonIgnore]
-        public SalesOrderTransfer salesOrderTransfer
+        public SalesOrderTransferFromChannelOrder salesOrderTransfer
         {
             get
             {
                 if (_salesOrderTransfer is null)
-                    _salesOrderTransfer = new SalesOrderTransfer(this, string.Empty);
+                    _salesOrderTransfer = new SalesOrderTransferFromChannelOrder(this, string.Empty);
                 return _salesOrderTransfer;
             }
         }
@@ -124,7 +124,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
-
 
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
         {
@@ -330,7 +329,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return uuid;
             }
 
-            SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
+            SalesOrderTransferFromChannelOrder soTransfer = new SalesOrderTransferFromChannelOrder(this, "");
             dcAssigmentData.WarehouseCode = await GetWarehouseByDCAssignmentAsync(dcAssigmentData);
 
             var soSrv = new SalesOrderService(dbFactory);
@@ -414,6 +413,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             data.SalesOrderHeader.CustomerName = customerService.Data.Customer.CustomerName;
             data.SalesOrderHeader.Terms = customerService.Data.Customer.Terms;
             data.SalesOrderHeader.TermsDays = customerService.Data.Customer.TermsDays;
+
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep))
+            {
+                data.SalesOrderHeader.SalesRep = customerService.Data.Customer.SalesRep;
+                data.SalesOrderHeader.CommissionRate = customerService.Data.Customer.CommissionRate;
+            }
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep2))
+            {
+                data.SalesOrderHeader.SalesRep2 = customerService.Data.Customer.SalesRep2;
+                data.SalesOrderHeader.CommissionRate2 = customerService.Data.Customer.CommissionRate2;
+            }
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep3))
+            {
+                data.SalesOrderHeader.SalesRep3 = customerService.Data.Customer.SalesRep3;
+                data.SalesOrderHeader.CommissionRate3 = customerService.Data.Customer.CommissionRate3;
+            }
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesRep4))
+            {
+                data.SalesOrderHeader.SalesRep4 = customerService.Data.Customer.SalesRep4;
+                data.SalesOrderHeader.CommissionRate4 = customerService.Data.Customer.CommissionRate4;
+            }
             return true;
         }
 
@@ -457,9 +477,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
                 return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
-
-
-
 
 
         //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)

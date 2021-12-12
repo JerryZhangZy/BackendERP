@@ -154,7 +154,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public int CustomerType { get; set; }
         public int CustomerStatus { get; set; }
         public string BusinessType { get; set; }
-        public string FirstDate { get; set; }
+        //public string FirstDate { get; set; }
+        public DateTime FirstDateFrom { get; set; }
+        public DateTime FirstDateTo { get; set; }
         public int Priority { get; set; }
         public string Area { get; set; }
         public string Region { get; set; }
@@ -173,6 +175,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.CustomerName, f =>"")
                 .RuleFor(u => u.Area, f => "")
                 .RuleFor(u => u.Region, f =>"")
+                  .RuleFor(u => u.FirstDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
+                .RuleFor(u => u.FirstDateTo, f => f.Date.Past(0).Date.Date)
                 ;
             #endregion faker data rules
         }

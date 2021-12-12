@@ -37,7 +37,6 @@
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="DTO\" />
     <Folder Include="eventProcess\" />
-    <Folder Include="setting\dto\" />
     <Folder Include="vendor\dto\" />
     <Folder Include="warehouseTransfer\dto\" />
   </ItemGroup>

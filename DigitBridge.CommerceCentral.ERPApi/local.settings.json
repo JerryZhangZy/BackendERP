@@ -13,7 +13,7 @@
     //"UseOrchestration": "false",
     ////"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
     ////"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    "DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
+    //"DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
     //////"DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
     //////"DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
 
@@ -58,7 +58,7 @@
     "ERPCreateInvoiceByOrdershipmentQueueName": "erp-create-invoice-by-ordershipment",
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
     "ERPSummaryTableName": "ErpSummaryCache",
-    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
+    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpeventapidev;AccountKey=DCDiLGxMy8m+efWvPjhG86HuDOtPME94nUaWmRtcAkB2ZD5xv/JbvW9MsDKKjKbtf13HsdCwtrqLz/pzS0iIyw==;EndpointSuffix=core.windows.net",
 
     // User account
     "BackdoorMode": "True",
@@ -87,7 +87,7 @@
     "UseOrchestration": "false",
     "OrchestrationDbConnString": "Server=bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
     "OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    //"DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
     //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
     //"UseAzureManagedIdentity": "false",
     //"AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",

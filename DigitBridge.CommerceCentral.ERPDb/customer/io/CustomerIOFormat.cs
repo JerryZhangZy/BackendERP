@@ -23,7 +23,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using CsvHelper.Configuration;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPMdl
+namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a CustomerIOFormat Class.
@@ -100,6 +100,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 				new CsvFormatColumn("SourceCode", "", idx++, null, false),
 				new CsvFormatColumn("Terms", "", idx++, null, false),
 				new CsvFormatColumn("TermsDays", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep2", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep3", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep4", "", idx++, null, false),
+				new CsvFormatColumn("CommissionRate", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionRate2", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionRate3", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionRate4", "", idx++, FormatType.Rate, false),
 				new CsvFormatColumn("UpdateDateUtc", "", idx++, FormatType.Date, false),
 				new CsvFormatColumn("EnterBy", "", idx++, null, false),
 				new CsvFormatColumn("UpdateBy", "", idx++, null, false),
@@ -129,8 +137,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 				new CsvFormatColumn("AddressLine1", "", idx++, null, false),
 				new CsvFormatColumn("AddressLine2", "", idx++, null, false),
 				new CsvFormatColumn("AddressLine3", "", idx++, null, false),
-				new CsvFormatColumn("City", "City", idx++, null, false),
-				new CsvFormatColumn("State", "State", idx++, null, false),
+				new CsvFormatColumn("City", "", idx++, null, false),
+				new CsvFormatColumn("State", "", idx++, null, false),
 				new CsvFormatColumn("StateFullName", "", idx++, null, false),
 				new CsvFormatColumn("PostalCode", "", idx++, null, false),
 				new CsvFormatColumn("PostalCodeExt", "", idx++, null, false),

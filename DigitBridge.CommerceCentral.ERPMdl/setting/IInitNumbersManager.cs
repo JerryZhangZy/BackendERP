@@ -27,12 +27,5 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public interface IInitNumbersManager 
     {
-        Task<byte[]> ExportAsync(InitNumbersPayload payload);
-
-        byte[] Export(InitNumbersPayload payload);
-
-        void Import(InitNumbersPayload payload, IFormFileCollection files);
-
-        Task ImportAsync(InitNumbersPayload payload, IFormFileCollection files);
     }
 }

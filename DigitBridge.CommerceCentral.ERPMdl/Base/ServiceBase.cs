@@ -8,6 +8,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Utility;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -285,6 +286,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return (TDto)null;
             return DtoMapper.WriteDto(data, null);
         }
+        public virtual IList<TDto> ToDto(IList<TEntity> datas)
+        {
+            if (datas is null || datas .Count == 0 || DtoMapper is null)
+                return (IList<TDto>)null;
+            return datas.Select(x => ToDto(x)).ToList();
+        }
 
         public virtual TEntity FromDto(TDto dto)
         {
@@ -302,7 +309,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Data is null || Calculator is null)
                 return false;
-            SetDefault();
+            // cal SetDefault seperate from calculate, in saveData function
+            //SetDefault();
             return Calculator.Calculate(Data, ProcessMode);
         }
 
@@ -460,6 +468,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (_data is null)
                 return false;
             //PrepareData();
+            SetDefault();
             Calculate();
 
             // call BeforeSaveAsync to update relative data, rollback data for update
@@ -548,6 +557,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (_data is null)
                 return false;
             //PrepareData();
+            SetDefault();
             Calculate();
 
             // call BeforeSaveAsync to update relative data, rollback data for update

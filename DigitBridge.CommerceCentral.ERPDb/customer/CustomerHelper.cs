@@ -71,6 +71,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Phone4(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Phone4) AS {name ?? "Phone4".ToCamelCase(camelCase)} ";
         public static string Email(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Email) AS {name ?? "Email".ToCamelCase(camelCase)} ";
         public static string WebSite(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WebSite) AS {name ?? "WebSite".ToCamelCase(camelCase)} ";
+        public static string ChannelNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum".ToCamelCase(camelCase)} ";
+        public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
         public static string CustomerType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CustomerType AS {name ?? "CustomerType".ToCamelCase(camelCase)} ";
         public static string CustomerStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CustomerStatus AS {name ?? "CustomerStatus".ToCamelCase(camelCase)} ";
         public static string BusinessType(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BusinessType) AS {name ?? "BusinessType".ToCamelCase(camelCase)} ";
@@ -96,6 +98,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string SourceCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SourceCode) AS {name ?? "SourceCode".ToCamelCase(camelCase)} ";
         public static string Terms(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Terms) AS {name ?? "Terms".ToCamelCase(camelCase)} ";
         public static string TermsDays(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TermsDays AS {name ?? "TermsDays".ToCamelCase(camelCase)} ";
+        public static string SalesRep(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep) AS {name ?? "SalesRep".ToCamelCase(camelCase)} ";
+        public static string SalesRep2(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep2) AS {name ?? "SalesRep2".ToCamelCase(camelCase)} ";
+        public static string SalesRep3(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep3) AS {name ?? "SalesRep3".ToCamelCase(camelCase)} ";
+        public static string SalesRep4(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep4) AS {name ?? "SalesRep4".ToCamelCase(camelCase)} ";
+        public static string CommissionRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate AS {name ?? "CommissionRate".ToCamelCase(camelCase)} ";
+        public static string CommissionRate2(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate2 AS {name ?? "CommissionRate2".ToCamelCase(camelCase)} ";
+        public static string CommissionRate3(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate3 AS {name ?? "CommissionRate3".ToCamelCase(camelCase)} ";
+        public static string CommissionRate4(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate4 AS {name ?? "CommissionRate4".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
         public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
@@ -125,6 +135,8 @@ RTRIM({allies}Phone3) AS Phone3,
 RTRIM({allies}Phone4) AS Phone4,
 RTRIM({allies}Email) AS Email,
 RTRIM({allies}WebSite) AS WebSite,
+{allies}ChannelNum AS ChannelNum,
+{allies}ChannelAccountNum AS ChannelAccountNum,
 {allies}CustomerType AS CustomerType,
 {allies}CustomerStatus AS CustomerStatus,
 RTRIM({allies}BusinessType) AS BusinessType,
@@ -150,6 +162,14 @@ RTRIM({allies}DivisionCode) AS DivisionCode,
 RTRIM({allies}SourceCode) AS SourceCode,
 RTRIM({allies}Terms) AS Terms,
 {allies}TermsDays AS TermsDays,
+RTRIM({allies}SalesRep) AS SalesRep,
+RTRIM({allies}SalesRep2) AS SalesRep2,
+RTRIM({allies}SalesRep3) AS SalesRep3,
+RTRIM({allies}SalesRep4) AS SalesRep4,
+{allies}CommissionRate AS CommissionRate,
+{allies}CommissionRate2 AS CommissionRate2,
+{allies}CommissionRate3 AS CommissionRate3,
+{allies}CommissionRate4 AS CommissionRate4,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,
