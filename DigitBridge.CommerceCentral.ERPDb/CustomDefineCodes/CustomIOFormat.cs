@@ -105,6 +105,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return fmt;
 
             }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.WarehouseTransfer.ToString()))
+            {
+                fmt = new WarehouseTransferIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<WarehouseTransferIOFormat>());
+                return fmt;
+
+            }
 
 
             return fmt;
@@ -136,6 +144,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 fmt = new InventoryIOFormat();
             else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToString()))
                 fmt = new InventoryUpdateIOFormat();
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.WarehouseTransfer.ToString()))
+                fmt = new WarehouseTransferIOFormat();
 
 
             if (fmt != null)

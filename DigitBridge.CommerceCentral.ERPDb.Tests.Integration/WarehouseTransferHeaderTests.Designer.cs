@@ -40,6 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.WarehouseTransferUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.BatchNumber, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.TransferStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.WarehouseTransferType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.WarehouseTransferStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TransferDate, f => f.Date.Past(0).Date)

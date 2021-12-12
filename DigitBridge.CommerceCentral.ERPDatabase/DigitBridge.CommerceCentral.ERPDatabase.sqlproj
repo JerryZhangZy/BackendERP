@@ -308,4 +308,7 @@
   <ItemGroup>
     <None Include="CustomDefineCodes\CustomIOFormat.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />
+  </ItemGroup>
 </Project>

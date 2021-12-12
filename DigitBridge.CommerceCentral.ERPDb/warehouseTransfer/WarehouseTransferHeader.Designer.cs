@@ -57,6 +57,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BatchNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _batchNumber;
 
+        [Column("TransferStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _transferStatus;
+
         [Column("WarehouseTransferType",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _warehouseTransferType;
 
@@ -201,6 +204,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_batchNumber = value.TruncateTo(50); 
 				OnPropertyChanged("BatchNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual int TransferStatus
+        {
+            get
+            {
+				return _transferStatus; 
+            }
+            set
+            {
+				_transferStatus = value; 
+				OnPropertyChanged("TransferStatus", value);
             }
         }
 
@@ -546,6 +565,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_warehouseTransferUuid = String.Empty; 
 			_batchNumber = String.Empty; 
+			_transferStatus = default(int); 
 			_warehouseTransferType = default(int); 
 			_warehouseTransferStatus = default(int); 
 			_transferDate = new DateTime().MinValueSql(); 
