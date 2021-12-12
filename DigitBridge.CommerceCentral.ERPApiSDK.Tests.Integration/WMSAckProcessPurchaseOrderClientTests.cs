@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using System.Linq;
+using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
@@ -15,10 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
     {
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-
-        private string _baseUrl = "http://localhost:7074/api/";
-        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
-        private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
 
@@ -28,8 +27,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             Configuration = fixture.Configuration;
             InitForTest();
         }
+        private IDataBaseFactory dbFactory { get; set; }
         protected void InitForTest()
         {
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
+            dbFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {
@@ -52,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             };
             processResults.Add(processResult);
             var success = await client.AckProcessPurchaseOrdersAsync(MasterAccountNum, ProfileNum, processResults);
-            Assert.True(client.ResopneData != null);
+            Assert.True(success);
         }
 
         [Fact()]
@@ -76,7 +79,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var success = await client.AckProcessPurchaseOrdersAsync(MasterAccountNum, ProfileNum, processResults);
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
         }
 
         public async Task<IList<string>> GetOpenPurchaseOrderUuids()
@@ -93,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(success, client.Messages.ObjectToString());
 
-            var PurchaseOrderUuids = client?.ResopneData?.PurchaseOrderList?.Select(i => i.PoUuid).ToList();
+            var PurchaseOrderUuids = client?.Data?.PurchaseOrderList?.Select(i => i.PoUuid).ToList();
 
             Assert.True(PurchaseOrderUuids != null, "no open PurchaseOrder.");
 

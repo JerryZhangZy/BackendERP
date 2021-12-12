@@ -21,6 +21,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -291,6 +293,7 @@ WHERE itm.cnt > 0
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
+
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public async Task AddPrepaymentAmountAsync_Test()
@@ -328,6 +331,201 @@ WHERE itm.cnt > 0
             success = await misSrv_Get.GetDataByIdAsync(miscInvoiceUuid);
             Assert.True(success, "Get mis invoice  error:" + misSrv_Get.Messages.ObjectToString());
         }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateStatusAsync_Test()
+        {
+            //Save salesorder
+            var rowNum = (long)12741;
+            var status = SalesOrderStatus.Approved;
+
+            var srv = new SalesOrderService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                {
+                    var success = await srv.UpdateStatusAsync(rowNum, status);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateWithIgnoreAsync_Test()
+        {
+            //Save salesorder
+            var rowNum = (long)12742;
+            var srv = new SalesOrderService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                {
+                    await srv.EditAsync(rowNum);
+                    srv.Data.SalesOrderItems[0].ShipPack = 0;
+                    srv.Data.SalesOrderItems[0].ShipQty = 0;
+                    await srv.SaveDataAsync();
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        } 
+
+        #region update so shipped qty test  
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateShippedQtyFromShippedItemAsync_Test()
+        {
+            var salesOrderData = GetFackerSalesOrderData_NoShipAndCancelledQty();
+            salesOrderData = await SaveSalesOrderData(salesOrderData);
+            var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData);
+            shipmentData = await SaveShipmentData(shipmentData);
+            var orderShipmentUuid = shipmentData.OrderShipmentHeader.OrderShipmentUuid;
+
+            var service = new SalesOrderService(DataBaseFactory);
+            var success = await service.UpdateShippedQtyFromShippedItemAsync(orderShipmentUuid);
+            Assert.True(success, "UpdateShippedQtyFromShippedItemAsync error:" + service.Messages.ObjectToString());
+
+            success = service.GetDataById(salesOrderData.SalesOrderHeader.SalesOrderUuid);
+            Assert.True(success, "Get salesorder error:" + service.Messages.ObjectToString());
+            salesOrderData = service.Data;
+            for (int i = 0; i < salesOrderData.SalesOrderItems.Count; i++)
+            {
+                var orderItem_ShipQty = salesOrderData.SalesOrderItems[i].ShipQty;
+                var shippedItem_ShipQty = shipmentData.OrderShipmentShippedItem[i].ShippedQty;
+                // due to the shipped qty updated twice.
+                Assert.True(orderItem_ShipQty == (2 * shippedItem_ShipQty), $"shipped qty result error. orderItem_ShipQty:{orderItem_ShipQty},shippedItem_ShipQty:{shippedItem_ShipQty}" );
+            }
+
+        }
+        #endregion
+
+        #region update so status to shipped or open  test
+
+        protected SalesOrderData GetFackerSalesOrderData_NoShipAndCancelledQty(int orderItemCount = 10)
+        {
+            var salesOrderData = SalesOrderDataTests.GetFakerDataWithCountItem(orderItemCount);
+            salesOrderData.SalesOrderHeader.OrderStatus = (int)SalesOrderStatus.Processing;
+            for (int i = 0; i < orderItemCount; i++)
+            {
+                var orderItem = salesOrderData.SalesOrderItems[i];
+                orderItem.ShipQty = 0;
+                orderItem.CancelledQty = 0;
+            }
+            return salesOrderData;
+        }
+        protected OrderShipmentData GetFackerOrderShipmentData_ConnectedToSalesOrder(SalesOrderData salesOrderData, int shippedItemCount_PerPackage = 10, int packageCount = 1, int cancelledShippedCount = 0)
+        {
+            // reset shippedItemCount_PerPackage
+            if (shippedItemCount_PerPackage > salesOrderData.SalesOrderItems.Count)
+                shippedItemCount_PerPackage = salesOrderData.SalesOrderItems.Count;
+            // reset shippedItemCount_PerPackage
+            if (cancelledShippedCount > shippedItemCount_PerPackage * packageCount)
+                cancelledShippedCount = shippedItemCount_PerPackage * packageCount;
+
+            //get shippmentData
+            var shipmentData = OrderShipmentDataTests.GetFakerDataWithCountItem(packageCount, shippedItemCount_PerPackage, cancelledShippedCount);
+
+            //connect each package shipped item to salesorder item
+            shipmentData.OrderShipmentHeader.ShipmentStatus = (int)OrderShipmentStatusEnum.Shipped;
+            shipmentData.OrderShipmentHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
+            foreach (var package in shipmentData.OrderShipmentPackage)
+            {
+                for (int i = 0; i < shippedItemCount_PerPackage; i++)
+                {
+                    var orderItem = salesOrderData.SalesOrderItems[i];
+                    var shipmentItem = package.OrderShipmentShippedItem[i];//read item from package.
+                    shipmentItem.SalesOrderItemsUuid = orderItem.SalesOrderItemsUuid;
+                    shipmentItem.ShippedQty = orderItem.OrderQty - orderItem.CancelledQty;
+                }
+            }
+
+            //connect cancelledShippedItem to shippedItem
+            for (int i = 0; i < cancelledShippedCount; i++)
+            {
+                var cancelledShippedItem = shipmentData.OrderShipmentCanceledItem[i];
+                var shippedItem = shipmentData.OrderShipmentShippedItem[i];//read item from shipmentData which includeds all shipped items
+                cancelledShippedItem.SalesOrderItemsUuid = shippedItem.SalesOrderItemsUuid;
+                cancelledShippedItem.CanceledQty = 1;
+            }
+
+            return shipmentData;
+        }
+
+        protected async Task<OrderShipmentData> SaveShipmentData(OrderShipmentData shipmentData)
+        {
+            var shipmentService = new OrderShipmentService(DataBaseFactory);
+            shipmentService.Add();
+            shipmentService.AttachData(shipmentData);
+            var success = await shipmentService.SaveDataAsync();
+            Assert.True(success, "save shipmentData failed");
+            return shipmentService.Data;
+        }
+        protected async Task<SalesOrderData> SaveSalesOrderData(SalesOrderData salesOrderData)
+        {
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            orderService.Add();
+            orderService.AttachData(salesOrderData);
+            var success = await orderService.SaveDataAsync();
+            Assert.True(success, "save salesorder failed");
+            return orderService.Data;
+        }
+
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateOrderStautsToShippedAsync_AllShipped_Test()
+        {
+            var salesOrderData = GetFackerSalesOrderData_NoShipAndCancelledQty();
+            salesOrderData = await SaveSalesOrderData(salesOrderData);
+            var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData);
+            shipmentData = await SaveShipmentData(shipmentData);
+
+            var orderService = new SalesOrderService(DataBaseFactory);
+            var success = await orderService.GetDataByIdAsync(salesOrderData.SalesOrderHeader.SalesOrderUuid);
+            Assert.True(success, "Get salesorder by SalesOrderUuid error:" + orderService.Messages.ObjectToString());
+
+            var orderStatus = orderService.Data.SalesOrderHeader.OrderStatus;
+            Assert.True(orderStatus == (int)SalesOrderStatus.Shipped, $"order status is {orderStatus}, expected order status is {(int)SalesOrderStatus.Shipped}");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateOrderStautsToShippedAsync_PartialShipped_Test()
+        {
+            var orderItemCount = 5;
+            var shippedItemCount = 3;//PartialShipped: shipped item count less than order item count;
+            var salesOrderData = GetFackerSalesOrderData_NoShipAndCancelledQty(orderItemCount);
+            salesOrderData = await SaveSalesOrderData(salesOrderData);
+            var shipmentData = GetFackerOrderShipmentData_ConnectedToSalesOrder(salesOrderData, shippedItemCount);
+            shipmentData = await SaveShipmentData(shipmentData);
+
+            var orderStatus_Open = SalesOrderStatus.Open;
+            var orderService = new SalesOrderService(DataBaseFactory);
+            var success = await orderService.GetDataByIdAsync(salesOrderData.SalesOrderHeader.SalesOrderUuid);
+            Assert.True(success, "Get salesorder by SalesOrderUuid error:" + orderService.Messages.ObjectToString());
+
+            var orderStatus = orderService.Data.SalesOrderHeader.OrderStatus;
+            Assert.True(orderStatus == (int)orderStatus_Open, $"order status is {orderStatus}, expected order status is {orderStatus_Open}");
+        }
+
+        #endregion
+
     }
 }
 

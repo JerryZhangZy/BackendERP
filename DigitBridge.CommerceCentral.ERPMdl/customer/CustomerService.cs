@@ -26,18 +26,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class CustomerService
     {
 
-        /// <summary>
-        /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
-        /// </summary>
-        public override CustomerService Init()
-        {
-            base.Init();
-            SetDtoMapper(new CustomerDataDtoMapperDefault());
-            SetCalculator(new CustomerServiceCalculatorDefault(this, this.dbFactory));
-            AddValidator(new CustomerServiceValidatorDefault(this, this.dbFactory));
-            return this;
-        }
-
         protected CustomerAddressService _customerAddressService;
         [XmlIgnore, JsonIgnore]
         public CustomerAddressService customerAddressService
@@ -51,13 +39,142 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
+        #region override methods
+
         /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
+        /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
-        protected void AddActivityLogForCurrentData()
+        public override CustomerService Init()
         {
-            this.AddActivityLog(new ActivityLog(dbFactory)
+            base.Init();
+            SetDtoMapper(new CustomerDataDtoMapperDefault());
+            SetCalculator(new CustomerServiceCalculatorDefault(this, this.dbFactory));
+            AddValidator(new CustomerServiceValidatorDefault(this, this.dbFactory));
+            return this;
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+    
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.Data?.Customer != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Customer, this.Data.Customer.CustomerCode);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+                if (this.Data?.Customer != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                         initNumbersService.UpdateMaxNumber(this.Data.Customer.MasterAccountNum, this.Data.Customer.ProfileNum, ActivityLogType.Invoice, this.Data.Customer.CustomerCode);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
             {
                 Type = (int)ActivityLogType.Customer,
                 Action = (int)this.ProcessMode,
@@ -67,37 +184,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = this.Data.Customer.ProfileNum,
                 DatabaseNum = this.Data.Customer.DatabaseNum,
                 ProcessUuid = this.Data.Customer.CustomerUuid,
- 
-                LogMessage = string.Empty
-            });
-        }
-
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected async Task AddActivityLogForCurrentDataAsync()
-        {
-            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.Customer,
-                Action = (int)this.ProcessMode,
-                LogSource = "CustomerService",
-
-                MasterAccountNum = this.Data.Customer.MasterAccountNum,
-                ProfileNum = this.Data.Customer.ProfileNum,
-                DatabaseNum = this.Data.Customer.DatabaseNum,
-                ProcessUuid = this.Data.Customer.CustomerUuid,
-
+                ProcessNumber = this.Data.Customer.CustomerCode,
+                ChannelNum = this.Data.Customer.ChannelNum,
+                ChannelAccountNum = this.Data.Customer.ChannelAccountNum,
 
                 LogMessage = string.Empty
+            };
 
-            });
-        }
-
-
-
-
+        #endregion override methods
 
 
         /// <summary>
@@ -120,10 +214,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -146,10 +237,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-               await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(CustomerPayload payload)
@@ -173,10 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         public virtual async Task<bool> AddAsync(CustomerPayload payload)
@@ -200,10 +285,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-               await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -231,10 +313,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -262,10 +341,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -296,10 +372,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -330,10 +403,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
@@ -390,6 +460,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum =await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {customerCode}.");
+                return false;
+            }
+
             return await GetDataAsync(rowNum);
         }
 
@@ -408,10 +484,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await GetDataAsync(rowNum);
             if (success)
             {
-                var result = await DeleteDataAsync();
-                if (result)
-                  await  AddActivityLogForCurrentDataAsync();
-                return result;
+                return await DeleteDataAsync();
             }
             return false;
         }
@@ -453,8 +526,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var sql = $@"
                 SELECT  
                 COALESCE(
-                    (SELECT TOP 1 RowNum FROM Customer WHERE CustomerUuid=@4),
-                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND CustomerCode=@5),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE CustomerUuid=@4 AND CustomerUuid != ''),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND CustomerCode=@5 AND CustomerCode!=''),
                     (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND ChannelNum=@2 AND ChannelAccountNum=@3),
                     (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Phone1=@7 AND CustomerName=@6),
                     (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Email=@8 AND CustomerName=@6),
@@ -506,13 +579,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result = await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-
-            return result;
+            return await SaveDataAsync();
         }
 
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.Customer);
+
+        }
+        public string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.Customer);
+
+        }
 
         #region customer Address
         public async Task<bool> AddCustomerAddressAsync(CustomerAddressPayload payload)

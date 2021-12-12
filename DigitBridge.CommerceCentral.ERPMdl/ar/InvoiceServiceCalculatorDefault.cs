@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class InvoiceServiceCalculatorDefault : ICalculator<InvoiceData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public InvoiceServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        private IInvoiceService _invoiceService;
+        public InvoiceServiceCalculatorDefault(IInvoiceService  invoiceService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)invoiceService;
+            _invoiceService = invoiceService;
             this.dbFactory = dbFactory;
         }
         public InvoiceServiceCalculatorDefault(IDataBaseFactory dbFactory)
@@ -164,7 +165,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (string.IsNullOrEmpty(sum.InvoiceNumber))
                 {
-                    sum.InvoiceNumber = NumberGenerate.Generate();
+                    sum.InvoiceNumber =  _invoiceService.GetNextNumber(data.InvoiceHeader.MasterAccountNum, data.InvoiceHeader.ProfileNum);
                 }
 
                 //for Add mode, always reset uuid
@@ -277,14 +278,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //TODO: add calculate summary object logic
             //This is generated sample code
-
-            var setting = new ERPSetting();
             var sum = data.InvoiceHeader;
 
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
             sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
-            sum.TaxRate = sum.TaxRate.ToRate();
 
             // We support both discount rate and discount amount
             // if exist discount rate, it will apply to unit price and get after discount price
@@ -300,20 +298,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var discountRate = sum.SubTotalAmount != 0 ? (totalDiscountAmount / sum.SubTotalAmount) : 0;
             sum.TaxAmount = ((sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate).ToAmount();
 
+            var setting = new ERPSetting();
             if (setting.TaxForShippingAndHandling)
             {
                 sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
                 sum.MiscTaxAmount = (sum.MiscAmount * sum.TaxRate).ToAmount();
-                sum.TaxAmount = (sum.TaxAmount + sum.ShippingTaxAmount + sum.MiscTaxAmount).ToAmount();
+                sum.TaxAmount += (sum.ShippingTaxAmount + sum.MiscTaxAmount);
             }
 
-            sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+            sum.SalesAmount = (sum.SubTotalAmount - totalDiscountAmount).ToAmount();
             sum.TotalAmount = (
-                sum.SalesAmount +
+                (sum.SubTotalAmount - totalDiscountAmount) +
                 sum.TaxAmount +
                 sum.ShippingAmount +
-                sum.MiscAmount +
-                sum.ChargeAndAllowanceAmount
+                sum.MiscAmount
+                + sum.ChargeAndAllowanceAmount
                 ).ToAmount();
 
             sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
@@ -347,7 +346,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.AvgCost = 0;
             sum.LotCost = 0;
             sum.ShippingTaxAmount = 0;
-            sum.MiscTaxAmount = 0; 
+            sum.MiscTaxAmount = 0;
+            sum.TaxRate = sum.TaxRate.ToRate();
+            sum.ChargeAndAllowanceAmount = 0;
 
             foreach (var item in data.InvoiceItems)
             {
@@ -360,6 +361,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
                     sum.NonTaxableAmount += item.NonTaxableAmount;
+                    sum.ChargeAndAllowanceAmount += item.ChargeAndAllowanceAmount;
                 }
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;

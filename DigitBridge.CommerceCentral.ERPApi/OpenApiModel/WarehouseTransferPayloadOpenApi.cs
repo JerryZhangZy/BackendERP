@@ -135,7 +135,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class WarehouseTransferFilter
     {
-        //public string City { get; set; }
+        public string SKU { get; set; }
+        public string WarehouseCode { get; set; }
+        public int InventoryUpdateType { get; set; }
 
         public static Faker<WarehouseTransferFilter> GetFaker()
         {

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using System.Linq;
+using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
@@ -15,10 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
     {
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-
-        private string _baseUrl = "http://localhost:7074/api/";
-        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
-        private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
         protected int MasterAccountNum = 10001;
         protected int ProfileNum = 10001;
 
@@ -28,8 +27,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             Configuration = fixture.Configuration;
             InitForTest();
         }
+        private IDataBaseFactory dbFactory { get; set; }
         protected void InitForTest()
         {
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
+            dbFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {
@@ -62,13 +65,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var success = await client.GetPurchaseOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
+            Assert.True(client.Data != null);
 
-            if (client.ResopneData.PurchaseOrderListCount <= 0) return;
+            if (client.Data.PurchaseOrderListCount <= 0) return;
 
-            Assert.True(client.ResopneData.PurchaseOrderList != null, $"Count:{client.ResopneData.PurchaseOrderListCount}, PurchaseOrderList:no data.");
+            Assert.True(client.Data.PurchaseOrderList != null, $"Count:{client.Data.PurchaseOrderListCount}, PurchaseOrderList:no data.");
 
-            //success = client.ResopneData.PurchaseOrderList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.PurchaseOrderListCount;
+            //success = client.Data.PurchaseOrderList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.Data.PurchaseOrderListCount;
 
             //Assert.True(success, "Filter by WarehouseCode reuslt is not correct.");
 

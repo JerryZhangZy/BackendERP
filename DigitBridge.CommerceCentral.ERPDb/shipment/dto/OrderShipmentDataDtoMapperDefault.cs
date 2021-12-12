@@ -72,15 +72,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
-			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum;
-			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum;
-			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum;
+			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum.ToLong();
+			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum.ToInt();
+			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
 			if (dto.HasShipmentID) data.ShipmentID = dto.ShipmentID;
 			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasShipmentType) data.ShipmentType = dto.ShipmentType.ToInt();
 			if (dto.HasShipmentReferenceID) data.ShipmentReferenceID = dto.ShipmentReferenceID;
-			if (dto.HasShipmentDateUtc) data.ShipmentDateUtc = dto.ShipmentDateUtc;
+			if (dto.HasShipmentDateUtc) data.ShipmentDateUtc = dto.ShipmentDateUtc.ToDateTime();
 			if (dto.HasShippingCarrier) data.ShippingCarrier = dto.ShippingCarrier;
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
 			if (dto.HasShippingCost) data.ShippingCost = dto.ShippingCost.ToDecimal();
@@ -100,6 +100,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProcessStatus) data.ProcessStatus = dto.ProcessStatus.ToInt();
 			if (dto.HasProcessDateUtc) data.ProcessDateUtc = dto.ProcessDateUtc.ToDateTime();
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
+			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
+			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
+			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 
 			#endregion read properties
 
@@ -120,9 +124,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
-			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum;
+			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum.ToLong();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
-			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum;
+			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum.ToLong();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasCanceledQty) data.CanceledQty = dto.CanceledQty.ToDecimal();
 			if (dto.HasCancelCode) data.CancelCode = dto.CancelCode;
@@ -130,6 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
 			if (dto.HasOrderShipmentCanceledItemUuid) data.OrderShipmentCanceledItemUuid = dto.OrderShipmentCanceledItemUuid;
+			if (dto.HasSalesOrderItemsUuid) data.SalesOrderItemsUuid = dto.SalesOrderItemsUuid;
 
 			#endregion read properties
 
@@ -176,20 +181,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
-			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum;
+			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum.ToLong();
 			if (dto.HasPackageID) data.PackageID = dto.PackageID;
-			if (dto.HasPackageType) data.PackageType = dto.PackageType;
-			if (dto.HasPackagePatternNum) data.PackagePatternNum = dto.PackagePatternNum;
+			if (dto.HasPackageType) data.PackageType = dto.PackageType.ToInt();
+			if (dto.HasPackagePatternNum) data.PackagePatternNum = dto.PackagePatternNum.ToInt();
 			if (dto.HasPackageTrackingNumber) data.PackageTrackingNumber = dto.PackageTrackingNumber;
 			if (dto.HasPackageReturnTrackingNumber) data.PackageReturnTrackingNumber = dto.PackageReturnTrackingNumber;
-			if (dto.HasPackageWeight) data.PackageWeight = dto.PackageWeight;
-			if (dto.HasPackageLength) data.PackageLength = dto.PackageLength;
-			if (dto.HasPackageWidth) data.PackageWidth = dto.PackageWidth;
-			if (dto.HasPackageHeight) data.PackageHeight = dto.PackageHeight;
-			if (dto.HasPackageVolume) data.PackageVolume = dto.PackageVolume;
-			if (dto.HasPackageQty) data.PackageQty = dto.PackageQty;
-			if (dto.HasParentPackageNum) data.ParentPackageNum = dto.ParentPackageNum;
-			if (dto.HasHasChildPackage) data.HasChildPackage = dto.HasChildPackage;
+			if (dto.HasPackageWeight) data.PackageWeight = dto.PackageWeight.ToDecimal();
+			if (dto.HasPackageLength) data.PackageLength = dto.PackageLength.ToDecimal();
+			if (dto.HasPackageWidth) data.PackageWidth = dto.PackageWidth.ToDecimal();
+			if (dto.HasPackageHeight) data.PackageHeight = dto.PackageHeight.ToDecimal();
+			if (dto.HasPackageVolume) data.PackageVolume = dto.PackageVolume.ToDecimal();
+			if (dto.HasPackageQty) data.PackageQty = dto.PackageQty.ToDecimal();
+			if (dto.HasParentPackageNum) data.ParentPackageNum = dto.ParentPackageNum.ToLong();
+			if (dto.HasHasChildPackage) data.HasChildPackage = dto.HasChildPackage.ToBool();
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
 			if (dto.HasOrderShipmentPackageUuid) data.OrderShipmentPackageUuid = dto.OrderShipmentPackageUuid;
 
@@ -248,16 +253,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
-			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum;
-			if (dto.HasOrderShipmentPackageNum) data.OrderShipmentPackageNum = dto.OrderShipmentPackageNum;
+			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum.ToLong();
+			if (dto.HasOrderShipmentPackageNum) data.OrderShipmentPackageNum = dto.OrderShipmentPackageNum.ToLong();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
-			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum;
+			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum.ToLong();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasShippedQty) data.ShippedQty = dto.ShippedQty.ToDecimal();
 			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
 			if (dto.HasOrderShipmentPackageUuid) data.OrderShipmentPackageUuid = dto.OrderShipmentPackageUuid;
 			if (dto.HasOrderShipmentShippedItemUuid) data.OrderShipmentShippedItemUuid = dto.OrderShipmentShippedItemUuid;
+			if (dto.HasSalesOrderItemsUuid) data.SalesOrderItemsUuid = dto.SalesOrderItemsUuid;
 
 			#endregion read properties
 
@@ -368,6 +374,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderShipmentUuid = data.OrderShipmentUuid;
 			dto.RowNum = data.RowNum;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.InvoiceNumber = data.InvoiceNumber;
+			dto.InvoiceUuid = data.InvoiceUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
+			dto.OrderNumber = data.OrderNumber;
 
 			#endregion read properties
 
@@ -400,6 +410,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderShipmentCanceledItemUuid = data.OrderShipmentCanceledItemUuid;
 			dto.RowNum = data.RowNum;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.SalesOrderItemsUuid = data.SalesOrderItemsUuid;
 
 			#endregion read properties
 
@@ -522,6 +533,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderShipmentShippedItemUuid = data.OrderShipmentShippedItemUuid;
 			dto.RowNum = data.RowNum;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.SalesOrderItemsUuid = data.SalesOrderItemsUuid;
 
 			#endregion read properties
 

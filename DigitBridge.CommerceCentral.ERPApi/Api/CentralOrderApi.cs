@@ -50,6 +50,64 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<CentralOrderReferencePayload>(payload);
         }
 
+        [FunctionName(nameof(CentralOrdersList))]
+        [OpenApiOperation(operationId: "CentralOrdersList", tags: new[] { "CentralOrders" }, Summary = "Load central order list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CentralOrderPayloadFind))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChannelOrderPayload))]
+        public static async Task<JsonNetResponse<ChannelOrderPayload>> CentralOrdersList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "centralOrders/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ChannelOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new CentralOrderList(dataBaseFactory, new CentralOrderQuery());
+            await srv.GetChannelOrderListAsync(payload);
+            return new JsonNetResponse<ChannelOrderPayload>(payload);
+        }
+
+
+        [FunctionName(nameof(ResendCentralOrderToErp))]
+        [OpenApiOperation(operationId: "ResendCentralOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Resend central order list to erp by centralorderuuid")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+        Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CentralOrderPayloadResendRequest), Required = true, Description = "Array of centraluuid.")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+        bodyType: typeof(CentralOrderPayloadResendResponse))]
+        public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendCentralOrderToErp(
+        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendCentralOrderToErp")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<ChannelOrderPayload>(true);
+            var svc = new IntegrationCentralOrderApi();
+            payload.Success = await svc.ReSendCentralOrderToErpAsync(payload);
+            payload.Messages = svc.Messages;
+            return new JsonNetResponse<ChannelOrderPayload>(payload);
+        }
+
+        [FunctionName(nameof(ResendAllCentralOrderToErp))]
+        [OpenApiOperation(operationId: "ResendAllCentralOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Resend ChannelOrder to erp by search criteria")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+        Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ChannelOrderPayloadFind))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+        bodyType: typeof(CentralOrderPayloadResendAllResponse))]
+        public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendAllCentralOrderToErp(
+        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendAllCentralOrderToErp")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<ChannelOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new IntegrationCentralOrderApi(dataBaseFactory);
+            payload.Success = await svc.ReSendAllCentralOrderToErpAsync(payload);
+            payload.Messages = svc.Messages;
+            return new JsonNetResponse<ChannelOrderPayload>(payload);
+        }
     }
 }
 

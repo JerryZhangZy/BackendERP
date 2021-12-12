@@ -67,6 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             #region system global
             if (payload.Name.EqualsIgnoreSpace("systemCodes_systemCodeName")) return new systemCodes_systemCodeName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("systemCodes_ColorPatternCode")) return new systemCodes_ColorPatternCode(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("oms_ar_term"))
             //    return new DemList_oms_ar_term(obj);
             //if (obj.listFor.EqualsIgnoreSpace("oms_src_file"))

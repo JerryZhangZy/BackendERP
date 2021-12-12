@@ -144,15 +144,28 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class CustomerFilter
     {
+        public string CustomerUuid { get; set; }
         public string CustomerCode { get; set; }
-
         public string CustomerName { get; set; }
-
+        public string Contact { get; set; }
+        public string Phone1 { get; set; }
+        public string Email { get; set; }
+        public string WebSite { get; set; }
+        public int CustomerType { get; set; }
+        public int CustomerStatus { get; set; }
+        public string BusinessType { get; set; }
+        //public string FirstDate { get; set; }
+        public DateTime FirstDateFrom { get; set; }
+        public DateTime FirstDateTo { get; set; }
+        public int Priority { get; set; }
         public string Area { get; set; }
-
         public string Region { get; set; }
-
-        public string ShippingCarrier { get; set; }
+        public string Districtn { get; set; }
+        public string Zone { get; set; }
+        public string ClassCode { get; set; }
+        public string DepartmentCode { get; set; }
+        public string DivisionCode { get; set; }
+        public string SourceCode { get; set; }
 
         public static Faker<CustomerFilter> GetFaker()
         {
@@ -162,7 +175,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.CustomerName, f =>"")
                 .RuleFor(u => u.Area, f => "")
                 .RuleFor(u => u.Region, f =>"")
-                .RuleFor(u => u.ShippingCarrier, f => "")
+                  .RuleFor(u => u.FirstDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
+                .RuleFor(u => u.FirstDateTo, f => f.Date.Past(0).Date.Date)
                 ;
             #endregion faker data rules
         }

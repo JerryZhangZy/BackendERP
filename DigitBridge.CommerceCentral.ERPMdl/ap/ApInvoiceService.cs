@@ -23,6 +23,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class ApInvoiceService
     {
 
+        #region override methods
+
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
@@ -30,40 +32,151 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             base.Init();
             SetDtoMapper(new ApInvoiceDataDtoMapperDefault());
-            SetCalculator(new ApInvoiceServiceCalculatorDefault(this,this.dbFactory));
+            SetCalculator(new ApInvoiceServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new ApInvoiceServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
 
         /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// </summary>
-        protected void AddActivityLogForCurrentData()
+        public override async Task BeforeSaveAsync()
         {
-            this.AddActivityLog(new ActivityLog(dbFactory)
+            try
             {
-                Type = (int)ActivityLogType.ApInvoice,
-                Action = (int)this.ProcessMode,
-                LogSource = "ApInvoiceService",
-
-                MasterAccountNum = this.Data.ApInvoiceHeader.MasterAccountNum,
-                ProfileNum = this.Data.ApInvoiceHeader.ProfileNum,
-                DatabaseNum = this.Data.ApInvoiceHeader.DatabaseNum,
-                ProcessUuid = this.Data.ApInvoiceHeader.ApInvoiceUuid,
-
-
-                LogMessage = string.Empty
-            });
+                await base.BeforeSaveAsync();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
         }
 
         /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// </summary>
-        protected async Task AddActivityLogForCurrentDataAsync()
+        public override void BeforeSave()
         {
-            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
+            try
+            {
+                base.BeforeSave();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+                if (this.Data?.ApInvoiceHeader != null)
+                {   
+                  
+                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                         
+                        var result=await initNumbersService.UpdateMaxNumberAsync(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                          initNumbersService.UpdateMaxNumber(this.Data.ApInvoiceHeader.MasterAccountNum, this.Data.ApInvoiceHeader.ProfileNum, ActivityLogType.ApInvoice, this.Data.ApInvoiceHeader.ApInvoiceNum);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
             {
                 Type = (int)ActivityLogType.ApInvoice,
                 Action = (int)this.ProcessMode,
@@ -73,13 +186,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = this.Data.ApInvoiceHeader.ProfileNum,
                 DatabaseNum = this.Data.ApInvoiceHeader.DatabaseNum,
                 ProcessUuid = this.Data.ApInvoiceHeader.ApInvoiceUuid,
-
+                ProcessNumber = this.Data.ApInvoiceHeader.ApInvoiceNum,
+                ChannelNum = this.Data.ApInvoiceHeaderInfo.ChannelAccountNum,
+                ChannelAccountNum = this.Data.ApInvoiceHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
+            };
 
-            });
-        }
-
+        #endregion override methods
 
 
         /// <summary>
@@ -102,10 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -128,10 +239,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-               await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(ApInvoicePayload payload)
@@ -155,10 +263,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         public virtual async Task<bool> AddAsync(ApInvoicePayload payload)
@@ -182,10 +287,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -211,10 +313,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -240,10 +339,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -273,10 +369,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -305,10 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -357,11 +447,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             if (success)
             {
-                if (DeleteData())
-                {
-                    await AddActivityLogForCurrentDataAsync();
-                    return true;
-                }
+                return DeleteData();
             }
             return false;
         }
@@ -420,10 +506,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        public async Task<int?> GetRowNumByPoUuidAsync(string poUuid)
+        public async Task<bool> ExistApInvoiceNumber(string number, int masterAccountNum, int profileNum)
         {
-           return dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0", poUuid.ToSqlParameter("@0"));
+            return await ApInvoiceHelper.ExistApInvoiceNumberAsync(number, masterAccountNum, profileNum);
+        }
 
+        public async Task<int?> GetRowNumByPoUuidAsync(string transUuid)
+        {
+           return   dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
+       
            // return await dbFactory.GetValueAsync<ApInvoiceHeader,int>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0",poUuid.ToSqlParameter("@0"));
         }
         
@@ -442,16 +533,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Exists<ApInvoiceHeader>("PoUuid=@0", poUuid.ToSqlParameter("PoUuid"));
         }
 
-        private (decimal totalAmount, decimal miscAmount, decimal shippingAmount) GetSummaryAmountByPoUuid(
-            string poUuid)
+        private (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount,decimal totalAmount) GetSummaryAmountByPoUuid(
+            string transUuid)
         {
             var sql = $@"select 
-ISNULL(sum(TotalAmount),0) as TotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
+ISNULL(sum(SubTotalAmount),0) as SubTotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount,ISNULL(sum(TotalAmount),0) as TotalAmount
 from PoTransaction
-where PoUuid=@0";
+where TransUuid=@0";
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                return SqlQuery.Execute(sql, (decimal totalAmount, decimal miscAmount, decimal shippingAmount) => (totalAmount, miscAmount, shippingAmount), poUuid.ToSqlParameter("0")).First();
+                return SqlQuery.Execute(sql, (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount,decimal totalAmount) => (subTotalAmount, miscAmount, shippingAmount, totalAmount), transUuid.ToSqlParameter("0")).First();
             }
         }
         
@@ -460,17 +551,20 @@ where PoUuid=@0";
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            //if (header.TransStatus != (int)PoTransStatus.APReceive)
-            //    return false;
-            var poUuid = data.PoTransaction.PoUuid;
+
+            var transUuid = data.PoTransaction.TransUuid;
+            
+            var rowNum = await GetRowNumByPoUuidAsync(transUuid);
+            var summary = GetSummaryAmountByPoUuid(transUuid);
+
             Edit();
-            var rowNum = await GetRowNumByPoUuidAsync(poUuid);
-            var summary = GetSummaryAmountByPoUuid(poUuid);
-            if (rowNum!=null&& await GetDataAsync(rowNum.Value))
+            if (rowNum!=null && await GetDataAsync(rowNum.Value))//
             {
+
                 //Update;
+                Data.ApInvoiceHeader.TotalAmount = summary.totalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
-                    .Amount = summary.totalAmount.ToAmount();
+                    .Amount = summary.subTotalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
                     .Amount = summary.miscAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
@@ -478,7 +572,8 @@ where PoUuid=@0";
             }
             else
             {
-                NewData();
+                Add();
+      
                 Data.ApInvoiceHeader = new ApInvoiceHeader()
                 {
                     ApInvoiceUuid=System.Guid.NewGuid().ToString(),
@@ -495,14 +590,15 @@ where PoUuid=@0";
                     PoNum=header.PoNum,
                     VendorCode=header.VendorCode,
                     VendorName=header.VendorName,
-                        
+                    TransUuid= header.TransUuid,
+                    TransNum=header.TransNum
                 };
                 Data.ApInvoiceItems = new List<ApInvoiceItems>();
                 Data.AddApInvoiceItems(new ApInvoiceItems()
                 {
                     ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
                     Currency = header.Currency,
-                    Amount = summary.totalAmount.ToAmount()
+                    Amount = summary.subTotalAmount.ToAmount()
                 });
                 Data.AddApInvoiceItems(new ApInvoiceItems()
                 {
@@ -519,63 +615,73 @@ where PoUuid=@0";
             }
             return await SaveDataAsync();
         }
-        
-        public bool CreateOrUpdateApInvoiceByPoReceive(PoTransactionData data)
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
         {
-            if (data == null || data.PoTransaction == null)
-                return false;
-            var header = data.PoTransaction;
-            if (header.TransStatus != (int)PoTransStatus.APReceive)
-                return false;
-            var poUuid = data.PoTransaction.PoUuid;
-            Edit();
-            var rowNum = GetRowNumByPoUuid(poUuid);
-            var summary = GetSummaryAmountByPoUuid(poUuid);
-            if (GetData(rowNum))
-            {
-                //Update;
-                Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
-                    .Amount =summary.totalAmount.ToAmount();
-                Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
-                    .Amount = summary.miscAmount.ToAmount();
-                Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
-                    .Amount = summary.shippingAmount.ToAmount();
-            }
-            else
-            {
-                NewData();
-                Data.ApInvoiceHeader = new ApInvoiceHeader()
-                {
-                    ApInvoiceDate = DateTime.UtcNow.Date,
-                    ApInvoiceTime = DateTime.UtcNow.TimeOfDay,
-                    ApInvoiceType = 0, //PoReceive
-                    TotalAmount = header.TotalAmount,
-                    VendorUuid = header.VendorUuid,
-                    VendorInvoiceNum = header.VendorInvoiceNum,
-                    VendorInvoiceDate = header.VendorInvoiceDate
-                };
-                Data.ApInvoiceItems = new List<ApInvoiceItems>();
-                Data.AddApInvoiceItems(new ApInvoiceItems()
-                {
-                    ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
-                    Currency = header.Currency,
-                    Amount = summary.totalAmount.ToAmount()
-                });
-                Data.AddApInvoiceItems(new ApInvoiceItems()
-                {
-                    ApInvoiceItemType = (int)ApInvoiceItemType.HandlingCost,
-                    Currency = header.Currency,
-                    Amount = summary.miscAmount.ToAmount()
-                });
-                Data.AddApInvoiceItems(new ApInvoiceItems()
-                {
-                    ApInvoiceItemType = (int)ApInvoiceItemType.ShippingCost,
-                    Currency = header.Currency,
-                    Amount = summary.shippingAmount.ToAmount()
-                });
-            }
-            return SaveData();
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.ApInvoice);
+
         }
+
+        public   string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.ApInvoice);
+
+        }
+        //public bool CreateOrUpdateApInvoiceByPoReceive(PoTransactionData data)
+        //{
+        //    if (data == null || data.PoTransaction == null)
+        //        return false;
+        //    var header = data.PoTransaction;
+        //    if (header.TransStatus != (int)PoTransStatus.APReceive)
+        //        return false;
+        //    var poUuid = data.PoTransaction.PoUuid;
+        //    Edit();
+        //    var rowNum = GetRowNumByPoUuid(poUuid);
+        //    var summary = GetSummaryAmountByPoUuid(poUuid);
+        //    if (GetData(rowNum))
+        //    {
+        //        //Update;
+        //        Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
+        //            .Amount =summary.subTotalAmount.ToAmount();
+        //        Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
+        //            .Amount = summary.miscAmount.ToAmount();
+        //        Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
+        //            .Amount = summary.shippingAmount.ToAmount();
+        //    }
+        //    else
+        //    {
+        //        NewData();
+        //        Data.ApInvoiceHeader = new ApInvoiceHeader()
+        //        {
+        //            ApInvoiceDate = DateTime.UtcNow.Date,
+        //            ApInvoiceTime = DateTime.UtcNow.TimeOfDay,
+        //            ApInvoiceType = 0, //PoReceive
+        //            TotalAmount = header.TotalAmount,
+        //            VendorUuid = header.VendorUuid,
+        //            VendorInvoiceNum = header.VendorInvoiceNum,
+        //            VendorInvoiceDate = header.VendorInvoiceDate
+        //        };
+        //        Data.ApInvoiceItems = new List<ApInvoiceItems>();
+        //        Data.AddApInvoiceItems(new ApInvoiceItems()
+        //        {
+        //            ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
+        //            Currency = header.Currency,
+        //            Amount = summary.subTotalAmount.ToAmount()
+        //        });
+        //        Data.AddApInvoiceItems(new ApInvoiceItems()
+        //        {
+        //            ApInvoiceItemType = (int)ApInvoiceItemType.HandlingCost,
+        //            Currency = header.Currency,
+        //            Amount = summary.miscAmount.ToAmount()
+        //        });
+        //        Data.AddApInvoiceItems(new ApInvoiceItems()
+        //        {
+        //            ApInvoiceItemType = (int)ApInvoiceItemType.ShippingCost,
+        //            Currency = header.Currency,
+        //            Amount = summary.shippingAmount.ToAmount()
+        //        });
+        //    }
+        //    return SaveData();
+        //}
 
     }
 }

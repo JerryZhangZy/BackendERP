@@ -178,7 +178,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual Inventory GetInventory(WarehouseTransferData data, string productUuid, string inventoryUuid)
         {
             var inventoryData = GetInventoryData(data, productUuid);
-            System.Diagnostics.Debug.WriteLine($"ProductUuid:{productUuid},Data:{JsonConvert.SerializeObject(inventoryData)}");
+            //System.Diagnostics.Debug.WriteLine($"ProductUuid:{productUuid},Data:{JsonConvert.SerializeObject(inventoryData)}");
             return inventoryData == null ? null : inventoryData.Inventory.First(i => i.InventoryUuid == inventoryUuid);
         }
 

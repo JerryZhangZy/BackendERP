@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <AzureFunctionsVersion>V3</AzureFunctionsVersion>
+        <AzureFunctionsVersion>v3</AzureFunctionsVersion>
     </PropertyGroup>
     <ItemGroup>
       <None Remove="local - Copy %282%29.settings.json" />
@@ -28,9 +28,6 @@
         </None>
         <None Update="local.settings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Properties\launchSettings.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
     <ItemGroup>

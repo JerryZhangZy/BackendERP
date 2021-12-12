@@ -192,6 +192,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentCanceledItemUuid => OrderShipmentCanceledItemUuid != null;
 
+		/// <summary>
+		/// (Readonly) Order Item Line uuid. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Order Item Line uuid. <br> Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The SalesOrderItemsUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderItemsUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesOrderItemsUuid => SalesOrderItemsUuid != null;
+
 
 
         #endregion Properties - Generated 

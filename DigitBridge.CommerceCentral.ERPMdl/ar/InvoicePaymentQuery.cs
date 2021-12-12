@@ -30,15 +30,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _TransDateTo = new QueryFilter<DateTime>("TransDateTo", "TransDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> TransDateTo => _TransDateTo;
 
-        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> TransType => _TransType;
 
-        protected QueryFilter<int> _TransStatus = new QueryFilter<int>("TransStatus", "TransStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _TransStatus = new QueryFilter<int>("TransStatus", "TransStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> TransStatus => _TransStatus;
 
-        protected QueryFilter<int> _PaidBy = new QueryFilter<int>("PaidBy", "PaidBy", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _PaidBy = new QueryFilter<int>("PaidBy", "PaidBy", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> PaidBy => _PaidBy;
 
+        protected QueryFilter<long> _PaymentNumber = new QueryFilter<long>("PaymentNumber", "PaymentNumber", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<long> PaymentNumber => _PaymentNumber;
 
 
         protected QueryFilter<string> _InvoiceUuid = new QueryFilter<string>("InvoiceUuid", "InvoiceUuid", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -59,10 +61,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _DueDateTo = new QueryFilter<DateTime>("DueDateTo", "DueDate", InvoiceHeaderHelper.TableAllies, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> DueDateTo => _DueDateTo;
 
-        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", InvoiceHeaderHelper.TableAllies, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", InvoiceHeaderHelper.TableAllies, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceType> InvoiceType => _InvoiceType;
 
-        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", InvoiceHeaderHelper.TableAllies, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", InvoiceHeaderHelper.TableAllies, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceStatusEnum> InvoiceStatus => _InvoiceStatus;
 
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -122,6 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_TransType);
             AddFilter(_TransStatus);
             AddFilter(_PaidBy);
+            AddFilter(_PaymentNumber);
 
 
             AddFilter(_InvoiceUuid);
@@ -155,6 +158,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _TransDateTo.FilterValue = DateTime.UtcNow.Date;
             //TODO，make sure this won't be changed by user.
             _TransType.FilterValue = (int)TransTypeEnum.Payment;
+        }
+
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("TransDate", "TransDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("TransNum", "MiscInvoiceNumber DESC, TransNum DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("InvoiceNumber", "InvoiceNumber DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("PaidBy", "PaidBy, RowNum DESC")
+            );
         }
 
     }

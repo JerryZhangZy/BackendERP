@@ -34,7 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         
         bool Update(ApInvoiceDataDto dto);
         Task<bool> UpdateAsync(ApInvoiceDataDto dto);
-
+        Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum);
+        string GetNextNumber(int masterAccountNum, int profileNum);
     }
 }
 

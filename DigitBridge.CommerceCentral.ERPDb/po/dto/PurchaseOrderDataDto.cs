@@ -40,6 +40,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasPoItems => PoItems != null;
 
+
+        public PurchaseOrderDataDto NewData()
+        {
+            PoHeader = new PoHeaderDto();
+            PoHeaderInfo = new PoHeaderInfoDto();
+            PoHeaderAttributes = new PoHeaderAttributesDto();
+            PoItems = new List<PoItemsDto>();
+            return this;
+        }
+
     }
 }
 

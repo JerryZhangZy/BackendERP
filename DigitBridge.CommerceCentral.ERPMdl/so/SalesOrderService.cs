@@ -18,11 +18,41 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class SalesOrderService
     {
+
+        #region Service Property
+
+        private CustomerService _customerService;
+        public CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
+
+        private InventoryService _inventoryService;
+        public InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService is null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        #endregion
+
+        #region override methods
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -37,6 +67,164 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+                if (this.Data?.SalesOrderHeader != null)
+                {
+                    await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+                if (this.Data?.SalesOrderHeader != null)
+                {
+                    inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+                if (this.Data?.SalesOrderHeader != null)
+                {
+                    await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+                if (this.Data?.SalesOrderHeader != null)
+                {
+                    inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.Data?.SalesOrderHeader != null)
+                {
+
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+                if (this.Data?.SalesOrderHeader != null)
+                {
+
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        var result = initNumbersService.UpdateMaxNumber(this.Data.SalesOrderHeader.MasterAccountNum, this.Data.SalesOrderHeader.ProfileNum, ActivityLogType.SalesOrder, this.Data.SalesOrderHeader.OrderNumber);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.SalesOrder,
+                Action = (int)this.ProcessMode,
+                LogSource = "SalesOrderService",
+
+                MasterAccountNum = this.Data.SalesOrderHeader.MasterAccountNum,
+                ProfileNum = this.Data.SalesOrderHeader.ProfileNum,
+                DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
+                ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
+                ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
+                ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
+
         protected bool UpdateInventoryOpenSoQty(string salesOrderUuid, bool isReturnback)
         {
             try
@@ -48,6 +236,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception)
             {
+                AddWarning("There is a error when update relative data.");
                 return false;
             }
         }
@@ -84,7 +273,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
                 ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
                 ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
-                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -108,7 +297,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
                 ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
                 ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
-                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -136,13 +325,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, true);
-            var result = SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, false);
+            return SaveData();
 
-            return result;
+            //UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = SaveData();
+            //if (result)
+            //    AddActivityLogForCurrentData();
+            //UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            //return result;
         }
 
         /// <summary>
@@ -165,13 +356,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, true);
-            var result = await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, false);
+            return await SaveDataAsync();
 
-            return result;
+            //await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = await SaveDataAsync();
+            //if (result)
+            //    await AddActivityLogForCurrentDataAsync();
+            //await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            //return result;
         }
 
         public virtual bool Add(SalesOrderPayload payload)
@@ -195,13 +388,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
-            var result = SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+            return SaveData();
 
-            return result;
+            //UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = SaveData();
+            //if (result)
+            //    AddActivityLogForCurrentData();
+            //UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+            //return result;
         }
 
         public virtual async Task<bool> AddAsync(SalesOrderPayload payload)
@@ -225,13 +419,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
-            var result = SaveData();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
-
-            return result;
+            return SaveData();
         }
 
         /// <summary>
@@ -257,13 +445,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, true);
-            var result = SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, false);
+            return SaveData();
 
-            return result;
+            //UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = SaveData();
+            //if (result)
+            //    AddActivityLogForCurrentData();
+            //UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            //return result;
         }
 
         /// <summary>
@@ -289,13 +479,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, true);
-            var result = await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, false);
+            return await SaveDataAsync();
 
-            return result;
+            //await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = await SaveDataAsync();
+            //if (result)
+            //    await AddActivityLogForCurrentDataAsync();
+            //await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            //return result;
         }
 
         /// <summary>
@@ -325,13 +517,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
-            var result = SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+            return SaveData();
 
-            return result;
+            //UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = SaveData();
+            //if (result)
+            //    AddActivityLogForCurrentData();
+            //UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+
+            //return result;
         }
 
         /// <summary>
@@ -360,14 +554,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
-            var result = SaveData();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+            return await SaveDataAsync();
 
-            return result;
+            //await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            //var result = SaveData();
+            //if (result)
+            //    await AddActivityLogForCurrentDataAsync();
+            //await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+
+            //return result;
         }
+
         ///// <summary>
         ///// Get sale order with detail by orderNumber
         ///// </summary>
@@ -411,6 +608,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.DetachData(this.Data);
             }
             payload.SalesOrders = result;
+
+            if (!result.Any())
+                payload.ReturnError("No data be found");
         }
 
         ///// <summary>
@@ -475,12 +675,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
+            if (!success)
+                return success;
+            return await DeleteDataAsync();
 
-            if (success)
-                await AddActivityLogForCurrentDataAsync();
+            //if (success)
+            //    await AddActivityLogForCurrentDataAsync();
 
-            return success;
+            //return success;
         }
 
         /// <summary>
@@ -496,11 +698,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
-            if (success)
-                AddActivityLogForCurrentData();
+            if (!success)
+                return success;
+            return DeleteData();
 
-            return success;
+            //if (success)
+            //    AddActivityLogForCurrentData();
+
+            //return success;
         }
 
         /// <summary>
@@ -551,23 +756,158 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SalesOrderHelper.ExistNumberAsync(orderNumber, masterAccountNum, profileNum);
         }
 
-        public virtual async Task<bool> SaveCurrentDataAsync()
+        //public virtual async Task<bool> SaveCurrentDataAsync()
+        //{
+        //    if (this.Data == null || this.Data.SalesOrderHeader == null) 
+        //        return false;
+
+        //    await UpdateInventoryOpenSoQtyAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+        //    var result = await this.SaveDataAsync();
+        //    if (!result) return false;
+
+        //    await AddActivityLogForCurrentDataAsync();
+        //    await UpdateInventoryOpenSoQtyAsync(this.Data.SalesOrderHeader.SalesOrderUuid, false);
+
+        //    return result;
+        //}
+
+
+        public async Task<bool> UpdateStatusAsync(long rowNum, SalesOrderStatus status)
         {
-            if (this.Data == null || this.Data.SalesOrderHeader == null) 
-                return false;
+            if (rowNum == 0) return false;
 
-            await UpdateInventoryOpenSoQtyAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
-            var result = await this.SaveDataAsync();
-            if (!result) return false;
-
-            await AddActivityLogForCurrentDataAsync();
-            await UpdateInventoryOpenSoQtyAsync(this.Data.SalesOrderHeader.SalesOrderUuid, false);
-
-            return result;
+            var sql = $@"
+UPDATE SalesOrderHeader 
+SET OrderStatus=@0
+WHERE RowNum=@1 
+";
+            return await dbFactory.Db.ExecuteAsync(
+                sql,
+                ((int)status).ToSqlParameter("@0"),
+                rowNum.ToSqlParameter("@1")
+            ) > 0;
         }
 
+        /// <summary>
+        /// Get SalesOrderData by OrderDCAssignmentNum
+        /// </summary>
+        /// <param name="orderDCAssignmentNum"></param>
+        /// <returns>SalesOrderData</returns>
+        public async Task<string> GetSalesOrderUuidByDCAssignmentNumAsync(long orderDCAssignmentNum)
+        {
+            if (orderDCAssignmentNum == 0) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await SalesOrderHelper.GetSalesOrderUuidAsync(orderDCAssignmentNum);
+        }
+
+        /// <summary>
+        /// Get SalesOrderData by OrderDCAssignmentNum
+        /// </summary>
+        /// <param name="orderDCAssignmentNum"></param>
+        /// <returns>SalesOrderData</returns>
+        public async Task<string> GetSalesOrderNumberByUuidAsync(string salesOrderUuid)
+        {
+            if (string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await SalesOrderHelper.GetSalesOrderNumberByUuidAsync(salesOrderUuid);
+        }
+
+        /// <summary>
+        /// Update s/o item shipqty from shipment item.
+        /// </summary>
+        /// <param name="shipmentUuid"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateShippedQtyFromShippedItemAsync(string shipmentUuid, bool isReturnBack = false)
+        {
+            if (shipmentUuid.IsZero())
+            {
+                return false;
+            }
+
+            var op = isReturnBack ? "-" : "+";
+
+            var sql = $@"
+--declare @0  varchar(50)='a48952a0-7829-2d26-425d-e18e1a552a0b'
+--declare @1 int=3 -- @shipemntStatus_Cancelled is 3
+--declare @2 int=255 @orderStatus_Cancelled
+
+UPDATE soItem 
+SET soItem.ShipQty=soItem.ShipQty {op} finalShippedItem.FinalShippedQty
+FROM SalesOrderHeader orderHeader
+join SalesOrderItems soItem  on soItem.SalesOrderUuid=orderHeader.SalesOrderUuid
+JOIN 
+(
+	SELECT max(shipmentHeader.SalesOrderUuid) as SalesOrderUuid,COALESCE(shippedItem.SalesOrderItemsUuid,'') as SalesOrderItemsUuid, sum((COALESCE(shippedItem.ShippedQty,0)-COALESCE(cancelledItem.CanceledQty,0))) as FinalShippedQty
+	FROM OrderShipmentHeader shipmentHeader 
+	LEFT JOIN OrderShipmentShippedItem shippedItem on shipmentHeader.OrderShipmentUuid=shippedItem.OrderShipmentUuid  
+	LEFT JOIN OrderShipmentCanceledItem cancelledItem 
+		   on cancelledItem.SalesOrderItemsUuid=shippedItem.SalesOrderItemsUuid
+		  and cancelledItem.OrderShipmentUuid=shipmentHeader.OrderShipmentUuid
+	WHERE shipmentHeader.OrderShipmentUuid = @0 and shipmentHeader.ShipmentStatus!=@1--except cancelled shipment
+	group by shippedItem.SalesOrderItemsUuid
+) finalShippedItem on finalShippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid
+where orderHeader.SalesOrderUuid=finalShippedItem.SalesOrderUuid
+AND orderHeader.OrderStatus!=@2
+and COALESCE(finalShippedItem.FinalShippedQty,0) !=0 
+";
+            return await dbFactory.Db.ExecuteAsync(
+                sql,
+                shipmentUuid.ToSqlParameter("@0"),
+                ((int)OrderShipmentStatusEnum.Cancelled).ToParameter("@1"),
+                ((int)SalesOrderStatus.Cancelled).ToParameter("@2")
+            ) > 0;
+        }
+
+        /// <summary>
+        /// If all item shipped then update order status to shipped. else set order status to open.
+        /// </summary>
+        /// <param name="salesOrderUuid"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateOrderStautsFromShipmentAsync(string salesOrderUuid)
+        {
+            if (salesOrderUuid.IsZero()) return false;
+            var sql = $@"
+--declare @0 varchar(50)='a6cef76f-7049-4759-89b1-e7390d76a58d' --@SalesOrderUuid 
+--declare @1 int =255--@orderStatus_Cancelled int --255
+--declare @2 int =100 --@orderStatus_Hold int --100 
+--declare @3 int=4 --@orderstatus_shipped int --4
+--declare @4 int=1 --@orderstatus_Open int --1
+
+declare @unShippedCount int;
+select  @unShippedCount= count(1)
+FROM SalesOrderItems orderItem
+WHERE orderItem.SalesOrderUuid= @0
+AND coalesce(orderItem.ShipQty,0) < ( coalesce(orderItem.OrderQty,0)- coalesce(orderItem.CancelledQty,0))
+--select @unShippedCount
+
+update SalesOrderHeader 
+set OrderStatus= (case when @unShippedCount=0 then @3 else @4 end)
+where SalesOrderUuid=@0 
+AND OrderStatus !=@1
+AND OrderStatus !=@2
+";
+            var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                salesOrderUuid.ToSqlParameter("@0"),
+                ((int)SalesOrderStatus.Cancelled).ToSqlParameter("@1"),
+                ((int)SalesOrderStatus.Hold).ToSqlParameter("@2"),
+                ((int)SalesOrderStatus.Shipped).ToSqlParameter("@3"),
+                ((int)SalesOrderStatus.Open).ToSqlParameter("@4")
+            );
+            return result > 0;
+        }
+
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
+        }
+        public string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
+        }
     }
 }
-
 
 

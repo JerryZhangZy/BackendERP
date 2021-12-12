@@ -24,6 +24,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -246,8 +247,8 @@ drop table #EventUuidList
             var eventUuidList = await SqlQuery.ExecuteAsync(
                 sql,
                 (string eventUuid) => eventUuid,
-                parameters); 
-             
+                parameters);
+
             return eventUuidList;
         }
         /// <summary>
@@ -274,9 +275,45 @@ drop table #EventUuidList
             var eventUuidList = SqlQuery.Execute(
                 sql,
                 (string eventUuid) => eventUuid,
-                parameters); 
+                parameters);
 
             return eventUuidList;
+        }
+
+        public static async Task<(bool, StringBuilder)> GetWMSOrderShipmentListAsync(int masterAccountNum, int profileNum, IList<string> shipmentIDs)
+        {
+            var sql = $@"
+select 
+ ep.ProcessDate
+,ep.ProcessUuid as ShipmentID
+,ep.ProcessStatus
+,COALESCE(epps.text, '') as ProcessStatusText
+,ep.EventMessage
+,ep.LastUpdateDate
+,ep.UpdateDateUtc
+,ep.EnterDateUtc
+,ep.EnterBy
+,ep.UpdateBy
+from EventProcessERP ep
+JOIN @shipmentIDs shipmentID on shipmentID.item=ep.ProcessUuid
+LEFT JOIN @ProcessStatus epps on epps.num=ep.ProcessStatus
+where MasterAccountNum=@masterAccountNum
+AND ProfileNum=@profileNum
+AND ERPEventProcessType=@EventProcessType
+for json path
+";
+
+
+            var paramList = new List<IDataParameter>();
+            paramList.Add("@ProcessStatus".ToEnumParameter<EventProcessProcessStatusEnum>());
+            paramList.Add(shipmentIDs.ToParameter<string>("shipmentIDs"));
+            paramList.Add(masterAccountNum.ToParameter("masterAccountNum"));
+            paramList.Add(profileNum.ToParameter("profileNum"));
+            paramList.Add(((int)EventProcessTypeEnum.ShipmentFromWMS).ToParameter("EventProcessType"));
+
+            StringBuilder sb = new StringBuilder();
+            var success = await SqlQuery.QueryJsonAsync(sb, sql, CommandType.Text, paramList.ToArray());
+            return (success, sb);
         }
     }
 }

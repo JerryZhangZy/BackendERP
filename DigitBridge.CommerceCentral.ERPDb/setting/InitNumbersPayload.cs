@@ -32,7 +32,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "InitNumbersUuids", val => InitNumbersUuids = val.Split(",").ToList() }
             };
         }
 
@@ -40,36 +39,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region multiple Dto list
 
         /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple InitNumbers dto data.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple InitNumbers dto data.")]
-        public IList<string> InitNumbersUuids { get; set; } = new List<string>();
-        [JsonIgnore] 
-        public virtual bool HasInitNumbersUuids => InitNumbersUuids != null && InitNumbersUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasInitNumbersUuids;
-
-        /// <summary>
         /// (Response Data) Array of InitNumbers entity object which load by uuid array.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<InitNumbersDataDto> InitNumberss { get; set; }
-        [JsonIgnore] public virtual bool HasInitNumberss => InitNumberss != null && InitNumberss.Count > 0;
+        public IList<InitNumbersDataDto> InitNumbers { get; set; }
+        [JsonIgnore] public virtual bool HasInitNumberss => InitNumbers != null && InitNumbers.Count > 0;
         public bool ShouldSerializeInitNumberss() => HasInitNumberss;
 
         #endregion multiple Dto list
-
-
-        #region single Dto object
-
-        /// <summary>
-        /// (Request and Response Data) Single InitNumbers entity object which load by Number.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
-        public InitNumbersDataDto InitNumbers { get; set; }
-        [JsonIgnore] public virtual bool HasInitNumbers => InitNumbers != null;
-        public bool ShouldSerializeInitNumbers() => HasInitNumbers;
-
-        #endregion single Dto object
 
 
         #region list service

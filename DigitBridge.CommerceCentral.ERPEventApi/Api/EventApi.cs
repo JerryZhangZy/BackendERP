@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPApi;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -263,7 +265,7 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             {
                 MasterAccountNum = eventdata.MasterAccountNum,
                 ProfileNum = eventdata.ProfileNum,
-                EventERP = eventdata.ToEventERPDataDto(ErpEventType.DeleteQboPayment)
+                EventERP = eventdata.ToEventERPDataDto(ErpEventType.SyncProduct)
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
@@ -277,7 +279,6 @@ namespace DigitBridge.CommerceCentral.EventERPApi
 
             return new JsonNetResponse<EventERPPayload>(payload);
         }
-
 
         [FunctionName(nameof(UpdateEventERP))]
         [OpenApiOperation(operationId: "UpdateEventERP", tags: new[] { "EventERPs" })]
@@ -376,6 +377,30 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             HttpRequest req)
         {
             return new JsonNetResponse<EventERPPayloadFind>(EventERPPayloadFind.GetSampleData());
+        }
+
+
+
+        [FunctionName(nameof(ReSendEvent))]
+        [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "EventERPs" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(string[]), Required = true, Description = "Array of eventUuid.")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadUpdate))]
+        public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/resend")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<EventERPPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
+            payload.Success = await svc.ResendEventsAsync(payload);
+            payload.Messages = svc.Messages;
+
+            return new JsonNetResponse<EventERPPayload>(payload);
         }
     }
 }

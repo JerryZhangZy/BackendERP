@@ -1,12 +1,3 @@
-
-
-
-
-
-              
-
-
-
               
     
 
@@ -57,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string CentralOrderNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CentralOrderNum AS {name ?? "CentralOrderNum".ToCamelCase(camelCase)} ";
         public static string ChannelOrderID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID".ToCamelCase(camelCase)} ";
         public static string ShipmentID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipmentID) AS {name ?? "ShipmentID".ToCamelCase(camelCase)} ";
-        public static string WarehouseID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseID) AS {name ?? "WarehouseID".ToCamelCase(camelCase)} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode".ToCamelCase(camelCase)} ";
         public static string ShipmentType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipmentType AS {name ?? "ShipmentType".ToCamelCase(camelCase)} ";
         public static string ShipmentReferenceID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipmentReferenceID) AS {name ?? "ShipmentReferenceID".ToCamelCase(camelCase)} ";
         public static string ShipmentDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipmentDateUtc AS {name ?? "ShipmentDateUtc".ToCamelCase(camelCase)} ";
@@ -83,6 +74,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string OrderShipmentUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentUuid) AS {name ?? "OrderShipmentUuid".ToCamelCase(camelCase)} ";
         public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
+        public static string InvoiceNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceNumber) AS {name ?? "InvoiceNumber".ToCamelCase(camelCase)} ";
+        public static string InvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceUuid) AS {name ?? "InvoiceUuid".ToCamelCase(camelCase)} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid".ToCamelCase(camelCase)} ";
+        public static string OrderNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderNumber) AS {name ?? "OrderNumber".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -101,7 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}CentralOrderNum AS CentralOrderNum,
 RTRIM({allies}ChannelOrderID) AS ChannelOrderID,
 RTRIM({allies}ShipmentID) AS ShipmentID,
-RTRIM({allies}WarehouseID) AS WarehouseID,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 {allies}ShipmentType AS ShipmentType,
 RTRIM({allies}ShipmentReferenceID) AS ShipmentReferenceID,
 {allies}ShipmentDateUtc AS ShipmentDateUtc,
@@ -126,7 +121,11 @@ RTRIM({allies}DBChannelOrderHeaderRowID) AS DBChannelOrderHeaderRowID,
 {allies}EnterDateUtc AS EnterDateUtc,
 RTRIM({allies}OrderShipmentUuid) AS OrderShipmentUuid,
 {allies}RowNum AS RowNum,
-{allies}DigitBridgeGuid AS DigitBridgeGuid
+{allies}DigitBridgeGuid AS DigitBridgeGuid,
+RTRIM({allies}InvoiceNumber) AS InvoiceNumber,
+RTRIM({allies}InvoiceUuid) AS InvoiceUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
+RTRIM({allies}OrderNumber) AS OrderNumber
 ";
         }
 

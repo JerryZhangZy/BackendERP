@@ -20,9 +20,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     {
         [Required]
         public string ShipmentID = "";
+        [Required]
         public string SalesOrderUuid { get; set; }
         public long OrderDCAssignmentNum { get; set; }
-
+        public string WarehouseCode { get; set; }
         [Required]
         public long CentralOrderNum { get; set; }
         //public int DistributionCenterNum { get; set; }
@@ -99,6 +100,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public decimal LineHandlingFee = 0;
 
         public DateTime EnterDateUtc = DateTime.UtcNow;
+
+        [Required]
+        public string SalesOrderItemsUuid { get; set; }
     }
     public class InputOrderShipmentCanceledItemType
     {
@@ -113,6 +117,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         [Required]
         public string CancelCode = ""; //see CancelCodeType
         public string CancelOtherReason = "";
+        [Required]
+        public string SalesOrderItemsUuid { get; set; }
     }
 
     public class InputOrderShipmentPackageItemsType
@@ -128,16 +134,66 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
     #endregion
     public class WmsOrderShipmentPayload : ResponsePayloadBase
-    { 
+    {
         /// <summary>
         /// The uuid of invoice tranferred from shipment.
         /// </summary>
         public string InvoiceUuid { get; set; }
 
         /// <summary>
-        /// the main tracking number of the request wms shipment.
+        /// The unique number of the request wms shipment.
         /// </summary>
-        public string MainTrackingNumber { get; set; }
+        public string ShipmentID { get; set; }
     }
+
+    #region Get wms shipment list 
+    
+    public class WmsOrderShipmentListPayload : ResponsePayloadBase
+    {
+        public IList<WMSShipmentProcess> WMSShipmentProcessesList;
+    }
+    public class WMSShipmentProcess
+    {
+        /// <summary>
+        /// The uuid of invoice tranferred from shipment.
+        /// </summary>
+        public DateTime? ProcessDate { get; set; }
+
+        /// <summary>
+        /// The unique number of the request wms shipment.
+        /// </summary>
+        public string ShipmentID { get; set; }
+
+        /// <summary>
+        /// Process status 
+        /// </summary>
+        public int ProcessStatus { get; set; }
+
+        /// <summary>
+        /// Process status  description
+        /// </summary>
+        public string ProcessStatusText { get; set; }
+
+        /// <summary>
+        /// Error message
+        /// </summary>
+        public string EventMessage { get; set; }
+
+        /// <summary>
+        /// LastUpdateDate
+        /// </summary>
+        public DateTime LastUpdateDate { get; set; }
+        /// <summary>
+        /// UpdateDateUtc
+        /// </summary>
+        public DateTime UpdateDateUtc { get; set; }
+        /// <summary>
+        /// EnterDateUtc: the date wms upload shipment.
+        /// </summary>
+        public DateTime EnterDateUtc { get; set; }
+        public string EnterBy { get; set; }
+        public string UpdateBy { get; set; }
+    }
+    #endregion
 }
 

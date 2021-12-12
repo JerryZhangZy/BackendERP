@@ -63,5 +63,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _PoDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
             _PoDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
         }
+
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("PoDate", "PoDate DESC"),
+                new KeyValuePair<string, string>("EtaArrivalDate", "EtaArrivalDate DESC"),
+                new KeyValuePair<string, string>("PoNum", "PoNum DESC"),
+                new KeyValuePair<string, string>("VendorCode", "VendorCode")
+                );
+
+        }
+
     }
 }

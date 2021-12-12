@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class ErpEventClient : ApiClientBase<EventERPPayload>
     {
-        public ErpEventClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
+        public ErpEventClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         { }
         public ErpEventClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
@@ -22,12 +22,21 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         protected async Task<bool> AddEventERPAsync(AddErpEventDto eventDto, string functionUrl)
         {
 
+            if (!SetAccount(eventDto.MasterAccountNum, eventDto.ProfileNum))
+            {
+                return false;
+            }
+
             return await PostAsync(eventDto, functionUrl);
         }
 
         public async Task<bool> SendActionResultAsync(UpdateErpEventDto eventDto)
         {
-            return await PatchAsync(eventDto);
+            if (!SetAccount(eventDto.MasterAccountNum, eventDto.ProfileNum))
+            {
+                return false;
+            }
+            return await PatchAsync(eventDto, FunctionUrl.UpdateEvent);
         }
 
         public async Task<bool> SendActionResultAsync(ERPQueueMessage message, string error, bool success = false)
@@ -40,30 +49,33 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 ProfileNum = message.ProfileNum,
                 EventUuid = message.EventUuid,
             };
-            return await PatchAsync(eventDto);
+            if (!SetAccount(eventDto.MasterAccountNum, eventDto.ProfileNum))
+            {
+                return false;
+            }
+            return await PatchAsync(eventDto, FunctionUrl.UpdateEvent);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {
             if (ResopneData == null)
             {
-                AddError("Call event api has no resopne.");
-                return false;
-            }
-            if (ResopneData.EventERP == null)
-            {
-                //Maybe the api throw exception.
-                var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
-                if (exception != null)
-                    AddError(exception.ObjectToString());
-                return false;
-            }
-            Data = ResopneData.EventERP.Event_ERP;
+                AddError(responseData);
 
+                //Maybe the api throw exception.
+                //var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
+                //if (exception != null)
+                //    AddError(exception.ObjectToString());
+                return false;
+            }
             var success = ResopneData.Success;
             if (!success)
             {
                 this.Messages = this.Messages.Concat(ResopneData.Messages).ToList();
+            }
+            else
+            {
+                Data = ResopneData.Event;
             }
             return success;
         }

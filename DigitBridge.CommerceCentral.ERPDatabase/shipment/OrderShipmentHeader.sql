@@ -6,15 +6,15 @@
 
 	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
-	[OrderDCAssignmentNum] BIGINT NULL DEFAULT 0, --(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
-	[DistributionCenterNum] INT NULL DEFAULT 0, --(Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
-	[CentralOrderNum] BIGINT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
+	[OrderDCAssignmentNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
+	[DistributionCenterNum] INT NOT NULL DEFAULT 0, --(Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
+	[CentralOrderNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT '', --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 	[ShipmentID] NVARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Shipment ID. <br> Title: Shipment Id, Display: true, Editable: false
 	[WarehouseCode] NVARCHAR(50) NOT NULL DEFAULT '', --Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 	[ShipmentType] INT NOT NULL DEFAULT 0, --Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true
 	[ShipmentReferenceID] VARCHAR(50) NOT NULL DEFAULT '', --Ref Id. <br> Title: Reference, Display: true, Editable: true
-	[ShipmentDateUtc] DATETIME NULL, --Ship Date. <br> Title: Ship Date, Display: true, Editable: true
+	[ShipmentDateUtc] DATETIME NOT NULL, --Ship Date. <br> Title: Ship Date, Display: true, Editable: true
 	[ShippingCarrier] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 	[ShippingClass] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 	[ShippingCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Shipping fee. <br> Title: Shipping Fee, Display: true, Editable: true
@@ -40,7 +40,10 @@
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore) 
     
 	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '',	--InvoiceNumber. <br> Display: false, Editable: false.
-	
+    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Invoice uuid. <br> Display: false, Editable: false.
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Sales Order uuid. <br> Display: false, Editable: false.
+	[OrderNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+
 	CONSTRAINT [PK_OrderShipmentHeader] PRIMARY KEY CLUSTERED ([OrderShipmentNum] ASC)
 );
 GO
@@ -49,14 +52,23 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderShipmentHeader_OrderShipmentUuid] ON [
 (
     [OrderShipmentUuid] ASC
 )  
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
-(
-	[ProfileNum] ASC,
-	[MainTrackingNumber] ASC
-) 
-GO
+ 
+
 --ALTER TABLE [dbo].[OrderShipmentHeader] ADD  CONSTRAINT [DF_OrderShipmentHeader_EnterDateUtc]  DEFAULT (getutcdate()) FOR [EnterDateUtc]
 --GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_InvoiceNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_InvoiceNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[InvoiceNumber] ASC
+) 
+GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_OrderNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_OrderNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[OrderNumber] ASC
+) 
+GO

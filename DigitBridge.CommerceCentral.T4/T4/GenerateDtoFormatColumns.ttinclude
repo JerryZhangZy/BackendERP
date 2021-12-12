@@ -1,0 +1,26 @@
+﻿<#
+#>    
+<# // generate all fields
+    indent = 2;
+    WriteLine($"{new String('\t',indent)}protected virtual void Init{table.Name}()");
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}var obj = this.InitParentObject<{table.DtoName}>();");
+    WriteLine($"{new String('\t',indent+1)}var idx = 0;");
+    WriteLine($"{new String('\t',indent+1)}obj.Columns = new List<CsvFormatColumn>()");
+    WriteLine($"{new String('\t',indent+1)}{{");
+
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerateJs) continue;
+        //if (col.isJson) continue;
+        if (!names.Contains("sku") && (col.propertyName.ToLower() == "warehouseuuid" || col.propertyName.ToLower() == "warehousecode")) continue;
+        if (names.Contains(col.propertyName.ToLower())) continue;
+        WriteLine($"{new String('\t',indent+2)}new CsvFormatColumn(\"{col.propertyName}\", \"\", idx++, {col.FormatType}, false),");
+        names.Add(col.propertyName.ToLower());
+    }
+
+    WriteLine($"{new String('\t',indent+1)}}};");
+    WriteLine($"{new String('\t',indent)}}}");
+#>
+
+

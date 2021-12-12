@@ -1,24 +1,30 @@
 {
   "IsEncrypted": false,
   "Host": {
-    "CORS": "*",
-    "LocalHttpPort": 7072
+    "CORS": "*"
   },
   "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    //The maximum number of instances that the app can scale out to. Default is no limit.
-    "WEBSITE_MAX_DYNAMIC_APPLICATION_SCALE_OUT": 1,
-    ////Specifies the maximum number of language worker processes, with a default value of 1. The maximum value allowed is 10
-    //"FUNCTIONS_WORKER_PROCESS_COUNT": 1,
+    "dsn": "Server=tcp:bolanyououtlooksql01.database.windows.net,12433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
 
-    //local
-    "DebugMode": "true",
-    "UseOrchestration": "false",
-    "OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    "DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    ////local
+    ////"DebugMode": "true",
+    //"UseOrchestration": "false",
+    ////"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    ////"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    //"DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
+    //////"DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
+    //////"DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
+
+
+    "ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
+    "ERP_Integration_Api_AuthCode": "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==",
+    // User account
+    "BackdoorMode": "True",
+    "BackdoorModePassword": "blabla",
+    "BackdoorModeEmail": "abc@123.com",
+
     "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
     "UseAzureManagedIdentity": "false",
     "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
@@ -26,7 +32,19 @@
 
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
-    "SentryDsn": "https://c6013aba95894c40bd149d5c03d5e7d7@o852268.ingest.sentry.io/6035319",
+    "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    "QuickBooks_CryptKey": "ABCDEFGH",
+    "QuickBooks_RedirectUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_TokenReceiverReturnUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_Environment": "sandbox",
+    "QuickBooks_BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
+    "QuickBooks_MinorVersion": "62",
+    "QuickBooks_AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
+    "QuickBooks_AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
+    "QuickBooks_AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
+    "QuickBooks_OAuthTableName": "QuickBookOAuthTable",
+    "QuickBooks_DebugTableName": "QuickBookDebugTable",
+    "QuickBooks_IsDebug": "true",
 
     "ERPQuickBooksInvoiceQueueName": "erp-quickbooks-invoice-queue",
     "ERPQuickBooksInvoiceVoidQueueName": "erp-quickbooks-invoice-void-queue",
@@ -38,6 +56,9 @@
     "ERPInvoiceQueueName": "erp-invoice-queue",
     "ERPCreateInvoiceByOrdershipmentQueueName": "erp-create-invoice-by-ordershipment",
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
+    "ERPCreateShipmentByWMSQueueName": "erp-create-shipment-by-wms",
+    "ERPSummaryTableName": "ErpSummaryCache",
+    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
 
     //test
     //"UseOrchestration": "false",
@@ -50,10 +71,11 @@
     //"DefaultCacheExpireSlidingMins": "2"
 
     //dev
-    //"UseOrchestration": "false",
-    //"OrchestrationDbConnString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;",
-    //"OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    //"DBConnectionString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;",
+    "DebugMode": "true",
+    "UseOrchestration": "false",
+    "OrchestrationDbConnString": "Server=bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
+    "OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    "DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net,12433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
     //"UseAzureManagedIdentity": "false",
     //"AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",

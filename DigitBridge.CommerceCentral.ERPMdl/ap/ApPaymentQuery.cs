@@ -59,10 +59,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _DueDateTo = new QueryFilter<DateTime>("DueDateTo", "DueDate", ApInvoiceHeaderHelper.TableAllies, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> DueDateTo => _DueDateTo;
 
-        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("ApInvoiceType", "ApInvoiceType", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("ApInvoiceType", "ApInvoiceType", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceType> InvoiceType => _InvoiceType;
 
-        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("ApInvoiceStatus", "ApInvoiceStatus", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("ApInvoiceStatus", "ApInvoiceStatus", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceStatusEnum> InvoiceStatus => _InvoiceStatus;
 
         protected QueryFilter<string> _VendorCode = new QueryFilter<string>("VendorCode", "VendorCode", PREFIX, FilterBy.eq, string.Empty);

@@ -37,7 +37,8 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
         {
             this.SQL_From = $@"
  FROM {OrderShipmentHeaderHelper.TableName} {OrderShipmentHeaderHelper.TableAllies} 
- LEFT JOIN {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} ON ( {SalesOrderHeaderHelper.TableAllies}.OrderSourceCode = 'OrderDCAssignmentNum:' + Cast({OrderShipmentHeaderHelper.TableAllies}.OrderDCAssignmentNum  as varchar))
+ LEFT JOIN {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} ON 
+( {SalesOrderHeaderHelper.TableAllies}.OrderSourceCode = '{Consts.SalesOrderSourceCode_Prefix}' + Cast({OrderShipmentHeaderHelper.TableAllies}.OrderDCAssignmentNum  as varchar))
 ";
             return this.SQL_From;
         }

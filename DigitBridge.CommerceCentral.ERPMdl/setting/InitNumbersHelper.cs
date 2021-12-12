@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -50,94 +51,202 @@ AND OrderNumber = @number
             return true;
         }
 
-        public static async Task<string> GetMinNumberAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
+
+
+        #region 2021-12-4 wzj
+        public static async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
         {
             string sql = string.Empty;
-            switch (type)
+            switch (activityLogType)
             {
-                case "so":
-                    sql = $@"SELECT TOP 1 * FROM (
-    SELECT t1.OrderNumber+1 AS number
-    FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
-    WHERE NOT EXISTS(
-		SELECT * 
-		FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
-		WHERE t2.OrderNumber = t1.OrderNumber + 1
-	) 
-) ot
-WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [CustomerUuid]=@customerUuid AND [Type]=@type)
-ORDER BY ot.number";
+                case ActivityLogType.SalesOrder:
+                    sql= GetSalesOrderNextNumberSql(masterAccountNum, profileNum);
                     break;
-
-                case "invoice":
-
-                    sql = $@"SELECT TOP 1 * FROM (
-    SELECT t1.InvoiceNumber+1 AS number
-    FROM (SELECT CAST(InvoiceNumber AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t1
-    WHERE NOT EXISTS(
-		SELECT * 
-		FROM (SELECT CAST(InvoiceNumber AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t2 
-		WHERE t2.InvoiceNumber = t1.InvoiceNumber + 1
-	) 
-) ot
-WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
-ORDER BY ot.number";
-
+                case ActivityLogType.Invoice:
+                    sql = GetInvoiceNextNumberSql(masterAccountNum, profileNum);
                     break;
-
-                case "po":
-                    sql = $@"SELECT TOP 1 * FROM (
-    SELECT t1.PoNum+1 AS number
-    FROM (SELECT CAST(PoNum AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t1
-    WHERE NOT EXISTS(
-		SELECT * 
-		FROM (SELECT CAST(PoNum AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t2 
-		WHERE t2.PoNum = t1.PoNum + 1
-	) 
-) ot
-WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
-ORDER BY ot.number";
-
+                case ActivityLogType.PurchaseOrder:
+                    sql = GetPurchaseOrderNextNumberSql(masterAccountNum, profileNum);
                     break;
-                case "apinvoice":
-                    sql = $@"SELECT TOP 1 * FROM (
-    SELECT t1.ApInvoiceNum+1 AS number
-    FROM (SELECT CAST(ApInvoiceNum AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t1
-    WHERE NOT EXISTS(
-		SELECT * 
-		FROM (SELECT CAST(ApInvoiceNum AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t2 
-		WHERE t2.ApInvoiceNum = t1.ApInvoiceNum + 1
-	) 
-) ot
-WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
-ORDER BY ot.number";
+                case ActivityLogType.ApInvoice:
+                    sql = GetApInvoiceNextNumberSql(masterAccountNum, profileNum);
                     break;
-            };
-
+                case ActivityLogType.Vendor:
+                    sql = GetVendorNextCodeSql(masterAccountNum, profileNum);
+                    break;
+                case ActivityLogType.Customer:
+                    sql = GetCustomerNextCodeSql(masterAccountNum, profileNum);
+                    break;
+                default:
+                    throw new NotSupportedException("Getting the next number of this type is not supported");
+            }
 
             return await SqlQuery.ExecuteScalarAsync<string>(sql,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                customerUuid.ToSqlParameter("customerUuid"),
-                type.ToSqlParameter("type")
-            );
+            masterAccountNum.ToSqlParameter("masterAccountNum"),
+            profileNum.ToSqlParameter("profileNum"),
+            ((int)activityLogType).ToString().ToSqlParameter("type"));
+        }
+        public static string GetNextNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
+        {
+            string sql = string.Empty;
+            switch (activityLogType)
+            {
+                case ActivityLogType.SalesOrder:
+                    sql = GetSalesOrderNextNumberSql(masterAccountNum, profileNum);
+                    break;
+                case ActivityLogType.Invoice:
+                    sql = GetInvoiceNextNumberSql(masterAccountNum, profileNum);
+                    break;
+                case ActivityLogType.PurchaseOrder:
+                    sql = GetPurchaseOrderNextNumberSql(masterAccountNum, profileNum);
+                    break;
+                case ActivityLogType.ApInvoice:
+                    sql = GetApInvoiceNextNumberSql(masterAccountNum, profileNum);
+                    break;
+                case ActivityLogType.Vendor:
+                    sql = GetVendorNextCodeSql(masterAccountNum, profileNum);
+                    break;
+                case ActivityLogType.Customer:
+                    sql = GetCustomerNextCodeSql(masterAccountNum, profileNum);
+                    break;
+                default:
+                    throw new NotSupportedException("Getting the next number of this type is not supported");
+            }
+
+            return  SqlQuery.ExecuteScalar<string>(sql,
+            masterAccountNum.ToSqlParameter("masterAccountNum"),
+            profileNum.ToSqlParameter("profileNum"),
+            ((int)activityLogType).ToString().ToSqlParameter("type"));
+        }
+
+        public static async Task<bool> UpdateMaxNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
+        {
+            string sql = "Update InitNumbers Set MaxNumber=@MaxNumber where MasterAccountNum=@MasterAccountNum and ProfileNum=@ProfileNum and Type=@Type";
+           return await SqlQuery.ExecuteNonQueryAsync(sql,
+                 long.Parse(maxNumber).ToSqlParameter("MaxNumber"),
+             masterAccountNum.ToSqlParameter("MasterAccountNum"),
+             profileNum.ToSqlParameter("ProfileNum"),
+                ((int)activityLogType).ToString().ToSqlParameter("Type")
+             )==1;
+        }
+
+        public static  bool UpdateMaxNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
+        {
+            string sql = "Update InitNumbers Set MaxNumber=@MaxNumber where MasterAccountNum=@MasterAccountNum and ProfileNum=@ProfileNum and Type=@Type";
+            return   SqlQuery.ExecuteNonQuery(sql,
+                  long.Parse(maxNumber).ToSqlParameter("MaxNumber"),
+              masterAccountNum.ToSqlParameter("MasterAccountNum"),
+              profileNum.ToSqlParameter("ProfileNum"),
+                 ((int)activityLogType).ToString().ToSqlParameter("Type")
+              ) == 1;
+        }
+
+        public static async Task<string> GetNumberAsync(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
+        {
+            string sql = "SELECT Number FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum  AND [Type]=@type";
+           return await SqlQuery.ExecuteScalarAsync<string>(sql, masterAccountNum.ToSqlParameter("MasterAccountNum"),
+               profileNum.ToSqlParameter("ProfileNum"),
+                  ((int)activityLogType).ToString().ToSqlParameter("Type"));
+        }
+        public static  string GetNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType)
+        {
+            string sql = "SELECT Number FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum  AND [Type]=@type";
+            return   SqlQuery.ExecuteScalar<string>(sql, masterAccountNum.ToSqlParameter("MasterAccountNum"),
+                profileNum.ToSqlParameter("ProfileNum"),
+                   ((int)activityLogType).ToString().ToSqlParameter("Type"));
         }
 
 
+        private static string GetSalesOrderNextNumberSql(int masterAccountNum, int profileNum)
+        {
+            return $@"SELECT TOP 1 * FROM (
+    SELECT t1.OrderNumber+1 AS number
+    FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
+		WHERE t2.OrderNumber = t1.OrderNumber + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [MaxNumber]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum   AND [Type]=@type)
+ORDER BY ot.number";
+        }
 
+        private static string GetInvoiceNextNumberSql(int masterAccountNum, int profileNum)
+        {
+            return $@"SELECT TOP 1 * FROM (
+    SELECT t1.InvoiceNumber+1 AS number
+    FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t2 
+		WHERE t2.InvoiceNumber = t1.InvoiceNumber + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [MaxNumber]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum   AND [Type]=@type)
+ORDER BY ot.number";
+        }
 
-        //public static async Task<InitNumbers> GetInitNumbersAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
-        //{
+        private static string GetPurchaseOrderNextNumberSql(int masterAccountNum, int profileNum)
+        {
+            return $@"SELECT TOP 1 * FROM (
+    SELECT t1.PoNum+1 AS number
+    FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t2 
+		WHERE t2.PoNum = t1.PoNum + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [MaxNumber]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum   AND [Type]=@type)
+ORDER BY ot.number";
+        }
 
-        //    string sql = $@"SELECT * FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type";
-        //    return await SqlQuery.Execute<InitNumbers>(sql,
-        //  masterAccountNum.ToSqlParameter("masterAccountNum"),
-        //  profileNum.ToSqlParameter("profileNum"),
-        //  customerUuid.ToSqlParameter("customerUuid"),
-        //  type.ToSqlParameter("type"));
+        private static string GetApInvoiceNextNumberSql(int masterAccountNum, int profileNum)
+        {
+            return $@"SELECT TOP 1 * FROM (
+    SELECT t1.ApInvoiceNum+1 AS number
+    FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t2 
+		WHERE t2.ApInvoiceNum = t1.ApInvoiceNum + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [MaxNumber]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum   AND [Type]=@type)
+ORDER BY ot.number";
+        }
 
-        //}
+        private static string GetVendorNextCodeSql(int masterAccountNum, int profileNum)
+        {
+            return $@"SELECT TOP 1 * FROM (
+    SELECT t1.VendorCode+1 AS number
+    FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t2 
+		WHERE t2.VendorCode = t1.VendorCode + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [MaxNumber]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum   AND [Type]=@type)
+ORDER BY ot.number";
+        }
+        private static string GetCustomerNextCodeSql(int masterAccountNum, int profileNum)
+        {
+            return $@"SELECT TOP 1 * FROM (
+    SELECT t1.CustomerCode+1 AS number
+    FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t2 
+		WHERE t2.CustomerCode = t1.CustomerCode + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [MaxNumber]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum   AND [Type]=@type)
+ORDER BY ot.number";
+        }
 
+        #endregion
 
         public static (string number, int currentNumber, string prefix, string suffix,long rowNum) GetInitNumbersAsync(IDataBaseFactory dbFactory, int masterAccountNum, int profileNum, string customerUuid, string type)
         {

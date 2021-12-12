@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string InvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceUuid) AS {name ?? "InvoiceUuid".ToCamelCase(camelCase)} ";
         public static string InvoiceNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceNumber) AS {name ?? "InvoiceNumber".ToCamelCase(camelCase)} ";
         public static string PaymentUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PaymentUuid) AS {name ?? "PaymentUuid".ToCamelCase(camelCase)} ";
-        public static string PaymentNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PaymentNumber) AS {name ?? "PaymentNumber".ToCamelCase(camelCase)} ";
+        public static string PaymentNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PaymentNumber AS {name ?? "PaymentNumber".ToCamelCase(camelCase)} ";
         public static string TransType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransType AS {name ?? "TransType".ToCamelCase(camelCase)} ";
         public static string TransStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransStatus AS {name ?? "TransStatus".ToCamelCase(camelCase)} ";
         public static string TransDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransDate AS {name ?? "TransDate".ToCamelCase(camelCase)} ";
@@ -99,7 +99,7 @@ RTRIM({allies}TransUuid) AS TransUuid,
 RTRIM({allies}InvoiceUuid) AS InvoiceUuid,
 RTRIM({allies}InvoiceNumber) AS InvoiceNumber,
 RTRIM({allies}PaymentUuid) AS PaymentUuid,
-RTRIM({allies}PaymentNumber) AS PaymentNumber,
+{allies}PaymentNumber AS PaymentNumber,
 {allies}TransType AS TransType,
 {allies}TransStatus AS TransStatus,
 {allies}TransDate AS TransDate,

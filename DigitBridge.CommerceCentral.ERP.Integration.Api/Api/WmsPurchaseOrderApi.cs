@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
 {
     public class PurchaseOrderIntegrationApi
     {
-        
+
         /// <summary>
         /// Get purchase order list by criteria.
         /// </summary>
@@ -38,6 +38,31 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
 
-        
+        //// <summary>
+        /// Add Po receive
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(AddPoReceives))]
+        [OpenApiOperation(operationId: "AddPoReceives", tags: new[] { "WMSPurchaseOrders" }, Summary = "Add WMS po received items to ERP")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WMSPoReceiveItem[]), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WMSPoReceivePayload[]))]
+        public static async Task<JsonNetResponse<IList<WMSPoReceivePayload>>> AddPoReceives(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/purchaseOrders/receive")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<PoReceivePayload>();
+            payload.WMSPoReceiveItems = await req.GetBodyObjectAsync<IList<WMSPoReceiveItem>>();
+
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+
+            var service = new PoReceiveManager(dataBaseFactory);
+            var result = await service.AddTransForWMSPoReceiveAsync(payload);
+
+            return new JsonNetResponse<IList<WMSPoReceivePayload>>(result);
+        }
+
     }
 }

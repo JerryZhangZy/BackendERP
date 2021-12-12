@@ -38,6 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        #region override methods
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -51,15 +52,121 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
-
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
 
         /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// </summary>
-        protected void AddActivityLogForCurrentData()
+        public override void BeforeSave()
         {
-            this.AddActivityLog(new ActivityLog(dbFactory)
+            try
+            {
+                base.BeforeSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.ProcessMode == ProcessingMode.Add && this.Data != null)
+                {
+                    await ResetProductExtCentralProductNumAsync(
+                        this.Data.ProductExt.ProductUuid,
+                        this.Data.ProductExt.MasterAccountNum,
+                        this.Data.ProductExt.ProfileNum
+                        );
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
             {
                 Type = (int)ActivityLogType.Inventory,
                 Action = (int)this.ProcessMode,
@@ -69,32 +176,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = this.Data.ProductBasic.ProfileNum,
                 DatabaseNum = this.Data.ProductBasic.DatabaseNum,
                 ProcessUuid = this.Data.ProductBasic.ProductUuid,
+                ProcessNumber = this.Data.ProductBasic.SKU,
+                ChannelNum = 0,
+                ChannelAccountNum = 0,
 
                 LogMessage = string.Empty
-            });
-        }
+            };
 
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected async Task AddActivityLogForCurrentDataAsync()
-        {
-            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.Inventory,
-                Action = (int)this.ProcessMode,
-                LogSource = "InventoryService",
+        #endregion override methods
 
-                MasterAccountNum = this.Data.ProductBasic.MasterAccountNum,
-                ProfileNum = this.Data.ProductBasic.ProfileNum,
-                DatabaseNum = this.Data.ProductBasic.DatabaseNum,
-                ProcessUuid = this.Data.ProductBasic.ProductUuid,
 
-                LogMessage = string.Empty
-
-            });
-        }
         public virtual bool GetDataBySku(string sku, int masterAccountNum, int profileNum)
         {
             long rowNum = 0;
@@ -112,34 +203,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, masterAccountNum, profileNum);
             }
+            if (rowNum <= 0)
+            {
+                AddError($"Data not found for {sku}.");
+                return false;
+            }
             return await GetDataAsync(rowNum);
-        }
-
-        /// <summary>
-        /// Add new data from Dto object
-        /// </summary>
-        public virtual bool Add(InventoryDataDto dto)
-        {
-            if (dto is null)
-                return false;
-            // set Add mode and clear data
-            Add();
-
-            if (!Validate(dto))
-                return false;
-
-            // load data from dto
-            FromDto(dto);
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
         }
 
         /// <summary>
@@ -154,46 +223,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAsync(dto)))
                 return false;
-            
+
             // load data from dto
             FromDto(dto);
-           // Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+
+            await IgnoreAddExistProductBasic();
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
-        }
-
-        public virtual bool Add(InventoryPayload payload)
-        {
-            if (payload is null || !payload.HasInventory)
-                return false;
-
-            // set Add mode and clear data
-            Add();
-
-            if (!ValidateAccount(payload))
-                return false;
-
-            if (!Validate(payload.Inventory))
-                return false;
-
-            // load data from dto
-            FromDto(payload.Inventory);
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
+            var result = await SaveDataAsync();
             return result;
         }
 
@@ -211,49 +251,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(payload.Inventory)))
                 return false;
 
-            List();
-            await GetDataBySkuAsync(payload.Inventory.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
-            //Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-            _ProcessMode = Base.Common.ProcessingMode.Add;
-
             // load data from dto
             FromDto(payload.Inventory);
 
-            //dto.ProductExt.ProfileNum = pl.ProfileNum;
-            //dto.ProductExt.DatabaseNum = pl.DatabaseNum;
-
-
+            await IgnoreAddExistProductBasic();
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
                 return false;
 
-            if (!await SaveDataAsync())
-                return false;
-
-            #region
-
-            var result= (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
-FROM ProductExt pex 
-INNER JOIN ProductBasic pba ON (pba.ProductUuid = pex.ProductUuid)
-WHERE
-pex.MasterAccountNum=@0 and pex.ProfileNum=@1
-and
-pba.MasterAccountNum=@0 and pba.ProfileNum=@1
-and   
-pex.ProductUuid = @2
-)
-where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
-     payload.MasterAccountNum.ToSqlParameter("@0"),
-     payload.MasterAccountNum.ToSqlParameter("@1"),
-     this.Data.ProductBasic.ProductUuid.ToSqlParameter("@2")
-
-     ) == 1);
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
-            #endregion
-
+            return await SaveDataAsync();
         }
 
 
@@ -267,8 +274,8 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                 return false;
             // set Add mode and clear data
             Add();
-            
-            
+
+
             if (!(await ValidateAsync(dto)))
                 return false;
 
@@ -283,66 +290,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
+            var result = await SaveDataAsync();
             return result;
         }
 
-
-        /// <summary>
-        /// Update data from Dto object.
-        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
-        /// </summary>
-        public virtual bool Update(InventoryDataDto dto)
-        {
-            if (dto is null || !dto.HasProductBasic)
-                return false;
-
-            //set edit mode before validate
-            Edit();
-
-            if (!Validate(dto))
-                return false;
-
-            // set Add mode and clear data
-            if (dto.HasProductBasic)
-            {
-                Edit(dto.ProductBasic.RowNum.ToLong());
-            }
-            else
-            {
-                bool isValid = true;
-                if (!dto.ProductExt.HasMasterAccountNum)
-                {
-                    AddError("Add ProductExt,MasterAccountNum must required");
-                    isValid = false;
-                }
-                if (!dto.ProductExt.HasProfileNum)
-                {
-                    AddError("Add ProductExt,ProfileNum must required");
-                    isValid = false;
-                }
-                if (!isValid)
-                {
-                    return false;
-                }
-                GetDataBySku(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
-            }
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-
-            // load data from dto
-            FromDto(dto);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
-            return result;
-        }
 
         /// <summary>
         /// Update data from Dto object
@@ -359,83 +310,27 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync(dto)))
                 return false;
 
-            if (dto.HasProductBasic)
+            var find = new ProductFindClass()
             {
-                await EditAsync(dto.ProductBasic.RowNum.ToLong());
-            }
-            else
+                MasterAccountNum = (dto.ProductBasic == null) ? dto.ProductExt.MasterAccountNum.ToInt() : dto.ProductBasic.MasterAccountNum.ToInt(),
+                ProfileNum = (dto.ProductBasic == null) ? dto.ProductExt.ProfileNum.ToInt() : dto.ProductBasic.ProfileNum.ToInt(),
+                SKU = (dto.ProductBasic == null || string.IsNullOrEmpty(dto.ProductBasic.SKU)) ? dto.ProductExt.SKU : dto.ProductBasic.SKU,
+            };
+            var rowNum = await GetRowNumByProductFindAsync(find);
+
+            if (rowNum <= 0 || (await EditAsync(rowNum)))
             {
-                bool isValid = true;
-                if (!dto.ProductExt.HasMasterAccountNum)
-                {
-                    AddError("Add ProductExt,MasterAccountNum must required");
-                    isValid = false;
-                }
-                if (!dto.ProductExt.HasProfileNum)
-                {
-                    AddError("Add ProductExt,ProfileNum must required");
-                    isValid = false;
-                }
-                if (!isValid)
-                {
-                    return false;
-                }
-                await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
+                AddError($"SKU {find.SKU} not found.");
+                return false;
             }
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-            // load data from dto
+
             FromDto(dto);
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-            return result;
-        }
-
-        /// <summary>
-        /// Update data from Payload object.
-        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
-        /// </summary>
-        public virtual bool Update(InventoryPayload payload)
-        {
-            if (payload is null || !payload.HasInventory || payload.Inventory.ProductBasic.RowNum.ToLong() <= 0)
-                return false;
-
-            //set edit mode before validate
-            Edit();
-
-            if (!ValidateAccount(payload))
-                return false;
-
-            if (!Validate(payload.Inventory))
-                return false;
-
-            // set Add mode and clear data
-            var dto = payload.Inventory;
-            if (dto.HasProductBasic)
-            {
-                Edit(dto.ProductBasic.RowNum.ToLong());
-            }
-            else
-            {
-                GetDataBySku(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-
-            // load data from dto
-            FromDto(payload.Inventory);
-
-            // validate data for Add processing
-            if (!Validate())
-                return false;
-
-            var result= SaveData();
-            if (result)
-                AddActivityLogForCurrentData();
+            var result = await SaveDataAsync();
             return result;
         }
 
@@ -457,17 +352,21 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync(payload.Inventory)))
                 return false;
 
-            // set Add mode and clear data
-            var dto = payload.Inventory;
-            if (dto.HasProductBasic)
+            var find = new ProductFindClass()
             {
-                await EditAsync(dto.ProductBasic.RowNum.ToLong());
-            }
-            else
+                //MasterAccountNum = (payload.Inventory.ProductBasic == null) ? payload.Inventory.ProductExt.MasterAccountNum.ToInt() : payload.Inventory.ProductBasic.MasterAccountNum.ToInt(),
+                MasterAccountNum = payload.MasterAccountNum,
+                //ProfileNum = (payload.Inventory.ProductBasic == null) ? payload.Inventory.ProductExt.ProfileNum.ToInt() : payload.Inventory.ProductBasic.ProfileNum.ToInt(),
+                ProfileNum = payload.ProfileNum,
+                SKU = (payload.Inventory.ProductBasic == null || string.IsNullOrEmpty(payload.Inventory.ProductBasic.SKU)) ? payload.Inventory.ProductExt.SKU : payload.Inventory.ProductBasic.SKU,
+            };
+            var rowNum = await GetRowNumByProductFindAsync(find);
+
+            if (rowNum <= 0 ||!(await EditAsync(rowNum)))
             {
-                await GetDataBySkuAsync(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
+                AddError($"SKU {find.SKU} not found.");
+                return false;
             }
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // load data from dto
             FromDto(payload.Inventory);
@@ -476,9 +375,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
+            var result = await SaveDataAsync();
             return result;
         }
 
@@ -489,13 +386,15 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             Delete();
             if (!(await ValidateAccountAsync(payload, sku)))
                 return false;
+
             long rowNum = 0;
             Data.AddIgnoreDelete(InventoryData.ProductBasicTable);
+
             using (var tx = new ScopedTransaction(dbFactory))
             {
                 rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
             }
-      
+
             var success = await GetDataAsync(rowNum);
 
             if (!(await ValidateAsync()))
@@ -503,12 +402,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (success)
             {
                 var result = await DeleteDataAsync();
-                if (result)
-                    await AddActivityLogForCurrentDataAsync();
                 return result;
             }
             return false;
-            
+
         }
 
         public InventoryPayload GetInventoryBySkuArray(InventoryPayload payload)
@@ -563,23 +460,23 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             return await GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
         }
 
-        public List<Inventory> GetInventoriesBySkus(IList<string> skus,string warehouseCode)
+        public List<Inventory> GetInventoriesBySkus(IList<string> skus, string warehouseCode)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = COALESCE([SKU],'')))", 
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = COALESCE([SKU],'')))",
                 warehouseCode.ToSqlParameter("WarehouseCode"), skus.ToParameter<string>("SKU")).ToList();
         }
-        public Inventory GetInventoryBySku(string sku,string warehouseCode)
+        public Inventory GetInventoryBySku(string sku, string warehouseCode)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1", 
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1",
                 warehouseCode.ToSqlParameter("WarehouseCode"), sku.ToSqlParameter("SKU")).FirstOrDefault();
         }
-        
-        public Inventory GetInventoryBySkuWithWarehouseUuid(string sku,string warehouseUuid)
+
+        public Inventory GetInventoryBySkuWithWarehouseUuid(string sku, string warehouseUuid)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseUuid=@0 AND SKU=@1", 
+            return dbFactory.Find<Inventory>("WHERE WarehouseUuid=@0 AND SKU=@1",
                 warehouseUuid.ToSqlParameter("WarehouseUuid"), sku.ToSqlParameter("SKU")).FirstOrDefault();
         }
-        
+
         public Inventory GetInventoryByInventoryUuid(string inventoryUuid)
         {
             return dbFactory.Find<Inventory>("WHERE InventoryUuid=@0", inventoryUuid.ToSqlParameter("InventoryUuid")).FirstOrDefault();
@@ -651,7 +548,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
         {
             //if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
             //    return false;
-            if (data == null || data.PoTransaction == null )
+            if (data == null || data.PoTransaction == null)
                 return false;
 
             var header = data.PoTransaction;
@@ -662,19 +559,20 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             foreach (var items in data.PoTransactionItems)
             {
                 var inventory = GetInventoryByInventoryUuid(items.InventoryUuid);
-                if(inventory==null)
+                if (inventory == null)
                     continue;
                 var itemCost = new ItemCostClass(inventory);
+
                 var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
                 await UpdateAvgCostAsync(cost);
             }
 
             return true;
         }
-        
+
         public bool UpdatAvgCostByPoReceive(PoTransactionData data)
         {
-            if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
+            if (data == null || data.PoTransaction == null || !data.FirstAPReceiveStatus)
                 return false;
             var header = data.PoTransaction;
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
@@ -684,7 +582,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             foreach (var items in data.PoTransactionItems)
             {
                 var inventory = GetInventoryByInventoryUuid(items.InventoryUuid);
-                if(inventory==null)
+                if (inventory == null)
                     continue;
                 var itemCost = new ItemCostClass(inventory);
                 var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
@@ -693,26 +591,26 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
 
             return true;
         }
-        
-        private void UpdateAvgCost(string inventoryUuid,decimal avgCost,decimal baseCost)
+
+        private void UpdateAvgCost(string inventoryUuid, decimal avgCost, decimal baseCost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"),baseCost.ToSqlParameter("BaseCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"), baseCost.ToSqlParameter("BaseCost"), inventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
-        private async Task UpdateAvgCostAsync(string inventoryUuid,decimal avgCost,decimal baseCost)
+        private async Task UpdateAvgCostAsync(string inventoryUuid, decimal avgCost, decimal baseCost)
         {
-            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"),baseCost.ToSqlParameter("BaseCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"), baseCost.ToSqlParameter("BaseCost"), inventoryUuid.ToSqlParameter("inventoryUuid"));
         }
-        
+
         private void UpdateAvgCost(ItemCostClass cost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"), cost.BaseCost.ToSqlParameter("BaseCost"), cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
         private async Task UpdateAvgCostAsync(ItemCostClass cost)
         {
-            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
-        }
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"), cost.BaseCost.ToSqlParameter("BaseCost"), cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+        } 
 
         public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
         {
@@ -735,15 +633,58 @@ ON inv.inventoryuuid=soi.inventoryuuid
         {
             string op = isReturnBack ? "-" : "+";
             string command = $@"
-UPDATE inv SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
-FROM inventory inv INNER JOIN
-    (SELECT SUM(orderqty) as orderqty, 
-            SUM(shipqty) as shipqty, 
-            SUM(cancelledqty) as cancelledqty, 
-            inventoryuuid FROM salesorderitems 
-    WHERE SalesOrderUuid='{salesOrderUuid}'  
-    GROUP BY InventoryUuid) soi
+UPDATE inv SET opensoqty=inv.OpenPoQty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
+FROM inventory inv 
+INNER JOIN
+    (
+	SELECT SUM(orderqty) as orderqty, 
+		SUM(shipqty) as shipqty, 
+		SUM(cancelledqty) as cancelledqty, 
+		inventoryuuid 
+		FROM SalesOrderHeader orderHeader
+		JOIN salesorderitems orderItem on orderItem.SalesOrderUuid=orderHeader.SalesOrderUuid
+	WHERE orderHeader.SalesOrderUuid='{salesOrderUuid}' AND  orderHeader.OrderStatus={(int)SalesOrderStatus.Cancelled}
+	GROUP BY InventoryUuid
+    ) soi
 ON inv.inventoryuuid=soi.inventoryuuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
+        }
+
+        public async Task UpdateOpenPoQtyFromPoTransactionItemAsync(string transUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE inv SET OpenPoQty=OpenPoQty{op}COALESCE(poi.qty,0)
+FROM inventory inv 
+INNER JOIN
+    (SELECT SUM(COALESCE(poi1.PoQty,0) - COALESCE(poi1.ReceivedQty,0) - COALESCE(poi1.CancelledQty,0)) as qty, 
+        poi1.inventoryuuid 
+    FROM PoItems poi1
+    INNER JOIN PoTransactionItems pot ON (pot.PoItemUuid = poi1.PoItemUuid)
+    WHERE pot.TransUuid='{transUuid}'  
+    GROUP BY poi1.InventoryUuid
+) poi
+ON inv.inventoryuuid=poi.inventoryuuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
+        }
+
+
+        public async Task UpdateOpenPoQtyFromPoUuidAsync(string poUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE inv SET OpenPoQty=OpenPoQty{op}COALESCE(poi.qty,0)
+FROM inventory inv 
+INNER JOIN
+    (SELECT SUM(COALESCE(poi1.PoQty,0) - COALESCE(poi1.ReceivedQty,0) - COALESCE(poi1.CancelledQty,0)) as qty, 
+        poi1.inventoryuuid 
+    FROM PoItems poi1
+    WHERE poi1.PoUuid='{poUuid}'  
+    GROUP BY poi1.InventoryUuid
+) poi
+ON inv.inventoryuuid=poi.inventoryuuid
 ";
             await dbFactory.Db.ExecuteAsync(command.ToString());
         }
@@ -773,10 +714,10 @@ ON inv.inventoryuuid=soi.inventoryuuid
             var sql = $@"
                 SELECT  
                 COALESCE(
-                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE CentralProductNum=@2 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
-                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE ProductUuid=@3 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
-                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE SKU=@4 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
-                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE UPC=@5 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE SKU != '' AND SKU=@4 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE ProductUuid != '' AND ProductUuid=@3 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE CentralProductNum != 0 AND CentralProductNum=@2 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE UPC != '' AND UPC=@5 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
                     0
                 )
             ";
@@ -853,7 +794,6 @@ ON inv.inventoryuuid=soi.inventoryuuid
 
             var result = await SaveDataAsync();
             if (!result) return false;
-            await AddActivityLogForCurrentDataAsync();
 
             if (!(await EditAsync(uuid)))
                 return false;
@@ -890,9 +830,6 @@ ON inv.inventoryuuid=soi.inventoryuuid
                 return false;
 
             var result = await SaveDataAsync();
-            if (result)
-                await AddActivityLogForCurrentDataAsync();
-
             return result;
         }
 
@@ -1004,6 +941,133 @@ ON inv.inventoryuuid=soi.inventoryuuid
             return rtn;
         }
 
+        public virtual async Task<InventoryData> GetInventoryDataByWarehouseAsync(string sku, string warehouseCode, int masterAccountNum, int profileNum, bool addNew = true)
+        {
+            if (string.IsNullOrEmpty(sku) || string.IsNullOrEmpty(warehouseCode))
+                return null;
+
+            var whs = new List<string>() { warehouseCode };
+            this.NewData();
+            var succes = await this.GetBySkuWarhouseAsync(sku, whs, masterAccountNum, profileNum);
+
+            // if SKU or Warehouse not exist add new sku and warehouse
+            if (!succes && addNew)
+            {
+                if (await this.AddNewProductOrInventoryAsync(new ProductBasic()
+                {
+                    DatabaseNum = dbFactory.DatabaseNum,
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    SKU = sku,
+                }))
+                {
+                    succes = true;
+                }
+            }
+            if (!succes)
+            {
+                AddError($"Sku {sku} or warehouse {warehouseCode} not found.");
+                return null;
+            }
+
+            var data = this.Data;
+            this.DetachData(null);
+
+            return data;
+        }
+
+        /// <summary>
+        /// Get Sku and some warehouse inventory data
+        /// This only get specified warehouse from inventory
+        /// </summary>
+        public virtual async Task<bool> GetBySkuWarhouseAsync(string sku, IList<string> warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(sku) || warehouseCode == null || warehouseCode.Count == 0)
+                return false;
+            if (this.Data == null)
+                this.NewData();
+            var succes = await Data.GetBySkuWarhouseAsync(sku, warehouseCode, masterAccountNum, profileNum);
+            succes = (succes && Data.ProductBasic != null && Data.Inventory != null && Data.Inventory.Count > 0);
+            return succes;
+        }
+
+        /// <summary>
+        /// Get only ProductBasic data by Sku
+        /// </summary>
+        public virtual async Task<ProductBasic> GetProductBasicBySkuAsync(string sku, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(sku))
+                return null;
+            if (this.Data == null)
+                this.NewData();
+            return await Data.GetProductBasicBySkuAsync(sku, masterAccountNum, profileNum);
+        }
+
+        /// <summary>
+        /// Get Inventory list for specified warehouse only
+        /// </summary>
+        public virtual async Task<IList<Inventory>> GetInventoryByIdWarehouseAsync(string productUuid, IList<string> warehouseCode)
+        {
+            if (string.IsNullOrEmpty(productUuid) || warehouseCode == null || warehouseCode.Count == 0)
+                return null;
+            if (this.Data == null)
+                this.NewData();
+            return await Data.GetInventoryByIdWarehouseAsync(productUuid, warehouseCode);
+        }
+
+        /// <summary>
+        /// Get Inventory list for specified warehouse only
+        /// </summary>
+        public virtual async Task<IList<Inventory>> GetInventoryBySkuWarehouseAsync(string sku, IList<string> warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(sku) || warehouseCode == null || warehouseCode.Count == 0)
+                return null;
+            if (this.Data == null)
+                this.NewData();
+            return await Data.GetInventoryBySkuWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum);
+        }
+
+        /// <summary>
+        /// Get Inventory list for specified warehouse only
+        /// </summary>
+        protected virtual async Task IgnoreAddExistProductBasic()
+        {
+            if (this.Data == null)
+                this.NewData();
+
+            var sku = Data.ProductBasic.SKU;
+            var masterAccountNum = Data.ProductBasic.MasterAccountNum;
+            var profileNum = Data.ProductBasic.ProfileNum;
+            if (string.IsNullOrEmpty(sku))
+                return;
+
+            var existProductBasic = false;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                existProductBasic = await InventoryServiceHelper.ExistNumberAsync(sku, masterAccountNum, profileNum);
+            }
+            if (existProductBasic)
+                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+        }
+
+
+        protected virtual async Task ResetProductExtCentralProductNumAsync(string productUuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"UPDATE pex
+SET CentralProductNum = pba.CentralProductNum 
+FROM ProductExt pex 
+INNER JOIN ProductBasic pba ON (pba.ProductUuid = pex.ProductUuid)
+WHERE pex.CentralProductNum != pba.CentralProductNum AND
+pba.MasterAccountNum=@0 AND 
+pba.ProfileNum=@1 AND 
+pba.ProductUuid=@2
+";
+            await dbFactory.Db.ExecuteAsync(sql,
+                masterAccountNum.ToSqlParameter("@0"),
+                profileNum.ToSqlParameter("@1"),
+                productUuid.ToSqlParameter("@2")
+            );
+        }
     }
 }
 

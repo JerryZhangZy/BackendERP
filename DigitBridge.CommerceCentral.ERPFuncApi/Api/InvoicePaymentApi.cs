@@ -35,15 +35,15 @@ namespace DigitBridge.CommerceCentral.ERPFuncApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
-        public static async Task<JsonNetResponse<InvoicePaymentPayload>> GetInvoicePayments(
+        public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> GetInvoicePayments(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            await srv.GetPaymentWithInvoiceHeaderAsync(payload, invoiceNumber);
-            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+            await srv.GetPaymentsAsync(payload, invoiceNumber);
+            return new JsonNetResponse<InvoiceNewPaymentPayload>(payload);
         }
 
         /// <summary>
@@ -91,12 +91,12 @@ namespace DigitBridge.CommerceCentral.ERPFuncApi
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadDelete))]
-        public static async Task<JsonNetResponse<InvoicePaymentPayload>> DeleteInvoicePayments(
+        public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> DeleteInvoicePayments(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoicePayments/{invoiceNumber}/{transNum}")]
             HttpRequest req,
             string invoiceNumber, int transNum)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
             payload.Success = await srv.DeleteByNumberAsync(payload, invoiceNumber, transNum);
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPFuncApi
             if (payload.Success)
                 srv.DeleteQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum);
 
-            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+            return new JsonNetResponse<InvoiceNewPaymentPayload>(payload);
         }
 
         /// <summary>

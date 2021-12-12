@@ -32,31 +32,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoicePaymentServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as InvoicePaymentPayload);
+            var pl = (payload as InvoiceNewPaymentPayload);
 
-            if (pl is null || pl.InvoiceTransaction is null || pl.InvoiceTransaction.InvoiceTransaction is null)
+            if (!pl.HasApplyInvoices)
             {
-                AddError("InvoiceTransaction is require.");
+                AddError($"Apply invoices are required.");
                 return false;
             }
 
-            pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
-            pl.InvoiceTransaction.InvoiceReturnItems = null;
-            return base.ValidateAccount(payload, number, processingMode);
+            if (!pl.HasInvoiceTransaction)
+            {
+                AddError($"Payment infomation is required.");
+                return false;
+            }
+
+            pl.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+            return true;
         }
         public override async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as InvoicePaymentPayload);
-            if (pl is null || pl.InvoiceTransaction is null || pl.InvoiceTransaction.InvoiceTransaction is null)
+            var pl = (payload as InvoiceNewPaymentPayload);
+
+            if (!pl.HasApplyInvoices)
             {
-                AddError("InvoiceTransaction is require.");
+                AddError($"Apply invoices are required.");
                 return false;
             }
 
-            pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
-            pl.InvoiceTransaction.InvoiceReturnItems = null;
-            return await base.ValidateAccountAsync(payload, number, processingMode);
+            if (!pl.HasInvoiceTransaction)
+            {
+                AddError($"Payment infomation is required.");
+                return false;
+            }
+
+            pl.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+            return true;
         }
+
+
         public override bool Validate(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (dto is null || dto.InvoiceTransaction is null)
@@ -71,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
 
-            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo && dto.InvoiceTransaction.CheckNum.IsZero())
+            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment && dto.InvoiceTransaction.CheckNum.IsZero())
             {
                 AddError("Misc invoice is require for prepayment.");
             }
@@ -90,14 +103,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("InvoiceTransaction is required.");
                 return false;
             }
+
+            string invoiceUuid = dto.InvoiceTransaction.InvoiceUuid;
+            var invoice = await dbFactory.GetByIdAsync<InvoiceHeader>(
+                invoiceUuid,
+                new string[3] { "TotalAmount", "PaidAmount", "Balance" });
+
             if (processingMode == ProcessingMode.Add)
             {
-                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;  
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
             }
+            if (invoice.Balance < dto.InvoiceTransaction.TotalAmount)
+                AddError($"Invoice {invoiceUuid} is overpaying");
+
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
 
-            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo && dto.InvoiceTransaction.CheckNum.IsZero())
+            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment && dto.InvoiceTransaction.CheckNum.IsZero())
             {
                 AddError("Misc invoice is required for prepayment.");
             }

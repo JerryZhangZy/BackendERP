@@ -139,5 +139,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("SKU", "sku"),
+                new KeyValuePair<string, string>("Brand", "Brand"),
+                new KeyValuePair<string, string>("StyleCode", $"{PREFIX_PRODUCTEX}.StyleCode"),
+                new KeyValuePair<string, string>("ColorPatternCode", $"{PREFIX_PRODUCTEX}.ColorPatternCode"),
+                new KeyValuePair<string, string>("ClassCode", $"{PREFIX_PRODUCTEX}.ClassCode"),
+                new KeyValuePair<string, string>("DepartmentCode", $"{PREFIX_PRODUCTEX}.DepartmentCode"),
+                new KeyValuePair<string, string>("CategoryCode", $"{PREFIX_PRODUCTEX}.CategoryCode"),
+                new KeyValuePair<string, string>("GroupCode", $"{PREFIX_PRODUCTEX}.GroupCode")
+            );
+        }
+
     }
 }

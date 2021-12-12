@@ -17,7 +17,7 @@ using Helper = DigitBridge.CommerceCentral.ERPDb.PoTransactionHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    
+
 
     public class PoReceiveQuery : QueryObject<PoReceiveQuery>
     {
@@ -31,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _TransUuid = new QueryFilter<string>("TransUuid", "TransUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> TransUuid => _TransUuid;
 
-      
+
         protected QueryFilter<long> _TransNum = new QueryFilter<long>("TransNum", "TransNum", PREFIX, FilterBy.eq, 0);
         public QueryFilter<long> TransNum => _TransNum;
 
@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _PoUuid = new QueryFilter<string>("PoUuid", "PoUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> PoUuid => _PoUuid;
 
-  
+
         protected QueryFilter<string> _PoNumFrom = new QueryFilter<string>("_PoNumFrom", "PoNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> PoNumFrom => _PoNumFrom;
 
@@ -48,16 +48,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> TransType => _TransType;
 
 
-        protected QueryFilter<int> _TransStatus = new QueryFilter<int>("TransStatus", "TransStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _TransStatus = new QueryFilter<int>("TransStatus", "TransStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> TransStatus => _TransStatus;
 
 
 
- 
+
 
 
         protected QueryFilter<DateTime> _TransDateFrom = new QueryFilter<DateTime>("TransDateFrom", "TransDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
@@ -67,12 +67,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<DateTime> TransDateTo => _TransDateTo;
 
 
- 
+
         protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
+        protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorName => _VendorName;
 
-    
 
         protected QueryFilter<string> _VendorInvoiceNumFrom = new QueryFilter<string>("_PoNumFrom", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorInvoiceNumFrom => _VendorInvoiceNumFrom;
@@ -80,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _VendorInvoiceNumTo = new QueryFilter<string>("_VendorInvoiceNumTo", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorInvoiceNumTo => _VendorInvoiceNumTo;
 
- 
+
 
         protected QueryFilter<DateTime> _VendorInvoiceDateFrom = new QueryFilter<DateTime>("VendorInvoiceDateFrom", "VendorInvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> VendorInvoiceDateFrom => _VendorInvoiceDateFrom;
@@ -89,7 +90,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<DateTime> VendorInvoiceDateTo => _VendorInvoiceDateTo;
 
 
- 
+
 
         protected QueryFilter<DateTime> _DueDateFrom = new QueryFilter<DateTime>("DueDateFrom", "DueDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> DueDateFrom => _DueDateFrom;
@@ -98,13 +99,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<DateTime> DueDateTo => _DueDateTo;
 
 
- 
+
         public PoReceiveQuery() : base(TranSactionPREFIX)
         {
- 
+            AddFilter(_VendorName);
             AddFilter(_TransUuid);
             AddFilter(_TransNum);
-            AddFilter(_PoUuid);  
+            AddFilter(_PoUuid);
             AddFilter(_PoNumFrom);
             AddFilter(_PoNumTo);
             AddFilter(_TransType);
@@ -121,8 +122,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_VendorInvoiceDateTo);
             AddFilter(_DueDateFrom);
             AddFilter(_DueDateTo);
-      
-         
+
+
         }
         public override void InitQueryFilter()
         {
@@ -130,6 +131,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _TransDateTo.FilterValue = DateTime.UtcNow.Date;
 
         }
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("TransDate", "TransDate DESC"),
+                new KeyValuePair<string, string>("TransNum", "TransNum DESC"),
+                new KeyValuePair<string, string>("VendorCode", "VendorCode"),
+                new KeyValuePair<string, string>("VendorInvoiceDate", "VendorInvoiceDate DESC"),
+                new KeyValuePair<string, string>("VendorInvoiceNum", "VendorInvoiceNum DESC")
+                );
 
+        }
     }
 }

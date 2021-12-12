@@ -64,10 +64,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _CentralOrderNum = new QueryFilter<string>("CentralOrderNum", "CentralOrderNum", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> CentralOrderNum => _CentralOrderNum;
 
-        protected QueryFilter<int> _ChannelNum = new QueryFilter<int>("ChannelNum", "ChannelNum", InvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
+        protected QueryFilter<int> _ChannelNum = new QueryFilter<int>("ChannelNum", "ChannelNum", PREFIX_INFO, FilterBy.eq, 0);
         public QueryFilter<int> ChannelNum => _ChannelNum;
 
-        protected QueryFilter<int> _ChannelAccountNum = new QueryFilter<int>("ChannelAccountNum", "ChannelAccountNum", InvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
+        protected QueryFilter<int> _ChannelAccountNum = new QueryFilter<int>("ChannelAccountNum", "ChannelAccountNum", PREFIX_INFO, FilterBy.eq, 0);
         public QueryFilter<int> ChannelAccountNum => _ChannelAccountNum;
 
         protected QueryFilter<string> _ChannelOrderID = new QueryFilter<string>("ChannelOrderID", "ChannelOrderID", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
@@ -105,6 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_OrderStatus);
             AddFilter(_CustomerCode);
             AddFilter(_CustomerName);
+            AddFilter(_OrderType);
 
             AddFilter(_ShippingCarrier);
             AddFilter(_DistributionCenterNum);
@@ -125,5 +126,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _OrderDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("OrderDate", "OrderDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("ShipDate", "ShipDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CustomerCode", "CustomerCode, RowNum DESC"),
+                new KeyValuePair<string, string>("OrderNumber", "OrderNumber DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CentralOrderNum", $"{PREFIX_INFO}.CentralOrderNum DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CustomerPoNum", $"{PREFIX_INFO}.CustomerPoNum, RowNum DESC"),
+                new KeyValuePair<string, string>("RefNum", $"{PREFIX_INFO}.RefNum, RowNum DESC"),
+                new KeyValuePair<string, string>("WarehouseCode", $"{PREFIX_INFO}.WarehouseCode, RowNum DESC")
+            );
+        }
     }
 }

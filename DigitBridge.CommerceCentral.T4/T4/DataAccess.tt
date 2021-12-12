@@ -83,9 +83,11 @@
 //SettingForApTransaction
 //SettingForEventProcessERP
 #>
-<#@ include file="SettingForInvoice.ttinclude" #>
+<#@ include file="SettingForInitNumbers.ttinclude" #>
 <#
     var dtoSuf = "";
+    var GenerateNewName = string.Empty;
+    //var GenerateNewName = "_NEW";
     
     var overridesetting = false;
     //rewrite setting config
@@ -138,7 +140,7 @@
 <#@ include file="GenerateRepositoryPartialClass.ttinclude" #>
 <# 
                 dir = Path.Combine(path,ModelFolder);
-                SaveOutputNotExists(dir, $"{table.Name}.cs");
+                SaveOutputNotExists(dir, $"{table.Name}.cs", GenerateNewName);
             }
 #>
 <#          // Generate model SQL helper output
@@ -148,7 +150,7 @@
 <#@ include file="GenerateRepositoryHelper.ttinclude" #>
 <# 
                 dir = Path.Combine(path,ModelFolder);
-                SaveOutputNotExists(dir, $"{table.Name}Helper.cs");
+                SaveOutputNotExists(dir, $"{table.Name}Helper.cs", GenerateNewName);
             }
 #>
 <#          // Generate model SQL helper output
@@ -158,7 +160,7 @@
 <#@ include file="GenerateRepositoryHelperTest.ttinclude" #>
 <# 
                 dir = Path.Combine(path,TesterFolder);
-                SaveOutputNotExists(dir, $"{table.Name}HelperTests.cs");
+                SaveOutputNotExists(dir, $"{table.Name}HelperTests.cs", null);
             }
 #>
 <#          // Generate tester class
@@ -178,7 +180,7 @@
 <#@ include file="GenerateRepositoryTestPartial.ttinclude" #>
 <# 
                 dir = Path.Combine(path,TesterFolder);
-                SaveOutputNotExists(dir, $"{table.Name}Tests.cs");
+                SaveOutputNotExists(dir, $"{table.Name}Tests.cs", null);
             }
 #>
 <#          // Generate tester class
@@ -188,7 +190,7 @@
 <#@ include file="GenerateRepositoryDto.ttinclude" #>
 <# 
                 dir = Path.Combine(path, DtoFolder);
-                SaveOutputNotExists(dir, $"{table.DtoName}{dtoSuf}.cs");
+                SaveOutputNotExists(dir, $"{table.DtoName}.cs", GenerateNewName);
             }
 #>
 <# 
@@ -208,18 +210,18 @@
 <#@ include file="GenerateStructurePartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,StructureFolder);
-        SaveOutputNotExists(dir, $"{StructureClass.ClassName}.cs");
+        SaveOutputNotExists(dir, $"{StructureClass.ClassName}.cs", GenerateNewName);
 #>
 <# } #>
 <#@ include file="GenerateServicePayload.ttinclude" #>
 <# 
         dir = Path.Combine(path,StructureFolder);
-        SaveOutputNotExists(dir, $"{PayloadName}.cs");
+        SaveOutputNotExists(dir, $"{PayloadName}.cs", null);
 #>
 <#@ include file="GenerateServicePayloadOpenApi.ttinclude" #>
 <# 
         dir = Path.Combine(path,OpenApiPayloadFolder);
-        SaveOutputNotExists(dir, $"{OpenApiPayloadName}.cs");
+        SaveOutputNotExists(dir, $"{OpenApiPayloadName}.cs", null);
 #>
 <#      
     // Generate structure repository class
@@ -234,7 +236,7 @@
 <#@ include file="GenerateStructureTestPartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,TesterFolder);
-        SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs");
+        SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs", null);
 #>
 <# } #>
 <#  // Generate StructureDto class
@@ -244,17 +246,17 @@
 <#@ include file="GenerateStructureDto.ttinclude" #>
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
-        SaveOutputNotExists(dir, $"{StructureDtoName}.cs");
+        SaveOutputNotExists(dir, $"{StructureDtoName}.cs", GenerateNewName);
 #>
 <#@ include file="GenerateStructureDtoMapper.ttinclude" #>
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
-        SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault{dtoSuf}.cs");
+        SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault.cs", GenerateNewName);
 #>
 <#@ include file="GenerateStructureDtoExtension.ttinclude" #>
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
-        SaveOutputNotExists(dir, $"{StructureDtoName}Extension.cs");
+        SaveOutputNotExists(dir, $"{StructureDtoName}Extension.cs", GenerateNewName);
 #>
 <# } #>
 <#  // Generate StructureDto class
@@ -264,7 +266,7 @@
 <#@ include file="GenerateStructureDtoCsv.ttinclude" #>
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
-        SaveOutputNotExists(dir, $"{StructureDtoName}Csv.cs");
+        SaveOutputNotExists(dir, $"{StructureDtoName}Csv.cs", GenerateNewName);
 #>
 <# } #>
 <#      
@@ -275,7 +277,7 @@
 <#@ include file="GenerateStructureDtoTest.ttinclude" #>
 <# 
         dir = Path.Combine(path,TesterFolder);
-        SaveOutputNotExists(dir, $"{StructureDtoName}Tests.cs");
+        SaveOutputNotExists(dir, $"{StructureDtoName}Tests.cs", null);
 #>
 <# } #>
 <#  // Generate StructureDto class
@@ -285,22 +287,22 @@
 <#@ include file="GenerateStructureQuery.ttinclude" #>
 <# 
         dir = Path.Combine(path, ServiceFolder);
-        SaveOutputNotExists(dir, $"{processName}Query.cs");
+        SaveOutputNotExists(dir, $"{processName}Query.cs", null);
 #>
 <#@ include file="GenerateStructureQueryList.ttinclude" #>
 <# 
         dir = Path.Combine(path, ServiceFolder);
-        SaveOutputNotExists(dir, $"{processName}List.cs");
+        SaveOutputNotExists(dir, $"{processName}List.cs", null);
 #>
 <#@ include file="GenerateServiceManagerInterface.ttinclude" #>
 <# 
         dir = Path.Combine(path, ServiceFolder);
-        SaveOutputNotExists(dir, $"I{processName}Manager.cs");
+        SaveOutputNotExists(dir, $"I{processName}Manager.cs", null);
 #>
 <#@ include file="GenerateServiceManager.ttinclude" #>
 <# 
         dir = Path.Combine(path, ServiceFolder);
-        SaveOutputNotExists(dir, $"{processName}Manager.cs");
+        SaveOutputNotExists(dir, $"{processName}Manager.cs", null);
 #>
 <# } #>
 <#      
@@ -316,27 +318,27 @@
 <#@ include file="GenerateServicePartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}.cs", GenerateNewName);
 #>
 <#@ include file="GenerateServiceHelper.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceHelperName}.cs");
+        SaveOutputNotExists(dir, $"{ServiceHelperName}.cs", GenerateNewName);
 #>
 <#@ include file="GenerateServiceInterface.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"I{ServiceName}.cs");
+        SaveOutputNotExists(dir, $"I{ServiceName}.cs", null);
 #>
 <#@ include file="GenerateServiceCalculator.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}CalculatorDefault.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}CalculatorDefault.cs", GenerateNewName);
 #>
 <#@ include file="GenerateServiceValidator.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault.cs", GenerateNewName);
 #>
 <# } #>
 <#      
@@ -352,14 +354,46 @@
 <#@ include file="GenerateServiceTestPartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceTesterFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}Tests.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}Tests.cs", null);
 #>
 <#@ include file="GenerateServiceHelperTest.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceTesterFolder);
-        SaveOutputNotExists(dir, $"{ServiceHelperName}Tests.cs");
+        SaveOutputNotExists(dir, $"{ServiceHelperName}Tests.cs", null);
 #>
 <# } #>
+<#      
+    // Generate IO format and IOCsv class
+	if (generateIO && IOFormatName != null)
+	{
+#>              
+<#@ include file="GenerateIOFormat.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOFormatName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOCsv.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOCsvHelperName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManager.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManagerInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"I{IOServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManagerTester.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{IOServiceName}Tests.cs", GenerateNewName);
+#>
+<# } #>
+
 <#+
     public void SaveOutput(string destinationFolder, string outputFileName)
     {
@@ -373,8 +407,10 @@
         this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
     }
 
-    public void SaveOutputNotExists(string destinationFolder, string outputFileName)
+    public void SaveOutputNotExists(string destinationFolder, string outputFileName, string GenerateNewName)
     {
+        if (!string.IsNullOrEmpty(GenerateNewName))
+            outputFileName = outputFileName + GenerateNewName;
         // Write to destination folder
         //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
         string outputFilePath = Path.Combine(destinationFolder, outputFileName);

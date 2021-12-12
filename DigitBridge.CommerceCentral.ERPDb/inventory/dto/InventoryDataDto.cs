@@ -40,6 +40,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInventory => Inventory != null;
 
+        public InventoryDataDto NewData()
+        {
+            ProductBasic = new ProductBasicDto();
+            ProductExt = new ProductExtDto();
+            ProductExtAttributes = new ProductExtAttributesDto();
+            Inventory = new List<InventoryDto>();
+
+            return this;
+        }
     }
 }
 

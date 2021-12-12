@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
 
-            if (data.InventoryUpdateItems != null)
+            if (data.InventoryUpdateItems != null && !data.WithInventoryInfo())
             {
                 var inventoryUuidList = data.InventoryUpdateItems.Where(r=>!r.InventoryUuid.IsZero()).Select(r => r.InventoryUuid)
                     .Distinct().ToList();
@@ -122,7 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual Inventory GetInventory(InventoryUpdateData data,string productUuid, string inventoryUuid)
         {
             var inventoryData = GetInventoryData(data, productUuid);
-            System.Diagnostics.Debug.WriteLine($"ProductUuid:{productUuid},Data:{JsonConvert.SerializeObject(inventoryData)}");
+            //System.Diagnostics.Debug.WriteLine($"ProductUuid:{productUuid},Data:{JsonConvert.SerializeObject(inventoryData)}");
             return inventoryData == null ? null : inventoryData.Inventory.First(i => i.InventoryUuid == inventoryUuid);
         }
 
@@ -198,22 +198,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;
             item.LotNum = inv.LotNum;
             if (item.Description.IsZero()) item.Description = inv.LotDescription;
-            if (item.Notes.IsZero()) item.Notes = inv.Notes;
+            //if (item.Notes.IsZero()) item.Notes = inv.Notes;
 
-            item.UOM = inv.UOM;
-            item.PackType = inv.PackType;
-            item.PackQty = inv.PackQty;
+            if (item.UOM.IsZero()) item.UOM = inv.UOM;
+            if (item.PackType.IsZero()) item.PackType = inv.PackType;
+            if (item.PackQty.IsZero()) item.PackQty = inv.PackQty;
 
             //item.UpdatePack;
             //item.CountPack;
             //item.BeforeInstockPack;
-            item.BeforeInstockPack = inv.Instock;
+            if (item.BeforeInstockPack.IsZero()) item.BeforeInstockPack = inv.Instock;
 
-            item.UnitCost = inv.UnitCost;
-            item.AvgCost = inv.AvgCost;
+            if (item.UnitCost.IsZero()) item.UnitCost = inv.UnitCost;
+            if (item.AvgCost.IsZero()) item.AvgCost = inv.AvgCost;
             //item.LotCost;
-            item.LotInDate = inv.LotInDate;
-            item.LotExpDate = inv.LotExpDate;
+            if (item.LotInDate.IsZero()) item.LotInDate = inv.LotInDate;
+            if (item.LotExpDate.IsZero()) item.LotExpDate = inv.LotExpDate;
             //InvoiceItemType
             //InvoiceItemStatus
             //ItemDate

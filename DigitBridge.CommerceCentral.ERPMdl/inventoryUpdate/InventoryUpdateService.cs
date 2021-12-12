@@ -16,11 +16,38 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InventoryUpdateService
     {
+        #region services
+        private InventoryService _inventoryService;
+        protected InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService == null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        private InventoryLogService _inventoryLogService;
+
+        protected InventoryLogService InventoryLogService
+        {
+            get
+            {
+                if (_inventoryLogService == null)
+                    _inventoryLogService = new InventoryLogService(dbFactory);
+                return _inventoryLogService;
+            }
+        }
+        #endregion services
+
+        #region override methods
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -29,10 +56,139 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             base.Init();
             SetDtoMapper(new InventoryUpdateDataDtoMapperDefault());
-            SetCalculator(new InventoryUpdateServiceCalculatorDefault(this,this.dbFactory));
+            SetCalculator(new InventoryUpdateServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new InventoryUpdateServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.Data != null && this.Data.InventoryUpdateItems != null && this.Data.InventoryUpdateItems.Count > 0)
+                {
+                    await InventoryLogService.UpdateByInventoryUpdateAsync(this.Data);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.InventoryUpdate,
+                Action = (int)this.ProcessMode,
+                LogSource = "InventoryUpdateService",
+
+                MasterAccountNum = this.Data.InventoryUpdateHeader.MasterAccountNum,
+                ProfileNum = this.Data.InventoryUpdateHeader.ProfileNum,
+                DatabaseNum = this.Data.InventoryUpdateHeader.DatabaseNum,
+                ProcessUuid = this.Data.InventoryUpdateHeader.InventoryUpdateUuid,
+                ProcessNumber = this.Data.InventoryUpdateHeader.BatchNumber,
+                ChannelNum = 0,
+                ChannelAccountNum = 0,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
 
 
         /// <summary>
@@ -315,6 +471,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await InventoryUpdateHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {batchNumber}.");
+                return false;
+            }
             return await GetDataAsync(rowNum);
         }
 
@@ -393,37 +554,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = msglist;
             return payload;
         }
-        private InventoryLogService _inventoryLogService;
-
-        protected InventoryLogService InventoryLogService
-        {
-            get
-            {
-                if (_inventoryLogService == null)
-                    _inventoryLogService = new InventoryLogService(dbFactory);
-                return _inventoryLogService;
-            }
-        }
-
-        public override async Task<bool> SaveDataAsync()
-        {
-            if (await base.SaveDataAsync())
-            {
-                await InventoryLogService.UpdateByInventoryUpdateAsync(_data);
-                return true;
-            }
-            return false;
-        }
-
-        public override bool SaveData()
-        {
-            if (base.SaveData())
-            {
-                InventoryLogService.UpdateByInventoryUpdate(_data);
-                return true;
-            }
-            return false;
-        }
 
         public override async Task<bool> DeleteDataAsync()
         {
@@ -445,6 +575,125 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return true;
             }
             return false;
+        }
+
+
+        #region inventory update for one sku and warehouse
+
+        public virtual async Task<bool> AddCountAsync(IList<InventoryUpdateItems> items, int masterAccountNum, int profileNum, bool addNew = true, string process="WMS")
+        {
+            this.Add();
+            var header = this.Data.InventoryUpdateHeader;
+            header.DatabaseNum = dbFactory.DatabaseNum;
+            header.ProfileNum = profileNum;
+            header.MasterAccountNum = masterAccountNum;
+            header.InventoryUpdateUuid = Guid.NewGuid().ToString();
+            header.BatchNumber = (await GetNextPaymentNumberAsync(masterAccountNum, profileNum)).ToString();
+            header.InventoryUpdateType = (int)InventoryUpdateType.CycleCount;
+            header.InventoryUpdateStatus = 0;
+            header.UpdateDate = DateTime.UtcNow.Date;
+            header.UpdateTime = DateTime.UtcNow.ToTimeSpan();
+            header.Processor = process;
+
+            foreach (var item in items)
+            {
+                var obj = await CreateCountItemAsync(item.SKU, item.WarehouseCode, item.CountQty, masterAccountNum, profileNum);
+                if (obj == null || obj.UpdateQty == 0) continue;
+                this.Data.AddInventoryUpdateItems(obj);
+            }
+            if (this.Data.InventoryUpdateItems == null || this.Data.InventoryUpdateItems.Count == 0)
+            {
+                AddError($"There is no SKU need update.");
+                return false;
+            }
+
+            header.WarehouseCode = this.Data.InventoryUpdateItems[0].WarehouseCode;
+            header.WarehouseUuid = this.Data.InventoryUpdateItems[0].WarehouseUuid;
+            return await SaveDataAsync();
+         }
+
+        public virtual async Task<InventoryUpdateItems> CreateCountItemAsync(string sku, string warehouseCode, decimal qty, int masterAccountNum, int profileNum, bool addNew = true)
+        {
+            if (string.IsNullOrEmpty(sku) || string.IsNullOrEmpty(warehouseCode))
+                return null;
+
+            if (this.Data == null)
+                this.NewData();
+
+            var inv = await inventoryService.GetInventoryDataByWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum, addNew);
+            if (inv == null)
+            {
+                AddError($"Sku {sku} or warehouse {warehouseCode} not found.");
+                return null;
+            }
+            // add invrntoryData to cache
+            this.Data.SetCache(inv.ProductBasic.ProductUuid, inv);
+            var ind = inv.Inventory.FindByWarehouseCode(warehouseCode);
+
+            var updt = GenerateInventoryUpdateItems(new InventoryUpdateItems(), ind, inv);
+            if (updt != null)
+            {
+                this.Data.AddInventoryUpdateItems(updt);
+                qty = qty.ToQty();
+                var adj = qty - updt.BeforeInstockQty.ToQty();
+                updt.UpdatePack = adj;
+                updt.CountPack = qty;
+                updt.UpdateQty = adj;
+                updt.CountQty = qty;
+            }
+            return updt;
+        }
+
+        protected virtual InventoryUpdateItems GenerateInventoryUpdateItems(InventoryUpdateItems updt, Inventory ind, InventoryData inv)
+        {
+            if (updt == null)
+                updt = new InventoryUpdateItems();
+            updt.RowNum = 0;
+            updt.InventoryUpdateItemsUuid = Guid.NewGuid().ToString();
+            //updt.InventoryUpdateUuid = string.Empty
+            //updt.Seq 
+            updt.ItemDate = DateTime.UtcNow.Date;
+	        updt.ItemTime = DateTime.UtcNow.ToTimeSpan();
+            updt.SKU = ind.SKU;
+            updt.ProductUuid = ind.ProductUuid;
+            updt.InventoryUuid = ind.InventoryUuid;
+            updt.WarehouseUuid = ind.WarehouseUuid;
+            updt.WarehouseCode = ind.WarehouseCode;
+            updt.LotNum = ind.LotNum;
+            updt.Description = inv.ProductBasic.ProductTitle;
+            //updt.Notes = 
+            updt.UOM = inv.ProductExt.UOM;
+            updt.PackType = inv.ProductExt.PackType;
+            updt.PackQty = inv.ProductExt.PackQty;
+            //updt.UpdatePack
+            //updt.CountPack
+            updt.BeforeInstockPack = ind.Instock;
+            //updt.UpdateQty
+            //   updt.CountQty
+            updt.BeforeInstockQty = ind.Instock;
+            updt.UnitCost = ind.UnitCost;
+            updt.AvgCost = ind.AvgCost;
+            updt.LotCost = ind.AvgCost;
+            updt.LotInDate = ind.LotInDate;
+            updt.LotExpDate = ind.LotExpDate;
+            return updt;
+        }
+
+        #endregion inventory update for one sku and warehouse
+
+        public async Task<long> GetNextPaymentNumberAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+    SELECT COALESCE(MAX(CAST(BatchNumber AS bigint)), 0) AS num
+    FROM InventoryUpdateHeader
+    WHERE MasterAccountNum=@0 AND ProfileNum=@1
+	AND ISNUMERIC(BatchNumber) = 1
+    ";
+            return await dbFactory.Db.ExecuteScalarAsync<long>(
+                sql,
+                masterAccountNum.ToSqlParameter("@0"),
+                profileNum.ToSqlParameter("@1")
+            ) + 1;
         }
 
     }

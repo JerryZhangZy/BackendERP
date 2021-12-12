@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
+    /// <summary>
+    /// WMS download purchase order from erp, then send succeed downloaded purchaseOrderUuids back to erp.
+    /// </summary>
     public class WMSAckReceivePurchaseOrderClient : ApiClientBase<AcknowledgePayload>
     {
         /// <summary>
@@ -35,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="PurchaseOrderUuids"></param>
         /// <returns></returns>
-        public async Task<bool> AckReceivePurchaseOrdersAsync(int masterAccountNum, int profileNum, IList<string> PurchaseOrderUuids)
+        public async Task<bool> AckReceivePurchaseOrdersAsync(int masterAccountNum, int profileNum, IList<string> purchaseOrderUuids)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {
@@ -43,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             }
             var payload = new AcknowledgePayload()
             {
-                ProcessUuids = PurchaseOrderUuids
+                ProcessUuids = purchaseOrderUuids
             };
             return await PostAsync(payload, FunctionUrl.AckReceivePurchaseOrders);
         }
@@ -52,10 +55,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         {
             if (ResopneData == null)
             {
+                AddError(responseData);
+
                 //Maybe the api throw exception.
-                var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
-                if (exception != null)
-                    AddError(exception.ObjectToString());
+                //var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
+                //if (exception != null)
+                //    AddError(exception.ObjectToString());
                 return false;
             }
 

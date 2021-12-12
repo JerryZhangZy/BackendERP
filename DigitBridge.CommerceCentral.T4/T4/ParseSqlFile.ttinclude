@@ -455,6 +455,23 @@
                 return string.Empty;
             }
         }
+        public string FormatType
+        {
+            get 
+            { 
+                if (isQty) return "FormatType.Qty";
+                if (isAmount) return "FormatType.Amount";
+                if (isPrice) return "FormatType.Price";
+                if (isCost) return "FormatType.Cost";
+                if (Name.Equals("TaxRate", StringComparison.CurrentCultureIgnoreCase)) return "FormatType.TaxRate";
+                if (isRate) return "FormatType.Rate";
+                if (isDateTime) return "FormatType.Date";
+                if (isTime) return "FormatType.Time";
+                //if (isDecimal || isDouble) return "FormatType.Amount";
+                //if (isInt) return "FormatType.Amount";
+                return "null";
+            }
+        }
         public bool JsAlignRight
         {
             get 

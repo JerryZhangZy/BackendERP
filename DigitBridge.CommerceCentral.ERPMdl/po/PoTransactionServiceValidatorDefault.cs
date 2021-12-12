@@ -299,6 +299,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.PoTransaction.RowNum} not found.");
                 return IsValid;
             }
+
+            if (data.PoTransaction.TransStatus == (int)PoTransStatus.Closed)
+            {
+                AddError($"TransNum:{data.PoTransaction.TransNum} ,this PoTransaction is closed.");
+                return false;
+            }
             return true;
         }
 

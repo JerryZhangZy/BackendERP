@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public const int MasterAccountNum = 10001;
         public const int ProfileNum = 10001;
         public static OrderShipmentData GetFakerData_SkuInDB(IDataBaseFactory dbFactory, Inventory[] inventories = null)
-        { 
+        {
             var data = GetFakerData();
 
             if (inventories == null)
@@ -70,15 +70,45 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 {
                     var subItem = item.OrderShipmentShippedItem[i];
                     subItem.MasterAccountNum = MasterAccountNum;
-                    subItem.ProfileNum = ProfileNum; 
+                    subItem.ProfileNum = ProfileNum;
                     var inventory = inventories[i % data.OrderShipmentShippedItem.Count];
                     subItem.SKU = inventory.SKU;
                 }
-            } 
+            }
 
             return data;
         }
 
+
+        public static OrderShipmentData GetOrderShipmentDataFromDB(int masterAccountNum, int profileNum, IDataBaseFactory dbFactory)
+        {
+            var orderShipmentUuid = dbFactory.GetValue<OrderShipmentHeader, string>($@"
+SELECT TOP 1 ins.OrderShipmentUuid 
+FROM OrderShipmentHeader ins 
+INNER JOIN (
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
+WHERE itm.cnt > 0 and masterAccountNum={masterAccountNum} and profileNum={profileNum}
+");
+
+            var data = new OrderShipmentData(dbFactory);
+            var success = data.GetById(orderShipmentUuid);
+            Assert.True(success, "Data not found.");
+            return data;
+        }
+
+
+        public static OrderShipmentData GetFakerDataWithCountItem(int packageCount, int packageItemCount, int cancelledItemCount = 0)
+        {
+            var OrderShipmentData = new OrderShipmentData();
+            OrderShipmentData.OrderShipmentHeader = OrderShipmentHeaderTests.GetFakerData().Generate();
+            if (cancelledItemCount > 0)
+                OrderShipmentData.OrderShipmentCanceledItem = OrderShipmentCanceledItemTests.GetFakerData().Generate(cancelledItemCount);
+            OrderShipmentData.OrderShipmentPackage = OrderShipmentPackageTests.GetFakerData().Generate(packageCount);
+            foreach (var ln in OrderShipmentData.OrderShipmentPackage)
+                ln.OrderShipmentShippedItem = OrderShipmentShippedItemTests.GetFakerData().Generate(packageItemCount);
+            return OrderShipmentData;
+        }
     }
 }
 

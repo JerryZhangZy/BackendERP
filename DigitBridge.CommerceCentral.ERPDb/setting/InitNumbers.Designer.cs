@@ -69,6 +69,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Number",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _number;
 
+        [Column("MaxNumber",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _maxNumber;
+
         [Column("Prefix",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _prefix;
 
@@ -239,6 +242,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// The last assigned number, real number will be more than init number and not exist number
+		/// </summary>
+        public virtual long MaxNumber
+        {
+            get
+            {
+				return _maxNumber; 
+            }
+            set
+            {
+				_maxNumber = value; 
+				OnPropertyChanged("MaxNumber", value);
+            }
+        }
+
+		/// <summary>
 		/// Prefix append to Init number
 		/// </summary>
         public virtual string Prefix
@@ -285,7 +304,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -360,6 +379,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_type = String.Empty; 
 			_currentNumber = default(int); 
 			_number = default(int); 
+			_maxNumber = default(long); 
 			_prefix = String.Empty; 
 			_suffix = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
@@ -409,6 +429,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<InitNumbers>("WHERE CustomerUuid = @0 ", customerUuid);
 		}
 
+		public override InitNumbers ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override InitNumbers ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

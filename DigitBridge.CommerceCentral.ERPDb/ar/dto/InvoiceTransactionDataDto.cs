@@ -36,6 +36,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceDataDto InvoiceDataDto { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceDataDto => InvoiceDataDto != null;
+
+        public InvoiceTransactionDataDto NewData()
+        {
+            InvoiceTransaction = new InvoiceTransactionDto();
+            InvoiceReturnItems = new List<InvoiceReturnItemsDto>();
+            InvoiceDataDto = new InvoiceDataDto();
+
+            return this;
+        }
     }
 }
 

@@ -29,6 +29,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class PoReceiveServiceValidatorDefault : PoTransactionServiceValidatorDefault
     {
         public PoReceiveServiceValidatorDefault() : base() { }
+
+
+        [XmlIgnore, JsonIgnore]
+        protected PoTransactionService _poTransactionService;
+        [XmlIgnore, JsonIgnore]
+        public PoTransactionService poTransactionService
+        {
+            get
+            {
+                if (_poTransactionService is null)
+                    _poTransactionService = new PoTransactionService(dbFactory);
+                return _poTransactionService;
+            }
+        }
         public PoReceiveServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -74,63 +88,71 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction is require.");
                 return false;
             }
-            //decimal totalAmount = 0;
-            //foreach (var item in dto.PoTransactionItems)
-            //{
-            //    totalAmount += item.TransQty.Value;
-            //}
-            //dto.PoTransaction.TotalAmount = totalAmount;
+
+            if (!dto.HasPoTransactionItems)
+            {
+                AddError("Transactionitem's transqty cannot be less than or equal to 0");
+                return false;
+            }
+          
 
             if (processingMode == ProcessingMode.Add)
             {
+                dto.PoTransaction.TransStatus = (int)PoTransStatus.StockReceive;
                 // dto.PoTransaction.TransType = (int)TransTypeEnum.Payment;  
             }
+
+
             // payment shouldn't add any return item.
             return await base.ValidateAsync(dto, processingMode);
         }
         protected override bool ValidateAdd(PoTransactionData data)
         {
             var isValid = base.ValidateAdd(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
         protected override async Task<bool> ValidateAddAsync(PoTransactionData data)
         {
             var isValid = await base.ValidateAddAsync(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
         protected override bool ValidateEdit(PoTransactionData data)
         {
             var isValid = base.ValidateEdit(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
         protected override async Task<bool> ValidateEditAsync(PoTransactionData data)
         {
             var isValid = await base.ValidateEditAsync(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
 
-        private bool ValidReceivedQty(IList<PoTransactionItems> poReceiveItems)
+        private bool ValidReceivedQty(PoTransactionData data)
         {
             var isValid = true;
-
+           var  poReceiveItems = data.PoTransactionItems;
             if (poReceiveItems == null || poReceiveItems.Count == 0)
                 return isValid;
 
             foreach (var item in poReceiveItems)
             {
-                //return qty cannot > open qty
-                if (item.TransQty > item.OpenQty)
+
+                if (item.TransQty <= 0)
                 {
                     isValid = false;
-                    AddError($"Receive item TransQty cannot greater than OpenQty. [Sku:{item.SKU},PoItemUuid:{item.PoUuid},TransQty:{item.TransQty},OpenQty:{item.OpenQty}]");
+             
+                    AddError($"{item.PoItemUuid}Receive item TransQty cannot less than 0.");
                 }
+ 
             }
             return isValid;
         }
+
+ 
     }
 }
 

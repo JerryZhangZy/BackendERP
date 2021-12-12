@@ -108,6 +108,9 @@
     <None Include="po\PoTransaction.sql" />
     <None Include="inventory\Warehouse.sql" />
     <None Include="po\PoHeader_Update.sql" />
+    <None Include="sql\clear data by shipmentid.sql" />
+    <None Include="sql\reset salesorder to pending.sql" />
+    <None Include="sql\check so download and shipment upload.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -285,7 +288,24 @@
     <None Include="channelOrder\OrderHeaderMerchantExt_Update.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="channelOrder\OrderLineMiscExt.sql" />
-    <Build Include="channelOrder\OrderLineMiscExt_Update.sql" />
+    <None Include="po\PoTransactionItems_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sql\check wms shipment upload and transfer count.sql" />
+    <None Include="sql\check shipment data between wms and erp.sql" />
+    <None Include="sql\check shipment upload data.sql" />
+    <None Include="sql\debug_credit_payment.sql" />
+    <None Include="sql\debug_invoice_payment.sql" />
+    <None Include="sql\debug_event_erp.sql" />
+    <None Include="sql\debug_create_invoice_from_shipment.sql" />
+    <None Include="sql\debug_centralOrder_to_salesOrder.sql" />
+    <None Include="sql\calculate_invoice_balance_and_status.sql" />
+    <None Include="sql\check salesorder item.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="setting\InitNumbers_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\CustomIOFormat.sql" />
   </ItemGroup>
 </Project>

@@ -93,6 +93,37 @@ FROM MiscInvoiceHeader ins
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact]
+        public void Update_ignored_fields_should_no_effect()
+        {
+            string number = Guid.NewGuid().ToString();
+            var srv = new MiscInvoiceService(DataBaseFactory);
+            var mapper = srv.DtoMapper;
+            srv.Add();
+            var data = GetFakerData();
+            data.MiscInvoiceHeader.MasterAccountNum = 1001;
+            data.MiscInvoiceHeader.ProfileNum = 1000;
+            data.MiscInvoiceHeader.MiscInvoiceNumber = number;
+            data.MiscInvoiceHeader.PaidAmount = 10;
+            data.MiscInvoiceHeader.CreditAmount = 10;
+            data.MiscInvoiceHeader.CustomerCode = "test-customer-code";
+            var dto = mapper.WriteDto(data, null);
+            var result = srv.Add(dto);
+
+            srv.Edit();
+            srv.GetByNumber(1001, 1000, number);
+            srv.Data.MiscInvoiceHeader.PaidAmount = 15;
+            srv.Data.MiscInvoiceHeader.CreditAmount = 15;
+            srv.Data.MiscInvoiceHeader.CustomerCode = "test-customer-code-1";
+            srv.SaveData();
+
+            srv.List();
+            srv.GetByNumber(1001, 1000, number);
+            Assert.Equal(10, srv.Data.MiscInvoiceHeader.PaidAmount);
+            Assert.Equal(10, srv.Data.MiscInvoiceHeader.PaidAmount);
+            Assert.Equal("test-customer-code-1", srv.Data.MiscInvoiceHeader.CustomerCode);
+        }
+
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public async Task AddDtoAsync_Test()

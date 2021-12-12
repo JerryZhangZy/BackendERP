@@ -20,15 +20,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class MiscInvoicePaymentService : MiscInvoiceTransactionService, IMiscInvoicePaymentService
     {
-        public MiscInvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
-        {
-        }
-
-        public override MiscInvoiceTransactionService Init()
-        {
-            return base.Init();
-        }
-
         MiscInvoiceService _miscInvoiceService;
         MiscInvoiceService MiscInvoiceService
         {
@@ -38,6 +29,159 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _miscInvoiceService;
             }
         }
+
+        public MiscInvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
+        {
+        }
+
+        #region override methods
+
+        public override MiscInvoiceTransactionService Init()
+        {
+            return base.Init();
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+                if (this.Data?.MiscInvoiceTransaction != null)
+                {
+                    await MiscInvoiceService.UpdateInvoiceBalanceAsync(this.Data.MiscInvoiceTransaction.TransUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+                if (this.Data?.MiscInvoiceTransaction != null)
+                {
+                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+                if (this.Data?.MiscInvoiceTransaction != null)
+                {
+                    await MiscInvoiceService.UpdateInvoiceBalanceAsync(this.Data.MiscInvoiceTransaction.TransUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+                if (this.Data?.MiscInvoiceTransaction != null)
+                {
+                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.MiscInvoicePayment,
+                Action = (int)this.ProcessMode,
+                LogSource = "MiscInvoicePaymentService",
+
+                MasterAccountNum = this.Data.MiscInvoiceTransaction.MasterAccountNum,
+                ProfileNum = this.Data.MiscInvoiceTransaction.ProfileNum,
+                DatabaseNum = this.Data.MiscInvoiceTransaction.DatabaseNum,
+                ProcessUuid = this.Data.MiscInvoiceTransaction.TransUuid,
+                ProcessNumber = $"{this.Data?.MiscInvoiceData?.MiscInvoiceHeader.MiscInvoiceNumber}-{this.Data.MiscInvoiceTransaction.TransNum}",
+                ChannelNum = 0,
+                ChannelAccountNum = 0,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
+
 
         protected async Task<bool> GetMiscPaymentData(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
         {
@@ -62,7 +206,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Description = "Add misc payment trans for applying prepayment amount",
 
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
-                PaidBy = (int)PaidByAr.CreditMemo,
+                PaidBy = (int)PaidByAr.PrePayment,
                 CheckNum = invoiceNumber,
                 AuthCode = invoiceTransUuid,
                 TransDate = DateTime.UtcNow,
@@ -144,7 +288,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.MiscInvoiceTransaction.DatabaseNum,
                 ProcessUuid = this.Data.MiscInvoiceTransaction.TransUuid,
                 ProcessNumber = this.Data.MiscInvoiceTransaction.TransNum.ToString(),
-                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -206,6 +350,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return expectedAmount > miscInvoiceBalance ? miscInvoiceBalance : expectedAmount;
 
         }
+
+        public async Task<int> GetNextTransNumAsync(string miscInvoiceUuid)
+        {
+            var sql = $@"
+SELECT COALESCE(MAX(TransNum), 0)
+FROM MiscInvoiceTransaction
+WHERE MiscInvoiceUuid=@0
+";
+            return await dbFactory.Db.ExecuteScalarAsync<int>(
+                sql,
+                miscInvoiceUuid.ToSqlParameter("@0")
+            ) + 1;
+        }
+
     }
 }
 

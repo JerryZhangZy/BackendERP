@@ -136,38 +136,38 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class InvoceReturnFilter
     {
-        //public string TransUuid { get; set; }
-
+        public string TransUuid { get; set; }
+        public DateTime TransDateFrom { get; set; }
+        public DateTime TransDateTo { get; set; }
+        public int TransType { get; set; }
+        public int TransStatus { get; set; }
         public string InvoiceUuid { get; set; }
-
-        public string ReturnItemType { get; set; }
-
-        public string ReturnItemStatus { get; set; }
-
-        public string SKU { get; set; }
-
-        //public string ProductUuid { get; set; }
-
+        public string QboDocNumber { get; set; }
+        public string InvoiceNumberFrom { get; set; }
+        public string InvoiceNumberTo { get; set; }
+        public int InvoiceType { get; set; }
+        public int InvoiceStatus { get; set; }
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
+        public long OrderShipmentNum { get; set; }
+        public string ShippingCarrier { get; set; }
+        public long DistributionCenterNum { get; set; }
+        public int CentralOrderNum { get; set; }
+        public int ChannelNum { get; set; }
+        public int ChannelAccountNum { get; set; }
+        public string ChannelOrderID { get; set; }
         public string WarehouseCode { get; set; }
-
-        public string LotNum { get; set; }
-
-        public DateTime ReturnDateFrom { get; set; }
-
-        public DateTime ReturnDateTo { get; set; }
+        public string RefNum { get; set; }
+        public string CustomerPoNum { get; set; }
+        public string ShipToName { get; set; }
+        public string ShipToState { get; set; }
+        public string ShipToPostalCode { get; set; }
 
         public static Faker<InvoceReturnFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<InvoceReturnFilter>()
                 .RuleFor(u => u.InvoiceUuid, f => string.Empty)
-                .RuleFor(u => u.ReturnItemType, f =>string.Empty)
-                .RuleFor(u => u.ReturnItemStatus, f =>string.Empty)
-                .RuleFor(u => u.SKU, f => string.Empty)
-                .RuleFor(u => u.WarehouseCode, f => string.Empty)
-                .RuleFor(u => u.LotNum, f => string.Empty)
-                .RuleFor(u => u.ReturnDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
-                .RuleFor(u => u.ReturnDateTo, f => f.Date.Past(0).Date.Date) 
                 ;
             #endregion faker data rules
         }

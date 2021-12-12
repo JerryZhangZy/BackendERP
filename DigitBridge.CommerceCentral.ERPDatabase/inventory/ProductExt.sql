@@ -108,3 +108,11 @@ CREATE NONCLUSTERED INDEX [IX_IProductExt_Status] ON [dbo].[ProductExt]
     [ProfileNum] ASC, 
     [ProductStatus] ASC
 ) 
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_StyleCode')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_StyleCode] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [StyleCode] ASC
+) 

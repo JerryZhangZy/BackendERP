@@ -28,18 +28,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     public partial class InvoiceServiceTests
     {
         [Fact]
-        public void TestMethod()
+        public async Task Update_ignored_fields_shoud_no_effect()
         {
+            string invoiceNumber = Guid.NewGuid().ToString();
             var srv = new InvoiceService(DataBaseFactory);
-            srv.Add();
-            srv.Data.AddInvoiceItems(new InvoiceItems
-            {
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            data.InvoiceHeader.MasterAccountNum = 1001;
+            data.InvoiceHeader.ProfileNum = 1000;
+            data.InvoiceHeader.InvoiceNumber = invoiceNumber;
+            data.InvoiceHeader.PaidAmount = 10;
+            data.InvoiceHeader.CreditAmount = 10;
+            data.InvoiceHeader.CustomerCode = "test-customer-code";
+            var dto = mapper.WriteDto(data, null);
 
-            });
+            await srv.AddAsync(dto);
 
-            bool result = srv.SaveData();
+            srv.Edit();
+            await srv.GetDataByNumberAsync(1001, 1000, invoiceNumber);
+            srv.Data.InvoiceHeader.PaidAmount = 15;
+            srv.Data.InvoiceHeader.CreditAmount = 15;
+            srv.Data.InvoiceHeader.CustomerCode = "test-customer-code-1";
+            await srv.SaveDataAsync();
 
-            Assert.True(result);
+            srv.List();
+            await srv.GetDataByNumberAsync(1001, 1000, invoiceNumber);
+
+            Assert.Equal(10, srv.Data.InvoiceHeader.PaidAmount);
+            Assert.Equal(10, srv.Data.InvoiceHeader.CreditAmount);
+            Assert.Equal("test-customer-code-1", srv.Data.InvoiceHeader.CustomerCode);
         }
 
 
@@ -377,7 +394,7 @@ WHERE itm.cnt > 0
             var originalPaidAmount = header.PaidAmount;
             var originalPaidBalance = header.Balance;
 
-            success = await srv.PayInvoiceAsync(trans);
+            success = await srv.UpdateInvoicePaidAmountAsync(trans);
             Assert.True(success, "call PayInvoiceAsync failed.");
 
             // reget invoice data from db.
@@ -391,6 +408,30 @@ WHERE itm.cnt > 0
             success = paidAmount == originalPaidBalance - newHeader.Balance;
             Assert.True(success, "Balance is error.");
         }
+
+
+        [Fact()]
+        public async Task UpdateInvoiceBalanceAsync_Test()
+        {
+            var transUuid = "46530b79-2906-4fff-84b7-96a8527db8fb";
+
+            var srv = new InvoiceService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("UpdateInvoiceBalanceAsync_Test"))
+                {
+                    var success = await srv.UpdateInvoiceBalanceAsync(transUuid, true);
+                    success = await srv.UpdateInvoiceBalanceAsync(transUuid);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
 
     }
 }

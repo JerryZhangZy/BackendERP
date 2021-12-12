@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -39,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             return new Faker<CustomerAddress>()
 					.RuleFor(u => u.AddressUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.AddressCode, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.AddressCode, f => f.Lorem.Word())
 					.RuleFor(u => u.AddressType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Description, f => f.Commerce.ProductName())
 					.RuleFor(u => u.Name, f => f.Company.CompanyName())

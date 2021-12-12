@@ -7,15 +7,30 @@ namespace DigitBridge.Base.Common
 {
     public static class ERPQueueSetting
     {
-        private static IConfigurationRoot _config= new ConfigurationBuilder().
+        private static IConfigurationRoot _config = new ConfigurationBuilder().
                     SetBasePath(Environment.CurrentDirectory).
                     AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
                     AddEnvironmentVariables().
                     Build();
 
-
+#if DEBUG
+        public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
+        public static string ERPQuickBooksInvoiceQueue => "erp-quickbooks-invoice-queue";
+        public static string ERPQuickBooksInvoiceVoidQueue => "erp-quickbooks-invoice-void-queue";
+        public static string ERPQuickBooksReturnQueue => "erp-quickbooks-return-queue";
+        public static string ERPQuickBooksReturnDeleteQueue => "erp-quickbooks-return-delete-queue";
+        public static string ERPQuickBooksPaymentQueue => "erp-quickbooks-payment-queue";
+        public static string ERPQuickBooksPaymentDeleteQueue => "erp-quickbooks-payment-delete-queue";
+        public static string ERPSalesOrderQueue => GetValueByName("ERPSalesOrderQueueName");
+        public static string ERPInvoiceQueue => GetValueByName("ERPInvoiceQueueName");
+        public static string ERPCreateInvoiceByOrdershipmentQueue => "erp-create-invoice-by-ordershipment";
+        public static string ERPCreateSalesOrderByCentralorderQueue => "erp-create-salesorder-by-centralorder";
+        public static string ERPCreateShipmentByWMSQueue => "erp-create-shipment-by-wms";
+        public static string ERPSyncProductQueue => "erp-sync-product-from-productbasic-queue";
+        public static string ERPSyncInventoryByWmsQueue => "erp-sync-inventory-by-wms";
+#else
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
-        
+
         public static string ERPQuickBooksInvoiceQueue => GetValueByName("ERPQuickBooksInvoiceQueueName");
         public static string ERPQuickBooksInvoiceVoidQueue => GetValueByName("ERPQuickBooksInvoiceVoidQueueName");
         public static string ERPQuickBooksReturnQueue => GetValueByName("ERPQuickBooksReturnQueueName");
@@ -26,6 +41,10 @@ namespace DigitBridge.Base.Common
         public static string ERPInvoiceQueue => GetValueByName("ERPInvoiceQueueName");
         public static string ERPCreateInvoiceByOrdershipmentQueue => GetValueByName("ERPCreateInvoiceByOrdershipmentQueueName");
         public static string ERPCreateSalesOrderByCentralorderQueue => GetValueByName("ERPCreateSalesOrderByCentralorderQueueName");
+        public static string ERPCreateShipmentByWMSQueue => GetValueByName("ERPCreateShipmentByWMSQueueName");
+        public static string ERPSyncProductQueue => GetValueByName("ERPSyncProductQueueName");
+        public static string ERPSyncInventoryByWmsQueue => GetValueByName("ERPSyncInventoryByWmsQueueName");
+#endif
 
         public static string GetValueByName(string name)
         {

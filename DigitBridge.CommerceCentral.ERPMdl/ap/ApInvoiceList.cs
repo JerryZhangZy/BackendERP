@@ -123,6 +123,7 @@ SELECT
             try
             {
                 payload.ApInvoiceListCount = await CountAsync();
+
                 payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
                     payload.ApInvoiceList = sb;

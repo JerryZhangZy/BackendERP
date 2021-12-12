@@ -25,6 +25,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class VendorService
     {
 
+        #region override methods
+
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
@@ -32,10 +34,151 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             base.Init();
             SetDtoMapper(new VendorDataDtoMapperDefault());
-            SetCalculator(new VendorServiceCalculatorDefault(this,this.dbFactory));
+            SetCalculator(new VendorServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new VendorServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.Data?.Vendor != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                        await initNumbersService.UpdateMaxNumberAsync(this.Data.Vendor.MasterAccountNum, this.Data.Vendor.ProfileNum, ActivityLogType.Vendor, this.Data.Vendor.VendorCode);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+
+                if (this.Data?.Vendor != null)
+                {
+                    if (_ProcessMode == ProcessingMode.Add)
+                    {
+                          initNumbersService.UpdateMaxNumber(this.Data.Vendor.MasterAccountNum, this.Data.Vendor.ProfileNum, ActivityLogType.Vendor, this.Data.Vendor.VendorCode);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Vendor,
+                Action = (int)this.ProcessMode,
+                LogSource = "VendorService",
+
+                MasterAccountNum = this.Data.Vendor.MasterAccountNum,
+                ProfileNum = this.Data.Vendor.ProfileNum,
+                DatabaseNum = this.Data.Vendor.DatabaseNum,
+                ProcessUuid = this.Data.Vendor.VendorUuid,
+                ProcessNumber = this.Data.Vendor.VendorCode,
+                ChannelNum = 0,
+                ChannelAccountNum = 0,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
 
 
         protected VendorAddressService _vendorAddressService;
@@ -387,6 +530,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, payload.MasterAccountNum, payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {vendorCode}.");
+                return false;
+            }
+
+
             return await GetDataAsync(rowNum);
         }
 
@@ -470,7 +620,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
            return vendorAddressService.ToDto();
         }
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
+        {
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.Vendor);
 
+        }
+        public  string GetNextNumber(int masterAccountNum, int profileNum)
+        {
+            return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.Vendor);
+
+        }
 
     }
 }

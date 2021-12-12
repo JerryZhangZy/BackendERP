@@ -23,6 +23,56 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class OrderShipmentService
     {
+        #region Service Property
+
+        private CustomerService _customerService;
+        public CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
+
+        private InventoryService _inventoryService;
+        public InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService is null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        private InventoryLogService _inventoryLogService;
+        public InventoryLogService inventoryLogService
+        {
+            get
+            {
+                if (_inventoryLogService is null)
+                    _inventoryLogService = new InventoryLogService(dbFactory);
+                return _inventoryLogService;
+            }
+        }
+
+        private SalesOrderService _salesOrderService;
+        public SalesOrderService salesOrderService
+        {
+            get
+            {
+                if (_salesOrderService is null)
+                    _salesOrderService = new SalesOrderService(dbFactory);
+                return _salesOrderService;
+            }
+        }
+
+        #endregion
+
+
+        #region override methods
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -35,6 +85,171 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new OrderShipmentServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+                if (this.Data?.OrderShipmentHeader != null)
+                {
+                    inventoryLogService.UpdateByShipment(this.Data);
+
+                    // Update shipped qty in S/O and openSoQty in Inventory
+                    var shipmentHeader = this.Data.OrderShipmentHeader;
+                    await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, true);
+                    await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(shipmentHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+                if (this.Data?.OrderShipmentHeader != null)
+                {
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+                if (this.Data?.OrderShipmentHeader != null)
+                {
+                    // Update shipped qty in S/O and openSoQty in Inventory
+                    var shipmentHeader = this.Data.OrderShipmentHeader;
+                    await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, false);
+                    await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(shipmentHeader.SalesOrderUuid, false);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+                if (this.Data?.OrderShipmentHeader != null)
+                {
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+                if (this.Data?.OrderShipmentHeader != null)
+                {
+                    if (this.ProcessMode == ProcessingMode.Delete)
+                    {
+                        // update inventoryLog and update instock
+                        await inventoryLogService.ClearInventoryLogByLogUuidAsync(this.Data.OrderShipmentHeader.OrderShipmentUuid);
+                        //TODO roll back order status to which one?
+                    }
+                    else
+                    {
+                        // set auto idetity number to children tables 
+                        await UpdateOrderShipmentNumReferenceAsync(this.Data.OrderShipmentHeader.OrderShipmentUuid);
+                        // update inventoryLog and update instock
+                        await inventoryLogService.UpdateByShipmentAsync(this.Data);
+                    }
+                    // update salesorder status.
+                    await salesOrderService.UpdateOrderStautsFromShipmentAsync(this.Data.OrderShipmentHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Shipment,
+                Action = (int)this.ProcessMode,
+                LogSource = "OrderShipmentService",
+
+                MasterAccountNum = this.Data.OrderShipmentHeader.MasterAccountNum,
+                ProfileNum = this.Data.OrderShipmentHeader.ProfileNum,
+                DatabaseNum = this.Data.OrderShipmentHeader.DatabaseNum,
+                ProcessUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid,
+                ProcessNumber = this.Data.OrderShipmentHeader.OrderShipmentNum.ToString(),
+                ChannelNum = this.Data.OrderShipmentHeader.ChannelNum,
+                ChannelAccountNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
 
 
         /// <summary>
@@ -57,9 +272,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         /// <summary>
@@ -82,9 +295,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(OrderShipmentPayload payload)
@@ -108,9 +319,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         public virtual async Task<bool> AddAsync(OrderShipmentPayload payload)
@@ -134,9 +343,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -162,9 +369,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         /// <summary>
@@ -190,9 +395,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         public async Task GetListByOrderShipmentNumbersAsync(OrderShipmentPayload payload, IList<string> orderShipmentNumbers)
@@ -214,6 +417,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.DetachData(this.Data);
             }
             payload.OrderShipments = result;
+
+            if (!result.Any())
+                payload.ReturnError("No data be found");
         }
 
         /// <summary>
@@ -243,9 +449,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         /// <summary>
@@ -274,9 +478,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         InventoryLogService logService;
@@ -296,14 +498,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNum.ToString());
-            success = success && DeleteData();
-            if (success)
-            {
-                if (logService == null) logService = new InventoryLogService(dbFactory);
-                await logService.UpdateByDeleteShipmentAsync(Data.OrderShipmentHeader.OrderShipmentUuid);
-                AddActivityLogForCurrentData();
-            }
-            return success;
+            if (!success)
+                return false;
+            return await DeleteDataAsync();
         }
 
         public virtual async Task<bool> GetDataAsync(OrderShipmentPayload payload, string number)
@@ -315,53 +512,86 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, number);
         }
-        protected void AddActivityLogForCurrentData()
+
+        public async Task<bool> UpdateProcessStatusAsync(string ordershipmentUuid, OrderShipmentProcessStatusEnum status, string invoiceUuid, string invoiceNumber)
         {
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.Shipment,
-                Action = (int)this.ProcessMode,
-                LogSource = "OrderShipmentService",
-
-                MasterAccountNum = this.Data.OrderShipmentHeader.MasterAccountNum,
-                ProfileNum = this.Data.OrderShipmentHeader.ProfileNum,
-                DatabaseNum = this.Data.OrderShipmentHeader.DatabaseNum,
-                ProcessUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid,
-                ProcessNumber = this.Data.OrderShipmentHeader.OrderShipmentNum.ToString(),
-                ChannelNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
-                ChannelAccountNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
-
-                LogMessage = string.Empty
-            });
+            var sql = $@"
+UPDATE OrderShipmentHeader 
+SET ProcessStatus=@0, 
+ProcessDateUtc=@1,
+InvoiceUuid=@2,
+InvoiceNumber=@3
+WHERE OrderShipmentUuid=@4 
+";
+            return await dbFactory.Db.ExecuteAsync(
+                sql,
+                ((int)status).ToSqlParameter("@0"),
+                DateTime.UtcNow.ToSqlParameter("@1"),
+                invoiceUuid.ToSqlParameter("@2"),
+                invoiceNumber.ToSqlParameter("@3"),
+                ordershipmentUuid.ToSqlParameter("@4")
+            ) > 0;
         }
 
-        public bool MarkShipmentTransferredToInvoice(string ordershipmentUuid)
+        public async Task<bool> UpdateOrderShipmentNumReferenceAsync(string orderShipmentUuid)
         {
-            Edit();
-            if (GetDataById(ordershipmentUuid))
+            var sql = $@"
+UPDATE spk 
+SET spk.OrderShipmentNum=shd.OrderShipmentNum 
+FROM OrderShipmentPackage spk 
+INNER JOIN OrderShipmentHeader shd ON (spk.OrderShipmentUuid = shd.OrderShipmentUuid)
+WHERE spk.OrderShipmentUuid=@0 
+";
+            await dbFactory.Db.ExecuteAsync(sql,
+                orderShipmentUuid.ToSqlParameter("@0")
+            );
+
+            var sql1 = $@"
+UPDATE spi
+SET spi.OrderShipmentNum=spk.OrderShipmentNum,
+spi.OrderShipmentPackageNum=spk.OrderShipmentPackageNum
+FROM OrderShipmentShippedItem spi 
+INNER JOIN OrderShipmentPackage spk ON (spk.OrderShipmentPackageUuid = spi.OrderShipmentPackageUuid)
+WHERE spi.OrderShipmentUuid=@0 
+";
+            await dbFactory.Db.ExecuteAsync(sql1,
+                orderShipmentUuid.ToSqlParameter("@0")
+            );
+
+
+            var sql2 = $@"
+UPDATE spc 
+SET spc.OrderShipmentNum=shd.OrderShipmentNum 
+FROM OrderShipmentCanceledItem spc
+INNER JOIN OrderShipmentHeader shd ON (spc.OrderShipmentUuid = shd.OrderShipmentUuid)
+WHERE spc.OrderShipmentUuid=@0 
+";
+            await dbFactory.Db.ExecuteAsync(sql2,
+                orderShipmentUuid.ToSqlParameter("@0")
+                );
+
+            return true;
+        }
+
+        /// <summary>
+        /// Get ShipmentUuid by OrderDCAssignmentNum or sSalesOrderUuid
+        /// </summary>
+        public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
+        {
+            if (string.IsNullOrEmpty(orderSourceCode) && string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
+        }
+
+        public async Task<(string, string)> GetShipmentUuidAndInvoiceUuidAsync(int masterAccountNum, int profileNum, string shipmentID)
+        {
+            using (var tx = new ScopedTransaction(dbFactory))
             {
-                Data.OrderShipmentHeader.ProcessStatus = OrderShipmentProcessStatusEnum.Transferred.ToInt();
-                Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
-                return SaveData();
+                return await OrderShipmentHelper.GetShipmentUuidAndInvoiceUuidAsync(shipmentID, masterAccountNum, profileNum);
             }
-            return false;
         }
 
-        public async Task<bool> MarkShipmentTransferredToInvoiceAsync(string ordershipmentUuid)
-        {
-            Edit();
-            if (GetDataById(ordershipmentUuid))
-            {
-                if (Data.OrderShipmentHeader.ProcessStatus == (int)OrderShipmentProcessStatusEnum.Default)
-                {
-                    Data.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Transferred;
-                    Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
-                    return await SaveDataAsync();
-                }
-                return true;
-            }
-            return false;
-        }
     }
 }
 

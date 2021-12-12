@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class CustomerServiceCalculatorDefault : ICalculator<CustomerData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public CustomerServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        private ICustomerService _customerService;
+        public CustomerServiceCalculatorDefault(ICustomerService  customerService, IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage =(IMessage) customerService;
+            this._customerService = customerService;
             this.dbFactory = dbFactory;
         }
 
@@ -118,6 +119,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //EnterBy
             //UpdateBy
             */
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                if (string.IsNullOrEmpty(data.Customer.CustomerCode))
+                {
+                    data.Customer.CustomerCode = _customerService.GetNextNumber(data.Customer.MasterAccountNum, data.Customer.ProfileNum);
+                }
+
+            }
 
             return true;
         }

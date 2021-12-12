@@ -216,7 +216,28 @@ AND PoNum = @poNum
             );
             return result;
         }
+        public static async Task<List<StringArray>> GetPoNumsByPoItemUuidAsync(List<StringArray> param, int masterAccountNum, int profileNum)
+        {
+            if (param == null || param.Count == 0)
+                return new List<StringArray>(0);
+            //            var sql = $@" 
+            //SELECT (SELECT [PoNum]  FROM [dbo].[PoHeader] WHERE PoUuid=inv.PoUuid) as PoNum FROM [dbo].[PoItems] inv WHERE Exists (SELECT item0 AS PoItemUuid  FROM @SKUTable st WHERE inv.PoItemUuid=st.item0 ) And MasterAccountNum=@masterAccountNum and ProfileNum=@pofileNum
+            //";
+            var sql = $@" 
+SELECT PoNum FROM [dbo].[PoHeader] inv WHERE Exists (SELECT item0 AS PoUuid  FROM @SKUTable st WHERE inv.PoUuid=st.item0 ) And MasterAccountNum=@masterAccountNum and ProfileNum=@pofileNum
+";
 
+            var sqlParameters = new IDataParameter[3]
+            {
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                param.ToStringArrayListParameters("SKUTable")
+            };
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                ( string poNum) => new StringArray() { Item0 = poNum },
+                sqlParameters);
+        }
     }
 }
 

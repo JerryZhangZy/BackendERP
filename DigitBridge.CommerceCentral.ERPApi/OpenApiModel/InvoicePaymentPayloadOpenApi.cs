@@ -26,21 +26,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Add API
     /// </summary>
     [Serializable()]
-    public class InvoicePaymentPayloadAdd
+    public class InvoicePaymentPayloadUpdate
     {
         /// <summary>
         /// (Request Data) InvoiceTransaction object to add.
         /// (Response Data) InvoiceTransaction object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to add.")]
+        [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction data for all payment template.")]
         public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
 
-        public static InvoicePaymentPayloadAdd GetSampleData()
+        /// <summary>
+        /// (Request Data) invoice paid amount to add.
+        /// (Response Data) invoice paid amount which has been added.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request) Invoice payment apply amount for each invoice.")]
+        public IList<ApplyInvoice> ApplyInvoices { get; set; } = new List<ApplyInvoice>();
+
+        public static InvoicePaymentPayloadUpdate GetSampleData()
         {
-            var data = new InvoicePaymentPayloadAdd();
+            var data = new InvoicePaymentPayloadUpdate();
             data.InvoiceTransaction = new InvoiceTransactionDataDto().GetFakerData();
             data.InvoiceTransaction.InvoiceTransaction.TransType = 1;
             data.InvoiceTransaction.InvoiceReturnItems = null;
+            data.ApplyInvoices = new List<ApplyInvoice>();
             return data;
         }
     } 
@@ -49,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Patch API
     /// </summary>
     [Serializable()]
-    public class InvoicePaymentPayloadUpdate
+    public class InvoicePaymentPayloadNew
     {
         /// <summary>
         /// (Request Data) InvoiceTransaction object to update.
@@ -57,6 +65,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to update.")]
         public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
+
+        /// <summary>
+        /// (Response Data) List result of outstanding invoices to pay.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result of outstanding invoices to pay.")]
+        public IList<InvoiceListForPayment> InvoiceList { get; set; }
     }
 
 
@@ -120,37 +134,49 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class InvoicePaymentFilter
     {
-        public string InvoiceNumber { get; set; }
-
-        public string InvoiceType { get; set; }
-
-        public string InvoiceStatus { get; set; }
-
-        public DateTime InvoiceDateFrom { get; set; }
-
-        public DateTime InvoiceDateTo { get; set; }
-
+        public string TransUuid { get; set; }
+        public DateTime TransDateFrom { get; set; }
+        public DateTime TransDateTo { get; set; }
+        public int TransType { get; set; }
+        public int TransStatus { get; set; }
+        public int PaidBy { get; set; }
+        public string InvoiceUuid { get; set; }
+        public string QboDocNumber { get; set; }
+        public string InvoiceNumberFrom { get; set; }
+        public string InvoiceNumberTo { get; set; }
+        public DateTime DueDateFrom { get; set; }
+        public DateTime DueDateTo { get; set; }
+        public int InvoiceType { get; set; }
+        public int InvoiceStatus { get; set; }
         public string CustomerCode { get; set; }
-
         public string CustomerName { get; set; }
-
+        public long OrderShipmentNum { get; set; }
         public string ShippingCarrier { get; set; }
-
+        public long DistributionCenterNum { get; set; }
+        public int CentralOrderNum { get; set; }
+        public int ChannelNum { get; set; }
+        public int ChannelAccountNum { get; set; }
+        public string ChannelOrderID { get; set; }
         public string WarehouseCode { get; set; }
+        public string RefNum { get; set; }
+        public string CustomerPoNum { get; set; }
+        public string ShipToName { get; set; }
+        public string ShipToState { get; set; }
+        public string ShipToPostalCode { get; set; }
+        public long PaymentNumber { get; set; }
 
         public static Faker<InvoicePaymentFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<InvoicePaymentFilter>()
-                .RuleFor(u => u.InvoiceNumber, f => string.Empty)
-                .RuleFor(u => u.InvoiceType, f =>string.Empty)
-                .RuleFor(u => u.InvoiceStatus, f =>string.Empty)
+                .RuleFor(u => u.InvoiceType, f => f.Random.Number(0, 1))
+                .RuleFor(u => u.InvoiceStatus, f => f.Random.Number(0, 255))
                 .RuleFor(u => u.CustomerCode, f => string.Empty)
                 .RuleFor(u => u.CustomerName, f => string.Empty)
                 .RuleFor(u => u.ShippingCarrier, f => string.Empty)
                 .RuleFor(u => u.WarehouseCode, f => string.Empty)
-                .RuleFor(u => u.InvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
-                .RuleFor(u => u.InvoiceDateTo, f => f.Date.Past(0).Date.Date)
+                .RuleFor(u => u.TransDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
+                .RuleFor(u => u.TransDateFrom, f => f.Date.Past(0).Date.Date)
                 ;
             #endregion faker data rules
         }

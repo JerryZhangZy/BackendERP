@@ -24,12 +24,49 @@ BEGIN
     ALTER TABLE OrderShipmentHeader ADD [InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT ''
 END	
 
---Add by junxian 10/30/2021
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
+
+
+-- 11/22/20201 By Jerry Z 
+IF COL_LENGTH('OrderShipmentHeader', 'InvoiceUuid') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('OrderShipmentHeader', 'SalesOrderUuid') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('OrderShipmentHeader', 'OrderNumber') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [OrderNumber] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_InvoiceNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_InvoiceNumber] ON [dbo].[OrderShipmentHeader]
 (
 	[ProfileNum] ASC,
-	[MainTrackingNumber] ASC
+	[InvoiceNumber] ASC
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_OrderNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_OrderNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[OrderNumber] ASC
+) 
+GO
+
+--Add by junxian 11/30/2021
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
+drop INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_ShipmentID')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[ShipmentID] ASC
+) 
+GO

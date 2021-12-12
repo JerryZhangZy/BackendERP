@@ -83,6 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var openApiParameterAttributes = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>().Where(i => i.Required);
             var messages = new List<string>();
             var req = executingContext.GetContext<HttpRequest>();
+            if (req.Path.Value.Contains("account/Profiles"))
+                return;
             if (openApiParameterAttributes != null)
             {
                 foreach (var item in openApiParameterAttributes)

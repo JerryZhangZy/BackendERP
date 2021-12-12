@@ -39,10 +39,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _DueDateTo = new QueryFilter<DateTime>("DueDateTo", "DueDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> DueDateTo => _DueDateTo;
 
-        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceType> InvoiceType => _InvoiceType;
 
-        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<InvoiceStatusEnum> InvoiceStatus => _InvoiceStatus; 
 
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> RefNum => _RefNum;
 
         protected QueryFilter<string> _CustomerPoNum = new QueryFilter<string>("CustomerPoNum", "CustomerPoNum", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> CustomerPoNum => _CustomerPoNum;
+        public QueryFilter<string> CustomerPoNum => _CustomerPoNum; 
 
         protected QueryFilter<string> _ShipToName = new QueryFilter<string>("ShipToName", "ShipToName", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToName => _ShipToName;
@@ -91,6 +91,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected QueryFilter<string> _ShipToPostalCode = new QueryFilter<string>("ShipToPostalCode", "ShipToPostalCode", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToPostalCode => _ShipToPostalCode;
+
+        protected QueryFilterRawSql _OutstandingInvoiceOnly = new QueryFilterRawSql("OutstandingInvoiceOnly",
+            $"{PREFIX}.InvoiceStatus IN (0,1,100)", 
+            PREFIX, false);
+        public QueryFilterRawSql OutstandingInvoiceOnly => _OutstandingInvoiceOnly;
+       
 
         public InvoiceQuery() : base(PREFIX)
         {
@@ -120,6 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipToName);
             AddFilter(_ShipToState);
             AddFilter(_ShipToPostalCode);
+            AddFilter(_OutstandingInvoiceOnly);
         }
         public override void InitQueryFilter()
         {
@@ -129,11 +136,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void InitForNewPaymet(string customerCode)
         {
-            _InvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
+            //_InvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
+            OutstandingInvoiceOnly.Enable = true;
             _CustomerCode.FilterValue = customerCode;
 
             _InvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
             _InvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
+        }
+
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("InvoiceDate", "InvoiceDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("DueDate", "DueDate DESC, TransNum DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("InvoiceNumber", "InvoiceNumber DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("OrderNumber", "OrderNumber, RowNum DESC"),
+                new KeyValuePair<string, string>("CustomerCode", "CustomerCode, RowNum DESC")
+            );
+        }
+
+        public void DisableDate()
+        {
+            _InvoiceDateFrom.Enable = false;
+            _InvoiceDateTo.Enable = false;
         }
     }
 }

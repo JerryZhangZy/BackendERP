@@ -10,9 +10,14 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.ApiClient
 {
+    /// <summary>
+    /// WMS upload inventory instock to ERP
+    /// </summary>
     public class WMSInventorySyncClient   : ApiClientBase<ResponsePayloadBase>
     {
-
+        /// <summary>
+        /// WSM upload inventory instock to erp
+        /// </summary>
         public WMSInventorySyncClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         {
 
@@ -20,22 +25,27 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.ApiClient
         public WMSInventorySyncClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
-        public async Task<bool> InventoryDataAsync(WMSInventorySyncModel  wMSInventorySyncModel)
+        public async Task<bool> UpdateStockAsync(int masterAccountNum, int profileNum, IList<InventorySyncItemsModel> inventorySyncItems)
         {
 
-            if (!SetAccount(wMSInventorySyncModel.MasterAccountNum, wMSInventorySyncModel.ProfileNum))
+            if (!SetAccount(masterAccountNum, profileNum))
             {
                 return false;
             }
           
-            return await PostAsync(new WMSInventorySyncPayload() { InventorySyncData = wMSInventorySyncModel }, FunctionUrl.InventorySync);
+            return await PostAsync(inventorySyncItems, FunctionUrl.InventorySync);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {
             if (ResopneData == null)
             {
-                AddError("Call event api has no resopne.");
+                AddError(responseData);
+
+                //Maybe the api throw exception.
+                //var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
+                //if (exception != null)
+                //    AddError(exception.ObjectToString());
                 return false;
             }
  

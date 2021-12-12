@@ -37,6 +37,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _WarehouseID = new QueryFilter<string>("WarehouseID", "WarehouseID", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> WarehouseID => _WarehouseID;
 
+        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> WarehouseCode => _WarehouseCode;
+
+        protected QueryFilter<string> _OrderNumber = new QueryFilter<string>("OrderNumber", "OrderNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> OrderNumber => _OrderNumber;
+
+        protected QueryFilter<string> _InvoiceNumber = new QueryFilter<string>("InvoiceNumber", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> InvoiceNumber => _InvoiceNumber;
+
         protected QueryFilter<string> _MainTrackingNumber = new QueryFilter<string>("MainTrackingNumber", "MainTrackingNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> MainTrackingNumber => _MainTrackingNumber;
 
@@ -46,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<int> _ShipmentType = new QueryFilter<int>("ShipmentType", "ShipmentType", PREFIX, FilterBy.eq,0);
         public QueryFilter<int> ShipmentType => _ShipmentType;
 
-        protected QueryFilter<int> _ProcessStatus = new QueryFilter<int>("ProcessStatus", "ProcessStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _ProcessStatus = new QueryFilter<int>("ProcessStatus", "ProcessStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> ProcessStatus => _ProcessStatus;
 
         protected QueryFilter<int> _ShipmentStatus = new QueryFilter<int>("ShipmentStatus", "ShipmentStatus", PREFIX, FilterBy.eq, 0);
@@ -79,8 +88,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipmentStatus);
             AddFilter(_ShippingClass);
             AddFilter(_ShippingCarrier);
-            
+            AddFilter(_WarehouseCode);
+            AddFilter(_InvoiceNumber);
+            AddFilter(_OrderNumber);
         }
+
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("ShipmentDateUtc", "ShipmentDateUtc DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("ShipmentID", "ShipmentID, RowNum DESC"),
+                new KeyValuePair<string, string>("CentralOrderNum", "CentralOrderNum, RowNum DESC"),
+                new KeyValuePair<string, string>("OrderNumber", "OrderNumber, RowNum DESC"),
+                new KeyValuePair<string, string>("InvoiceNumber", "InvoiceNumber, RowNum DESC")
+            );
+        }
+
         public override void InitQueryFilter()
         {
             _ShipDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);

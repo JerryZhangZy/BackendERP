@@ -26,14 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class PoReceivePayload : PoTransactionPayload
     {
-        // #region Set transtype to payment
-        // /// <summary>
-        // /// always load transtype=TransTypeEnum.Payment for all query
-        // /// </summary>
-        // [JsonIgnore]
-        // public override int TransType => (int)TransTypeEnum.Payment;
-        //
-        // #endregion 
+
 
         public PoHeaderDto PoHeader { get; set; }
 
@@ -56,23 +49,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "applyInvoices", val => ApplyInvoices = val.JsonToObject<List<ApplyInvoice>>()}
+               
             };
         }
 
-
-        #region multiple payment list
-
-        /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple Invoice dto data.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of applyInvoice  to add multi payments")]
-        public IList<ApplyInvoice> ApplyInvoices { get; set; } = new List<ApplyInvoice>();
-        [JsonIgnore]
-        public virtual bool HasApplyInvoices => ApplyInvoices != null && ApplyInvoices.Count > 0;
-        public bool ShouldSerializeApplyInvoices() => HasApplyInvoices;
-
-        #endregion
+ 
 
 
 
@@ -92,7 +73,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasPoReceiveListSummary => PoReceiveListSummary != null && PoReceiveListSummary.Length > 0;
         public bool ShouldSerializePoReceiveListSummary() => HasPoReceiveListSummary;
 
+        #region List
 
+        public IList<WMSPoReceiveItem> WMSPoReceiveItems { get; set; }
+
+        [JsonIgnore]
+        public virtual bool HasWMSPoReceiveItems => WMSPoReceiveItems != null && WMSPoReceiveItems.Count > 0;
+        public bool ShouldSerializeWMSPoReceiveItems() => HasWMSPoReceiveItems;
+
+        #endregion
     }
 }
 

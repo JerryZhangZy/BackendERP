@@ -38,11 +38,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
-		/// <summary>
-        /// (Readonly) Login user account. <br> Display: false, Editable: false.
-        /// </summary>
-        [OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string CustomerCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -131,8 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Group Payment readable Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("Group Payment readable Number. <br> Display: false, Editable: false.")]
-        [StringLength(50, ErrorMessage = "The PaymentNumber value cannot exceed 50 characters. ")]
-        public string PaymentNumber { get; set; }
+        public long? PaymentNumber { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPaymentNumber => PaymentNumber != null;

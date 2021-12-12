@@ -14,7 +14,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class SalesOrderItems
     {
-
+        public override IList<string> IgnoreUpdateColumns() => new List<string>()
+            {
+                "ShipPack",
+                "ShipQty"
+            };
     }
 }
 

@@ -25,6 +25,25 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     [ApiFilter(typeof(ApInvoiceApi))]
    public static class ApInvoiceApi
     {
+        [FunctionName(nameof(ExistInvoiceNumber))]
+        [OpenApiOperation(operationId: "ExistInvoiceNumber", tags: new[] { "ApInvoices" }, Summary = "exam an invoice number whether been used")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(bool))]
+        public static async Task<bool> ExistInvoiceNumber(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "apInvoices/existInvoiceNum/{invoiceNum}")] HttpRequest req,
+            string invoiceNum)
+        {
+            int masterAccountNum = req.Headers["masterAccountNum"].ToInt();
+            int profileNum = req.Headers["profileNum"].ToInt();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var srv = new ApInvoiceService(dataBaseFactory);
+
+            return await srv.ExistApInvoiceNumber(invoiceNum, masterAccountNum, profileNum);
+        }
+
         /// <summary>
         /// Get one invoice
         /// </summary>
@@ -75,6 +94,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new ApInvoiceService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
+            if (payload.Success)
+                payload.ApInvoice = srv.ToDto();
             payload.Messages = srv.Messages;
 
             //Directly return without waiting this result. 

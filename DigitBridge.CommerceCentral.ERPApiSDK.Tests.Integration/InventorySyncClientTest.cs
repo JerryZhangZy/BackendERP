@@ -2,6 +2,7 @@
 using DigitBridge.CommerceCentral.ERPApiSDK.Model;
 
 using DigitBridge.CommerceCentral.XUnit.Common;
+using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,16 +12,18 @@ using Xunit;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
- 
+
     public partial class InventorySyncClientTest : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug TableUniversalTests Function";
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
+        private string _baseUrl { get; set; }
+        private string _code { get; set; }
 
-        private string _baseUrl = "http://localhost:7071/api";
-        private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
+        protected const int MasterAccountNum = 10001;
+        protected const int ProfileNum = 10001;
 
         public InventorySyncClientTest(TestFixture<StartupTest> fixture)
         {
@@ -29,15 +32,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             InitForTest();
         }
+        private IDataBaseFactory dbFactory { get; set; }
         protected void InitForTest()
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            _baseUrl = Configuration["ERP_Integration_Api_BaseUrl"];
+            _code = Configuration["ERP_Integration_Api_AuthCode"];
+            dbFactory = new DataBaseFactory(Configuration["dsn"]);
         }
 
 
@@ -45,14 +45,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task SendAddData_Test()
         {
             var client = new WMSInventorySyncClient(_baseUrl, _code);
-            var data = new WMSInventorySyncModel
+            var inventorySyncItems = new List<InventorySyncItemsModel>()
             {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                InventorySyncItems = new List<InventorySyncItemsModel>() { new InventorySyncItemsModel() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 } }
+                new InventorySyncItemsModel() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 }
+            }
+            ;
 
-            };
-            var result = await client.InventoryDataAsync(data);
+            var result = await client.UpdateStockAsync(MasterAccountNum, ProfileNum, inventorySyncItems);
             Assert.True(result, "succ");
             Assert.True(client.Messages.Count == 0, "succ");
 

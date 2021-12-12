@@ -59,61 +59,72 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion message
 
-        public InvoiceData FromOrderShipmentAndSalesOrder(OrderShipmentData osData, SalesOrderData soData)
+        public InvoiceData FromOrderShipmentAndSalesOrder(OrderShipmentData osData, SalesOrderData soData, InvoiceData invoiceData)
         {
+            if (invoiceData == null)
+                invoiceData = new InvoiceData();
 
-            InvoiceData invoiceData = new InvoiceData();
-
-            invoiceData.InvoiceHeader = OrderShipmentAndSalesOrderToInvoiceHeader(osData.OrderShipmentHeader, soData.SalesOrderHeader);
+            OrderShipmentAndSalesOrderToInvoiceHeader(osData.OrderShipmentHeader, soData.SalesOrderHeader, invoiceData);
 
             invoiceData.InvoiceHeaderAttributes = OrderShipmentAndSalesOrderToInvoiceHeaderAttributes();
 
-            invoiceData.InvoiceHeaderInfo = OrderShipmentAndSalesOrderToInvoiceHeaderInfo(osData.OrderShipmentHeader, soData.SalesOrderHeaderInfo);
+            OrderShipmentAndSalesOrderToInvoiceHeaderInfo(osData.OrderShipmentHeader, soData.SalesOrderHeaderInfo, invoiceData);
 
-            (invoiceData.InvoiceItems) = OrderShipmentAndSalesOrderToInvoiceLines(osData, soData);
+            OrderShipmentAndSalesOrderToInvoiceLines(osData, soData, invoiceData);
 
             return invoiceData;
         }
 
-        private InvoiceHeader OrderShipmentAndSalesOrderToInvoiceHeader(OrderShipmentHeader osHeader, SalesOrderHeader soHeader)
+        private InvoiceHeader OrderShipmentAndSalesOrderToInvoiceHeader(OrderShipmentHeader osHeader, SalesOrderHeader soHeader, InvoiceData invoiceData)
         {
-            var invoiceHeader = new InvoiceHeader();
+            if (invoiceData.InvoiceHeader == null)
+                invoiceData.InvoiceHeader = invoiceData.NewInvoiceHeader();
+            var invoiceHeader = invoiceData.InvoiceHeader;
+
             invoiceHeader.DatabaseNum = soHeader.DatabaseNum;
             invoiceHeader.MasterAccountNum = soHeader.MasterAccountNum;
             invoiceHeader.ProfileNum = soHeader.ProfileNum;
             //InvoiceUuid
-            invoiceHeader.InvoiceNumber = string.IsNullOrEmpty(osHeader.InvoiceNumber) ? 
+            invoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
+            invoiceHeader.InvoiceNumber = string.IsNullOrEmpty(osHeader.InvoiceNumber) ?
                 soHeader.OrderNumber + "-" + osHeader.OrderShipmentNum : osHeader.InvoiceNumber;
+
             invoiceHeader.SalesOrderUuid = soHeader.SalesOrderUuid;
             invoiceHeader.OrderNumber = soHeader.OrderNumber;
             invoiceHeader.InvoiceType = soHeader.OrderType; //(int)InvoiceType.Sales;
             invoiceHeader.InvoiceStatus = (int)InvoiceStatusEnum.New;
             invoiceHeader.InvoiceDate = _dtNowUtc;
             invoiceHeader.InvoiceTime = _dtNowUtc.TimeOfDay;
-            invoiceHeader.DueDate = soHeader.DueDate;
-            invoiceHeader.BillDate = soHeader.DueDate;
-
+#if DEBUG
+            invoiceHeader.CustomerUuid = Guid.NewGuid().ToString();
+            invoiceHeader.CustomerCode = "Test-YM";
+            invoiceHeader.CustomerName = "Test-YM";
+            invoiceHeader.Terms = "Basic";
+            invoiceHeader.TermsDays = 30;
+#else
             invoiceHeader.CustomerUuid = soHeader.CustomerUuid;
             invoiceHeader.CustomerCode = soHeader.CustomerCode;
             invoiceHeader.CustomerName = soHeader.CustomerName;
             invoiceHeader.Terms = soHeader.Terms;
             invoiceHeader.TermsDays = soHeader.TermsDays;
-
+#endif
+            invoiceHeader.DueDate = invoiceHeader.InvoiceDate.AddDays(invoiceHeader.TermsDays);
+            invoiceHeader.BillDate = invoiceHeader.InvoiceDate;
             invoiceHeader.Currency = soHeader.Currency;
             //SubTotalAmount
             //SalesAmount
             //TotalAmount
             //TaxableAmount
             //NonTaxableAmount
-            //TaxRate
+            invoiceHeader.TaxRate = soHeader.TaxRate;
             //TaxAmount
-            //DiscountRate
-            //DiscountAmount
-            //ShippingAmount
+            invoiceHeader.DiscountRate = soHeader.DiscountRate;
+            invoiceHeader.DiscountAmount = soHeader.DiscountAmount;
+            invoiceHeader.ShippingAmount = osHeader.ShippingCost;
             //ShippingTaxAmount
-            //MiscAmount
+            invoiceHeader.MiscAmount = soHeader.MiscAmount;
             //MiscTaxAmount
-            //ChargeAndAllowanceAmount
+            invoiceHeader.ChargeAndAllowanceAmount = soHeader.ChargeAndAllowanceAmount;
             //PaidAmount
             //CreditAmount
             //Balance
@@ -121,12 +132,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //AvgCost
             //LotCost
             invoiceHeader.InvoiceSourceCode = "OrderShipmentUuid:" + osHeader.OrderShipmentUuid;
-             
+
             invoiceHeader.EnterBy = _userId;
             //UpdateBy
             //EnterDateUtc
             //DigitBridgeGuid
-            invoiceHeader.ShipDate = soHeader.ShipDate;
+            invoiceHeader.ShipDate = osHeader.ShipmentDateUtc;
             return invoiceHeader;
         }
 
@@ -137,10 +148,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return invoieHeaderAttributes;
         }
 
-        private InvoiceHeaderInfo OrderShipmentAndSalesOrderToInvoiceHeaderInfo(OrderShipmentHeader osHeader, SalesOrderHeaderInfo soHeaderInfo)
+        private InvoiceHeaderInfo OrderShipmentAndSalesOrderToInvoiceHeaderInfo(OrderShipmentHeader osHeader, SalesOrderHeaderInfo soHeaderInfo, InvoiceData invoiceData)
         {
             string soHeaderInfoJson = soHeaderInfo.ObjectToString();
             var invoiceHeaderInfo = JsonConvert.DeserializeObject<InvoiceHeaderInfo>(soHeaderInfoJson);
+
+            invoiceData.InvoiceHeaderInfo = invoiceHeaderInfo;
 
             invoiceHeaderInfo.RowNum = 0;
 
@@ -149,14 +162,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeaderInfo.ShippingCarrier = osHeader.ShippingCarrier;
             invoiceHeaderInfo.ShippingClass = osHeader.ShippingClass;
             invoiceHeaderInfo.WarehouseCode = osHeader.WarehouseCode;
+
             invoiceHeaderInfo.RefNum = osHeader.ShipmentReferenceID;
 
             return invoiceHeaderInfo;
         }
 
-        private List<InvoiceItems> OrderShipmentAndSalesOrderToInvoiceLines(OrderShipmentData osData, SalesOrderData soData)
+        private IList<InvoiceItems> OrderShipmentAndSalesOrderToInvoiceLines(OrderShipmentData osData, SalesOrderData soData, InvoiceData invoiceData)
         {
-            List<InvoiceItems> invoiceItemList = new List<InvoiceItems>();
+            if (invoiceData.InvoiceItems == null)
+                invoiceData.InvoiceItems = new List<InvoiceItems>();
+            var invoiceItemList = invoiceData.InvoiceItems;
 
             var osHeader = osData.OrderShipmentHeader;
             var soHeader = soData.SalesOrderHeader;
@@ -168,9 +184,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     var soLine = soData.SalesOrderItems.FirstOrDefault(p => p.OrderDCAssignmentLineNum == osItem.OrderDCAssignmentLineNum);
                     if (soLine == null)
+                        soLine = soData.SalesOrderItems.FirstOrDefault(p => p.SalesOrderItemsUuid.EqualsIgnoreSpace(osItem.SalesOrderItemsUuid));
+                    if (soLine == null)
                     {
-                        AddError($"Data not found.");
-
+                        AddError($"SKU {osItem.SKU} not found in sales order items.");
                         return null;
                     }
 
@@ -186,28 +203,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         SKU = soLine.SKU,
                         ProductUuid = soLine.ProductUuid,
                         InventoryUuid = soLine.InventoryUuid,
-                        WarehouseUuid = soLine.WarehouseUuid,
-                        WarehouseCode = soLine.WarehouseCode,
+                        WarehouseCode = invoiceData.InvoiceHeaderInfo.WarehouseCode,
+                        WarehouseUuid = invoiceData.InvoiceHeaderInfo.WarehouseUuid,
+
                         LotNum = soLine.LotNum,
                         Description = soLine.Description,
                         Notes = soLine.Notes,
                         Currency = soLine.Currency,
                         UOM = soLine.Currency,
-                        PackType = "",
-                        PackQty = osPkg.PackageQty ?? 0,
-                        //OrderPack
+                        PackType = soLine.PackType,
+                        PackQty = soLine.PackQty,
+                        //PackQty = osPkg.PackageQty ?? 0,
+                        OrderPack = soLine.OrderPack - soLine.ShipPack - soLine.CancelledPack,
                         //ShipPack
-                        //CancelledPack
-                        //OpenPack
-                        OrderQty = soLine.OrderQty,
+                        OrderQty = soLine.OrderQty - soLine.ShipQty - soLine.CancelledQty,
                         ShipQty = osItem.ShippedQty,
-                        //CancelledQty 
-                        OpenQty = soLine.OrderQty - osItem.ShippedQty,
                         //PriceRule
                         Price = soLine.Price,
-                        //DiscountRate
+                        DiscountRate = soLine.DiscountRate,
                         DiscountAmount = soLine.DiscountAmount,
-                        //DiscountPrice
+                        DiscountPrice = soLine.DiscountPrice,
                         //ExtAmount
                         //TaxableAmount,
                         //NonTaxableAmount
@@ -222,11 +237,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         //ShipAmount
                         //CancelledAmount
                         //OpenAmount
-                        //Stockable
-                        //IsAr
-                        //Taxable
-                        //Costable
-                        //IsProfit
+                        Stockable = soLine.Stockable,
+                        IsAr = soLine.IsAr,
+                        Taxable = soLine.Taxable,
+                        Costable = soLine.Costable,
+                        IsProfit = soLine.IsProfit,
                         //UnitCost
                         //AvgCost
                         //LotCost

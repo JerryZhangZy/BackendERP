@@ -56,6 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         TDto ToDto();
         TDto ToDto(TEntity data);
+        IList<TDto> ToDto(IList<TEntity> datas);
         TEntity FromDto(TDto dto);
         TEntity FromDto(TEntity data, TDto dto);
 
@@ -80,6 +81,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> GetDataByIdAsync(string id);
         Task<bool> SaveDataAsync();
         Task<bool> DeleteDataAsync();
+
+        Task BeforeSaveAsync();
+        void BeforeSave();
+        Task AfterSaveAsync();
+        void AfterSave();
+        Task SaveSuccessAsync();
+        void SaveSuccess();
 
 
         bool Add();

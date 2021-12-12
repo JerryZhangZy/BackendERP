@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -7,12 +7,15 @@ namespace DigitBridge.Base.Common
 {
     public enum ErpEventActionStatus : int
     {
+        Pending=-1,
         Success = 0,
         Other = 1,
     }
 
     public enum ErpEventType : int
     {
+        Default = 0,
+
         [Description("CentralOrder To SalesOrder")]
         CentralOrderToSalesOrder = 1,
 
@@ -34,9 +37,16 @@ namespace DigitBridge.Base.Common
         [Description("Erp return to QuickBooks Refund")]
         InvoiceRetrunToQboRefund = 7,
 
-        [Description("Void QuickBooks Refund")] 
-        DeleteQboRefund = 8
-    } 
+        [Description("Void QuickBooks Refund")]
+        DeleteQboRefund = 8,
+
+        [Description("Create shipment by wms")]
+        ShipmentFromWMS = 9,
+
+        [Description("Create ProductExt and Inventory from ProductBasic")]
+        SyncProduct = 10
+
+    }
     public static class ErpEventQueueName
     {
 
@@ -60,6 +70,10 @@ namespace DigitBridge.Base.Common
                     return AddQboInvoiceReturn;
                 case ErpEventType.DeleteQboRefund:
                     return DeleteQboInvoiceReturn;
+                case ErpEventType.ShipmentFromWMS:
+                    return ERPCreateShipmentByWMS;
+                case ErpEventType.SyncProduct:
+                    return SyncProduct;
                 default:
                     return DefaultQueue;
             }
@@ -80,5 +94,7 @@ namespace DigitBridge.Base.Common
         public static string AddQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnQueue;
         public static string DeleteQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnDeleteQueue;
 
+        public static string SyncProduct = ERPQueueSetting.ERPSyncProductQueue;
+        public static string ERPCreateShipmentByWMS = ERPQueueSetting.ERPCreateShipmentByWMSQueue;
     }
 }

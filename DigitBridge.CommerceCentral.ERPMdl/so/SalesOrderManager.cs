@@ -140,57 +140,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return salesOrderDataDtoCsv.Export(dtoList);
         }
 
-        public byte[] Export(SalesOrderPayload payload)
-        {
-            var rowNumList = salesOrderList.GetRowNumList(payload);
-            var dtoList = new List<SalesOrderDataDto>();
-            foreach (var x in rowNumList)
-            {
-                if (salesOrderService.GetData(x))
-                    dtoList.Add(salesOrderService.ToDto());
-            };
-            if (dtoList.Count == 0)
-                dtoList.Add(new SalesOrderDataDto());
-            return salesOrderDataDtoCsv.Export(dtoList);
-        }
-
-        public void Import(SalesOrderPayload payload, IFormFileCollection files)
-        {
-            if (files == null || files.Count == 0)
-            {
-                AddError("no files upload");
-                return;
-            }
-            foreach (var file in files)
-            {
-                if (!file.FileName.ToLower().EndsWith("csv"))
-                {
-                    AddError($"invalid file type:{file.FileName}");
-                    continue;
-                }
-                var list = salesOrderDataDtoCsv.Import(file.OpenReadStream());
-                var readcount = list.Count();
-                var addsucccount = 0;
-                var errorcount = 0;
-                foreach (var item in list)
-                {
-                    payload.SalesOrder = item;
-                    if (salesOrderService.Add(payload))
-                        addsucccount++;
-                    else
-                    {
-                        errorcount++;
-                        foreach (var msg in salesOrderService.Messages)
-                            Messages.Add(msg);
-                        salesOrderService.Messages.Clear();
-                    }
-                }
-                if (payload.HasSalesOrder)
-                    payload.SalesOrder = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
-            }
-        }
-
         public async Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files)
         {
             if (files == null || files.Count == 0)
@@ -308,16 +257,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"No DCAssigmentLine for DCAssingmentUuid {string.Join(",", dcAssDataNoLines.Select(p => p.Uuid))}.");
                 return (false, null);
             }
-            var soDataList = new List<SalesOrderData>();
+            var salesOrderUuids = new List<string>();
             //Create SalesOrder
             foreach (var dcAssigmentData in dcAssigmentDataList)
             {
-                var soData = await CreateSalesOrdersAsync(coData, dcAssigmentData);
-                if (soData != null)
-                    soDataList.Add(soData);
+                var soUuid = await CreateSalesOrdersAsync(coData, dcAssigmentData);
+                if (soUuid != null)
+                    salesOrderUuids.Add(soUuid);
             }
-            bool ret = soDataList.Count > 0;
-            List<string> salesOrderUuids = soDataList.Select(p => p.SalesOrderHeader.SalesOrderUuid).ToList();
+            bool ret = salesOrderUuids.Count > 0;
             return (ret, salesOrderUuids);
         }
 
@@ -352,10 +300,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderDCAssignmentNum"></param>
         /// <returns>Exist or Not</returns>
-        protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
+        protected async Task<string> GetSalesOrderUuidByOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
         {
             using (var trs = new ScopedTransaction(dbFactory))
-                return await SalesOrderHelper.ExistOrderDCAssignmentNumAsync(orderDCAssignmentNum);
+                return await SalesOrderHelper.GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
         }
 
         protected async Task<string> GetWarehouseByDCAssignmentAsync(DCAssignmentData dcAssigmentData)
@@ -372,14 +320,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="coData"></param>
         /// <param name="dcAssigmentData"></param>
-        /// <returns>Success Create Sales Order</returns>
-        public async Task<SalesOrderData> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
+        /// <returns>Success Create Sales Order Uuid</returns>
+        public async Task<string> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
             long orderDCAssignmentNum = dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum;
-            if ((await ExistDCAssignmentInSalesOrderAsync(orderDCAssignmentNum)))
+            var uuid = await GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
+            if (uuid != null)
             {
-                AddError($"Channel OrderDCAssigmentNum {orderDCAssignmentNum} has transferred to sales order.");
-                return null;
+                return uuid;
             }
 
             SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
@@ -401,8 +349,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             soSrv.Data.CheckIntegrity();
 
-            if (await soSrv.SaveCurrentDataAsync())
-                return soSrv.Data;
+            if (await soSrv.SaveDataAsync())
+                return soSrv.Data.SalesOrderHeader.SalesOrderUuid;
             return null;
         }
 
@@ -504,10 +452,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
-        {
-                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "so");
-        }
+
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
                 return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);

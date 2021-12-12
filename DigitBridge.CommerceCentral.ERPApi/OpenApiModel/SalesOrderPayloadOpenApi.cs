@@ -19,6 +19,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 using DigitBridge.CommerceCentral.ERPDb;
 using Newtonsoft.Json.Serialization;
 using Bogus;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -153,17 +154,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class SalesOrderFilter
     {
-        public string CustomerCode { get; set; }
-
-        public string CustomerName { get; set; }
-
+        public string SalesOrderUuid { get; set; }
+        public string OrderNumberFrom { get; set; }
+        public string OrderNumberTo { get; set; }
         public DateTime OrderDateFrom { get; set; }
-
         public DateTime OrderDateTo { get; set; }
+        public DateTime ShipDateFrom { get; set; }
+        public DateTime ShipDateTo { get; set; }
+        public int OrderStatus { get; set; }
+        public int OrderType { get; set; }
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
+        public string ShippingCarrier { get; set; }
+        public string DistributionCenterNum { get; set; }
+        public string CenteralOrderNum { get; set; }
+        public int ChannelNum { get; set; }
+        public int ChannelAccountNum { get; set; }
+        public string ChannelOrderID { get; set; }
+        public string WarehouseCode { get; set; }
+        public string RefNum { get; set; }
+        public string CustomerPoNum { get; set; }
+        public string ShipToName { get; set; }
+        public string ShipToState { get; set; }
+        public string ShipToPostalCode { get; set; }
 
-        public string OrderStatus { get; set; }
-
-        public string OrderType { get; set; }
 
         public static Faker<SalesOrderFilter> GetFaker()
         {
@@ -173,8 +187,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.CustomerName, f => string.Empty)
                 .RuleFor(u => u.OrderDateTo, f => f.Date.Past(0).Date.Date)
                 .RuleFor(u => u.OrderDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30)) 
-                .RuleFor(u => u.OrderStatus, f => "")
-                .RuleFor(u => u.OrderType, f => "")
+                .RuleFor(u => u.OrderStatus, f => f.Random.Number(0, 255))
+                .RuleFor(u => u.OrderType, f => f.Random.Number(0, 255))
                 ;
             #endregion faker data rules
         }

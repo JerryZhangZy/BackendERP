@@ -45,7 +45,8 @@ COALESCE(ordtp.text, '') erpEventTypeText,
 {Helper.ProcessData()},
 {Helper.ActionStatus()},
 {Helper.ActionDateUtc()},
-{Helper.EventMessage()}
+{Helper.EventMessage()},
+{Helper.EventUuid()}
 ";
             return this.SQL_Select;
         }

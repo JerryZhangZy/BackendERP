@@ -23,34 +23,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<DateTime> _ActionDateFrom = new QueryFilter<DateTime>("ActionDateFrom", "ActionDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> ActionDateFrom => _ActionDateFrom;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<DateTime> _ActionDateTo = new QueryFilter<DateTime>("ActionDateTo", "ActionDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> ActionDateTo => _ActionDateTo;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
+        protected QueryFilter<int> _ActionStatus = new QueryFilter<int>("ActionStatus", "ActionStatus", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> ActionStatus => _ActionStatus;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
-
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected EnumQueryFilter<ErpEventType> _ERPEventProcessType = new EnumQueryFilter<ErpEventType>("ERPEventProcessType", "ERPEventProcessType", PREFIX, FilterBy.eq, -0);
+        public EnumQueryFilter<ErpEventType> ERPEventProcessType => _ERPEventProcessType;
 
         public EventProcessERPQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_ActionDateFrom);
+            AddFilter(_ActionDateTo);
+            AddFilter(_ActionStatus);
+            AddFilter(_ERPEventProcessType);
         }
 
         public override void InitQueryFilter()
         {
-            //_OrderDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
-            //_OrderDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
+            _ActionDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _ActionDateTo.FilterValue = DateTime.UtcNow.Date;
         }
     }
 }

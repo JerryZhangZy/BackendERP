@@ -23,6 +23,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class MiscInvoiceService
     {
 
+        #region override methods
+
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
@@ -34,6 +36,131 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new MiscInvoiceServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.MiscInvoice,
+                Action = (int)this.ProcessMode,
+                LogSource = "MiscInvoiceService",
+
+                MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.MiscInvoiceHeader.MiscInvoiceUuid,
+                ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
+                ChannelNum = 0,
+                ChannelAccountNum = 0,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
 
 
         /// <summary>
@@ -335,7 +462,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TotalAmount = salesOrder.DepositAmount,
                 Currency = salesOrder.Currency,
                 CreditAmount = salesOrder.DepositAmount,
-                PaidBy = (int)PaidByAr.CreditMemo,
+                PaidBy = (int)PaidByAr.PrePayment,
 
                 CustomerCode = salesOrder.CustomerCode,
                 CustomerName = salesOrder.CustomerName,
@@ -399,6 +526,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.DetachData(this.Data);
             }
             payload.MiscInvoices = result;
+            if (result.Count == 0)
+                payload.ReturnError("No data be found");
         }
 
         public virtual async Task<bool> CheckNumberExistAsync(int masterAccountNum, int profileNum, string miscInvoiceNumber)
@@ -436,12 +565,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
                 ProcessUuid = this.Data.MiscInvoiceHeader.MiscInvoiceUuid,
                 ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
-                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
             });
         }
+
+        public async Task<bool> UpdateInvoiceBalanceAsync(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.PaidAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0),
+MiscInvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) <= 0 AND (COALESCE(ins.MiscInvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) > 0 AND (COALESCE(ins.MiscInvoiceStatus,0)!=@1) THEN @1
+    ELSE COALESCE(ins.MiscInvoiceStatus,0)
+END)
+FROM MiscInvoiceHeader ins
+INNER JOIN MiscInvoiceTransaction trs ON (trs.MiscInvoiceUuid = ins.MiscInvoiceUuid AND trs.TransUuid = @0)
+";
+            var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2")
+            );
+            return result > 0;
+        }
+
     }
 }
 

@@ -9,6 +9,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InputOrderShipmentHeaderType
     {
         public string SalesOrderUuid { get; set; }
+        public string WarehouseCode { get; set; }
 
         [Required]
         public string ShipmentID = "";
@@ -79,6 +80,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InputOrderShipmentShippedItemType
     {
         [Required]
+        public string SalesOrderItemsUuid = "";
+
+        [Required]
         public long CentralOrderLineNum = 0;
 
         public long OrderDCAssignmentLineNum = 0;
@@ -94,6 +98,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
     }
     public class InputOrderShipmentCanceledItemType
     {
+        [Required]
+        public string SalesOrderItemsUuid = "";
+
         [Required]
         public long CentralOrderLineNum = 0;
 

@@ -17,56 +17,42 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class EventERPPayload
+    public class EventERPPayload : ResponsePayloadBase
     {
-        public IList<MessageClass> Messages { get; set; } = new List<MessageClass>();
-
-        public bool Success { get; set; } = true;
-
-        #region single Dto object
-
-        /// <summary>
-        /// (Request and Response Data) Single EventERP entity object which load by Number.
-        /// </summary>
-        public EventERPData EventERP { get; set; }
-        //[JsonIgnore] public virtual bool HasEventERP => EventERP != null;
-        //public bool ShouldSerializeEventERP() => HasEventERP;
-
-        #endregion single Dto object
-
-
-        //#region list service
-        //public JArray EventERPList { get; set; }
-
-        ///// <summary>
-        ///// (Response Data) List result count which load filter and paging.
-        ///// </summary>
-        //public int EventERPListCount { get; set; }
-        //#endregion list service
+        public EventERP Event { get; set; }
     }
-
-    public class EventERPData
-    {
-        public EventERP Event_ERP { get; set; }
-    }
-
     public class EventERP
     {
+        /// <summary>
+        /// Auto increasing rownum of event
+        /// </summary>
         public int RowNum { get; set; }
-
+        
         public int ErpEventType { get; set; }
 
         /// <summary>
-        /// default = int.max;
+        /// pending -1; success:0, Other:1
         /// </summary>
         public int ActionStatus { get; set; }
 
+        /// <summary>
+        /// Process utc date.
+        /// </summary>
         public DateTime ActionDateUtc { get; set; }
 
+        /// <summary>
+        /// Process uuid supplied by invoker.
+        /// </summary>
         public string ProcessUuid { get; set; }
 
+        /// <summary>
+        /// Unique uuid of event.
+        /// </summary>
         public string EventUuid { get; set; }
 
+        /// <summary>
+        /// Process error message.
+        /// </summary>
         public string EventMessage { get; set; }
     }
 }

@@ -1,0 +1,70 @@
+
+1, SDK:DigitBridge.CommerceCentral.ERPApiSDK
+   Get latest SDK from nuget
+
+2, Configuration
+    //Put following setting to your config file as required.
+    "ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
+    "ERP_Integration_Api_AuthCode": "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==",  
+ 
+
+3, API instructions
+
+3.1 Central order to ERP sales order 
+   3.1.1 API:CommerceCentralOrderClient: Create ERP sales order by centralOrderUuid
+         Method:CentralOrderToErpAsync
+		 Method reuslt->bool true->success;false->failed
+		 Error Messages:client.Messages
+		 Resopne:client.ResopneData, type is EventERPPayload
+		 
+
+3.2 ERP sales order to WSM
+3.2.1 WMSSalesOrderClient:ERP providing open sales order for WMS to download.
+3.2.2 WMSAckReceiveSalesOrderClient: WMS download sales order from erp, then send succeed downloaded salesOrderuuids back to erp.
+3.2.3 WMSAckProcessSalesOrderClient: WMS process downloaded salesorder, then send the process result back to erp
+
+3.3 WMS upload shipment to ERP 
+3.3.1 WMSShipmentClient：WMS upload shipment to erp.
+3.3.2 WMSShipmentListClient： ERP providing shipment (which uploaded by WMS) transferred result for WMS to download.
+3.3.3 WMSShipmentResendClient： Resend existing WMS shipmentID to queue
+
+3.4 ERP invoice to central  
+3.4.1 CommerceCentralInvoiceClient: ERP providing unprocess invoices for Commerce central to download.
+3.4.2 CommerceCentralAckReceiveInvoiceClient: Commerce central download unprocess invoice from erp, then send succeed downloaded invoiceuuids back to erp.
+3.4.3 CommerceCentralAckProcessInvoiceClient: Commerce central process downloaded invoice, then send the process result back to erp.
+
+3.5 ERP purchase order to WMS  
+3.5.1 WMSPurchaseOrderClient: ERP providing purchase order list for WMS to download. 
+3.5.2 WMSAckReceivePurchaseOrderClient: WMS download purchase order from erp, then send succeed downloaded purchaseOrderUuids back to erp. 
+3.5.3 WMSAckProcessPurchaseOrderClient: WMS process downloaded purchase order, then send the process result back to erp. 
+
+3.6 WMS upload PoReceive to ERP 
+3.6.1 WMSPoReceiveClient: WSM upload purchase order received items to erp.
+
+3.7 WMS upload inventory instock to ERP 
+3.7.1 WMSInventorySyncClient：WMS upload inventory instock to ERP
+
+3.8 Resend event 
+3.8.1 ErpEventResendClient: Resend existing event to queue.
+
+3.9 Create invoice by ordershipment 
+3.9.1 InvoiceClient：Create erp invoice by OrderShipmentUuid
+
+3.10 Add qbo event and queue message 
+3.10.1 QboInvoiceClient:Add event and add message to queue to create qbo invoice.
+3.10.2 QboPaymentClient:Add event and add message to queue to create qbo payment.
+3.10.3 QboReturnClient: Add event and add message to queue to create qbo refund.
+
+4, Two ways to create a client 
+   1,//Add config to config file
+     var client = new CommerceCentralInvoiceClient(); 
+   2,//No config file
+     var baseUrl="https://digitbridge-erp-integration-api-dev.azurewebsites.net"
+     var authoCode="aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
+     var client = new CommerceCentralInvoiceClient(baseUr,authoCode); 
+
+4, Get api invoked result
+   client.Messages : Include both SDK error and api invoked error
+   client.ResopneData : Api response data.  
+    
+	 

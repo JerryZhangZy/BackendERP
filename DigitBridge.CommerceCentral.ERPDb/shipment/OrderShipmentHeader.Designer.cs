@@ -71,14 +71,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelAccountNum;
 
-        [Column("OrderDCAssignmentNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _orderDCAssignmentNum;
+        [Column("OrderDCAssignmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentNum;
 
-        [Column("DistributionCenterNum",SqlDbType.Int,IsDefault=true)]
-        private int? _distributionCenterNum;
+        [Column("DistributionCenterNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _distributionCenterNum;
 
-        [Column("CentralOrderNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _centralOrderNum;
+        [Column("CentralOrderNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _centralOrderNum;
 
         [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _channelOrderID;
@@ -95,8 +95,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ShipmentReferenceID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shipmentReferenceID;
 
-        [Column("ShipmentDateUtc",SqlDbType.DateTime)]
-        private DateTime? _shipmentDateUtc;
+        [Column("ShipmentDateUtc",SqlDbType.DateTime,NotNull=true)]
+        private DateTime _shipmentDateUtc;
 
         [Column("ShippingCarrier",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shippingCarrier;
@@ -157,6 +157,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
+
+        [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceUuid;
+
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderUuid;
+
+        [Column("OrderNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _orderNumber;
 
         #endregion Fields - Generated 
 
@@ -251,63 +260,48 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 		/// </summary>
-        public virtual long? OrderDCAssignmentNum
+        public virtual long OrderDCAssignmentNum
         {
             get
             {
-				if (!AllowNull && _orderDCAssignmentNum is null) 
-					_orderDCAssignmentNum = default(long); 
 				return _orderDCAssignmentNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_orderDCAssignmentNum = value; 
-					OnPropertyChanged("OrderDCAssignmentNum", value);
-				}
+				_orderDCAssignmentNum = value; 
+				OnPropertyChanged("OrderDCAssignmentNum", value);
             }
         }
 
 		/// <summary>
 		/// (Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
 		/// </summary>
-        public virtual int? DistributionCenterNum
+        public virtual int DistributionCenterNum
         {
             get
             {
-				if (!AllowNull && _distributionCenterNum is null) 
-					_distributionCenterNum = default(int); 
 				return _distributionCenterNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_distributionCenterNum = value; 
-					OnPropertyChanged("DistributionCenterNum", value);
-				}
+				_distributionCenterNum = value; 
+				OnPropertyChanged("DistributionCenterNum", value);
             }
         }
 
 		/// <summary>
 		/// (Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 		/// </summary>
-        public virtual long? CentralOrderNum
+        public virtual long CentralOrderNum
         {
             get
             {
-				if (!AllowNull && _centralOrderNum is null) 
-					_centralOrderNum = default(long); 
 				return _centralOrderNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_centralOrderNum = value; 
-					OnPropertyChanged("CentralOrderNum", value);
-				}
+				_centralOrderNum = value; 
+				OnPropertyChanged("CentralOrderNum", value);
             }
         }
 
@@ -394,21 +388,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Ship Date. <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
-        public virtual DateTime? ShipmentDateUtc
+        public virtual DateTime ShipmentDateUtc
         {
             get
             {
-				if (!AllowNull && _shipmentDateUtc is null) 
-					_shipmentDateUtc = new DateTime().MinValueSql(); 
 				return _shipmentDateUtc; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipmentDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
-					OnPropertyChanged("ShipmentDateUtc", value);
-				}
+				_shipmentDateUtc = value.ToSqlSafeValue(); 
+				OnPropertyChanged("ShipmentDateUtc", value);
             }
         }
 
@@ -695,7 +684,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_processDateUtc = value.Date.ToSqlSafeValue(); 
+				_processDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("ProcessDateUtc", value);
             }
         }
@@ -729,6 +718,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceNumber = value.TruncateTo(50); 
 				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Invoice uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string InvoiceUuid
+        {
+            get
+            {
+				return _invoiceUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_invoiceUuid = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
+        {
+            get
+            {
+				return _salesOrderUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+		/// </summary>
+        public virtual string OrderNumber
+        {
+            get
+            {
+				return _orderNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_orderNumber = value.TruncateTo(50); 
+				OnPropertyChanged("OrderNumber", value);
             }
         }
 
@@ -767,15 +804,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
-			_orderDCAssignmentNum = AllowNull ? (long?)null : default(long); 
-			_distributionCenterNum = AllowNull ? (int?)null : default(int); 
-			_centralOrderNum = AllowNull ? (long?)null : default(long); 
+			_orderDCAssignmentNum = default(long); 
+			_distributionCenterNum = default(int); 
+			_centralOrderNum = default(long); 
 			_channelOrderID = String.Empty; 
 			_shipmentID = String.Empty; 
 			_warehouseCode = String.Empty; 
 			_shipmentType = default(int); 
 			_shipmentReferenceID = String.Empty; 
-			_shipmentDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_shipmentDateUtc = new DateTime().MinValueSql(); 
 			_shippingCarrier = String.Empty; 
 			_shippingClass = String.Empty; 
 			_shippingCost = default(decimal); 
@@ -796,6 +833,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_processDateUtc = new DateTime().MinValueSql(); 
 			_orderShipmentUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
+			_invoiceUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
+			_orderNumber = String.Empty; 
             ClearChildren();
             return this;
         }
@@ -824,6 +864,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override OrderShipmentHeader ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderShipmentHeader ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
