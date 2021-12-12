@@ -540,6 +540,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForCustomIOFormat.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\SettingForShipment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
