@@ -634,6 +634,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasNotes => Notes != null;
 
 		/// <summary>
+		/// C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false")]
+        public long? OrderDCAssignmentNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentNum => OrderDCAssignmentNum != null;
+
+		/// <summary>
+		/// Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The DBChannelOrderHeaderRowID value cannot exceed 50 characters. ")]
+        public string DBChannelOrderHeaderRowID { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDBChannelOrderHeaderRowID => DBChannelOrderHeaderRowID != null;
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore)")]

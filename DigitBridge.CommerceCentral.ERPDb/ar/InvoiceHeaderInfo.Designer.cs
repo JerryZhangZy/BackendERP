@@ -223,6 +223,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _notes;
 
+        [Column("OrderDCAssignmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentNum;
+
+        [Column("DBChannelOrderHeaderRowID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _dBChannelOrderHeaderRowID;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -1219,6 +1225,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentNum
+        {
+            get
+            {
+				return _orderDCAssignmentNum; 
+            }
+            set
+            {
+				_orderDCAssignmentNum = value; 
+				OnPropertyChanged("OrderDCAssignmentNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+		/// </summary>
+        public virtual string DBChannelOrderHeaderRowID
+        {
+            get
+            {
+				return _dBChannelOrderHeaderRowID?.TrimEnd(); 
+            }
+            set
+            {
+				_dBChannelOrderHeaderRowID = value.TruncateTo(50); 
+				OnPropertyChanged("DBChannelOrderHeaderRowID", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1360,6 +1398,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_billToDaytimePhone = String.Empty; 
 			_billToNightPhone = String.Empty; 
 			_notes = String.Empty; 
+			_orderDCAssignmentNum = default(long); 
+			_dBChannelOrderHeaderRowID = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

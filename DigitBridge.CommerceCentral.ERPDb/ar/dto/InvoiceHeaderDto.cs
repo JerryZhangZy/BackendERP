@@ -445,6 +445,118 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasInvoiceSourceCode => InvoiceSourceCode != null;
 
 		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep value cannot exceed 100 characters. ")]
+        public string SalesRep { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep => SalesRep != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep2 value cannot exceed 100 characters. ")]
+        public string SalesRep2 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep2 => SalesRep2 != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep3 value cannot exceed 100 characters. ")]
+        public string SalesRep3 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep3 => SalesRep3 != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep4 value cannot exceed 100 characters. ")]
+        public string SalesRep4 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep4 => SalesRep4 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate => CommissionRate != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate2 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate2 => CommissionRate2 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate3 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate3 => CommissionRate3 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate4 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate4 => CommissionRate4 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true")]
+        public decimal? CommissionAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionAmount => CommissionAmount != null;
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true")]
+        public decimal? CommissionAmount2 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionAmount2 => CommissionAmount2 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true")]
+        public decimal? CommissionAmount3 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionAmount3 => CommissionAmount3 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true")]
+        public decimal? CommissionAmount4 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionAmount4 => CommissionAmount4 != null;
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]

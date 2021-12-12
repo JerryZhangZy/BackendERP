@@ -70,6 +70,8 @@
 	[DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
     [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
     [OrderDCAssignmentLineNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
 
     [UpdateDateUtc] DATETIME NULL, --(Ignore) 
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 
