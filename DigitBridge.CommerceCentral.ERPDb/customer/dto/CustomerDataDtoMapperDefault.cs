@@ -82,6 +82,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasPhone4) data.Phone4 = dto.Phone4;
 			if (dto.HasEmail) data.Email = dto.Email;
 			if (dto.HasWebSite) data.WebSite = dto.WebSite;
+			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
+			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasCustomerType) data.CustomerType = dto.CustomerType;
 			if (dto.HasCustomerStatus) data.CustomerStatus = dto.CustomerStatus;
 			if (dto.HasBusinessType) data.BusinessType = dto.BusinessType;
@@ -107,6 +109,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasSourceCode) data.SourceCode = dto.SourceCode;
 			if (dto.HasTerms) data.Terms = dto.Terms;
 			if (dto.HasTermsDays) data.TermsDays = dto.TermsDays.ToInt();
+			if (dto.HasSalesRep) data.SalesRep = dto.SalesRep;
+			if (dto.HasSalesRep2) data.SalesRep2 = dto.SalesRep2;
+			if (dto.HasSalesRep3) data.SalesRep3 = dto.SalesRep3;
+			if (dto.HasSalesRep4) data.SalesRep4 = dto.SalesRep4;
+			if (dto.HasCommissionRate) data.CommissionRate = dto.CommissionRate.ToDecimal();
+			if (dto.HasCommissionRate2) data.CommissionRate2 = dto.CommissionRate2.ToDecimal();
+			if (dto.HasCommissionRate3) data.CommissionRate3 = dto.CommissionRate3.ToDecimal();
+			if (dto.HasCommissionRate4) data.CommissionRate4 = dto.CommissionRate4.ToDecimal();
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -260,6 +270,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Phone4 = data.Phone4;
 			dto.Email = data.Email;
 			dto.WebSite = data.WebSite;
+			dto.ChannelNum = data.ChannelNum;
+			dto.ChannelAccountNum = data.ChannelAccountNum;
 			dto.CustomerType = data.CustomerType;
 			dto.CustomerStatus = data.CustomerStatus;
 			dto.BusinessType = data.BusinessType;
@@ -285,6 +297,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.SourceCode = data.SourceCode;
 			dto.Terms = data.Terms;
 			dto.TermsDays = data.TermsDays;
+			dto.SalesRep = data.SalesRep;
+			dto.SalesRep2 = data.SalesRep2;
+			dto.SalesRep3 = data.SalesRep3;
+			dto.SalesRep4 = data.SalesRep4;
+			dto.CommissionRate = data.CommissionRate;
+			dto.CommissionRate2 = data.CommissionRate2;
+			dto.CommissionRate3 = data.CommissionRate3;
+			dto.CommissionRate4 = data.CommissionRate4;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;

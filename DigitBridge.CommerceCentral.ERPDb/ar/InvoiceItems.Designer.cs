@@ -214,6 +214,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("LotExpDate",SqlDbType.Date)]
         private DateTime? _lotExpDate;
 
+        [Column("CentralOrderLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _centralOrderLineUuid;
+
+        [Column("DBChannelOrderLineRowID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _dBChannelOrderLineRowID;
+
+        [Column("OrderDCAssignmentLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _orderDCAssignmentLineUuid;
+
+        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentLineNum;
+
+        [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate;
+
+        [Column("CommissionAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -1184,6 +1202,102 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+        public virtual string CentralOrderLineUuid
+        {
+            get
+            {
+				return _centralOrderLineUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_centralOrderLineUuid = value.TruncateTo(50); 
+				OnPropertyChanged("CentralOrderLineUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+		/// </summary>
+        public virtual string DBChannelOrderLineRowID
+        {
+            get
+            {
+				return _dBChannelOrderLineRowID?.TrimEnd(); 
+            }
+            set
+            {
+				_dBChannelOrderLineRowID = value.TruncateTo(50); 
+				OnPropertyChanged("DBChannelOrderLineRowID", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+        public virtual string OrderDCAssignmentLineUuid
+        {
+            get
+            {
+				return _orderDCAssignmentLineUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_orderDCAssignmentLineUuid = value.TruncateTo(50); 
+				OnPropertyChanged("OrderDCAssignmentLineUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentLineNum
+        {
+            get
+            {
+				return _orderDCAssignmentLineNum; 
+            }
+            set
+            {
+				_orderDCAssignmentLineNum = value; 
+				OnPropertyChanged("OrderDCAssignmentLineNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate
+        {
+            get
+            {
+				return _commissionRate; 
+            }
+            set
+            {
+				_commissionRate = value; 
+				OnPropertyChanged("CommissionRate", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount
+        {
+            get
+            {
+				return _commissionAmount; 
+            }
+            set
+            {
+				_commissionAmount = value; 
+				OnPropertyChanged("CommissionAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1389,6 +1503,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_lotCost = default(decimal); 
 			_lotInDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_lotExpDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_centralOrderLineUuid = String.Empty; 
+			_dBChannelOrderLineRowID = String.Empty; 
+			_orderDCAssignmentLineUuid = String.Empty; 
+			_orderDCAssignmentLineNum = default(long); 
+			_commissionRate = default(decimal); 
+			_commissionAmount = default(decimal); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

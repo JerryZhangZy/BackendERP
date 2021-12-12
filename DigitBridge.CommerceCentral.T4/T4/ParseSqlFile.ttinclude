@@ -620,13 +620,13 @@
             get { return isNumber && Name.ToLower().EndsWith("qty"); }
         }
         public bool isAmount {
-            get { return isNumber && Name.ToLower().EndsWith("amount"); }
+            get { return isNumber && (Name.ToLower().EndsWith("amount") || Name.ToLower().EndsWith("amount1") || Name.ToLower().EndsWith("amount2") || Name.ToLower().EndsWith("amount3") || Name.ToLower().EndsWith("amount4")); }
         }
         public bool isPrice {
             get { return isNumber && Name.ToLower().EndsWith("price"); }
         }
         public bool isRate {
-            get { return isNumber && Name.ToLower().EndsWith("rate"); }
+            get { return isNumber && (Name.ToLower().EndsWith("rate") || Name.ToLower().EndsWith("rate1") || Name.ToLower().EndsWith("rate2") || Name.ToLower().EndsWith("rate3") || Name.ToLower().EndsWith("rate4")); }
         }
         public bool isCost {
             get { return isNumber && Name.ToLower().EndsWith("cost"); }

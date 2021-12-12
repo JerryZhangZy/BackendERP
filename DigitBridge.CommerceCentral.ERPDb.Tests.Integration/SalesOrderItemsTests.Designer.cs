@@ -103,6 +103,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.OrderDCAssignmentLineNum, f => default(long))
+					.RuleFor(u => u.CommissionRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.CommissionAmount, f => f.Random.Decimal(1, 1000, 6))
 					;
             #endregion faker data rules
         }

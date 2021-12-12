@@ -244,6 +244,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _orderDCAssignmentLineNum;
 
+        [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate;
+
+        [Column("CommissionAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
@@ -1379,6 +1385,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate
+        {
+            get
+            {
+				return _commissionRate; 
+            }
+            set
+            {
+				_commissionRate = value; 
+				OnPropertyChanged("CommissionRate", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount
+        {
+            get
+            {
+				return _commissionAmount; 
+            }
+            set
+            {
+				_commissionAmount = value; 
+				OnPropertyChanged("CommissionAmount", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -1542,6 +1580,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
 			_orderDCAssignmentLineNum = default(long); 
+			_commissionRate = default(decimal); 
+			_commissionAmount = default(decimal); 
             ClearChildren();
             return this;
         }

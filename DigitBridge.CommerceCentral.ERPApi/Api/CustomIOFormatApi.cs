@@ -23,36 +23,30 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     [ApiFilter(typeof(CustomerApi))]
     public static class CustomIOFormatApi
     {
-
-
-
         [FunctionName(nameof(GetCustomIOFormatData))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "GetCustomIOFormatData", tags: new[] { "CustomIOFormats" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "formatType", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "formatType", Description = "formatType", Visibility = OpenApiVisibilityType.Advanced)]
-
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadGetSingle))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> GetCustomIOFormatData(
-          [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customIOFormats/{formatType}")] HttpRequest req,
+          [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customIOFormats/NewFormat/{formatType}")] HttpRequest req,
           string formatType)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomIOFormatService(dbFactory);
-
-
-            payload.Success = await svc.GetDataFomartAsync(payload, formatType);
-           payload.Messages = svc.Messages;
+            payload.Success = await svc.NewDataFomartAsync(payload, formatType);
+            payload.Messages = svc.Messages;
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
 
         }
 
-
-
-
         [FunctionName(nameof(GetCustomIOFormat))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "GetCustomIOFormat", tags: new[] { "CustomIOFormats" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -60,8 +54,9 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "formatType", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "formatType", Description = "formatType", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "formatNumber", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "formatNumber", Description = "formatNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadGetSingle))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> GetCustomIOFormat(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customIOFormats/{formatType}/{formatNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customIOFormats/Load/{formatType}/{formatNumber}")] HttpRequest req,
             string formatType ,int formatNumber)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>();
@@ -78,17 +73,17 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
 
         }
 
-
-
         [FunctionName(nameof(AddCustomIOFormat))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "AddCustomIOFormat", tags: new[] { "CustomIOFormats" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadAdd), Description = "CustomIOFormatDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadAdd))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> AddCustomIOFormat(
-    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customIOFormats")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customIOFormats")] HttpRequest req)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -102,18 +97,17 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
         }
 
-
-
-
         [FunctionName(nameof(UpdateCustomIOFormat))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "UpdateCustomIOFormat", tags: new[] { "CustomIOFormats" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadUpdate), Description = "CustomIOFormatDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadUpdate))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> UpdateCustomIOFormat(
-          [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "customIOFormats")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "customIOFormats")] HttpRequest req)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -127,20 +121,18 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
         }
 
-
-
-
-
         [FunctionName(nameof(DeleteCustomIOFormat))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "DeleteCustomIOFormat", tags: new[] { "CustomIOFormats" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "formatNumber", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "formatNumber", Description = "formatNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadDelete), Description = "The OK response")]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> DeleteCustomIOFormat(
-          [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customIOFormats/{formatNumber}")] HttpRequest req,
-          int formatNumber)
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customIOFormats/{formatNumber}")] HttpRequest req,
+            int formatNumber)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -149,22 +141,23 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             payload.Success = await svc.DeleteByNumberAsync(payload, formatNumber.ToString());
             if (payload.Success)
                 payload.CustomIOFormat = svc.ToDto();
-           else
+            else
                 payload.Messages = svc.Messages;
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
         }
-
 
         /// <summary>
         /// Load CustomIOFormat list
         /// </summary>
         [FunctionName(nameof(CustomIOFormatList))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "CustomIOFormatList", tags: new[] { "CustomIOFormats" }, Summary = "Load CustomIOFormat list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadFind))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> CustomIOFormatList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customIOFormats/find")] HttpRequest req)
         {
@@ -175,18 +168,17 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<CustomIOFormatPayload>(payload);
         }
 
-
-
-
         /// <summary>
         /// Add CustomIOFormat
         /// </summary>
         [FunctionName(nameof(Sample_CustomIOFormat_Post))]
+        #region swagger Doc
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "CustomIOFormatAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of CustomIOFormat")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadAdd))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayloadAdd>> Sample_CustomIOFormat_Post(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customIOFormat")] HttpRequest req)
         {
@@ -197,11 +189,13 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// find CustomIOFormat
         /// </summary>
         [FunctionName(nameof(Sample_CustomIOFormat_Find))]
+        #region swagger Doc
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "Sample_CustomIOFormat_Find", tags: new[] { "Sample" }, Summary = "Get new sample of CustomIOFormat find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadFind))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayloadFind>> Sample_CustomIOFormat_Find(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customIOFormats/find")] HttpRequest req)
         {

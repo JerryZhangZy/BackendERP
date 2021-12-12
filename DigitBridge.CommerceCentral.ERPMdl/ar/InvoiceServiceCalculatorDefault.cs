@@ -163,7 +163,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(sum.InvoiceNumber))
+                if (string.IsNullOrEmpty(sum.InvoiceNumber) || 
+                    _invoiceService.ExistInvoiceNumber(sum.InvoiceNumber, sum.MasterAccountNum, sum.ProfileNum)
+                )
                 {
                     sum.InvoiceNumber =  _invoiceService.GetNextNumber(data.InvoiceHeader.MasterAccountNum, data.InvoiceHeader.ProfileNum);
                 }

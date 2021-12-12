@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var srv = new InvoiceService(dataBaseFactory);
 
-            return await srv.ExistInvoiceNumber(invoiceNumber, masterAccountNum, profileNum);
+            return await srv.ExistInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum);
         }
 
         /// <summary>

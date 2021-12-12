@@ -91,3 +91,54 @@ CREATE NONCLUSTERED INDEX [IX_Customer_CustomerName] ON [dbo].[Customer]
 	[CustomerName] ASC
 ) 
 GO
+
+IF COL_LENGTH('Customer', 'SalesRep') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [SalesRep] Varchar(100) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('Customer', 'SalesRep2') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [SalesRep2] Varchar(100) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('Customer', 'SalesRep3') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [SalesRep3] Varchar(100) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('Customer', 'SalesRep4') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [SalesRep4] Varchar(100) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('Customer', 'CommissionRate') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('Customer', 'CommissionRate2') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [CommissionRate2] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('Customer', 'CommissionRate3') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [CommissionRate3] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('Customer', 'CommissionRate4') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [CommissionRate4] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_SalesRep1234')
+CREATE NONCLUSTERED INDEX [IX_Customer_SalesRep1234] ON [dbo].[Customer]
+(
+	[SalesRep] ASC,
+	[SalesRep2] ASC,
+	[SalesRep3] ASC,
+	[SalesRep4] ASC
+) 
+GO
