@@ -284,4 +284,8 @@
   <ItemGroup>
     <None Include="channelOrder\OrderHeaderMerchantExt_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="channelOrder\OrderLineMiscExt.sql" />
+    <Build Include="channelOrder\OrderLineMiscExt_Update.sql" />
+  </ItemGroup>
 </Project>

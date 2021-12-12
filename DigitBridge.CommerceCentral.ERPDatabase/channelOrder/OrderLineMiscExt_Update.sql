@@ -23,8 +23,32 @@ BEGIN
 		[CentralOrderLineMiscExtUuid] ASC
 	) 
 END					
+
+IF COL_LENGTH('OrderLineMiscExt', 'LineDueToSellerAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderLineMiscExt ADD [LineDueToSellerAmount] MONEY NOT NULL DEFAULT 0
+END		
+
+IF COL_LENGTH('OrderLineMiscExt', 'LineCommissionAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderLineMiscExt ADD [LineCommissionAmount] MONEY NOT NULL DEFAULT 0
+END		
+
+IF COL_LENGTH('OrderLineMiscExt', 'LineCommissionTaxAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderLineMiscExt ADD [LineCommissionTaxAmount] MONEY NOT NULL DEFAULT 0
+END		
+
+IF COL_LENGTH('OrderLineMiscExt', 'LineRemittedTaxAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderLineMiscExt ADD [LineRemittedTaxAmount] MONEY NOT NULL DEFAULT 0
+END			
 	
 
+IF COL_LENGTH('OrderLineMiscExt', 'LineAdditionalInfo') IS NULL					
+BEGIN					
+    ALTER TABLE OrderLineMiscExt ADD [LineAdditionalInfo]  [nvarchar](max) NULL DEFAULT ''
+END		
 /*
     UPDATE spp
     SET spp.CentralOrderUuid = sph.CentralOrderUuid

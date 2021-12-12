@@ -16,6 +16,11 @@
    
     [CentralOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [CentralOrderLineMiscExtUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder line
+	[LineDueToSellerAmount] [money] NULL,
+	[LineCommissionAmount] [money] NULL,
+	[LineCommissionTaxAmount] [money] NULL,
+	[LineRemittedTaxAmount] [money] NULL,
+	[LineAdditionalInfo] [nvarchar](max) NULL,
 
  CONSTRAINT [PK_OrderLineMiscExt] PRIMARY KEY CLUSTERED 
 (

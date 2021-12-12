@@ -92,19 +92,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeader.InvoiceTime = _dtNowUtc.TimeOfDay;
             invoiceHeader.DueDate = soHeader.DueDate;
             invoiceHeader.BillDate = soHeader.DueDate;
-#if DEBUG
-            invoiceHeader.CustomerUuid = Guid.NewGuid().ToString();
-            invoiceHeader.CustomerCode = "Test-YM";
-            invoiceHeader.CustomerName = "Test-YM";
-            invoiceHeader.Terms = "Basic";
-            invoiceHeader.TermsDays = 30;
-#else
+
             invoiceHeader.CustomerUuid = soHeader.CustomerUuid;
             invoiceHeader.CustomerCode = soHeader.CustomerCode;
             invoiceHeader.CustomerName = soHeader.CustomerName;
             invoiceHeader.Terms = soHeader.Terms;
             invoiceHeader.TermsDays = soHeader.TermsDays;
-#endif
+
             invoiceHeader.Currency = soHeader.Currency;
             //SubTotalAmount
             //SalesAmount
@@ -193,11 +187,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         ProductUuid = soLine.ProductUuid,
                         InventoryUuid = soLine.InventoryUuid,
                         WarehouseUuid = soLine.WarehouseUuid,
-#if DEBUG
-                        WarehouseCode = osHeader.WarehouseCode,
-#else
                         WarehouseCode = soLine.WarehouseCode,
-#endif
                         LotNum = soLine.LotNum,
                         Description = soLine.Description,
                         Notes = soLine.Notes,

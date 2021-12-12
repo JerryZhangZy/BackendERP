@@ -19,3 +19,17 @@ BEGIN
     ALTER TABLE OrderHeader ADD [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0
 END					
 
+IF COL_LENGTH('OrderHeader', 'TotalCommissionAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeader ADD [TotalCommissionAmount] MONEY NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('OrderHeader', 'TotalCommissionTaxAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeader ADD [TotalCommissionTaxAmount] MONEY NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('OrderHeader', 'TotalRemittedTaxAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeader ADD [TotalRemittedTaxAmount] MONEY NOT NULL DEFAULT 0
+END			
