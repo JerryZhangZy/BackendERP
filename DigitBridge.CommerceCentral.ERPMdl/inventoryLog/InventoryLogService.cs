@@ -1063,7 +1063,7 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
-        public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data)
+        public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data, bool isAdd=true)
         {
             if (data == null || data.WarehouseTransferHeader == null)
                 return false;
@@ -1082,7 +1082,7 @@ where inv.InventoryUuid=il.InventoryUuid
 
             await list.SetDataBaseFactory(dbFactory).SaveAsync();
 
-            UpdateInventoryInStock(logUuid, 1);
+            UpdateInventoryInStock(logUuid, isAdd?1:0);
             return true;
         }
 
@@ -1119,34 +1119,34 @@ where inv.InventoryUuid=il.InventoryUuid
                     EnterBy = ""
                 };
                 list.Add(line);
-                line = new InventoryLog
-                {
-                    DatabaseNum = header.DatabaseNum,
-                    MasterAccountNum = header.MasterAccountNum,
-                    ProfileNum = header.ProfileNum,
-                    InventoryLogUuid = Guid.NewGuid().ToString(),
-                    InventoryUuid = item.ToInventoryUuid,
-                    ProductUuid = item.ProductUuid,
-                    LogUuid = logUuid,
-                    LogType = InventoyLogType.ToWarehouse.ToString(),
-                    BatchNum = batchNum,
-                    LogNumber = header.BatchNumber,
-                    LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
-                    LogDate = DateTime.UtcNow.Date,
-                    LogTime = DateTime.UtcNow.TimeOfDay,
-                    LogBy = "",
-                    SKU = item.SKU,
-                    Description = item.Description,
-                    WarehouseCode = item.ToWarehouseCode,
-                    LotNum = item.LotNum,
-                    LotInDate = item.LotInDate,
-                    LotExpDate = item.LotExpDate,
-                    UOM = item.UOM,
-                    LogQty = item.TransferQty,
-                    BeforeInstock = item.ToBeforeInstockPack,
-                    EnterBy = ""
-                };
-                list.Add(line);
+                //line = new InventoryLog
+                //{
+                //    DatabaseNum = header.DatabaseNum,
+                //    MasterAccountNum = header.MasterAccountNum,
+                //    ProfileNum = header.ProfileNum,
+                //    InventoryLogUuid = Guid.NewGuid().ToString(),
+                //    InventoryUuid = item.ToInventoryUuid,
+                //    ProductUuid = item.ProductUuid,
+                //    LogUuid = logUuid,
+                //    LogType = InventoyLogType.ToWarehouse.ToString(),
+                //    BatchNum = batchNum,
+                //    LogNumber = header.BatchNumber,
+                //    LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
+                //    LogDate = DateTime.UtcNow.Date,
+                //    LogTime = DateTime.UtcNow.TimeOfDay,
+                //    LogBy = "",
+                //    SKU = item.SKU,
+                //    Description = item.Description,
+                //    WarehouseCode = item.ToWarehouseCode,
+                //    LotNum = item.LotNum,
+                //    LotInDate = item.LotInDate,
+                //    LotExpDate = item.LotExpDate,
+                //    UOM = item.UOM,
+                //    LogQty = item.TransferQty,
+                //    BeforeInstock = item.ToBeforeInstockPack,
+                //    EnterBy = ""
+                //};
+                //list.Add(line);
             }
             return list;
         }

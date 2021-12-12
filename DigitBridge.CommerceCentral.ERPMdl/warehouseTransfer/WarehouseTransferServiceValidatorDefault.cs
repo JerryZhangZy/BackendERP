@@ -287,6 +287,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"BatchNumber: {data.WarehouseTransferHeader.BatchNumber} is duplicate.");
             }
+
             return IsValid;
 
         }
@@ -452,8 +453,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
                     var list = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.FromWarehouseCode }).Distinct().ToList();
-                    var list2 = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.ToWarehouseCode }).Distinct().ToList();
-                    list = list.Union(list2).ToList();
+                    //var list2 = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.ToWarehouseCode }).Distinct().ToList();
+                    //list = list.Union(list2).ToList();
                     using (var trx = new ScopedTransaction(dbFactory))
                     {
                         list = await InventoryServiceHelper.ExistInventoryBySkuWithWarehouseCodesAsync(list, dto.WarehouseTransferHeader.MasterAccountNum.ToInt(), dto.WarehouseTransferHeader.ProfileNum.ToInt());
