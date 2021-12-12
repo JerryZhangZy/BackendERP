@@ -49,6 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.WarehouseTransferHeader != null)
                 {
+                    await InventoryLogService.UpdateByWarehouseTransferAsync(_data,false);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
                 }
             }
@@ -92,6 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.WarehouseTransferHeader != null)
                 {
+                    await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
@@ -564,7 +566,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (await base.SaveDataAsync())
             {
-                await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
+                //await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
                 return true;
             }
             return false;
@@ -586,7 +588,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if(await base.DeleteDataAsync())
             {
                 _data.WarehouseTransferItems.Clear();
-                await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
+                await InventoryLogService.UpdateByWarehouseTransferAsync(_data,false);
                 return true;
             }
             return false;

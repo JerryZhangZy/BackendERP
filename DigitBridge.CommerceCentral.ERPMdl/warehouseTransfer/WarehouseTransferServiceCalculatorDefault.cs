@@ -20,6 +20,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -161,6 +162,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         private InventoryService _inventoryService;
         protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
 
+
+
         #endregion
 
         #region GetDataWithCache
@@ -234,12 +237,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         //TODO: add set default for detail line logic
-        protected virtual bool SetDefault(WarehouseTransferItems item, WarehouseTransferData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual  bool SetDefault(WarehouseTransferItems item, WarehouseTransferData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
 
-            var setting = new ERPSetting();
+            data.WarehouseTransferHeader.TransferStatus = (int)TransferStatus.New;
+           var setting = new ERPSetting();
             var sum = data.WarehouseTransferHeader;
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
@@ -265,11 +269,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.LotExpDate = inv.LotExpDate;
                 item.FromBeforeInstockQty = inv.Instock;
             }
-            inv = GetInventory(data, item.ProductUuid, item.ToInventoryUuid);
-            if (inv != null)
+
+            var inventory = _inventoryService.GetInventoryDataByWarehouseAsync(item.SKU, item.ToWarehouseCode, data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum, true).GetAwaiter().GetResult();
+            if (inventory == null)
             {
-                item.ToBeforeInstockQty = inv.Instock;
+                AddError($"Sku {item.SKU} or warehouse {item.ToWarehouseCode} not found.");
+                return false;
             }
+            item.ToBeforeInstockQty = inventory.Inventory.FirstOrDefault(r => r.WarehouseUuid == item.ToWarehouseUuid).Instock;
+ 
+            //inv = GetInventory(data, item.ProductUuid, item.ToInventoryUuid);
+            //if (inv != null)
+            //{
+            //    item.ToBeforeInstockQty = inv.Instock;
+            //}
 
             //InvoiceItemType
             //InvoiceItemStatus
