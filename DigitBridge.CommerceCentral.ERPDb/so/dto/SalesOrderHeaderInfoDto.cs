@@ -194,6 +194,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCustomerPoNum => CustomerPoNum != null;
 
 		/// <summary>
+		/// (Readonly) Reference to OrderHeader rownum. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Reference to OrderHeader rownum. <br> Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The DBChannelOrderHeaderRowID value cannot exceed 50 characters. ")]
+        public string DBChannelOrderHeaderRowID { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDBChannelOrderHeaderRowID => DBChannelOrderHeaderRowID != null;
+
+		/// <summary>
+		/// (Readonly) Reference to OrderDCAssignmentHeader OrderDCAssignmentNum. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Reference to OrderDCAssignmentHeader OrderDCAssignmentNum. <br> Display: false, Editable: false")]
+        public long? OrderDCAssignmentNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentNum => OrderDCAssignmentNum != null;
+
+		/// <summary>
 		/// (Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false")]

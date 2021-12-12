@@ -49,9 +49,19 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipTo
 ) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[CentralOrderNum] ASC
 )  
 GO
+
+IF COL_LENGTH('SalesOrderHeaderInfo', 'DBChannelOrderHeaderRowID') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeaderInfo ADD [DBChannelOrderHeaderRowID] VARCHAR(50) NOT NULL Default ''
+END	 
+
+IF COL_LENGTH('SalesOrderHeaderInfo', 'OrderDCAssignmentNum') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeaderInfo ADD [OrderDCAssignmentNum] [bigint] NOT NULL Default 0
+END
