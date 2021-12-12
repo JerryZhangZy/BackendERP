@@ -48,6 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipDate AS {name ?? "ShipDate".ToCamelCase(camelCase)} ";
         public static string EtaArrivalDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EtaArrivalDate AS {name ?? "EtaArrivalDate".ToCamelCase(camelCase)} ";
         public static string EarliestShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EarliestShipDate AS {name ?? "EarliestShipDate".ToCamelCase(camelCase)} ";
+        public static string LatestShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LatestShipDate AS {name ?? "LatestShipDate".ToCamelCase(camelCase)} ";
         public static string SignatureFlag(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.SignatureFlag AS {name ?? "SignatureFlag".ToCamelCase(camelCase)} ";
         public static string SKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU".ToCamelCase(camelCase)} ";
         public static string ProductUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid".ToCamelCase(camelCase)} ";
@@ -107,6 +108,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
         public static string OrderDCAssignmentLineNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentLineNum AS {name ?? "OrderDCAssignmentLineNum".ToCamelCase(camelCase)} ";
+        public static string CommissionRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate AS {name ?? "CommissionRate".ToCamelCase(camelCase)} ";
+        public static string CommissionAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionAmount AS {name ?? "CommissionAmount".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -125,6 +128,7 @@ RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 {allies}ShipDate AS ShipDate,
 {allies}EtaArrivalDate AS EtaArrivalDate,
 {allies}EarliestShipDate AS EarliestShipDate,
+{allies}LatestShipDate AS LatestShipDate,
 {allies}SignatureFlag AS SignatureFlag,
 RTRIM({allies}SKU) AS SKU,
 RTRIM({allies}ProductUuid) AS ProductUuid,
@@ -183,7 +187,9 @@ RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}DigitBridgeGuid AS DigitBridgeGuid,
-{allies}OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum
+{allies}OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum,
+{allies}CommissionRate AS CommissionRate,
+{allies}CommissionAmount AS CommissionAmount
 ";
         }
 

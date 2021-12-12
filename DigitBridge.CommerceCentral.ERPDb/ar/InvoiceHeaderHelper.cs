@@ -81,6 +81,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string AvgCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.AvgCost AS {name ?? "AvgCost".ToCamelCase(camelCase)} ";
         public static string LotCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LotCost AS {name ?? "LotCost".ToCamelCase(camelCase)} ";
         public static string InvoiceSourceCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceSourceCode) AS {name ?? "InvoiceSourceCode".ToCamelCase(camelCase)} ";
+        public static string SalesRep(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep) AS {name ?? "SalesRep".ToCamelCase(camelCase)} ";
+        public static string SalesRep2(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep2) AS {name ?? "SalesRep2".ToCamelCase(camelCase)} ";
+        public static string SalesRep3(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep3) AS {name ?? "SalesRep3".ToCamelCase(camelCase)} ";
+        public static string SalesRep4(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesRep4) AS {name ?? "SalesRep4".ToCamelCase(camelCase)} ";
+        public static string CommissionRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate AS {name ?? "CommissionRate".ToCamelCase(camelCase)} ";
+        public static string CommissionRate2(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate2 AS {name ?? "CommissionRate2".ToCamelCase(camelCase)} ";
+        public static string CommissionRate3(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate3 AS {name ?? "CommissionRate3".ToCamelCase(camelCase)} ";
+        public static string CommissionRate4(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionRate4 AS {name ?? "CommissionRate4".ToCamelCase(camelCase)} ";
+        public static string CommissionAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionAmount AS {name ?? "CommissionAmount".ToCamelCase(camelCase)} ";
+        public static string CommissionAmount2(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionAmount2 AS {name ?? "CommissionAmount2".ToCamelCase(camelCase)} ";
+        public static string CommissionAmount3(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionAmount3 AS {name ?? "CommissionAmount3".ToCamelCase(camelCase)} ";
+        public static string CommissionAmount4(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CommissionAmount4 AS {name ?? "CommissionAmount4".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
         public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
@@ -137,6 +149,18 @@ RTRIM({allies}Currency) AS Currency,
 {allies}AvgCost AS AvgCost,
 {allies}LotCost AS LotCost,
 RTRIM({allies}InvoiceSourceCode) AS InvoiceSourceCode,
+RTRIM({allies}SalesRep) AS SalesRep,
+RTRIM({allies}SalesRep2) AS SalesRep2,
+RTRIM({allies}SalesRep3) AS SalesRep3,
+RTRIM({allies}SalesRep4) AS SalesRep4,
+{allies}CommissionRate AS CommissionRate,
+{allies}CommissionRate2 AS CommissionRate2,
+{allies}CommissionRate3 AS CommissionRate3,
+{allies}CommissionRate4 AS CommissionRate4,
+{allies}CommissionAmount AS CommissionAmount,
+{allies}CommissionAmount2 AS CommissionAmount2,
+{allies}CommissionAmount3 AS CommissionAmount3,
+{allies}CommissionAmount4 AS CommissionAmount4,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,

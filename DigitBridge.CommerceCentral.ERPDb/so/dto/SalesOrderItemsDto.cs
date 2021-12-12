@@ -678,6 +678,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderDCAssignmentLineNum => OrderDCAssignmentLineNum != null;
 
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate => CommissionRate != null;
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true")]
+        public decimal? CommissionAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionAmount => CommissionAmount != null;
+
 
 
         #endregion Properties - Generated 

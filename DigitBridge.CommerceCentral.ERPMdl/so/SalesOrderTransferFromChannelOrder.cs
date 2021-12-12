@@ -11,12 +11,12 @@ using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class SalesOrderTransfer : IMessage
+    public class SalesOrderTransferFromChannelOrder : IMessage
     {
         private DateTime _dtNowUtc = DateTime.UtcNow;
         private DateTime _initNowUtc = new DateTime(1800, 12, 28);
         private string _userId;
-        public SalesOrderTransfer(IMessage serviceMessage, string userId)
+        public SalesOrderTransferFromChannelOrder(IMessage serviceMessage, string userId)
         {
             this.ServiceMessage = serviceMessage;
 
@@ -168,6 +168,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeaderInfo.ChannelOrderID = dcHeader.ChannelOrderID;
             soHeaderInfo.SecondaryChannelOrderID = coHeader.SecondaryChannelOrderID;
             soHeaderInfo.ChannelOrderID = dcHeader.ChannelOrderID;
+            soHeaderInfo.OrderDCAssignmentNum = dcHeader.OrderDCAssignmentNum;
+            soHeaderInfo.DBChannelOrderHeaderRowID = dcHeader.DBChannelOrderHeaderRowID;
 
             soHeaderInfo.CentralFulfillmentNum = dcHeader.OrderDCAssignmentNum;
             soHeaderInfo.DistributionCenterNum = dcHeader.DistributionCenterNum;
@@ -183,7 +185,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(coHeader.SellerPrivateNote))
                 sb.AppendLine(coHeader.SellerPrivateNote);
             soHeaderInfo.Notes = sb.ToString();
-
+            
             soHeaderInfo.UpdateDateUtc = _dtNowUtc;
 
             return soHeaderInfo;

@@ -46,3 +46,14 @@ BEGIN
     ALTER TABLE SalesOrderItems ADD [SignatureFlag] TINYINT NOT NULL DEFAULT 0
 END	
 
+
+-- 12/11/20201 By jerry z
+IF COL_LENGTH('SalesOrderItems', 'CommissionRate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('SalesOrderItems', 'CommissionAmount') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					

@@ -171,6 +171,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("TermsDays",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _termsDays;
 
+        [Column("SalesRep",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep;
+
+        [Column("SalesRep2",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep2;
+
+        [Column("SalesRep3",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep3;
+
+        [Column("SalesRep4",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep4;
+
+        [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate;
+
+        [Column("CommissionRate2",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate2;
+
+        [Column("CommissionRate3",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate3;
+
+        [Column("CommissionRate4",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate4;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -899,6 +923,134 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep
+        {
+            get
+            {
+				return _salesRep?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep2
+        {
+            get
+            {
+				return _salesRep2?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep2 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep3
+        {
+            get
+            {
+				return _salesRep3?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep3 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep4
+        {
+            get
+            {
+				return _salesRep4?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep4 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep4", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate
+        {
+            get
+            {
+				return _commissionRate; 
+            }
+            set
+            {
+				_commissionRate = value; 
+				OnPropertyChanged("CommissionRate", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate2
+        {
+            get
+            {
+				return _commissionRate2; 
+            }
+            set
+            {
+				_commissionRate2 = value; 
+				OnPropertyChanged("CommissionRate2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate3
+        {
+            get
+            {
+				return _commissionRate3; 
+            }
+            set
+            {
+				_commissionRate3 = value; 
+				OnPropertyChanged("CommissionRate3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate4
+        {
+            get
+            {
+				return _commissionRate4; 
+            }
+            set
+            {
+				_commissionRate4 = value; 
+				OnPropertyChanged("CommissionRate4", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1022,6 +1174,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_sourceCode = String.Empty; 
 			_terms = String.Empty; 
 			_termsDays = default(int); 
+			_salesRep = String.Empty; 
+			_salesRep2 = String.Empty; 
+			_salesRep3 = String.Empty; 
+			_salesRep4 = String.Empty; 
+			_commissionRate = default(decimal); 
+			_commissionRate2 = default(decimal); 
+			_commissionRate3 = default(decimal); 
+			_commissionRate4 = default(decimal); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

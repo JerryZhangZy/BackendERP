@@ -1,10 +1,10 @@
 export type { 
-    MiscInvoiceDataModel,
-    miscInvoiceDataInit,
- } from "./miscInvoiceData.model";
+    InvoiceDataModel,
+    invoiceDataInit,
+ } from "./invoiceData.model";
 
 export { 
     getStore, 
-    useCurrentStore as useMiscInvoiceDataStore, 
-} from "./miscInvoiceData.store";
+    useCurrentStore as useInvoiceDataStore, 
+} from "./invoiceData.store";
 

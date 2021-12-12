@@ -751,9 +751,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        public async Task<bool> ExistOrderNumber(int masterAccountNum, int profileNum, string orderNumber)
+        public async Task<bool> ExistOrderNumberAsync(string orderNumber, int masterAccountNum, int profileNum)
         {
-            return await SalesOrderHelper.ExistNumberAsync(orderNumber, masterAccountNum, profileNum);
+            return await dbFactory.ExistsAsync<SalesOrderHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND OrderNumber = @2",
+                masterAccountNum,
+                profileNum,
+                orderNumber);
+        }
+        public bool ExistOrderNumber(string orderNumber, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Exists<SalesOrderHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND OrderNumber = @2",
+                masterAccountNum,
+                profileNum,
+                orderNumber);
+        }
+
+        public async Task<bool> ExistSalesOrderUuidAsync(string salesOrderUuid, int masterAccountNum, int profileNum)
+        {
+            return await dbFactory.ExistsAsync<InvoiceHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND SalesOrderUuid = @2",
+                masterAccountNum,
+                profileNum,
+                salesOrderUuid);
         }
 
         //public virtual async Task<bool> SaveCurrentDataAsync()

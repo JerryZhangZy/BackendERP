@@ -1,7 +1,7 @@
 import * as util from '../../../util';
 import { StoreMobx } from '../../../store';
 import { setCurrentService, getService } from '../../../service';
-import { MiscInvoiceService } from './miscInvoiceService';
+import { CustomIOFormatService } from './customIOFormatService';
 
 /**
 * Set current service to current page service, 
@@ -9,20 +9,20 @@ import { MiscInvoiceService } from './miscInvoiceService';
 * @param {string} name - service object name
 * @param {StoreMobx} store - screen data store object
 * @param {StoreMobx} ui - screen ui design store object
-* @return {MiscInvoiceService} service object
+* @return {CustomIOFormatService} service object
 */
-export const useService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): MiscInvoiceService | null => {
+export const useService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): CustomIOFormatService | null => {
     let service = getService(name) || createService(name, store, ui);
     setCurrentService(name, service);
-    return service as MiscInvoiceService;
+    return service as CustomIOFormatService;
 };
 
 /**
 * Create new service object
-* @return {MiscInvoiceService} service object
+* @return {CustomIOFormatService} service object
 */
-export const createService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): MiscInvoiceService | null => {
-    return new MiscInvoiceService(name, store, ui);
+export const createService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): CustomIOFormatService | null => {
+    return new CustomIOFormatService(name, store, ui);
 };
 
 

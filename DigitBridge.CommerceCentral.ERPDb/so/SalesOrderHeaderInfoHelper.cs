@@ -98,6 +98,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string BillToDaytimePhone(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToDaytimePhone) AS {name ?? "BillToDaytimePhone".ToCamelCase(camelCase)} ";
         public static string BillToNightPhone(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToNightPhone) AS {name ?? "BillToNightPhone".ToCamelCase(camelCase)} ";
         public static string Notes(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes".ToCamelCase(camelCase)} ";
+        public static string OrderDCAssignmentNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentNum AS {name ?? "OrderDCAssignmentNum".ToCamelCase(camelCase)} ";
+        public static string DBChannelOrderHeaderRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderHeaderRowID) AS {name ?? "DBChannelOrderHeaderRowID".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
         public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
@@ -171,6 +173,8 @@ RTRIM({allies}BillToEmail) AS BillToEmail,
 RTRIM({allies}BillToDaytimePhone) AS BillToDaytimePhone,
 RTRIM({allies}BillToNightPhone) AS BillToNightPhone,
 RTRIM({allies}Notes) AS Notes,
+{allies}OrderDCAssignmentNum AS OrderDCAssignmentNum,
+RTRIM({allies}DBChannelOrderHeaderRowID) AS DBChannelOrderHeaderRowID,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,
