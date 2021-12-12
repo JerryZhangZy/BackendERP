@@ -47,7 +47,7 @@ END
 
 IF COL_LENGTH('OrderLineMiscExt', 'LineAdditionalInfo') IS NULL					
 BEGIN					
-    ALTER TABLE OrderLineMiscExt ADD [LineAdditionalInfo]  [nvarchar](max) NULL DEFAULT ''
+    ALTER TABLE OrderLineMiscExt ADD [LineAdditionalInfo]  [nvarchar](max) NOT NULL DEFAULT ''
 END		
 /*
     UPDATE spp

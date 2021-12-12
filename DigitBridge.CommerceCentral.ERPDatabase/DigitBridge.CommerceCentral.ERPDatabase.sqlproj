@@ -308,4 +308,8 @@
   <ItemGroup>
     <None Include="CustomDefineCodes\CustomIOFormat.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="channelOrder\OrderLineMiscExt.sql" />
+    <Build Include="channelOrder\OrderLineMiscExt_Update.sql" />
+  </ItemGroup>
 </Project>

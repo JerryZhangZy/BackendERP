@@ -16,11 +16,11 @@
    
     [CentralOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [CentralOrderLineMiscExtUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder line
-	[LineDueToSellerAmount] [money] NULL,
-	[LineCommissionAmount] [money] NULL,
-	[LineCommissionTaxAmount] [money] NULL,
-	[LineRemittedTaxAmount] [money] NULL,
-	[LineAdditionalInfo] [nvarchar](max) NULL,
+	[LineDueToSellerAmount] [money] NOT NULL,
+	[LineCommissionAmount] [money] NOT NULL,
+	[LineCommissionTaxAmount] [money] NOT NULL,
+	[LineRemittedTaxAmount] [money] NOT NULL,
+	[LineAdditionalInfo] [nvarchar](max) NOT NULL,
 
  CONSTRAINT [PK_OrderLineMiscExt] PRIMARY KEY CLUSTERED 
 (
@@ -36,5 +36,20 @@ ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_Centra
 GO
 
 ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_CentralOrderLineMiscExtUuid]  DEFAULT (CONVERT([nvarchar](50),newid())) FOR [CentralOrderLineMiscExtUuid]
+GO
+
+ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_LineDueToSellerAmount]  DEFAULT ((0)) FOR [LineDueToSellerAmount]
+GO
+
+ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_LineCommissionAmount]  DEFAULT ((0)) FOR [LineCommissionAmount]
+GO
+
+ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_LineCommissionTaxAmount]  DEFAULT ((0)) FOR [LineCommissionTaxAmount]
+GO
+
+ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_LineRemittedTaxAmount]  DEFAULT ((0)) FOR [LineRemittedTaxAmount]
+GO
+
+ALTER TABLE [dbo].[OrderLineMiscExt] ADD  CONSTRAINT [DF_OrderLineMiscExt_LineAdditionalInfo]  DEFAULT ('') FOR [LineAdditionalInfo]
 GO
 
