@@ -63,3 +63,9 @@ BEGIN
     ALTER TABLE InvoiceHeaderInfo ADD [DBChannelOrderHeaderRowID] VARCHAR(50) NOT NULL DEFAULT ''
 END					
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_OrderShipmentUuid')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_OrderShipmentUuid] ON [dbo].[InvoiceHeaderInfo]
+(
+	[OrderShipmentUuid] ASC
+) 
+GO

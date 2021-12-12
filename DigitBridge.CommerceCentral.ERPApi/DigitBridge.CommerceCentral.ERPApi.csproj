@@ -56,6 +56,8 @@
     <Folder Include="JsType\invoice\store\" />
     <Folder Include="JsType\po\store\" />
     <Folder Include="JsType\po\service\" />
+    <Folder Include="JsType\shipment\store\" />
+    <Folder Include="JsType\shipment\service\" />
     <Folder Include="JsType\so\service\" />
     <Folder Include="JsType\so\store\" />
     <Folder Include="JsType\vendor\service\" />
