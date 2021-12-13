@@ -95,7 +95,10 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var srv = new ApInvoiceService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
             if (payload.Success)
+            {
+                srv.GetByNumber(payload.MasterAccountNum, payload.ProfileNum, payload.ApInvoice.ApInvoiceHeader.ApInvoiceNum);
                 payload.ApInvoice = srv.ToDto();
+            }
             payload.Messages = srv.Messages;
 
             //Directly return without waiting this result. 
@@ -127,11 +130,13 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new ApInvoiceService(dataBaseFactory);
             payload.Success = await srv.AddAsync(payload);
+            if (payload.Success)
+            {
+                srv.GetByNumber(payload.MasterAccountNum, payload.ProfileNum, payload.ApInvoice.ApInvoiceHeader.ApInvoiceNum);
+                payload.ApInvoice = srv.ToDto();
+            }
             payload.Messages = srv.Messages;
-            payload.ApInvoice = srv.ToDto();
-
-            // if (payload.Success)
-            //srv.AddQboApInvoiceEventAsync(payload.MasterAccountNum, payload.ProfileNum);
+ 
 
             return new JsonNetResponse<ApInvoicePayload>(payload);
         }

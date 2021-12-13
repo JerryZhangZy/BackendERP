@@ -45,10 +45,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasApInvoiceListCount => ApInvoiceListCount > 0;
         public bool ShouldSerializeApInvoiceListCount() => HasApInvoiceListCount;
 
+        public IList<ApplyInvoice> ApplyInvoices { get; set; } = new List<ApplyInvoice>();
+        [JsonIgnore]
+        public virtual bool HasApplyInvoices => ApplyInvoices != null && ApplyInvoices.Count > 0;
+        public bool ShouldSerializeApplyInvoices() => HasApplyInvoices;
+
+        public IList<ApInvoiceListForPayment> Payments { get; set; } = new List<ApInvoiceListForPayment>();
+        [JsonIgnore]
+        public virtual bool HasPayments => Payments != null && Payments.Count > 0;
+        public bool ShouldSerializePayments() => HasPayments;
+
         #region payment
 
         public ApInvoiceTransactionDto ApTransaction { get; set; }
-
+        public bool HasApInvoiceTransaction => ApTransaction != null;
         #endregion
     }
 }

@@ -115,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (processingMode == ProcessingMode.Add)
             {
-                if (data.ApInvoiceHeader.ApInvoiceNum.IsZero())
+                if (data.ApInvoiceHeader.ApInvoiceNum.IsZero() || _apInvoiceService.ExistInvoiceNumber(data.ApInvoiceHeader.ApInvoiceNum, data.ApInvoiceHeader.MasterAccountNum, data.ApInvoiceHeader.ProfileNum))
                     data.ApInvoiceHeader.ApInvoiceNum =   _apInvoiceService.GetNextNumber(data.ApInvoiceHeader.MasterAccountNum, data.ApInvoiceHeader.ProfileNum);
             }
 
@@ -293,6 +293,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+
+
         //TODO: add set default for detail line logic
         /* This is generated sample code
         protected virtual bool CalculateDetail(InvoiceItems item, ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -396,7 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
         */
-        
+
         #region message
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages

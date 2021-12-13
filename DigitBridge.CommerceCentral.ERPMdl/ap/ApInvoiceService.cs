@@ -626,6 +626,26 @@ where TransUuid=@0";
             return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.ApInvoice);
 
         }
+
+ 
+
+        public async Task<bool> ExistInvoiceNumberAsync(string apInvoiceNum, int masterAccountNum, int profileNum)
+        {
+            return await dbFactory.ExistsAsync<ApInvoiceHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND ApInvoiceNum = @2",
+                masterAccountNum,
+                profileNum,
+                apInvoiceNum);
+        }
+        public bool ExistInvoiceNumber(string apInvoiceNum, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Exists<ApInvoiceHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND ApInvoiceNum = @2",
+                masterAccountNum,
+                profileNum,
+                apInvoiceNum);
+        }
+
         //public bool CreateOrUpdateApInvoiceByPoReceive(PoTransactionData data)
         //{
         //    if (data == null || data.PoTransaction == null)
@@ -683,6 +703,12 @@ where TransUuid=@0";
         //    return SaveData();
         //}
 
+        public async Task<ApInvoiceHeader> GetApInvoiceHeaderAsync(string invoiceUuid)
+        {
+            if (this.Data == null)
+                this.NewData();
+            return await this.Data.GetApInvoiceHeaderByApInvoiceUuidAsync(invoiceUuid);
+        }
     }
 }
 

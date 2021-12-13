@@ -162,7 +162,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = this.Data.ApInvoiceTransaction.ProfileNum,
                 DatabaseNum = this.Data.ApInvoiceTransaction.DatabaseNum,
                 ProcessUuid = this.Data.ApInvoiceTransaction.TransUuid,
-                ProcessNumber = $"{this.Data.ApInvoiceData.ApInvoiceHeader.ApInvoiceNum}-{this.Data.ApInvoiceTransaction.TransNum}",
+                ProcessNumber = $"{this.Data.ApInvoiceTransaction.ApInvoiceNum}-{this.Data.ApInvoiceTransaction.TransNum}",
                 ChannelNum = 0,
                 ChannelAccountNum = 0,
 
@@ -171,6 +171,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion override methods
 
+        #region services property
+        private ApInvoiceService _apInvoiceService;
+        public ApInvoiceService ApInvoiceService
+        {
+            get
+            {
+                if (_apInvoiceService == null) _apInvoiceService = new ApInvoiceService(dbFactory);
+                return _apInvoiceService;
+            }
+        }
+        #endregion
 
         #region add multi payments
         public virtual async Task<bool> AddAsync(ApPaymentPayload payload)
@@ -556,23 +567,337 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
-            if (payload.ApInvoiceList.ToString().IsZero())
-            {
-                AddError($"No outstanding apInvoice for VendorCode:{vendorCode}");
-                return false;
-            }
-
-            var apInvoiceList = JsonConvert.DeserializeObject<List<ApInvoiceHeader>>(payload.ApInvoiceList.ToString());
 
             NewData();
-            // All unpaid amount.
-            Data.ApInvoiceTransaction.Amount = apInvoiceList.Sum(i => i.Balance.IsZero() ? 0 : i.Balance.ToDecimal());
+
+            payload.ApplyInvoices = payload.Payments
+                .Select(i => new ApplyInvoice
+                {
+                    InvoiceUuid = i.ApInvoiceUuid,
+                    InvoiceNumber = i.ApInvoiceNumber,
+                    Success = false,
+                    PaidAmount = 0
+                }).ToList();
 
             payload.ApTransaction = this.ToDto().ApInvoiceTransaction;
 
             return true;
         }
 
+        public async Task<bool> UpdateApInvoicePaymentAsync(ApNewPaymentPayload payload)
+        {
+            if (!(await ValidateAccountAsync(payload)))
+                return false;
+
+            payload.ApTransaction.MasterAccountNum = payload.MasterAccountNum;
+            payload.ApTransaction.ProfileNum = payload.ProfileNum;
+            var succes = true;
+            if (string.IsNullOrEmpty(payload.ApTransaction.PaymentUuid) || payload.ApTransaction.PaymentNumber.ToLong() <= 0)
+            {
+                payload.ApTransaction.PaymentUuid = Guid.NewGuid().ToString();
+                payload.ApTransaction.PaymentNumber = await GetNextPaymentNumberAsync(payload.MasterAccountNum, payload.ProfileNum);
+                succes = await AddNewApplyPaymentAsync(payload);
+            }
+            else
+            {
+                succes = await UpdateApplyPaymentAsync(payload);
+            }
+
+            // if any payment not save success, delete all previous saved payment.
+            if (!succes)
+                foreach (var payment in payload.ApplyInvoices.Where(x => x.Success))
+                    await DeleteAsync(payment.TransUuid);
+
+            //await GetByPaymentNumberAsync(payload, payload.ApTransaction.PaymentNumber.ToLong());
+            return succes;
+        }
+
+        public async Task<long> GetNextPaymentNumberAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COALESCE(MAX(PaymentNumber), 0) 
+FROM ApInvoiceTransaction
+WHERE MasterAccountNum=@0 AND ProfileNum=@1
+";
+            return await dbFactory.Db.ExecuteScalarAsync<long>(
+                sql,
+                masterAccountNum.ToSqlParameter("@0"),
+                profileNum.ToSqlParameter("@1")
+            ) + 1;
+        }
+
+        public async Task<int> GetNextTransNumAsync(string invoiceUuid)
+        {
+            var sql = $@"
+SELECT COALESCE(MAX(TransNum), 0)
+FROM ApInvoiceTransaction
+WHERE ApInvoiceUuid=@0
+";
+            return await dbFactory.Db.ExecuteScalarAsync<int>(
+                sql,
+                invoiceUuid.ToSqlParameter("@0")
+            ) + 1;
+        }
+
+        protected async virtual Task<bool> AddNewApplyPaymentAsync(ApNewPaymentPayload payload)
+        {
+            payload.ApTransaction.MasterAccountNum = payload.MasterAccountNum;
+            payload.ApTransaction.ProfileNum = payload.ProfileNum;
+            var succes = true;
+
+            foreach (var applyInvoice in payload.ApplyInvoices)
+            {
+                if (applyInvoice == null || string.IsNullOrEmpty(applyInvoice.InvoiceUuid) || applyInvoice.PaidAmount <= 0)
+                    continue;
+                applyInvoice.Success = false;
+
+                var invoice = await ApInvoiceService.GetApInvoiceHeaderAsync(applyInvoice.InvoiceUuid);
+                if (invoice == null)
+                {
+                    AddError($"Invoice {applyInvoice.InvoiceUuid} does not exist");
+                    succes = false;
+                    return succes;
+                }
+                var trans = GenerateTransaction(applyInvoice, invoice, payload.ApTransaction);
+
+                // Always add new payment
+                trans.ApInvoiceTransaction.TransUuid = Guid.NewGuid().ToString();
+                trans.ApInvoiceTransaction.TransNum = await GetNextTransNumAsync(trans.ApInvoiceTransaction.ApInvoiceUuid);
+                trans.ApInvoiceTransaction.RowNum = 0;
+
+                succes = await AddAsync(trans);
+                if (!succes)
+                    return succes;
+
+                applyInvoice.TransRowNum = Data.ApInvoiceTransaction.RowNum;
+                applyInvoice.TransUuid = Data.ApInvoiceTransaction.TransUuid;
+                applyInvoice.TransNum = Data.ApInvoiceTransaction.TransNum;
+                applyInvoice.PaidAmount = Data.ApInvoiceTransaction.Amount;
+                applyInvoice.Success = true;
+            }
+
+            return succes;
+        }
+
+        protected async virtual Task<bool> UpdateApplyPaymentAsync(ApNewPaymentPayload payload)
+        {
+            payload.ApTransaction.MasterAccountNum = payload.MasterAccountNum;
+            payload.ApTransaction.ProfileNum = payload.ProfileNum;
+            // load exist payment list
+            var existPayment = await GetByPaymentNumberAsync(payload.ApTransaction.PaymentNumber.ToLong(), payload.MasterAccountNum, payload.ProfileNum);
+
+            var succes = true;
+            var removed = new List<ApInvoiceTransaction>();
+            // if exist old payment, but not exist in current apply payment, need delete old payment
+            foreach (var payment in existPayment)
+            {
+                if (payment == null || string.IsNullOrEmpty(payment.TransUuid)) continue;
+                await GetDataByIdAsync(payment.TransUuid);
+                var obj = payload.ApplyInvoices.FirstOrDefault(x => x.TransUuid.EqualsIgnoreSpace(payment.TransUuid));
+                if (obj == null || obj.PaidAmount <= 0)
+                {
+                    await DeleteAsync(payment.TransUuid);
+                    removed.Add(payment);
+                }
+            }
+            foreach (var rem in removed)
+                existPayment.Remove(rem);
+
+            // add or update payment for each apply invoice
+            foreach (var applyInvoice in payload.ApplyInvoices)
+            {
+                if (applyInvoice == null || string.IsNullOrEmpty(applyInvoice.InvoiceUuid) || applyInvoice.PaidAmount <= 0)
+                    continue;
+                applyInvoice.Success = false;
+
+                // load invoice header
+                var invoice = await ApInvoiceService.GetApInvoiceHeaderAsync(applyInvoice.InvoiceUuid);
+                if (invoice == null)
+                {
+                    AddError($"Invoice {applyInvoice.InvoiceUuid} does not exist");
+                    succes = false;
+                    return succes;
+                }
+                var trans = GenerateTransaction(applyInvoice, invoice, payload.ApTransaction);
+
+                var obj = existPayment.FirstOrDefault(x => x.TransUuid.EqualsIgnoreSpace(trans.ApInvoiceTransaction.TransUuid));
+                if (obj != null)
+                {
+                    trans.ApInvoiceTransaction.RowNum = obj.RowNum;
+                    succes = await UpdateAsync(trans);
+                }
+                else
+                {
+                    trans.ApInvoiceTransaction.TransUuid = Guid.NewGuid().ToString();
+                    trans.ApInvoiceTransaction.TransNum = await GetNextTransNumAsync(trans.ApInvoiceTransaction.ApInvoiceUuid);
+                    trans.ApInvoiceTransaction.RowNum = 0;
+                    succes = await AddAsync(trans);
+                }
+
+                if (!succes)
+                    return succes;
+
+                applyInvoice.TransRowNum = Data.ApInvoiceTransaction.RowNum;
+                applyInvoice.TransUuid = Data.ApInvoiceTransaction.TransUuid;
+                applyInvoice.TransNum = Data.ApInvoiceTransaction.TransNum;
+                applyInvoice.PaidAmount = Data.ApInvoiceTransaction.Amount;
+                applyInvoice.Success = true;
+            }
+
+            return succes;
+        }
+        
+        public async Task<bool> GetByPaymentNumberAsync(ApNewPaymentPayload payload, long paymentNumber)
+        {
+            var payments = await GetByPaymentNumberAsync(paymentNumber, payload.MasterAccountNum, payload.ProfileNum);
+            if (payments == null || payments.Count == 0)
+                return payload.ReturnError($"Payment number {paymentNumber} not found.");
+
+            // use first invoiceTransaction for payment info
+            var pay1 = payments[0];
+            payload.ApTransaction = new ApInvoiceTransactionDto()
+            {
+                DatabaseNum = pay1.DatabaseNum,
+                MasterAccountNum = pay1.MasterAccountNum,
+                PaymentUuid = pay1.PaymentUuid,
+                PaymentNumber = pay1.PaymentNumber,
+                //CustomerCode = pay1.CustomerCode,
+                TransDate = pay1.TransDate,
+                PaidBy = pay1.PaidBy,
+                BankAccountUuid = pay1.BankAccountUuid,
+                BankAccountCode = pay1.BankAccountCode,
+                CheckNum = pay1.CheckNum,
+                AuthCode = pay1.AuthCode,
+                Currency = pay1.Currency,
+                Amount = 0
+            };
+
+            // load first invoice
+            var invoice1 = await ApInvoiceService.GetApInvoiceHeaderAsync(pay1.ApInvoiceUuid);
+
+            if (!await LoadApInvoiceList(payload, invoice1.VendorCode))
+            {
+                payload.Payments = new List<ApInvoiceListForPayment>();
+            }
+
+            // Get invoiceUuid which exist payment but not in outstanding invoice list
+            var invoiceUuids = payments.Select(p =>
+            {
+                return p != null && !string.IsNullOrEmpty(p.ApInvoiceUuid) && payload.Payments.FindByInvoiceUuid(p.ApInvoiceUuid) == null
+                    ? p.ApInvoiceUuid
+                    : null;
+            }).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            // load this payment invoice list
+            if (invoiceUuids != null && invoiceUuids.Count > 0)
+            {
+                var newInvoiceList = await LoadInvoiceListByUuidsAsync(payload, invoiceUuids);
+                if (newInvoiceList != null && newInvoiceList.Count > 0)
+                {
+                    foreach (var item in newInvoiceList)
+                        payload.Payments.Add(item);
+                }
+            }
+
+            if (payload.Payments == null || payload.Payments.Count == 0)
+                return payload.ReturnError($"Payment number {paymentNumber} not found.");
+
+            // add exist payment amount and TransUuid tp invoice list
+            foreach (var pay in payments)
+            {
+                if (pay == null) continue;
+                // find invoiceUuid, if not exist in outstanding invoice list, need load this invoice later
+                var ins = payload.Payments.FindByInvoiceUuid(pay.ApInvoiceUuid);
+                if (ins == null) continue;
+                ins.TransRowNum = pay.RowNum;
+                ins.TransUuid = pay.TransUuid;
+                ins.TransNum = pay.TransNum;
+                ins.Description = pay.Description;
+                ins.Notes = pay.Notes;
+                ins.PayAmount = pay.Amount;
+                ins.PaidAmount -= ins.PaidAmount;
+                ins.Balance += ins.PaidAmount;
+
+                payload.ApTransaction.Amount += pay.Amount;
+            }
+            payload.Payments = payload.Payments
+                .OrderByDescending(x => x.PaidAmount)
+                .OrderBy(x => x.ApInvoiceDate)
+                .ToList();
+
+            return true;
+        }
+
+        public async Task<IList<ApInvoiceListForPayment>> LoadInvoiceListByUuidsAsync(ApNewPaymentPayload payload, IList<string> uuids)
+        {
+            var invoicePayload = new ApInvoicePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                LoadAll = true
+            };
+
+            var invoiceQuery = new ApInvoiceQuery();
+            invoiceQuery.ApInvoiceUuid.SetMultipleFilterValueList(uuids);
+            invoiceQuery.ApInvoiceUuid.FilterMode = FilterBy.eq;
+            invoiceQuery.DisableDate();
+
+            var srv = new ApInvoiceList(this.dbFactory, invoiceQuery);
+            await srv.GetApInvoiceListAsync(invoicePayload);
+
+            return invoicePayload.ApInvoiceList.ToObject<IList<ApInvoiceListForPayment>>();
+        }
+
+        public async Task<IList<ApInvoiceTransaction>> GetByPaymentNumberAsync(long paymentNumber, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND TransType = 1 AND PaymentNumber=@2";
+            return (await dbFactory.FindAsync<ApInvoiceTransaction>(
+                sql,
+                masterAccountNum,
+                profileNum,
+                paymentNumber
+            )).ToList();
+        }
+
+        protected ApTransactionDataDto GenerateTransaction(ApplyInvoice applyInvoice, ApInvoiceHeader invoiceHeader, ApInvoiceTransactionDto templateTransaction)
+        {
+            var result = new ApTransactionDataDto()
+            {
+                ApInvoiceTransaction = new ApInvoiceTransactionDto
+                {
+                    DatabaseNum = invoiceHeader.DatabaseNum,
+                    MasterAccountNum = invoiceHeader.MasterAccountNum,
+                    ProfileNum = invoiceHeader.ProfileNum,
+                    ApInvoiceUuid = invoiceHeader.ApInvoiceUuid,
+                    ApInvoiceNum = invoiceHeader.ApInvoiceNum,
+
+                    TransUuid = applyInvoice.TransUuid,
+                    TransNum = applyInvoice.TransNum,
+                    RowNum = applyInvoice.TransRowNum,
+
+                    PaymentUuid = templateTransaction.PaymentUuid,
+                    PaymentNumber = templateTransaction.PaymentNumber,
+
+                    TransType = (int)TransTypeEnum.Payment,
+                    TransStatus = 0,
+                    TransDate = DateTime.UtcNow.Date,
+                    TransTime = DateTime.UtcNow,
+                    Description = applyInvoice.Description,
+                    Notes = applyInvoice.Notes,
+                    
+                    //VendorCode = invoiceHeader.VendorCode,
+                    PaidBy = templateTransaction.PaidBy,
+                    BankAccountUuid = templateTransaction.BankAccountUuid,
+                    BankAccountCode = templateTransaction.BankAccountCode,
+                    CheckNum = templateTransaction.CheckNum,
+                    AuthCode = templateTransaction.AuthCode,
+
+                    Currency = invoiceHeader.Currency,
+                    Amount = applyInvoice.PaidAmount,
+                }
+            };
+
+            return result;
+        }
         private async Task<bool> LoadApInvoiceList(ApNewPaymentPayload payload, string vendorCode)
         {
             var apInvoicePayload = new ApInvoicePayload()
@@ -589,7 +914,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await srv.GetApInvoiceListAsync(apInvoicePayload);
 
             if (!apInvoicePayload.Success)
-                this.Messages = this.Messages.Concat(srv.Messages).ToList(); 
+                this.Messages = this.Messages.Concat(srv.Messages).ToList();
+
+            payload.Payments = apInvoicePayload.ApInvoiceList.ToObject<IList<ApInvoiceListForPayment>>();
+
+            payload.ApInvoiceListCount = apInvoicePayload.ApInvoiceListCount;
 
             return apInvoicePayload.Success;
         }

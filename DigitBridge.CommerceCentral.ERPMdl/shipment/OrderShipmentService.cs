@@ -102,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentHeader = this.Data.OrderShipmentHeader;
-                    await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, true);
+                    await salesOrderService.UpdateShippedQtyAndOpenQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, true);
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(shipmentHeader.SalesOrderUuid, true);
                 }
             }
@@ -147,7 +147,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentHeader = this.Data.OrderShipmentHeader;
-                    await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, false);
+                    await salesOrderService.UpdateShippedQtyAndOpenQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, false);
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(shipmentHeader.SalesOrderUuid, false);
                 }
             }
@@ -576,12 +576,12 @@ WHERE spc.OrderShipmentUuid=@0
         /// <summary>
         /// Get ShipmentUuid by OrderDCAssignmentNum or sSalesOrderUuid
         /// </summary>
-        public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
+        public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, long orderDCAssignmentNum)
         {
-            if (string.IsNullOrEmpty(orderSourceCode) && string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
-            //Get SalesOrderData by uuid
+            if (orderDCAssignmentNum.IsZero() && salesOrderUuid.IsZero()) return string.Empty;
+
             using (var trs = new ScopedTransaction(dbFactory))
-                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
+                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderDCAssignmentNum);
         }
 
         public async Task<(string, string)> GetShipmentUuidAndInvoiceUuidAsync(int masterAccountNum, int profileNum, string shipmentID)

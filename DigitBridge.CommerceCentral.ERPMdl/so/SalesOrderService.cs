@@ -840,7 +840,7 @@ WHERE RowNum=@1
         /// </summary>
         /// <param name="shipmentUuid"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateShippedQtyFromShippedItemAsync(string shipmentUuid, bool isReturnBack = false)
+        public async Task<bool> UpdateShippedQtyAndOpenQtyFromShippedItemAsync(string shipmentUuid, bool isReturnBack = false)
         {
             if (shipmentUuid.IsZero())
             {
@@ -848,6 +848,7 @@ WHERE RowNum=@1
             }
 
             var op = isReturnBack ? "-" : "+";
+            var openQtyOp = isReturnBack ? "+" : "-";
 
             var sql = $@"
 --declare @0  varchar(50)='a48952a0-7829-2d26-425d-e18e1a552a0b'
@@ -856,6 +857,7 @@ WHERE RowNum=@1
 
 UPDATE soItem 
 SET soItem.ShipQty=soItem.ShipQty {op} finalShippedItem.FinalShippedQty
+,soItem.OpenQty=soItem.OpenQty {openQtyOp} finalShippedItem.FinalShippedQty
 FROM SalesOrderHeader orderHeader
 join SalesOrderItems soItem  on soItem.SalesOrderUuid=orderHeader.SalesOrderUuid
 JOIN 

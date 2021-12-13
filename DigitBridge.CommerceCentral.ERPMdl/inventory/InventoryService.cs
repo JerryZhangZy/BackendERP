@@ -20,6 +20,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using System.Text;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -1027,6 +1028,33 @@ ON inv.inventoryuuid=poi.inventoryuuid
             return await Data.GetInventoryBySkuWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum);
         }
 
+        public bool CreateInTransitToWarehouseInventory(int masterAccountNum, int profileNum, string sku)
+        {
+            bool isExist = dbFactory.Exists<Inventory>("MasterAccountNum=@0 and ProfileNum=@1 and  SKU=@2  and WarehouseCode=@3",
+                 masterAccountNum.ToSqlParameter("0"),
+                 profileNum.ToSqlParameter("1"),
+                 sku.ToSqlParameter("2"),
+                 InTransitToWarehouse.InTransitToWarehouseCode.ToSqlParameter("3")
+
+                 );
+            if (!isExist)
+            {
+
+
+                //var data = new InventoryData();
+                //data.Inventory = new List<Inventory>()
+                //{ new Inventory(){ MasterAccountNum=masterAccountNum,ProfileNum=profileNum,SKU=sku,WarehouseCode=InTransitToWarehouse.InTransitToWarehouseCode,WarehouseUuid=InTransitToWarehouse.InTransitToWarehouseCode}
+                //};
+                //Add();
+                //this.AttachData(data);
+                //this.SaveData();
+                //this.DetachData(data);
+                //AddAsync()
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Get Inventory list for specified warehouse only
         /// </summary>
@@ -1068,6 +1096,8 @@ pba.ProductUuid=@2
                 productUuid.ToSqlParameter("@2")
             );
         }
+
+    
     }
 }
 

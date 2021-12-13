@@ -111,6 +111,7 @@
     <None Include="sql\clear data by shipmentid.sql" />
     <None Include="sql\reset salesorder to pending.sql" />
     <None Include="sql\check so download and shipment upload.sql" />
+    <None Include="ap\ApInvoiceTransaction_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -310,7 +311,7 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="channelOrder\OrderLineMiscExt.sql" />
-    <Build Include="channelOrder\OrderLineMiscExt_Update.sql" />
+    <None Include="channelOrder\OrderLineMiscExt_Update.sql" />
     <None Include="ar\InvoiceItems_Update.sql" />
   </ItemGroup>
   <ItemGroup>

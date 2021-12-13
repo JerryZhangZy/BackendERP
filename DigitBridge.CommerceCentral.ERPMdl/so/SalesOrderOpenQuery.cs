@@ -51,6 +51,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //AddFilter(_OrderStatus);
             AddFilter(_EventProcessActionStatus);
             AddFilter(_ERPEventProcessType);
+            AddFilter(_OrderStatus_Cancelled);
+            AddFilter(_OrderStatus_Hold);
         }
 
         public override void InitQueryFilter()

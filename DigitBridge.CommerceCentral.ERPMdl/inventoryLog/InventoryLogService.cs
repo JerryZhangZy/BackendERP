@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -1091,87 +1092,211 @@ where inv.InventoryUuid=il.InventoryUuid
             var list = new List<InventoryLog>();
             foreach (var item in detailItems)
             {
-                var line = new InventoryLog
-                {
-                    DatabaseNum = header.DatabaseNum,
-                    MasterAccountNum = header.MasterAccountNum,
-                    ProfileNum = header.ProfileNum,
-                    InventoryLogUuid = Guid.NewGuid().ToString(),
-                    InventoryUuid=item.FromInventoryUuid,
-                    ProductUuid=item.ProductUuid,
-                    LogUuid = logUuid,
-                    BatchNum = batchNum,
-                    LogNumber = header.BatchNumber,
-                    LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
-                    LogDate = DateTime.UtcNow.Date,
-                    LogTime = DateTime.UtcNow.TimeOfDay,
-                    LogBy = "WarehouseTransfer",
-                    LogType = InventoyLogType.FromWarehouse.ToString(),
-                    SKU = item.SKU,
-                    Description = item.Description,
-                    WarehouseCode = item.FromWarehouseCode,
-                    LotNum = item.LotNum,
-                    LotInDate = item.LotInDate,
-                    LotExpDate = item.LotExpDate,
-                    UOM = item.UOM,
-                    LogQty = - item.TransferQty,
-                    BeforeInstock = item.FromBeforeInstockPack,
-                    EnterBy = ""
-                };
-                list.Add(line);
-                //line = new InventoryLog
-                //{
-                //    DatabaseNum = header.DatabaseNum,
-                //    MasterAccountNum = header.MasterAccountNum,
-                //    ProfileNum = header.ProfileNum,
-                //    InventoryLogUuid = Guid.NewGuid().ToString(),
-                //    InventoryUuid = item.ToInventoryUuid,
-                //    ProductUuid = item.ProductUuid,
-                //    LogUuid = logUuid,
-                //    LogType = InventoyLogType.ToWarehouse.ToString(),
-                //    BatchNum = batchNum,
-                //    LogNumber = header.BatchNumber,
-                //    LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
-                //    LogDate = DateTime.UtcNow.Date,
-                //    LogTime = DateTime.UtcNow.TimeOfDay,
-                //    LogBy = "",
-                //    SKU = item.SKU,
-                //    Description = item.Description,
-                //    WarehouseCode = item.ToWarehouseCode,
-                //    LotNum = item.LotNum,
-                //    LotInDate = item.LotInDate,
-                //    LotExpDate = item.LotExpDate,
-                //    UOM = item.UOM,
-                //    LogQty = item.TransferQty,
-                //    BeforeInstock = item.ToBeforeInstockPack,
-                //    EnterBy = ""
-                //};
-                //list.Add(line);
+                if (header.WarehouseTransferStatus== (int)TransferStatus.ArriveImmediately)
+                    list.AddRange(GetTransferLogByArriveImmediately(header, item, batchNum, logUuid));
+
+               else if (header.WarehouseTransferStatus == (int)TransferStatus.New)
+                    list.AddRange(GetTransferDeliverLog(header, item, batchNum, logUuid));
+                else
+                    list.AddRange(GetTransferReceivingLog(header, item, batchNum, logUuid));
+
+ 
             }
+                return list;
+        }
+
+        private List<InventoryLog> GetTransferLogByArriveImmediately(WarehouseTransferHeader header, WarehouseTransferItems item, long batchNum, string logUuid)
+        {
+            var list = new List<InventoryLog>();
+            var line = new InventoryLog
+            {
+                DatabaseNum = header.DatabaseNum,
+                MasterAccountNum = header.MasterAccountNum,
+                ProfileNum = header.ProfileNum,
+                InventoryLogUuid = Guid.NewGuid().ToString(),
+                InventoryUuid = item.FromInventoryUuid,
+                ProductUuid = item.ProductUuid,
+                LogUuid = logUuid,
+                BatchNum = batchNum,
+                LogNumber = header.BatchNumber,
+                LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
+                LogDate = DateTime.UtcNow.Date,
+                LogTime = DateTime.UtcNow.TimeOfDay,
+                LogBy = "WarehouseTransfer",
+                LogType = InventoyLogType.FromWarehouse.ToString(),
+                SKU = item.SKU,
+                Description = item.Description,
+                WarehouseCode = item.FromWarehouseCode,
+                LotNum = item.LotNum,
+                LotInDate = item.LotInDate,
+                LotExpDate = item.LotExpDate,
+                UOM = item.UOM,
+                LogQty = -item.TransferQty,
+                BeforeInstock = item.FromBeforeInstockPack,
+                EnterBy = ""
+            };
+            list.Add(line);
+
+
+            line = new InventoryLog
+            {
+                DatabaseNum = header.DatabaseNum,
+                MasterAccountNum = header.MasterAccountNum,
+                ProfileNum = header.ProfileNum,
+                InventoryLogUuid = Guid.NewGuid().ToString(),
+                InventoryUuid = item.ToInventoryUuid,
+                ProductUuid = item.ProductUuid,
+                LogUuid = logUuid,
+                LogType = InventoyLogType.ToWarehouse.ToString(),
+                BatchNum = batchNum,
+                LogNumber = header.BatchNumber,
+                LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
+                LogDate = DateTime.UtcNow.Date,
+                LogTime = DateTime.UtcNow.TimeOfDay,
+                LogBy = "",
+                SKU = item.SKU,
+                Description = item.Description,
+                WarehouseCode = item.ToWarehouseCode,
+                LotNum = item.LotNum,
+                LotInDate = item.LotInDate,
+                LotExpDate = item.LotExpDate,
+                UOM = item.UOM,
+                LogQty = item.TransferQty,
+                BeforeInstock = item.ToBeforeInstockPack,
+                EnterBy = ""
+            };
+            list.Add(line);
+            return list;
+        }
+        private List<InventoryLog> GetTransferDeliverLog(WarehouseTransferHeader header, WarehouseTransferItems item, long batchNum, string logUuid)
+        {
+            var list = new List<InventoryLog>();
+            var line = new InventoryLog
+            {
+                DatabaseNum = header.DatabaseNum,
+                MasterAccountNum = header.MasterAccountNum,
+                ProfileNum = header.ProfileNum,
+                InventoryLogUuid = Guid.NewGuid().ToString(),
+                InventoryUuid = item.FromInventoryUuid,
+                ProductUuid = item.ProductUuid,
+                LogUuid = logUuid,
+                BatchNum = batchNum,
+                LogNumber = header.BatchNumber,
+                LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
+                LogDate = DateTime.UtcNow.Date,
+                LogTime = DateTime.UtcNow.TimeOfDay,
+                LogBy = "WarehouseTransfer",
+                LogType = InventoyLogType.FromWarehouse.ToString(),
+                SKU = item.SKU,
+                Description = item.Description,
+                WarehouseCode = item.FromWarehouseCode,
+                LotNum = item.LotNum,
+                LotInDate = item.LotInDate,
+                LotExpDate = item.LotExpDate,
+                UOM = item.UOM,
+                LogQty = -item.TransferQty,
+                BeforeInstock = item.FromBeforeInstockPack,
+                EnterBy = ""
+            };
+            list.Add(line);
+            string inTransitWarehouse = InTransitToWarehouse.InTransitToWarehouseCode;
+            line = new InventoryLog
+            {
+                DatabaseNum = header.DatabaseNum,
+                MasterAccountNum = header.MasterAccountNum,
+                ProfileNum = header.ProfileNum,
+                InventoryLogUuid = Guid.NewGuid().ToString(),
+                InventoryUuid = inTransitWarehouse,
+                ProductUuid = item.ProductUuid,
+                LogUuid = logUuid,
+                LogType = InventoyLogType.ToWarehouse.ToString(),
+                BatchNum = batchNum,
+                LogNumber = header.BatchNumber,
+                LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
+                LogDate = DateTime.UtcNow.Date,
+                LogTime = DateTime.UtcNow.TimeOfDay,
+                LogBy = "",
+                SKU = item.SKU,
+                Description = item.Description,
+                WarehouseCode = inTransitWarehouse,
+                LotNum = item.LotNum,
+                LotInDate = item.LotInDate,
+                LotExpDate = item.LotExpDate,
+                UOM = item.UOM,
+                LogQty = item.TransferQty,
+                BeforeInstock = item.ToBeforeInstockPack,
+                EnterBy = ""
+            };
+            list.Add(line);
+            return list;
+        }
+        private List<InventoryLog> GetTransferReceivingLog(WarehouseTransferHeader header, WarehouseTransferItems item, long batchNum, string logUuid)
+        {
+            string inTransitWarehouse = InTransitToWarehouse.InTransitToWarehouseCode;
+            var list = new List<InventoryLog>();
+            var line = new InventoryLog
+            {
+                DatabaseNum = header.DatabaseNum,
+                MasterAccountNum = header.MasterAccountNum,
+                ProfileNum = header.ProfileNum,
+                InventoryLogUuid = Guid.NewGuid().ToString(),
+                InventoryUuid = inTransitWarehouse,
+                ProductUuid = item.ProductUuid,
+                LogUuid = logUuid,
+                BatchNum = batchNum,
+                LogNumber = header.BatchNumber,
+                LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
+                LogDate = DateTime.UtcNow.Date,
+                LogTime = DateTime.UtcNow.TimeOfDay,
+                LogBy = "WarehouseTransfer",
+                LogType = InventoyLogType.ToWarehouse.ToString(),
+                SKU = item.SKU,
+                Description = item.Description,
+                WarehouseCode = inTransitWarehouse,
+                LotNum = item.LotNum,
+                LotInDate = item.LotInDate,
+                LotExpDate = item.LotExpDate,
+                UOM = item.UOM,
+                LogQty = -item.TransferQty,
+                
+                EnterBy = ""
+            };
+            list.Add(line);
+
+
+            line = new InventoryLog
+            {
+                DatabaseNum = header.DatabaseNum,
+                MasterAccountNum = header.MasterAccountNum,
+                ProfileNum = header.ProfileNum,
+                InventoryLogUuid = Guid.NewGuid().ToString(),
+                InventoryUuid = item.ToInventoryUuid,
+                ProductUuid = item.ProductUuid,
+                LogUuid = logUuid,
+                LogType = InventoyLogType.ToWarehouse.ToString(),
+                BatchNum = batchNum,
+                LogNumber = header.BatchNumber,
+                LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
+                LogDate = DateTime.UtcNow.Date,
+                LogTime = DateTime.UtcNow.TimeOfDay,
+                LogBy = "",
+                SKU = item.SKU,
+                Description = item.Description,
+                WarehouseCode = item.ToWarehouseCode,
+                LotNum = item.LotNum,
+                LotInDate = item.LotInDate,
+                LotExpDate = item.LotExpDate,
+                UOM = item.UOM,
+                LogQty = item.TransferQty,
+                BeforeInstock = item.ToBeforeInstockPack,
+                EnterBy = ""
+            };
+            list.Add(line);
             return list;
         }
         #endregion
 
-        //inventory update seems not inventory log
-        //protected void AddActivityLogForCurrentData()
-        //{
-        //    this.AddActivityLog(new ActivityLog(dbFactory)
-        //    {
-        //        Type = (int)ActivityLogType.InventoryUpdate, 
-        //        Action = (int)this.ProcessMode,
-        //        LogSource = "OrderShipmentService",
 
-        //        MasterAccountNum = this.Data.InventoryLog.MasterAccountNum,
-        //        ProfileNum = this.Data.InventoryLog.ProfileNum,
-        //        DatabaseNum = this.Data.InventoryLog.DatabaseNum,
-        //        ProcessUuid = this.Data.InventoryLog.InventoryLogUuid,
-        //        ProcessNumber = this.Data.InventoryLog.LogNumber,
-        //        ChannelNum = this.Data.InventoryLog.ChannelNum,
-        //        ChannelAccountNum = this.Data.InventoryLog.ChannelAccountNum,
-
-        //        LogMessage = string.Empty
-        //    });
-        //}
 
         public async Task<bool> ReceiveInvoiceTransactionReturnbackItem(InvoiceTransactionData transaction)
         {

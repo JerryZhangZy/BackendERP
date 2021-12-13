@@ -17,6 +17,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -386,6 +387,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+ 
+        public virtual async Task<bool> CloseAsync(int masterAccountNum, int profileNum,string warehouseTransferUuid)
+        {
+            Edit();
+            if (!await this.GetByNumberAsync(masterAccountNum, profileNum, warehouseTransferUuid))
+            { 
+                   
+            }
+
+      
+            this._data.WarehouseTransferHeader.WarehouseTransferStatus= (int)TransferStatus.Closed;
+            return await SaveDataAsync();
+        }
+ 
+
         /// <summary>
         ///  get data by number
         /// </summary>
@@ -577,7 +593,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if(base.DeleteData())
             {
                 _data.WarehouseTransferItems.Clear();
-                InventoryLogService.UpdateByWarehouseTransfer(_data);
+                //InventoryLogService.UpdateByWarehouseTransfer(_data);
                 return true;
             }
             return false;

@@ -57,9 +57,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BatchNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _batchNumber;
 
-        [Column("TransferStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
-        private int _transferStatus;
-
         [Column("WarehouseTransferType",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _warehouseTransferType;
 
@@ -95,6 +92,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("ToWarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _toWarehouseCode;
+
+        [Column("InTransitToWarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _inTransitToWarehouseCode;
 
         [Column("ReferenceType",SqlDbType.Int,NotNull=true)]
         private int _referenceType;
@@ -204,22 +204,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_batchNumber = value.TruncateTo(50); 
 				OnPropertyChanged("BatchNumber", value);
-            }
-        }
-
-		/// <summary>
-		/// TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false
-		/// </summary>
-        public virtual int TransferStatus
-        {
-            get
-            {
-				return _transferStatus; 
-            }
-            set
-            {
-				_transferStatus = value; 
-				OnPropertyChanged("TransferStatus", value);
             }
         }
 
@@ -416,6 +400,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Readable InTransitToWarehouseCode code, transfer to warehouse. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+        public virtual string InTransitToWarehouseCode
+        {
+            get
+            {
+				return _inTransitToWarehouseCode?.TrimEnd(); 
+            }
+            set
+            {
+				_inTransitToWarehouseCode = value.TruncateTo(50); 
+				OnPropertyChanged("InTransitToWarehouseCode", value);
+            }
+        }
+
+		/// <summary>
 		/// Reference Transaction Type, reference to invoice, P/O. <br> Display: true, Editable: true
 		/// </summary>
         public virtual int ReferenceType
@@ -565,7 +565,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_warehouseTransferUuid = String.Empty; 
 			_batchNumber = String.Empty; 
-			_transferStatus = default(int); 
 			_warehouseTransferType = default(int); 
 			_warehouseTransferStatus = default(int); 
 			_transferDate = new DateTime().MinValueSql(); 
@@ -578,6 +577,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_fromWarehouseCode = String.Empty; 
 			_toWarehouseUuid = String.Empty; 
 			_toWarehouseCode = String.Empty; 
+			_inTransitToWarehouseCode = String.Empty; 
 			_referenceType = default(int); 
 			_referenceUuid = String.Empty; 
 			_referenceNum = String.Empty; 

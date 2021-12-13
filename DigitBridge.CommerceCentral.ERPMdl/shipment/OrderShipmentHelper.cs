@@ -262,21 +262,20 @@ AND shipment.ShipmentID= @shipmentID
 //            return result > 0;
 //        }
 
-        public static async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
+        public static async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, long orderDCAssignmentNum)
         {
             var sql = $@"
                 SELECT  
                 COALESCE(
                     (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE SalesOrderUuid != '' AND SalesOrderUuid=@salesOrderUuid),
-                    (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE OrderDCAssignmentNum != 0 AND 
-                        ('{Consts.SalesOrderSourceCode_Prefix}' + Cast(OrderDCAssignmentNum as varchar))=@orderSourceCode)
+                    (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE OrderDCAssignmentNum != 0 AND OrderDCAssignmentNum=@orderDCAssignmentNum),
                     ''
                 )
             ";
 
             return await SqlQuery.ExecuteScalarAsync<string>(sql,
                  salesOrderUuid.ToSqlParameter("salesOrderUuid"),
-                 orderSourceCode.ToSqlParameter("orderSourceCode")
+                 orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum")
                  );
         }
 

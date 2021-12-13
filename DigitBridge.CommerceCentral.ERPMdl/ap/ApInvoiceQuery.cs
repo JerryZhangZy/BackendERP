@@ -178,9 +178,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 );
         }
 
-
-
-
+        public void DisableDate()
+        {
+            _ApInvoiceDateFrom.Enable = false;
+            _ApInvoiceDateTo.Enable = false;
+        }
     }
 
 

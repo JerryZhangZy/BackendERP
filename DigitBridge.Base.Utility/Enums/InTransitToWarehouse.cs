@@ -4,10 +4,8 @@ using System.Text;
 
 namespace DigitBridge.Base.Utility.Enums
 {
-   public enum TransferStatus:int
+   public  class InTransitToWarehouse
     {
-        ArriveImmediately=0,
-        New =1,
-        Closed=2
+        public const string InTransitToWarehouseCode= "InTransitToWarehouse";
     }
 }

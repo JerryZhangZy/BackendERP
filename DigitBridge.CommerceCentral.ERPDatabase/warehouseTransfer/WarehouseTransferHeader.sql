@@ -7,7 +7,7 @@
 
     [WarehouseTransferUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --WarehouseTransfer uuid. <br> Display: false, Editable: false.
 	[BatchNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable WarehouseTransfer number, unique in same database and profile. <br> Parameter should pass ProfileNum-BatchNumber. <br> Title: WarehouseTransfer Number, Display: true, Editable: true
-	[TransferStatus] INT NOT NULL DEFAULT 0,--TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false
+	 
     [WarehouseTransferType] INT NOT NULL DEFAULT 0, --WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true
     [WarehouseTransferStatus] INT NOT NULL DEFAULT 0, --WarehouseTransfer status. <br> Title: Status, Display: true, Editable: true
 	[TransferDate] DATE NOT NULL, --WarehouseTransfer date. <br> Title: Date, Display: true, Editable: true
@@ -21,7 +21,7 @@
 	[FromWarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, transfer from warehouse. <br> Title: Warehouse Code, Display: true, Editable: true
 	[ToWarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid, transfer to warehouse. <br> Display: false, Editable: false
 	[ToWarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, transfer to warehouse. <br> Title: Warehouse Code, Display: true, Editable: true
-
+	[InTransitToWarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable InTransitToWarehouseCode code, transfer to warehouse. <br> Title: Warehouse Code, Display: true, Editable: true
 	[ReferenceType] INT NOT NULL, --Reference Transaction Type, reference to invoice, P/O. <br> Display: true, Editable: true
 	[ReferenceUuid] VARCHAR(50) NOT NULL, --Reference Transaction uuid, reference to uuid of invoice, P/O#. <br> Display: false, Editable: false
 	[ReferenceNum] VARCHAR(50) NOT NULL, --Reference Transaction number, reference to invoice#, P/O#. <br> Display: true, Editable: true
