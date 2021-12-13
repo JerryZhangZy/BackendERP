@@ -226,6 +226,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _orderDCAssignmentLineNum;
 
+        [Column("OrderShipmentShippedItemNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderShipmentShippedItemNum;
+
         [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _commissionRate;
 
@@ -1266,6 +1269,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.
+		/// </summary>
+        public virtual long OrderShipmentShippedItemNum
+        {
+            get
+            {
+				return _orderShipmentShippedItemNum; 
+            }
+            set
+            {
+				_orderShipmentShippedItemNum = value; 
+				OnPropertyChanged("OrderShipmentShippedItemNum", value);
+            }
+        }
+
+		/// <summary>
 		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 		/// </summary>
         public virtual decimal CommissionRate
@@ -1507,6 +1526,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dBChannelOrderLineRowID = String.Empty; 
 			_orderDCAssignmentLineUuid = String.Empty; 
 			_orderDCAssignmentLineNum = default(long); 
+			_orderShipmentShippedItemNum = default(long); 
 			_commissionRate = default(decimal); 
 			_commissionAmount = default(decimal); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 

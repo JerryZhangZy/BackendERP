@@ -257,6 +257,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("DBChannelOrderLineRowID", "", idx++, null, false),
 				new CsvFormatColumn("OrderDCAssignmentLineUuid", "", idx++, null, false),
 				new CsvFormatColumn("OrderDCAssignmentLineNum", "", idx++, null, false),
+				new CsvFormatColumn("OrderShipmentShippedItemNum", "", idx++, null, false),
 			};
 		}
 
