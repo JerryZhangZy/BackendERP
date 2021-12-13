@@ -683,6 +683,12 @@ where TransUuid=@0";
         //    return SaveData();
         //}
 
+        public async Task<ApInvoiceHeader> GetApInvoiceHeaderAsync(string invoiceUuid)
+        {
+            if (this.Data == null)
+                this.NewData();
+            return await this.Data.GetApInvoiceHeaderByApInvoiceUuidAsync(invoiceUuid);
+        }
     }
 }
 
