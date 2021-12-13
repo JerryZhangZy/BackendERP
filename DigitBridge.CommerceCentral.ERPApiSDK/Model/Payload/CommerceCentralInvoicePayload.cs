@@ -119,6 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public int ChannelAccountNum = 0;
         public long OrderShipmentItemNum = 0;
         public long CentralOrderLineNum = 0;
+        public string CentralOrderLineUuid = "";
         public long OrderDCAssignmentLineNum = 0;
         public string SKU = "";
         public string ChannelItemID = "";
