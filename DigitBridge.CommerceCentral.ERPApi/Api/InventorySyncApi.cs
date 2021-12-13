@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExistSKUPayload))]
         #endregion
-        public static async Task SyncFromProductBasic([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/syncProducts")] HttpRequest req)
+        public static async Task SyncFromProductBasic([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "syncProducts")] HttpRequest req)
         {
             var masterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
             var profileNum = req.GetHeaderValue("profileNum").ToInt();
