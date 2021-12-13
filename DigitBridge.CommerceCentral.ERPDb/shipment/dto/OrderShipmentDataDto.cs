@@ -53,14 +53,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     OrderShipmentPackage = new List<OrderShipmentPackageDto>();
                 foreach (var item in value)
                 {
+                    //get package by OrderShipmentPackageNum / OrderShipmentPackageUuid
                     var package = item.HasOrderShipmentPackageNum
                         ? OrderShipmentPackage.FirstOrDefault(i => i.OrderShipmentPackageNum == item.OrderShipmentPackageNum)
                         : OrderShipmentPackage.FirstOrDefault(i => !string.IsNullOrEmpty(item.OrderShipmentPackageUuid) && i.OrderShipmentPackageUuid == item.OrderShipmentPackageUuid);
+
+                    //init package
                     if (package == null)
                         package = new OrderShipmentPackageDto();
+                    //init OrderShipmentShippedItem
                     if (package.OrderShipmentShippedItem == null)
                         package.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
 
+                    //check item exist in package
                     var isItemExist = package.OrderShipmentShippedItem.Count(i =>
                      (i.RowNum > 0 && i.RowNum == item.RowNum)
                      || (!string.IsNullOrEmpty(i.OrderShipmentShippedItemUuid) && i.OrderShipmentShippedItemUuid == item.OrderShipmentShippedItemUuid)
@@ -69,6 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
                     if (isItemExist) continue;
 
+                    //add item to package.
                     package.OrderShipmentShippedItem.Add(item);
                 }
             }
