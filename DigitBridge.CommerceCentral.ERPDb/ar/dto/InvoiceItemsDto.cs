@@ -621,6 +621,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasOrderDCAssignmentLineNum => OrderDCAssignmentLineNum != null;
 
 		/// <summary>
+		/// (Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.")]
+        public long? OrderShipmentShippedItemNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderShipmentShippedItemNum => OrderShipmentShippedItemNum != null;
+
+		/// <summary>
 		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]

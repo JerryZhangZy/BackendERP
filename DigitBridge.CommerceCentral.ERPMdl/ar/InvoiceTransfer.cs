@@ -218,6 +218,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         InventoryUuid = soLine.InventoryUuid,
                         WarehouseCode = invoiceData.InvoiceHeaderInfo.WarehouseCode,
                         WarehouseUuid = invoiceData.InvoiceHeaderInfo.WarehouseUuid,
+                        OrderShipmentShippedItemNum = osItem.OrderShipmentShippedItemNum,
 
                         LotNum = soLine.LotNum,
                         Description = soLine.Description,
