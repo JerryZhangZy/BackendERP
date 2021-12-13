@@ -127,6 +127,9 @@
 
     [CentralOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [CentralOrderHeaderMerchantExtUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder line
+	[UpdateDateUtc] [datetime] NULL,
+	[EnterBy] [varchar](100) NOT NULL,
+	[UpdateBy] [varchar](100) NOT NULL,
 	CONSTRAINT [PK_OrderHeaderMerchantExt] PRIMARY KEY CLUSTERED ([RowNum] ASC)
 ) ON [PRIMARY]
 GO
