@@ -50,6 +50,8 @@
     <Folder Include="JsType\CustomDefineCodes\store\" />
     <Folder Include="JsType\customer\store\" />
     <Folder Include="JsType\customer\service\" />
+    <Folder Include="JsType\inventoryUpdate\store\" />
+    <Folder Include="JsType\inventoryUpdate\service\" />
     <Folder Include="JsType\inventory\service\" />
     <Folder Include="JsType\inventory\store\" />
     <Folder Include="JsType\invoice\service\" />
@@ -62,6 +64,8 @@
     <Folder Include="JsType\so\store\" />
     <Folder Include="JsType\vendor\service\" />
     <Folder Include="JsType\vendor\store\" />
+    <Folder Include="JsType\warehouseTransfer\service\" />
+    <Folder Include="JsType\warehouseTransfer\store\" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties local_1settings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>

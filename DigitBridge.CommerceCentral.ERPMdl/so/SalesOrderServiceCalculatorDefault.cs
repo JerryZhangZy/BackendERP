@@ -308,6 +308,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
 
+            // calculate commission amount
+            // if has line commission, replace commission amount 1 with line commission amount 
+            sum.CommissionAmount = (sum.SalesAmount * sum.CommissionRate).ToAmount();
+            sum.CommissionAmount2 = (sum.SalesAmount * sum.CommissionRate2).ToAmount();
+            sum.CommissionAmount3 = (sum.SalesAmount * sum.CommissionRate3).ToAmount();
+            sum.CommissionAmount4 = (sum.SalesAmount * sum.CommissionRate4).ToAmount();
+            if (!sum.TotalLineCommissionAmount.IsZero())
+            {
+                sum.CommissionAmount = sum.TotalLineCommissionAmount;
+                sum.CommissionRate = (sum.CommissionAmount / sum.SalesAmount).ToRate();
+            }
+
             return true;
         }
 
@@ -331,6 +343,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.LotCost = 0;
             sum.TaxRate = sum.TaxRate.ToRate();
             sum.ChargeAndAllowanceAmount = 0;
+            sum.TotalLineCommissionAmount = 0;
 
             foreach (var item in data.SalesOrderItems)
             {
@@ -349,8 +362,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;
                 sum.LotCost += item.LotCost;
-            }
 
+                sum.TotalLineCommissionAmount += item.CommissionAmount;
+            }
             return true;
         }
 
@@ -495,6 +509,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.AvgCost = item.ExtAmount;
                 item.LotCost = item.ExtAmount;
             }
+
+            // calculate line commission,
+            item.CommissionAmount = (item.ExtAmount * item.CommissionRate).ToAmount();
 
             return true;
         }

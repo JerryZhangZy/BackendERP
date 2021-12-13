@@ -15,6 +15,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class InvoiceHeader
     {
+        public decimal TotalLineCommissionAmount { get; set; }
 
         public override IList<string> IgnoreUpdateColumns()
         {
