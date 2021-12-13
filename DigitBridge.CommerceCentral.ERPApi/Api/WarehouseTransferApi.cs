@@ -182,16 +182,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "warehouseTransferUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "warehouseTransferUuid", Description = "warehouseTransferUuid", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadAdd), Description = "WarehouseTransferDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadAdd))]
+       
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadUpdate))]
         public static async Task<JsonNetResponse<WarehouseTransferPayload>> CloseWarehouseTransfer(
-    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouseTransfers/{warehouseTransferUuid}")] HttpRequest req,
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "closeWarehouseTransfer/{warehouseTransferUuid}")] HttpRequest req,
              string warehouseTransferUuid)
         {
             var payload = await req.GetParameters<WarehouseTransferPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new WarehouseTransferService(dbFactory);
-            if (await svc.CloseAsync(payload))
+            if (await svc.CloseAsync(payload.MasterAccountNum,payload.ProfileNum,warehouseTransferUuid))
                 payload.WarehouseTransfer = svc.ToDto();
             else
             {

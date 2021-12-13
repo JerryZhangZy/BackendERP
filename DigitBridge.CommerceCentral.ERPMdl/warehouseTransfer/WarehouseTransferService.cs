@@ -388,11 +388,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
  
-        public virtual async Task<bool> CloseAsync(WarehouseTransferPayload payload)
+        public virtual async Task<bool> CloseAsync(int masterAccountNum, int profileNum,string warehouseTransferUuid)
         {
-            payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.Closed;
-            return await this.UpdateAsync(payload);
+            Edit();
+            if (!await this.GetByNumberAsync(masterAccountNum, profileNum, warehouseTransferUuid))
+            { 
+                  
+            }
+
+      
+            this._data.WarehouseTransferHeader.WarehouseTransferStatus= (int)TransferStatus.Closed;
+            return await SaveDataAsync();
         }
+ 
+
         /// <summary>
         ///  get data by number
         /// </summary>
