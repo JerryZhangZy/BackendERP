@@ -202,6 +202,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCustomerPoNum => CustomerPoNum != null;
 
+		
 		/// <summary>
 		/// (Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false
 		/// </summary>

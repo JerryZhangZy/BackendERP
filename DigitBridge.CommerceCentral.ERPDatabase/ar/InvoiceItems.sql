@@ -11,7 +11,7 @@
 	[ItemTime] TIME NOT NULL, --(Ignore) Invoice time
 	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
-
+	 
 	[SKU] Varchar(100) NOT NULL DEFAULT '', --Product SKU. <br> Title: SKU, Display: true, Editable: true
 	[ProductUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
 	[InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
@@ -70,6 +70,7 @@
 	[DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
     [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
     [OrderDCAssignmentLineNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+	[OrderShipmentShippedItemNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.
 	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 	[CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
 

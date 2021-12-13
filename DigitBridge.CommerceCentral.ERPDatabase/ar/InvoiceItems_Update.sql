@@ -29,3 +29,8 @@ IF COL_LENGTH('InvoiceItems', 'CommissionAmount') IS NULL
 BEGIN					
     ALTER TABLE InvoiceItems ADD [CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
 END					
+
+IF COL_LENGTH('InvoiceItems', 'OrderShipmentShippedItemNum') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceItems ADD [OrderShipmentShippedItemNum] BIGINT NOT NULL DEFAULT 0
+END					

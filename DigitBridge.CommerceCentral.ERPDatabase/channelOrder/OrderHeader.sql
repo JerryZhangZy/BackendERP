@@ -102,6 +102,9 @@
     [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
     [RowNum] BIGINT NOT NULL DEFAULT 0,
     [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0,
+	[TotalCommissionAmount] [money] NOT NULL,
+	[TotalCommissionTaxAmount] [money] NOT NULL,
+	[TotalRemittedTaxAmount] [money] NULL,
     CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([CentralOrderNum])
 ) ON [PRIMARY]
 GO
@@ -128,6 +131,21 @@ ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_EnterDateUtc]  D
 GO
 
 ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_DigitBridgeGuid]  DEFAULT (newid()) FOR [DigitBridgeGuid]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_RowNum]  DEFAULT ((0)) FOR [RowNum]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalDueSellerAmount]  DEFAULT ((0)) FOR [TotalDueSellerAmount]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalCommissionAmount]  DEFAULT ((0)) FOR [TotalCommissionAmount]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalCommissionTaxAmount]  DEFAULT ((0)) FOR [TotalCommissionTaxAmount]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalRemittedTaxAmount]  DEFAULT ((0)) FOR [TotalRemittedTaxAmount]
 GO
 
 CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderHeader_ChannelAccountNum_ChannelNum_ChannelOrderID] ON [dbo].[OrderHeader]

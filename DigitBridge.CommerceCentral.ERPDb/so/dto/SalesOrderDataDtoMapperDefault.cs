@@ -164,6 +164,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasRefNum) data.RefNum = dto.RefNum;
 			if (dto.HasCustomerPoNum) data.CustomerPoNum = dto.CustomerPoNum;
+			if (dto.HasDBChannelOrderHeaderRowID) data.DBChannelOrderHeaderRowID = dto.DBChannelOrderHeaderRowID;
+			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum.ToLong();
 			if (dto.HasEndBuyerUserID) data.EndBuyerUserID = dto.EndBuyerUserID;
 			if (dto.HasEndBuyerName) data.EndBuyerName = dto.EndBuyerName;
 			if (dto.HasEndBuyerEmail) data.EndBuyerEmail = dto.EndBuyerEmail;
@@ -514,6 +516,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.WarehouseCode = data.WarehouseCode;
 			dto.RefNum = data.RefNum;
 			dto.CustomerPoNum = data.CustomerPoNum;
+			dto.DBChannelOrderHeaderRowID = data.DBChannelOrderHeaderRowID;
+			dto.OrderDCAssignmentNum = data.OrderDCAssignmentNum;
 			dto.EndBuyerUserID = data.EndBuyerUserID;
 			dto.EndBuyerName = data.EndBuyerName;
 			dto.EndBuyerEmail = data.EndBuyerEmail;

@@ -193,12 +193,7 @@ SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 255 THEN {Helper
                 payload.InvoiceListCount = await CountAsync();
                 payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
-                {
-                    if (sb.Length < 5)
-                        payload.ReturnError("No data be found");
-                    else
-                        payload.InvoiceList = sb;
-                }
+                    payload.InvoiceList = sb;
             }
             catch (Exception ex)
             {
@@ -305,7 +300,7 @@ AND @invoiceNumbers.exist('/parameters/value[text()=sql:column(''ins.InvoiceNumb
 
 
 
-    
+
 
     }
 }

@@ -83,7 +83,7 @@
 //SettingForApTransaction
 //SettingForEventProcessERP
 #>
-<#@ include file="SettingForCustomer.ttinclude" #>
+<#@ include file="SettingForInvoice.ttinclude" #>
 <#
     var dtoSuf = "";
     //var GenerateNewName = string.Empty;

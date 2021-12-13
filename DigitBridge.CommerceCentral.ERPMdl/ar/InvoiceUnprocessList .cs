@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoiceUnprocessList(IDataBaseFactory dbFactory, InvoiceUnprocessQuery queryObject)
             : base(dbFactory, queryObject)
         {
-        } 
+        }
 
         #region override methods
 
@@ -49,7 +49,7 @@ COALESCE(osh.MainTrackingNumber,'') as 'InvoiceHeader.MainTrackingNumber',
 COALESCE(ins.SubTotalAmount,0) as 'InvoiceHeader.InvoiceAmount',
 COALESCE(ins.TaxAmount,0) as 'InvoiceHeader.InvoiceTaxAmount',
 COALESCE(ins.MiscAmount,0) as 'InvoiceHeader.InvoiceHandlingFee',
-COALESCE((ins.SalesAmount - ins.DiscountAmount),0) as 'InvoiceHeader.InvoiceDiscountAmount',
+COALESCE((ins.SalesAmount - ins.SubTotalAmount),0) as 'InvoiceHeader.InvoiceDiscountAmount',
 COALESCE(ins.TotalAmount,0) as 'InvoiceHeader.TotalAmount',
 COALESCE(ins.Terms,'') as 'InvoiceHeader.InvoiceTermsType',
 --ins.Terms as 'InvoiceHeader.InvoiceTermsDescrption',
@@ -64,7 +64,8 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
         COALESCE(ins.ProfileNum,0) AS ProfileNum,
         COALESCE(insi.ChannelNum,0) AS ChannelNum,
         COALESCE(insi.ChannelAccountNum,0) AS ChannelAccountNum,
-        --insi.OrderShipmentItemNum AS OrderShipmentItemNum,
+        COALESCE(insl.OrderShipmentShippedItemNum,0) AS OrderShipmentItemNum,
+        COALESCE(insl.CentralOrderLineUuid,'') AS CentralOrderLineUuid,
         --insl.CentralOrderLineNum AS CentralOrderLineNum,
         COALESCE(insl.OrderDCAssignmentLineNum,0) AS OrderDCAssignmentLineNum,
         COALESCE(insl.SKU,'') AS SKU,
@@ -99,10 +100,10 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
         and ins.InvoiceUuid=epe.ProcessUuid
 )
  LEFT JOIN InvoiceHeaderInfo insi ON (ins.InvoiceUuid = insi.InvoiceUuid)
- LEFT JOIN OrderShipmentHeader osh ON (insi.OrderShipmentUuid = osh.OrderShipmentUuid)
+ LEFT JOIN OrderShipmentHeader osh on (osh.OrderShipmentUuid=insi.OrderShipmentUuid) and osh.ShipmentStatus!={(int)OrderShipmentStatusEnum.Cancelled}
 ";
             return this.SQL_From;
-        } 
+        }
 
         #endregion override methods
 

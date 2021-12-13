@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,8 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InvoiceItemsDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -123,6 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasEtaArrivalDate => EtaArrivalDate != null;
 
+		
 		/// <summary>
 		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
@@ -618,6 +621,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasOrderDCAssignmentLineNum => OrderDCAssignmentLineNum != null;
 
 		/// <summary>
+		/// (Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.")]
+        public long? OrderShipmentShippedItemNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderShipmentShippedItemNum => OrderShipmentShippedItemNum != null;
+
+		/// <summary>
 		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
@@ -677,7 +689,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public bool HasInvoiceItemsAttributes => InvoiceItemsAttributes != null;
 
         #endregion Children - Generated 
-
         #region properties
         /// <summary>
         /// Item Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true
