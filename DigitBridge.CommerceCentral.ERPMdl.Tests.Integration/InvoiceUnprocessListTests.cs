@@ -79,11 +79,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 LoadAll = true
             };
 
-            var listService = new InvoiceUnprocessList(this.DataBaseFactory);
-            await listService.GetUnprocessedInvoicesAsync(payload);
+            try
+            {
+                var listService = new InvoiceUnprocessList(this.DataBaseFactory);
+                using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
+                {
+                    await listService.GetUnprocessedInvoicesAsync(payload);
+                }
 
-            //make sure query is correct.
-            Assert.True(payload.Success, listService.Messages.ObjectToString());
+                //make sure query is correct.
+                Assert.True(payload.Success, listService.Messages.ObjectToString());
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
         }
 
         [Fact()]

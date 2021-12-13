@@ -311,4 +311,7 @@
   <ItemGroup>
     <None Include="ar\InvoiceItems_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />
+  </ItemGroup>
 </Project>
