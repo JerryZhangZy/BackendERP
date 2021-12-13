@@ -45,6 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> AddCustomerAsync(CustomerData data);
         Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum);
         string GetNextNumber(int masterAccountNum, int profileNum);
+        bool ExistCustomerCode(string customerCode, int masterAccountNum, int profileNum);
     }
 }
 

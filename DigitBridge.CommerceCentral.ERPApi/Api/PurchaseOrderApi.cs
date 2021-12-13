@@ -47,11 +47,10 @@ string poNum = null)
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PurchaseOrderService(dataBaseFactory);
 
-            payload.Success = await srv.GetDataAsync(new PurchaseOrderPayload() {  MasterAccountNum=payload.MasterAccountNum,ProfileNum=payload.ProfileNum}, poNum);
-            if (payload.Success)
-                payload.IsExistPoNum = srv.ToDto(srv.Data)!=null;
-            else
-                payload.Messages = srv.Messages;
+            await srv.GetDataAsync(new PurchaseOrderPayload() {  MasterAccountNum=payload.MasterAccountNum,ProfileNum=payload.ProfileNum}, poNum);
+            payload.Success = true;
+            payload.IsExistPoNum = srv.ToDto(srv.Data) != null;
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<ExistPoNumPayload>(payload);
 
         }
