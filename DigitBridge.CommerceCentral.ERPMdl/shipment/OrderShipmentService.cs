@@ -102,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentHeader = this.Data.OrderShipmentHeader;
-                    await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, true);
+                    await salesOrderService.UpdateShippedQtyAndOpenQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, true);
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(shipmentHeader.SalesOrderUuid, true);
                 }
             }
@@ -147,7 +147,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentHeader = this.Data.OrderShipmentHeader;
-                    await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, false);
+                    await salesOrderService.UpdateShippedQtyAndOpenQtyFromShippedItemAsync(shipmentHeader.OrderShipmentUuid, false);
                     await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(shipmentHeader.SalesOrderUuid, false);
                 }
             }
