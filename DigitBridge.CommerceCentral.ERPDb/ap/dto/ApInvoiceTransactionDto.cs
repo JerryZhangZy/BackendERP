@@ -87,10 +87,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTransNum => TransNum != null;
 
-		/// <summary>
-		/// Global Unique Guid for ApInvoice
+        /// <summary>
+		/// Group Payment uuid. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for ApInvoice")]
+		[OpenApiPropertyDescription("Group Payment uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The PaymentUuid value cannot exceed 50 characters. ")]
+        public string PaymentUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPaymentUuid => PaymentUuid != null;
+
+        /// <summary>
+        /// Group Payment readable Number. <br> Display: false, Editable: false.
+        /// </summary>
+        [OpenApiPropertyDescription("Group Payment readable Number. <br> Display: false, Editable: false.")]
+        public long? PaymentNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPaymentNumber => PaymentNumber != null;
+
+        /// <summary>
+        /// Global Unique Guid for ApInvoice
+        /// </summary>
+        [OpenApiPropertyDescription("Global Unique Guid for ApInvoice")]
         [StringLength(50, ErrorMessage = "The ApInvoiceUuid value cannot exceed 50 characters. ")]
         public string ApInvoiceUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
