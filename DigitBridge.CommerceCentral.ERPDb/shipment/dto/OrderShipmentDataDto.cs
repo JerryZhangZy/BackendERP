@@ -38,47 +38,61 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentPackage => OrderShipmentPackage != null;
 
-        /// <summary>
-        /// Get shipped items of all package 
-        /// </summary>
-        public IEnumerable<OrderShipmentShippedItemDto> OrderShipmentShippedItem
-        {
-            get
-            {
-                return OrderShipmentPackage?.SelectMany(i => i.OrderShipmentShippedItem);
-            }
-            set
-            {
-                if (!HasOrderShipmentPackage)
-                    OrderShipmentPackage = new List<OrderShipmentPackageDto>();
-                foreach (var item in value)
-                {
-                    //get package by OrderShipmentPackageNum / OrderShipmentPackageUuid
-                    var package = item.HasOrderShipmentPackageNum
-                        ? OrderShipmentPackage.FirstOrDefault(i => i.OrderShipmentPackageNum == item.OrderShipmentPackageNum)
-                        : OrderShipmentPackage.FirstOrDefault(i => !string.IsNullOrEmpty(item.OrderShipmentPackageUuid) && i.OrderShipmentPackageUuid == item.OrderShipmentPackageUuid);
+        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem { get; set; }
 
-                    //init package
-                    if (package == null)
-                        package = new OrderShipmentPackageDto();
-                    //init OrderShipmentShippedItem
-                    if (package.OrderShipmentShippedItem == null)
-                        package.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
+        //private IList<OrderShipmentShippedItemDto> _orderShipmentShippedItem;
+        ///// <summary>
+        ///// Get shipped items of all package 
+        ///// </summary>
+        //public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem
+        //{
+        //    get
+        //    {
+        //        if (_orderShipmentShippedItem == null && OrderShipmentPackage != null)
+        //            _orderShipmentShippedItem = OrderShipmentPackage.SelectMany(i => i.OrderShipmentShippedItem).ToList();
+        //        return _orderShipmentShippedItem;
+        //    }
+        //    set
+        //    {
+        //        _orderShipmentShippedItem = value;
+        //        //if (_orderShipmentShippedItem == null) return;
 
-                    //check item exist in package
-                    var isItemExist = package.OrderShipmentShippedItem.Count(i =>
-                     (i.RowNum > 0 && i.RowNum == item.RowNum)
-                     || (!string.IsNullOrEmpty(i.OrderShipmentShippedItemUuid) && i.OrderShipmentShippedItemUuid == item.OrderShipmentShippedItemUuid)
-                     || (i.OrderShipmentShippedItemNum > 0 && i.OrderShipmentShippedItemNum == item.OrderShipmentShippedItemNum)
-                    ) > 0;
+        //        //if (!HasOrderShipmentPackage)
+        //        //    OrderShipmentPackage = new List<OrderShipmentPackageDto>();
 
-                    if (isItemExist) continue;
+        //        //foreach (var item in _orderShipmentShippedItem)
+        //        //{
+        //        //    //get package by OrderShipmentPackageNum / OrderShipmentPackageUuid
+        //        //    var package = item.HasOrderShipmentPackageNum
+        //        //        ? OrderShipmentPackage.FirstOrDefault(i => i.OrderShipmentPackageNum == item.OrderShipmentPackageNum)
+        //        //        : OrderShipmentPackage.FirstOrDefault(i => !string.IsNullOrEmpty(item.OrderShipmentPackageUuid) && i.OrderShipmentPackageUuid == item.OrderShipmentPackageUuid);
 
-                    //add item to package.
-                    package.OrderShipmentShippedItem.Add(item);
-                }
-            }
-        }
+        //        //    //init package
+        //        //    if (package == null)
+        //        //    {
+        //        //        package = new OrderShipmentPackageDto();
+        //        //        OrderShipmentPackage.Add(package);
+        //        //    }
+
+        //        //    //init OrderShipmentShippedItem
+        //        //    if (package.OrderShipmentShippedItem == null)
+        //        //        package.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
+
+        //        //    //check item exist in package
+        //        //    var isItemExist = package.OrderShipmentShippedItem.Count(i =>
+        //        //     (i.RowNum > 0 && i.RowNum == item.RowNum)
+        //        //     || (!string.IsNullOrEmpty(i.OrderShipmentShippedItemUuid) && i.OrderShipmentShippedItemUuid == item.OrderShipmentShippedItemUuid)
+        //        //     || (i.OrderShipmentShippedItemNum > 0 && i.OrderShipmentShippedItemNum == item.OrderShipmentShippedItemNum)
+        //        //    ) > 0;
+
+        //        //    if (isItemExist) continue;
+
+        //        //    //add item to package.
+        //        //    package.OrderShipmentShippedItem.Add(item);
+
+        //        //}
+        //    }
+        //}
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentShippedItem => OrderShipmentShippedItem != null && OrderShipmentShippedItem.Count() > 0;
 
