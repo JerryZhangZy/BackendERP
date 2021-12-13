@@ -171,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeaderInfo.OrderDCAssignmentNum = dcHeader.OrderDCAssignmentNum;
             soHeaderInfo.DBChannelOrderHeaderRowID = dcHeader.DBChannelOrderHeaderRowID;
 
-            soHeaderInfo.CentralFulfillmentNum = dcHeader.OrderDCAssignmentNum;
+            soHeaderInfo.CentralFulfillmentNum = dcHeader.OrderDCAssignmentNum;//todo check this.
             soHeaderInfo.DistributionCenterNum = dcHeader.DistributionCenterNum;
             soHeaderInfo.WarehouseCode = dcData.WarehouseCode;
 

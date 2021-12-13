@@ -11,7 +11,7 @@
 	[ItemTime] TIME NOT NULL, --(Ignore) Invoice time
 	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
-
+	 
 	[SKU] Varchar(100) NOT NULL DEFAULT '', --Product SKU. <br> Title: SKU, Display: true, Editable: true
 	[ProductUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
 	[InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false

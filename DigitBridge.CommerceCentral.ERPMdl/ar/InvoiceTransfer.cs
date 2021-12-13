@@ -173,6 +173,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeaderInfo.ShippingCarrier = osHeader.ShippingCarrier;
             invoiceHeaderInfo.ShippingClass = osHeader.ShippingClass;
             invoiceHeaderInfo.WarehouseCode = osHeader.WarehouseCode;
+            invoiceHeaderInfo.OrderDCAssignmentNum = osHeader.OrderDCAssignmentNum;
+            invoiceHeaderInfo.DBChannelOrderHeaderRowID = osHeader.DBChannelOrderHeaderRowID;
+            //TODO Check this logic Save OrderShipment.InvoiceNumber to InvoiceHeaderInfo.RefNum
+            invoiceHeaderInfo.RefNum = osHeader.ShipmentReferenceID;
 
             return invoiceHeaderInfo;
         }
@@ -262,6 +266,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         //UpdateBy
                         //EnterDateUtc
                         //DigitBridgeGuid
+
+                        CentralOrderLineUuid = soLine.CentralOrderLineUuid,
+                        DBChannelOrderLineRowID = soLine.DBChannelOrderLineRowID,
+                        OrderDCAssignmentLineUuid = soLine.OrderDCAssignmentLineUuid,
+                        OrderDCAssignmentLineNum = soLine.OrderDCAssignmentLineNum,
+
                     };
 
                     invoiceItem.InvoiceItemsAttributes = new InvoiceItemsAttributes();

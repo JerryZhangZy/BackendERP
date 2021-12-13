@@ -117,7 +117,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             shipHeader.ChannelNum = soInfo.ChannelNum;
             shipHeader.ChannelAccountNum = soInfo.ChannelAccountNum;
-            shipHeader.OrderDCAssignmentNum = 0;    //soHeader.OrderSourceCode
+            shipHeader.OrderDCAssignmentNum = soInfo.OrderDCAssignmentNum;
             shipHeader.DistributionCenterNum = soInfo.DistributionCenterNum;
             shipHeader.CentralOrderNum = soInfo.CentralOrderNum;
             shipHeader.ChannelOrderID = soInfo.ChannelOrderID;
@@ -141,7 +141,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             shipHeader.LengthUnit = 1;
             shipHeader.VolumeUnit = 1;
             shipHeader.ShipmentStatus = 0;
-            shipHeader.DBChannelOrderHeaderRowID = string.Empty;
+            shipHeader.DBChannelOrderHeaderRowID = soInfo.DBChannelOrderHeaderRowID;
             shipHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
             shipHeader.ProcessDateUtc = DateTime.MinValue;
             //shipHeader.EnterDateUtc =
@@ -272,7 +272,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             shipHeader.ChannelNum = soInfo.ChannelNum;
             shipHeader.ChannelAccountNum = soInfo.ChannelAccountNum;
-            shipHeader.OrderDCAssignmentNum = soHeader.OrderSourceCode.IsZero() ? 0 : soHeader.OrderSourceCode.Replace(Consts.SalesOrderSourceCode_Prefix, "").ToInt();
+            //shipHeader.OrderDCAssignmentNum = soHeader.OrderSourceCode.IsZero() ? 0 : soHeader.OrderSourceCode.Replace(Consts.SalesOrderSourceCode_Prefix, "").ToInt();
+            shipHeader.OrderDCAssignmentNum = soInfo.OrderDCAssignmentNum;
             shipHeader.DistributionCenterNum = soInfo.DistributionCenterNum;
             //shipHeader.CentralOrderNum = soInfo.CentralOrderNum;
             //shipHeader.ChannelOrderID = soInfo.ChannelOrderID;
