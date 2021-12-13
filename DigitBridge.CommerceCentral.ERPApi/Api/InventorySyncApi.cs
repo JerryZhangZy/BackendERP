@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         }
 
         [FunctionName(nameof(SyncFromProductBasic))]
-        [OpenApiOperation(operationId: "SyncFromProductBasic", tags: new[] { "ProductExts" })]
+        [OpenApiOperation(operationId: "SyncFromProductBasic", tags: new[] { "InventorySyncs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
