@@ -23,6 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         // Table prefix which use in this sql query
 
         protected static string PREFIX_Event = ERPDb.EventProcessERPHelper.TableAllies;
+        protected static string PREFIX_Po = ERPDb.PoHeaderHelper.TableAllies;
 
 
         protected QueryFilter<int> _EventProcessActionStatus = new QueryFilter<int>("EventProcessActionStatus", "ActionStatus", PREFIX_Event, FilterBy.eq, -1);
@@ -32,17 +33,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public EnumQueryFilter<EventProcessTypeEnum> ERPEventProcessType => _ERPEventProcessType;
 
 
+        protected EnumQueryFilter<PoStatus> _PoStatus_Cancelled = new EnumQueryFilter<PoStatus>("PoStatus_Cancelled", "InvoiceStatus", PREFIX_Po, FilterBy.ne, -1);
+        public EnumQueryFilter<PoStatus> PoStatus_Cancelled => _PoStatus_Cancelled;
 
         public WmsPurchaseOrderQuery() : base(PREFIX_Event)
         {
             AddFilter(_EventProcessActionStatus);
             AddFilter(_ERPEventProcessType);
+            AddFilter(_PoStatus_Cancelled);
         }
 
         public override void InitQueryFilter()
         {
             _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Pending;
             _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.PoToWMS;
+            _PoStatus_Cancelled.FilterValue = (int)PoStatus.Cancelled;
         }
     }
 }

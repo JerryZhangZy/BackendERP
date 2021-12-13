@@ -32,6 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ChannelNum);
             AddFilter(_ChannelAccountNum);
             AddFilter(_EventProcessActionStatus);
+            AddFilter(_InvoiceStatus_Void);
         }
         public override void InitQueryFilter()
         {
