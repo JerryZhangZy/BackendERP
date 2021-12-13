@@ -97,6 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.DBChannelOrderLineRowID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.OrderDCAssignmentLineUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.OrderDCAssignmentLineNum, f => default(long))
+					.RuleFor(u => u.OrderShipmentShippedItemNum, f => default(long))
 					.RuleFor(u => u.CommissionRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
 					.RuleFor(u => u.CommissionAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
