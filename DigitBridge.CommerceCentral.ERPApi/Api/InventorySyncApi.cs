@@ -34,12 +34,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(InventorySync))]
+        #region swagger
         [OpenApiOperation(operationId: "InventorySync", tags: new[] { "InventorySyncs" }, Summary = "Sync Inventory")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventorySyncPayloadAdd), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventorySyncPayloadAdd))]
+        #endregion
         public static async Task<JsonNetResponse<InventorySyncUpdatePayload>> InventorySync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InventorySyncs")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
@@ -53,11 +55,13 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         }
 
         [FunctionName(nameof(SyncFromProductBasic))]
+        #region swagger
         [OpenApiOperation(operationId: "SyncFromProductBasic", tags: new[] { "InventorySyncs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExistSKUPayload))]
+        #endregion
         public static async Task SyncFromProductBasic([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/syncProducts")] HttpRequest req)
         {
             var masterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
