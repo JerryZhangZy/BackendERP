@@ -58,6 +58,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasTransUuid) data.TransUuid = dto.TransUuid;
 			if (dto.HasTransNum) data.TransNum = dto.TransNum.ToInt();
+			if (dto.HasPaymentUuid) data.PaymentUuid = dto.PaymentUuid;
+			if (dto.HasPaymentNumber) data.PaymentNumber = dto.PaymentNumber.ToLong();
 			if (dto.HasApInvoiceUuid) data.ApInvoiceUuid = dto.ApInvoiceUuid;
 			if (dto.HasApInvoiceNum) data.ApInvoiceNum = dto.ApInvoiceNum;
 			if (dto.HasTransType) data.TransType = dto.TransType;
@@ -122,6 +124,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.TransUuid = data.TransUuid;
 			dto.TransNum = data.TransNum;
+			dto.PaymentUuid = data.PaymentUuid;
+			dto.PaymentNumber = data.PaymentNumber;
 			dto.ApInvoiceUuid = data.ApInvoiceUuid;
 			dto.ApInvoiceNum = data.ApInvoiceNum;
 			dto.TransType = data.TransType;

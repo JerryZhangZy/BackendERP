@@ -32,28 +32,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public ApPaymentServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as ApPaymentPayload);
-
-            if (pl is null || pl.ApTransaction is null || pl.ApTransaction.ApInvoiceTransaction is null)
+            var pl = (payload as ApNewPaymentPayload);
+            if (!pl.HasApplyInvoices)
             {
-                AddError("InvoiceTransaction is require.");
+                AddError($"Apply invoices are required.");
                 return false;
             }
 
-            pl.ApTransaction.ApInvoiceTransaction.TransType = (int)TransTypeEnum.Payment; 
-            return base.ValidateAccount(payload, number, processingMode);
+            if (!pl.HasApInvoiceTransaction)
+            {
+                AddError($"Payment infomation is required.");
+                return false;
+            }
+
+            pl.ApTransaction.TransType = (int)TransTypeEnum.Payment;
+            return true;
         }
         public override async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as ApPaymentPayload);
-            if (pl is null || pl.ApTransaction is null || pl.ApTransaction.ApInvoiceTransaction is null)
+            var pl = (payload as ApNewPaymentPayload);
+            if (!pl.HasApplyInvoices)
             {
-                AddError("InvoiceTransaction is require.");
+                AddError($"Apply invoices are required.");
                 return false;
             }
 
-            pl.ApTransaction.ApInvoiceTransaction.TransType = (int)TransTypeEnum.Payment; 
-            return await base.ValidateAccountAsync(payload, number, processingMode);
+            if (!pl.HasApInvoiceTransaction)
+            {
+                AddError($"Payment infomation is required.");
+                return false;
+            }
+
+            pl.ApTransaction.TransType = (int)TransTypeEnum.Payment; 
+            return true;
         }
         public override bool Validate(ApTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
