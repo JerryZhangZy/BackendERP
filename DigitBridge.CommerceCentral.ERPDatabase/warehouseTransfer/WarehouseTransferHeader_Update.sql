@@ -1,5 +1,5 @@
-﻿IF COL_LENGTH('WarehouseTransferHeader', 'TransferStatus') IS NULL					
+﻿IF COL_LENGTH('WarehouseTransferHeader', 'InTransitToWarehouseCode') IS NULL					
 BEGIN					
-    ALTER TABLE WarehouseTransferHeader ADD [TransferStatus] int NOT NULL DEFAULT 0
+    ALTER TABLE WarehouseTransferHeader ADD [InTransitToWarehouseCode] VARCHAR(50) NOT NULL DEFAULT ''
  
 END	 

@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(data.Vendor.VendorCode))
+                if (string.IsNullOrEmpty(data.Vendor.VendorCode) || _vendorService.ExistVendorCode(data.Vendor.VendorCode, data.Vendor.MasterAccountNum, data.Vendor.ProfileNum))
                 {
                     data.Vendor.VendorCode = _vendorService.GetNextNumber(data.Vendor.MasterAccountNum, data.Vendor.ProfileNum);
                 }

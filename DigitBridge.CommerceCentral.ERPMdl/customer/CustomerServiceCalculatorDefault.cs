@@ -122,7 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(data.Customer.CustomerCode))
+                if (string.IsNullOrEmpty(data.Customer.CustomerCode) || _customerService.ExistCustomerCode(data.Customer.CustomerCode, data.Customer.MasterAccountNum, data.Customer.ProfileNum))
                 {
                     data.Customer.CustomerCode = _customerService.GetNextNumber(data.Customer.MasterAccountNum, data.Customer.ProfileNum);
                 }

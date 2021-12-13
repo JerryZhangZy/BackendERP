@@ -37,9 +37,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if(!dto.HasWarehouseTransferHeader)
                 return result;
             //TODO change to merge Dto children object
-            if (withHeaderText)
-                result.Add(dto.WarehouseTransferHeader.MergeName(dto.WarehouseTransferHeader));
-            result.Add(dto.WarehouseTransferHeader.Merge(dto.WarehouseTransferHeader));
+            //if (withHeaderText)
+            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
             return result;
         }
 
@@ -51,21 +51,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this WarehouseTransferDataDto dto, bool withHeaderText = false)
         {
+            return null;
             //TODO change to merge Dto children object
-            var result = new List<dynamic>();
-            if (!dto.HasWarehouseTransferItems)
-                return result;
-
-            var transferItems = new WarehouseTransferItemsDto() ;
-
-            if (withHeaderText)
-                result.Add(transferItems.MergeName(transferItems));
-
-            foreach (var item in dto.WarehouseTransferItems)
-            {
-                result.Add(item.Merge(item));
-            }
-            return result;
+            //var result = new List<dynamic>();
+            //if (!dto.HasSalesOrderItems) 
+            //    return result;
+            //
+            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
+            //
+            //if (withHeaderText)
+            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
+            //
+            //foreach (var item in dto.SalesOrderItems)
+            //{
+            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
+            //}
+            //return result;
         }
 
 
@@ -124,6 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.FromWarehouseCode, f => f.Lorem.Word())
 				.RuleFor(u => u.ToWarehouseUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ToWarehouseCode, f => f.Lorem.Word())
+				.RuleFor(u => u.InTransitToWarehouseCode, f => f.Lorem.Word())
 				.RuleFor(u => u.ReferenceType, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.ReferenceUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ReferenceNum, f => f.Random.AlphaNumeric(50))

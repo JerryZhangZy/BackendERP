@@ -561,9 +561,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 masterAccountNum, 
                 profileNum, 
                 invoiceNum);
-
-            //using (var trs = new ScopedTransaction(dbFactory))
-            //    return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
+ 
         }
         public bool ExistInvoiceNumber(string invoiceNum, int masterAccountNum, int profileNum)
         {

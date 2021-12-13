@@ -65,7 +65,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasWarehouseTransferUuid) data.WarehouseTransferUuid = dto.WarehouseTransferUuid;
 			if (dto.HasBatchNumber) data.BatchNumber = dto.BatchNumber;
-			if (dto.HasTransferStatus) data.TransferStatus = dto.TransferStatus.ToInt();
 			if (dto.HasWarehouseTransferType) data.WarehouseTransferType = dto.WarehouseTransferType.ToInt();
 			if (dto.HasWarehouseTransferStatus) data.WarehouseTransferStatus = dto.WarehouseTransferStatus.ToInt();
 			if (dto.HasTransferDate) data.TransferDate = dto.TransferDate.ToDateTime();
@@ -78,6 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasFromWarehouseCode) data.FromWarehouseCode = dto.FromWarehouseCode;
 			if (dto.HasToWarehouseUuid) data.ToWarehouseUuid = dto.ToWarehouseUuid;
 			if (dto.HasToWarehouseCode) data.ToWarehouseCode = dto.ToWarehouseCode;
+			if (dto.HasInTransitToWarehouseCode) data.InTransitToWarehouseCode = dto.InTransitToWarehouseCode;
 			if (dto.HasReferenceType) data.ReferenceType = dto.ReferenceType.ToInt();
 			if (dto.HasReferenceUuid) data.ReferenceUuid = dto.ReferenceUuid;
 			if (dto.HasReferenceNum) data.ReferenceNum = dto.ReferenceNum;
@@ -209,7 +209,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.WarehouseTransferUuid = data.WarehouseTransferUuid;
 			dto.BatchNumber = data.BatchNumber;
-			dto.TransferStatus = data.TransferStatus;
 			dto.WarehouseTransferType = data.WarehouseTransferType;
 			dto.WarehouseTransferStatus = data.WarehouseTransferStatus;
 			dto.TransferDate = data.TransferDate;
@@ -222,6 +221,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.FromWarehouseCode = data.FromWarehouseCode;
 			dto.ToWarehouseUuid = data.ToWarehouseUuid;
 			dto.ToWarehouseCode = data.ToWarehouseCode;
+			dto.InTransitToWarehouseCode = data.InTransitToWarehouseCode;
 			dto.ReferenceType = data.ReferenceType;
 			dto.ReferenceUuid = data.ReferenceUuid;
 			dto.ReferenceNum = data.ReferenceNum;

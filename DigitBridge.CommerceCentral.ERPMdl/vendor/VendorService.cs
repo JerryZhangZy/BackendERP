@@ -630,6 +630,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.Vendor);
 
         }
+        public bool ExistVendorCode(string vendorCode, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Exists<Vendor>(
+                  $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND VendorCode = @2",
+                  masterAccountNum,
+                  profileNum,
+                  vendorCode);
+        }
 
     }
 }

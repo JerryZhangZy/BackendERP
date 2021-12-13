@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
@@ -83,6 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<WarehouseTransferPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new WarehouseTransferService(dbFactory);
+            payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.New;
             if (await svc.AddAsync(payload))
                 payload.WarehouseTransfer = svc.ToDto();
             else
@@ -92,6 +94,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             return new JsonNetResponse<WarehouseTransferPayload>(payload);
         }
+
+
+        [FunctionName(nameof(AddAndCloseWarehouseTransfer))]
+        [OpenApiOperation(operationId: "AddAndCloseWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadAdd), Description = "WarehouseTransferDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadAdd))]
+        public static async Task<JsonNetResponse<WarehouseTransferPayload>> AddAndCloseWarehouseTransfer(
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouseTransfers")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<WarehouseTransferPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new WarehouseTransferService(dbFactory);
+            payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.ArriveImmediately;
+            if (await svc.AddAsync(payload))
+                payload.WarehouseTransfer = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<WarehouseTransferPayload>(payload);
+        }
+
 
         [FunctionName(nameof(UpdateWarehouseTransfer))]
         [OpenApiOperation(operationId: "UpdateWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
@@ -146,6 +174,36 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             return new JsonNetResponse<WarehouseTransferPayload>(payload);
         }
+
+
+        [FunctionName(nameof(CloseWarehouseTransfer))]
+        [OpenApiOperation(operationId: "CloseWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "warehouseTransferUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "warehouseTransferUuid", Description = "warehouseTransferUuid", Visibility = OpenApiVisibilityType.Advanced)]
+       
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadUpdate))]
+        public static async Task<JsonNetResponse<WarehouseTransferPayload>> CloseWarehouseTransfer(
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "closeWarehouseTransfer/{warehouseTransferUuid}")] HttpRequest req,
+             string warehouseTransferUuid)
+        {
+            var payload = await req.GetParameters<WarehouseTransferPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new WarehouseTransferService(dbFactory);
+            if (await svc.CloseAsync(payload.MasterAccountNum,payload.ProfileNum,warehouseTransferUuid))
+                payload.WarehouseTransfer = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<WarehouseTransferPayload>(payload);
+        }
+
+
+
+
 
         /// <summary>
         /// Load warehouseTransfer list

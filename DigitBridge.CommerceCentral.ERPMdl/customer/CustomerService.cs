@@ -592,6 +592,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, Base.Common.ActivityLogType.Customer);
 
         }
+ 
+        public async Task<bool> ExistCustomerCodeAsync(string customerCode, int masterAccountNum, int profileNum)
+        {
+            return await dbFactory.ExistsAsync<Customer>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND CustomerCode = @2",
+                masterAccountNum,
+                profileNum,
+                customerCode);
+ 
+        }
+        public bool ExistCustomerCode(string customerCode, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Exists<Customer>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND CustomerCode = @2",
+                masterAccountNum,
+                profileNum,
+                customerCode);
+        }
 
         #region customer Address
         public async Task<bool> AddCustomerAddressAsync(CustomerAddressPayload payload)

@@ -123,50 +123,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
-        public virtual async Task<bool> GetByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
-        {
-                var rownum = await InitNumbersHelper.GetRowNumByInitNumbersUuidAsync(masterAccountNum, profileNum, initNumbersUuid);
-                GetData(rownum);
-            return true;
-        }
+      
  
-        public async Task<InitNumbersPayload> GetInitNumbersForCustomer(int masterAccountNum,int profileNum, string customerUuid)
-        {
-            var payload = new InitNumbersPayload()
-            {
-                MasterAccountNum = masterAccountNum,
-                ProfileNum = profileNum
-            };
-            payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-                {"CustomerUuid",  $"{customerUuid}"},
-            };
-                return await _initNumbersList.GetInitNumbersListAsync(payload);
-        }
-        //public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
-        //{
-        //    string minNumber = string.Empty;
-        //    using (var trx = new ScopedTransaction(dbFactory))
-        //    {
-        //         // minNumber = await InitNumbersHelper.GetMinNumberAsync(masterAccountNum, profileNum, customerUuid, type);
-        //    }
-   
-        //    var initNumbers =  InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
-        //    if (string.IsNullOrWhiteSpace(minNumber))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
-        //    {
-
-        //        return string.Concat(initNumbers.prefix, initNumbers.currentNumber+1, initNumbers.suffix);
-
-        //    }
-        //    else //如果不为null，则直接返回
-        //    {
-        //        return string.Concat(initNumbers.prefix, minNumber, initNumbers.suffix);
-        //    }
- 
-
-        //}
-
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, string currentNumber)
         {
           

@@ -89,15 +89,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBatchNumber => BatchNumber != null;
 
 		/// <summary>
-		/// TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false
-		/// </summary>
-		[OpenApiPropertyDescription("TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false")]
-        public int? TransferStatus { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasTransferStatus => TransferStatus != null;
-
-		/// <summary>
 		/// WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true")]
@@ -214,6 +205,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasToWarehouseCode => ToWarehouseCode != null;
+
+		/// <summary>
+		/// Readable InTransitToWarehouseCode code, transfer to warehouse. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Readable InTransitToWarehouseCode code, transfer to warehouse. <br> Title: Warehouse Code, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The InTransitToWarehouseCode value cannot exceed 50 characters. ")]
+        public string InTransitToWarehouseCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInTransitToWarehouseCode => InTransitToWarehouseCode != null;
 
 		/// <summary>
 		/// Reference Transaction Type, reference to invoice, P/O. <br> Display: true, Editable: true
