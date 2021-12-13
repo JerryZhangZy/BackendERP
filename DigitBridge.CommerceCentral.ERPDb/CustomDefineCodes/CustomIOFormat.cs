@@ -22,42 +22,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             CsvFormat fmt = null;
 
-            if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToString()))
+            if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToInt().ToString()))
             {
                 fmt = new SalesOrderIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<SalesOrderIOFormat>());
                 return fmt;
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToInt().ToString()))
             {
                 fmt = new PurchaseOrderIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<PurchaseOrderIOFormat>());
                 return fmt;
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToInt().ToString()))
             {
                 fmt = new PoReceiveIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<PoReceiveIOFormat>());
                 return fmt;
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToInt().ToString()))
             {
                 fmt = new VendorIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<VendorIOFormat>());
                 return fmt;
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToInt().ToString()))
             {
                 fmt = new ApInvoiceIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<ApInvoiceIOFormat>());
                 return fmt;
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToInt().ToString()))
             {
                 fmt = new InvoiceIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
@@ -65,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return fmt;
 
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToInt().ToString()))
             {
                 fmt = new InvoicePaymentIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return fmt;
 
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToInt().ToString()))
             {
                 fmt = new InvoiceReturnIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return fmt;
 
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToInt().ToString()))
             {
                 fmt = new CustomerIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
@@ -89,7 +89,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return fmt;
 
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToInt().ToString()))
             {
                 fmt = new InventoryIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
@@ -97,11 +97,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return fmt;
 
             }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToInt().ToString()))
             {
                 fmt = new InventoryUpdateIOFormat();
                 if (!string.IsNullOrEmpty(this.FormatObject))
                     fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryUpdateIOFormat>());
+                return fmt;
+
+            }
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.WarehouseTransfer.ToString()))
+            {
+                fmt = new WarehouseTransferIOFormat();
+                if (!string.IsNullOrEmpty(this.FormatObject))
+                    fmt.LoadFormat(this.FormatObject.JsonToObject<WarehouseTransferIOFormat>());
                 return fmt;
 
             }
@@ -113,29 +121,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public void SetFormatObject(CsvFormat csvFormat)
         {
             CsvFormat fmt = null;
-            if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToString()))
+            if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToInt().ToString()))
                 fmt = new SalesOrderIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToInt().ToString()))
                 fmt = new PurchaseOrderIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToInt().ToString()))
                 fmt = new PoReceiveIOFormat();
 
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToInt().ToString()))
                 fmt = new VendorIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToInt().ToString()))
                 fmt = new ApInvoiceIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToInt().ToString()))
                 fmt = new InvoiceIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToInt().ToString()))
                 fmt = new InvoicePaymentIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToInt().ToString()))
                 fmt = new InvoiceReturnIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToInt().ToString()))
                 fmt = new CustomerIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToInt().ToString()))
                 fmt = new InventoryIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToString()))
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToInt().ToString()))
                 fmt = new InventoryUpdateIOFormat();
+            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.WarehouseTransfer.ToString()))
+                fmt = new WarehouseTransferIOFormat();
 
 
             if (fmt != null)

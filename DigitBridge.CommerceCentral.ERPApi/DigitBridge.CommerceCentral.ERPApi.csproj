@@ -46,6 +46,8 @@
     <Folder Include="JsType\ap\service\" />
     <Folder Include="JsType\ar\store\" />
     <Folder Include="JsType\ar\service\" />
+    <Folder Include="JsType\CustomDefineCodes\service\" />
+    <Folder Include="JsType\CustomDefineCodes\store\" />
     <Folder Include="JsType\customer\store\" />
     <Folder Include="JsType\customer\service\" />
     <Folder Include="JsType\inventory\service\" />
@@ -54,6 +56,8 @@
     <Folder Include="JsType\invoice\store\" />
     <Folder Include="JsType\po\store\" />
     <Folder Include="JsType\po\service\" />
+    <Folder Include="JsType\shipment\store\" />
+    <Folder Include="JsType\shipment\service\" />
     <Folder Include="JsType\so\service\" />
     <Folder Include="JsType\so\store\" />
     <Folder Include="JsType\vendor\service\" />

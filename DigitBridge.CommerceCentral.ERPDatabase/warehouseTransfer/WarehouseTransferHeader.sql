@@ -7,7 +7,7 @@
 
     [WarehouseTransferUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --WarehouseTransfer uuid. <br> Display: false, Editable: false.
 	[BatchNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable WarehouseTransfer number, unique in same database and profile. <br> Parameter should pass ProfileNum-BatchNumber. <br> Title: WarehouseTransfer Number, Display: true, Editable: true
-
+	[TransferStatus] INT NOT NULL DEFAULT 0,--TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false
     [WarehouseTransferType] INT NOT NULL DEFAULT 0, --WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true
     [WarehouseTransferStatus] INT NOT NULL DEFAULT 0, --WarehouseTransfer status. <br> Title: Status, Display: true, Editable: true
 	[TransferDate] DATE NOT NULL, --WarehouseTransfer date. <br> Title: Date, Display: true, Editable: true

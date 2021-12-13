@@ -5,7 +5,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ include file="ParseSqlFile.ttinclude" #>
-<#@ include file="SettingForVendor.ttinclude" #>
+<#@ include file="SettingForShipment.ttinclude" #>
 
 import { types, getRoot, destroy, SnapshotIn, cast } from "mobx-state-tree";
 import { createModelActions } from '../../../store';

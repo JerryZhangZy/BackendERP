@@ -27,59 +27,58 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-ins.InvoiceUuid as 'InvoiceHeader.InvoiceUuid',
---ins.OrderInvoiceNum as 'InvoiceHeader.OrderInvoiceNum',
-ins.DatabaseNum as 'InvoiceHeader.DatabaseNum',
-ins.MasterAccountNum as 'InvoiceHeader.MasterAccountNum',
-ins.ProfileNum as 'InvoiceHeader.ProfileNum',
-insi.ChannelNum as 'InvoiceHeader.ChannelNum',
-insi.ChannelAccountNum as 'InvoiceHeader.ChannelAccountNum',
-ins.InvoiceNumber as 'InvoiceHeader.InvoiceNumber',
+COALESCE(ins.InvoiceUuid,'') as 'InvoiceHeader.InvoiceUuid',
+COALESCE(insi.RefNum,'') as 'InvoiceHeader.OrderInvoiceNum',
+COALESCE(ins.DatabaseNum,0) as 'InvoiceHeader.DatabaseNum',
+COALESCE(ins.MasterAccountNum,0) as 'InvoiceHeader.MasterAccountNum',
+COALESCE(ins.ProfileNum,0) as 'InvoiceHeader.ProfileNum',
+COALESCE(insi.ChannelNum,0) as 'InvoiceHeader.ChannelNum',
+COALESCE(insi.ChannelAccountNum,0) as 'InvoiceHeader.ChannelAccountNum',
+COALESCE(ins.InvoiceNumber,'') as 'InvoiceHeader.InvoiceNumber',
 ins.InvoiceDate as 'InvoiceHeader.InvoiceDateUtc',
-insi.CentralOrderNum as 'InvoiceHeader.CentralOrderNum',
-insi.ChannelOrderID as 'InvoiceHeader.ChannelOrderID',
---insi.OrderDCAssignmentNum as 'InvoiceHeader.OrderDCAssignmentNum',
-insi.OrderShipmentNum as 'InvoiceHeader.OrderShipmentNum',--need join
---insi.ShipmentID as 'InvoiceHeader.ShipmentID',--need join
+COALESCE(insi.CentralOrderNum,0) as 'InvoiceHeader.CentralOrderNum',
+COALESCE(insi.ChannelOrderID,'') as 'InvoiceHeader.ChannelOrderID',
+COALESCE(insi.OrderDCAssignmentNum,0) as 'InvoiceHeader.OrderDCAssignmentNum',
+COALESCE(insi.OrderShipmentNum,0) as 'InvoiceHeader.OrderShipmentNum',
+COALESCE(osh.ShipmentID,'') as 'InvoiceHeader.ShipmentID',
 ins.ShipDate as 'InvoiceHeader.ShipmentDateUtc',
-insi.ShippingCarrier as 'InvoiceHeader.ShippingCarrier',
-insi.ShippingClass as 'InvoiceHeader.ShippingClass',
-ins.ShippingAmount as 'InvoiceHeader.ShippingCost',
---insi.MainTrackingNumber as 'InvoiceHeader.MainTrackingNumber',--need join
-ins.SubTotalAmount as 'InvoiceHeader.InvoiceAmount',
-ins.TaxAmount as 'InvoiceHeader.InvoiceTaxAmount',
-ins.ChargeAndAllowanceAmount as 'InvoiceHeader.InvoiceHandlingFee',
-ins.DiscountAmount as 'InvoiceHeader.InvoiceDiscountAmount',
-ins.TotalAmount as 'InvoiceHeader.TotalAmount',
---ins.InvoiceTermsType as 'InvoiceHeader.InvoiceTermsType',
-ins.Terms as 'InvoiceHeader.InvoiceTermsDescrption',
-ins.TermsDays as 'InvoiceHeader.InvoiceTermsDays',
---ins.DBChannelOrderHeaderRowID as 'InvoiceHeader.DBChannelOrderHeaderRowID',
+COALESCE(insi.ShippingCarrier,'') as 'InvoiceHeader.ShippingCarrier',
+COALESCE(insi.ShippingClass,'') as 'InvoiceHeader.ShippingClass',
+COALESCE(ins.ShippingAmount,0) as 'InvoiceHeader.ShippingCost',
+COALESCE(osh.MainTrackingNumber,'') as 'InvoiceHeader.MainTrackingNumber',
+COALESCE(ins.SubTotalAmount,0) as 'InvoiceHeader.InvoiceAmount',
+COALESCE(ins.TaxAmount,0) as 'InvoiceHeader.InvoiceTaxAmount',
+COALESCE(ins.MiscAmount,0) as 'InvoiceHeader.InvoiceHandlingFee',
+COALESCE((ins.SalesAmount - ins.DiscountAmount),0) as 'InvoiceHeader.InvoiceDiscountAmount',
+COALESCE(ins.TotalAmount,0) as 'InvoiceHeader.TotalAmount',
+COALESCE(ins.Terms,'') as 'InvoiceHeader.InvoiceTermsType',
+--ins.Terms as 'InvoiceHeader.InvoiceTermsDescrption',
+COALESCE(ins.TermsDays,0) as 'InvoiceHeader.InvoiceTermsDays',
+COALESCE(insi.DBChannelOrderHeaderRowID,0) as 'InvoiceHeader.DBChannelOrderHeaderRowID',
 ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc', 
-
 ( 
     SELECT 
-    insl.Seq AS OrderInvoiceLineNum,
-    --insl.DatabaseNum AS DatabaseNum,
-    --insl.MasterAccountNum AS MasterAccountNum,
-    --insl.ProfileNum AS ProfileNum,
-        --insl.ChannelNum AS ChannelNum,
-    --insl.ChannelAccountNum AS ChannelAccountNum,
-    --insl.OrderShipmentItemNum AS OrderShipmentItemNum,
-    --insl.CentralOrderLineNum AS CentralOrderLineNum,
-    --insl.OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum,
-    insl.SKU AS SKU,
-    --insl.ChannelItemID AS ChannelItemID,
-    insl.ShipQty AS ShippedQty,
-    insl.DiscountPrice AS UnitPrice,
-    insl.ExtAmount AS LineItemAmount,
-    insl.TaxAmount AS LineTaxAmount,
-    insl.ChargeAndAllowanceAmount AS LineHandlingFee,
-    insl.DiscountAmount AS LineDiscountAmount,
-    insl.ItemTotalAmount AS LineAmount,
-    --insl.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
-    insl.InvoiceItemStatus AS ItemStatus,
-    insl.EnterDateUtc AS EnterDateUtc
+        COALESCE(insl.RowNum,0) AS OrderInvoiceLineNum,
+        COALESCE(ins.DatabaseNum,0) AS DatabaseNum,
+        COALESCE(ins.MasterAccountNum,0) AS MasterAccountNum,
+        COALESCE(ins.ProfileNum,0) AS ProfileNum,
+        COALESCE(insi.ChannelNum,0) AS ChannelNum,
+        COALESCE(insi.ChannelAccountNum,0) AS ChannelAccountNum,
+        --insi.OrderShipmentItemNum AS OrderShipmentItemNum,
+        --insl.CentralOrderLineNum AS CentralOrderLineNum,
+        COALESCE(insl.OrderDCAssignmentLineNum,0) AS OrderDCAssignmentLineNum,
+        COALESCE(insl.SKU,'') AS SKU,
+        --insl.ChannelItemID AS ChannelItemID,
+        COALESCE(insl.ShipQty,0) AS ShippedQty,
+        COALESCE(insl.DiscountPrice,0) AS UnitPrice,
+        COALESCE(insl.ExtAmount,0) AS LineItemAmount,
+        COALESCE(insl.TaxAmount,0) AS LineTaxAmount,
+        0 AS LineHandlingFee,
+        COALESCE(insl.DiscountAmount,0) AS LineDiscountAmount,
+        COALESCE(insl.ItemTotalAmount,0) AS LineAmount,
+        COALESCE(insl.DBChannelOrderLineRowID,0) AS DBChannelOrderLineRowID,
+        --insl.InvoiceItemStatus AS ItemStatus,
+        insl.EnterDateUtc AS EnterDateUtc
     FROM InvoiceItems insl
     WHERE insl.InvoiceUuid = ins.InvoiceUuid 
     FOR JSON PATH
@@ -94,11 +93,13 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
         {
             this.SQL_From = $@"
  FROM EventProcessERP epe
- INNER JOIN InvoiceHeader ins  
-        on  ins.MasterAccountNum=epe.MasterAccountNum
+ INNER JOIN InvoiceHeader ins on (
+        ins.MasterAccountNum=epe.MasterAccountNum
         and ins.ProfileNum=epe.ProfileNum
         and ins.InvoiceUuid=epe.ProcessUuid
+)
  LEFT JOIN InvoiceHeaderInfo insi ON (ins.InvoiceUuid = insi.InvoiceUuid)
+ LEFT JOIN OrderShipmentHeader osh ON (insi.OrderShipmentUuid = osh.OrderShipmentUuid)
 ";
             return this.SQL_From;
         } 

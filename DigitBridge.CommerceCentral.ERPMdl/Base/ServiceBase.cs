@@ -309,7 +309,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Data is null || Calculator is null)
                 return false;
-            SetDefault();
+            // cal SetDefault seperate from calculate, in saveData function
+            //SetDefault();
             return Calculator.Calculate(Data, ProcessMode);
         }
 
@@ -467,6 +468,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (_data is null)
                 return false;
             //PrepareData();
+            SetDefault();
             Calculate();
 
             // call BeforeSaveAsync to update relative data, rollback data for update
@@ -555,6 +557,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (_data is null)
                 return false;
             //PrepareData();
+            SetDefault();
             Calculate();
 
             // call BeforeSaveAsync to update relative data, rollback data for update

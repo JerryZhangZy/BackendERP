@@ -103,6 +103,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("OrderSourceCode", "", idx++, null, false),
 				new CsvFormatColumn("DepositAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("MiscInvoiceUuid", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep2", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep3", "", idx++, null, false),
+				new CsvFormatColumn("SalesRep4", "", idx++, null, false),
+				new CsvFormatColumn("CommissionRate", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionRate2", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionRate3", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionRate4", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("CommissionAmount", "", idx++, FormatType.Amount, false),
+				new CsvFormatColumn("CommissionAmount2", "", idx++, FormatType.Amount, false),
+				new CsvFormatColumn("CommissionAmount3", "", idx++, FormatType.Amount, false),
+				new CsvFormatColumn("CommissionAmount4", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("UpdateDateUtc", "", idx++, FormatType.Date, false),
 				new CsvFormatColumn("EnterBy", "", idx++, null, false),
 				new CsvFormatColumn("UpdateBy", "", idx++, null, false),
@@ -175,6 +187,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("BillToDaytimePhone", "", idx++, null, false),
 				new CsvFormatColumn("BillToNightPhone", "", idx++, null, false),
 				new CsvFormatColumn("Notes", "", idx++, null, false),
+				new CsvFormatColumn("OrderDCAssignmentNum", "", idx++, null, false),
+				new CsvFormatColumn("DBChannelOrderHeaderRowID", "", idx++, null, false),
 			};
 		}
 

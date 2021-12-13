@@ -54,6 +54,19 @@
 
 	[InvoiceSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --(Readonly) Invoice created from other entity number, use to prevent import duplicate invoice. <br> Title: Source Number, Display: false, Editable: false
 
+    [SalesRep] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+    [SalesRep2] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+    [SalesRep3] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+    [SalesRep4] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate2] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate3] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate4] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+	[CommissionAmount2] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+	[CommissionAmount3] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+	[CommissionAmount4] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
@@ -112,5 +125,15 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerCode_InvoiceStatus] ON [dbo]
 	[ProfileNum] ASC,
 	[CustomerCode] ASC,
 	[InvoiceStatus] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_SalesRep1234')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_SalesRep1234] ON [dbo].[InvoiceHeader]
+(
+	[SalesRep] ASC,
+	[SalesRep2] ASC,
+	[SalesRep3] ASC,
+	[SalesRep4] ASC
 ) 
 GO

@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         { 
             get
             {
-                return Type.ToEnum<ActivityLogType>().ToName();
+                return Type.ToInt().ToEnum<ActivityLogType>(ActivityLogType.Unknow).ToName();
             }
         }
     }

@@ -122,7 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
 			dto.Format = data.GetFormatObject();
-			dto.FormatColumns = dto.Format.GetColumnList();
+			dto.FormatColumns = dto.Format?.GetColumnList();
 			#endregion read properties
 
 			return;

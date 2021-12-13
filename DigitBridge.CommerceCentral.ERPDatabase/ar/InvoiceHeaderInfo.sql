@@ -68,6 +68,9 @@
 
 	[Notes] NVarchar(1000) NOT NULL DEFAULT '',--Order notes. <br> Title: Notes, Display: true, Editable: true
 
+	[OrderDCAssignmentNum] [bigint] NOT NULL DEFAULT 0, --C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+	[DBChannelOrderHeaderRowID] VARCHAR(50) NOT NULL DEFAULT '', --Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+
     [UpdateDateUtc] DATETIME NULL, --(Ignore)
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
@@ -84,5 +87,11 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeaderInfo_InvoiceUuid] ON [dbo].[In
 ) 
 GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_OrderShipmentUuid')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_OrderShipmentUuid] ON [dbo].[InvoiceHeaderInfo]
+(
+	[OrderShipmentUuid] ASC
+) 
+GO
 
 

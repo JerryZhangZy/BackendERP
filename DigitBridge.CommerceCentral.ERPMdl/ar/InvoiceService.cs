@@ -554,16 +554,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return false;
         }
 
-        public async Task<bool> ExistInvoiceNumber(string invoiceNum, int masterAccountNum, int profileNum)
+        public async Task<bool> ExistInvoiceNumberAsync(string invoiceNum, int masterAccountNum, int profileNum)
         {
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
+            return await dbFactory.ExistsAsync<InvoiceHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND InvoiceNumber = @2", 
+                masterAccountNum, 
+                profileNum, 
+                invoiceNum);
+
+            //using (var trs = new ScopedTransaction(dbFactory))
+            //    return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
+        }
+        public bool ExistInvoiceNumber(string invoiceNum, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Exists<InvoiceHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND InvoiceNumber = @2",
+                masterAccountNum,
+                profileNum,
+                invoiceNum);
         }
 
         public async Task<bool> ExistInvoiceUuidAsync(string invoiceUuid, int masterAccountNum, int profileNum)
         {
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.ExistIdAsync(invoiceUuid, masterAccountNum, profileNum);
+            return await dbFactory.ExistsAsync<InvoiceHeader>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND InvoiceUuid = @2",
+                masterAccountNum,
+                profileNum,
+                invoiceUuid);
+
+            //using (var trs = new ScopedTransaction(dbFactory))
+            //    return await InvoiceHelper.ExistIdAsync(invoiceUuid, masterAccountNum, profileNum);
         }
 
         public async Task<string> GetInvoiceUuidByOrderShipmentUuidAsync(string orderShipmentUuid)

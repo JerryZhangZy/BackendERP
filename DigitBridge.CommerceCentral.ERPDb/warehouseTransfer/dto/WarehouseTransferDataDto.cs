@@ -32,6 +32,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasWarehouseTransferItems => WarehouseTransferItems != null;
 
+        public WarehouseTransferDataDto NewData()
+        {
+            WarehouseTransferHeader = new WarehouseTransferHeaderDto();
+            WarehouseTransferItems = new List<WarehouseTransferItemsDto>();
+        
+            return this;
+        }
+
     }
 }
 

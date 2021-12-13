@@ -65,6 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasWarehouseTransferUuid) data.WarehouseTransferUuid = dto.WarehouseTransferUuid;
 			if (dto.HasBatchNumber) data.BatchNumber = dto.BatchNumber;
+			if (dto.HasTransferStatus) data.TransferStatus = dto.TransferStatus.ToInt();
 			if (dto.HasWarehouseTransferType) data.WarehouseTransferType = dto.WarehouseTransferType.ToInt();
 			if (dto.HasWarehouseTransferStatus) data.WarehouseTransferStatus = dto.WarehouseTransferStatus.ToInt();
 			if (dto.HasTransferDate) data.TransferDate = dto.TransferDate.ToDateTime();
@@ -208,6 +209,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.WarehouseTransferUuid = data.WarehouseTransferUuid;
 			dto.BatchNumber = data.BatchNumber;
+			dto.TransferStatus = data.TransferStatus;
 			dto.WarehouseTransferType = data.WarehouseTransferType;
 			dto.WarehouseTransferStatus = data.WarehouseTransferStatus;
 			dto.TransferDate = data.TransferDate;

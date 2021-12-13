@@ -245,7 +245,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForCustomer.ttinclude">
-      <LastGenOutput>SettingForVendor.cs</LastGenOutput>
+      <LastGenOutput>SettingForCustomer.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForShipment.ttinclude">
@@ -395,11 +395,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateIOCsv - Copy.cs">
       <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -539,6 +534,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForCustomIOFormat.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForShipment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 
