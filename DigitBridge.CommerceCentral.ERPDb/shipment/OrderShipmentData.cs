@@ -63,6 +63,12 @@ AND OrderShipmentNum = @2";
                 _OnAfterLoad(this);
             return true;
         }
+        
+        //protected IList<OrderShipmentShippedItem> _OrderShipmentShippedItemDeleted;
+        //public virtual void SetOrderShipmentShippedItemDeleted(IList<OrderShipmentShippedItem> del) =>
+        //    _OrderShipmentShippedItemDeleted = del; 
+        //public virtual void ClearOrderShipmentShippedItemDeleted() =>
+        //    _OrderShipmentShippedItemDeleted = null;
     }
 }
 
