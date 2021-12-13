@@ -270,13 +270,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.FromBeforeInstockQty = inv.Instock;
             }
 
+            //创建中间仓库库存
+            _inventoryService.CreateInTransitToWarehouseInventory(data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum, item.SKU);
+
+
             var inventory = _inventoryService.GetInventoryDataByWarehouseAsync(item.SKU, item.ToWarehouseCode, data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum, true).GetAwaiter().GetResult();
             if (inventory == null)
             {
                 AddError($"Sku {item.SKU} or warehouse {item.ToWarehouseCode} not found.");
                 return false;
             }
-            item.ToBeforeInstockQty = inventory.Inventory.FirstOrDefault(r => r.WarehouseUuid == item.ToWarehouseUuid).Instock;
+            item.ToBeforeInstockQty = inventory.Inventory.FirstOrDefault(r => r.WarehouseCode == item.ToWarehouseCode).Instock;
  
             //inv = GetInventory(data, item.ProductUuid, item.ToInventoryUuid);
             //if (inv != null)
@@ -502,6 +506,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         */
         
+
+       
+
         #region message
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
