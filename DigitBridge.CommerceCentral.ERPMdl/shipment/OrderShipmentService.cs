@@ -576,12 +576,12 @@ WHERE spc.OrderShipmentUuid=@0
         /// <summary>
         /// Get ShipmentUuid by OrderDCAssignmentNum or sSalesOrderUuid
         /// </summary>
-        public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
+        public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, long orderDCAssignmentNum)
         {
-            if (string.IsNullOrEmpty(orderSourceCode) && string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
-            //Get SalesOrderData by uuid
+            if (orderDCAssignmentNum.IsZero() && salesOrderUuid.IsZero()) return string.Empty;
+
             using (var trs = new ScopedTransaction(dbFactory))
-                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
+                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderDCAssignmentNum);
         }
 
         public async Task<(string, string)> GetShipmentUuidAndInvoiceUuidAsync(int masterAccountNum, int profileNum, string shipmentID)

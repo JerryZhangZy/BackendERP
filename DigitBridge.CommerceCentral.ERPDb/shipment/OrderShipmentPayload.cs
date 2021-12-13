@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Request Parameter) Array of uuid to load multiple OrderShipment dto data.
         /// </summary>
         [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple OrderShipment dto data.")]
-        public IList<string> OrderShipmentNumbers { get; set; } = new List<string>();
+        public IList<string> OrderShipmentNumbers { get; set; }
         [JsonIgnore]
         public virtual bool HasOrderShipmentNumbers => OrderShipmentNumbers != null && OrderShipmentNumbers.Count > 0;
         //public bool ShouldSerializeShipmentUuids() => HasOrderShipmentNumbers;
@@ -120,7 +120,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Request Parameter) Array of uuid that will be resend to erp.
         /// </summary>
         [OpenApiPropertyDescription(" (Request Parameter) Array of uuid that will be resend to erp.")]
-        public IList<string> WMSShipmentIDs { get; set; } = new List<string>();
+        public IList<string> WMSShipmentIDs { get; set; }
         [JsonIgnore]
         public virtual bool HasWMSShipmentIDs => WMSShipmentIDs != null && WMSShipmentIDs.Count > 0;
         public bool ShouldSerializeSalesOrderUuids() => HasWMSShipmentIDs;
