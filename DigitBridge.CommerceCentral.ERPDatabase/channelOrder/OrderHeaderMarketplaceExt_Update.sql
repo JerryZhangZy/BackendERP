@@ -9,11 +9,7 @@ BEGIN
 		[CentralOrderHeaderMarketplaceExtUuid] ASC
 	) 
 END					
-
-IF COL_LENGTH('OrderHeader', 'TotalDueSellerAmount') IS NULL					
-BEGIN					
-    ALTER TABLE OrderHeader ADD [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0
-END		
+	
 /*
     UPDATE spp
     SET spp.CentralOrderUuid = sph.CentralOrderUuid
