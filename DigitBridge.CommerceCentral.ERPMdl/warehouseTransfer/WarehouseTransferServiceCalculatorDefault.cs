@@ -242,7 +242,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (item is null || item.IsEmpty)
                 return false;
 
-            data.WarehouseTransferHeader.TransferStatus = (int)TransferStatus.New;
+            data.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.New;
            var setting = new ERPSetting();
             var sum = data.WarehouseTransferHeader;
             //var prod = data.GetCache<ProductBasic>(ProductId);
