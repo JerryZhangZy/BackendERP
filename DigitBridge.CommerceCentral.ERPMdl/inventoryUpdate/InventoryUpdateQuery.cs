@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = Helper.TableAllies;
-        protected static string ITEMSPREFIX = Helper.TableAllies;
+        protected static string ITEMSPREFIX = ItemsHelper.TableAllies;
 
         // Filter fields
 

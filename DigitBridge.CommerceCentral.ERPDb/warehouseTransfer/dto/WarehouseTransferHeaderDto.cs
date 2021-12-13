@@ -89,6 +89,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBatchNumber => BatchNumber != null;
 
 		/// <summary>
+		/// TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("TransferStatus (New/Closed). <br> Title: Type, Display: true, Editable: false")]
+        public int? TransferStatus { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTransferStatus => TransferStatus != null;
+
+		/// <summary>
 		/// WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true")]

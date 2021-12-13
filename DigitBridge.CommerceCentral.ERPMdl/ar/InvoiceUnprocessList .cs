@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoiceUnprocessList(IDataBaseFactory dbFactory, InvoiceUnprocessQuery queryObject)
             : base(dbFactory, queryObject)
         {
-        } 
+        }
 
         #region override methods
 
@@ -100,10 +100,10 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
         and ins.InvoiceUuid=epe.ProcessUuid
 )
  LEFT JOIN InvoiceHeaderInfo insi ON (ins.InvoiceUuid = insi.InvoiceUuid)
- LEFT JOIN OrderShipmentHeader osh ON (insi.OrderShipmentUuid = osh.OrderShipmentUuid)
+ LEFT JOIN OrderShipmentHeader osh on (osh.OrderShipmentUuid=insi.OrderShipmentUuid) and osh.ShipmentStatus!={(int)OrderShipmentStatusEnum.Cancelled}
 ";
             return this.SQL_From;
-        } 
+        }
 
         #endregion override methods
 

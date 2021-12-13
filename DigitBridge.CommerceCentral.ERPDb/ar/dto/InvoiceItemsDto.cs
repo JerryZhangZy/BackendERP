@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,8 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InvoiceItemsDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -123,6 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasEtaArrivalDate => EtaArrivalDate != null;
 
+		
 		/// <summary>
 		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
@@ -686,7 +689,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public bool HasInvoiceItemsAttributes => InvoiceItemsAttributes != null;
 
         #endregion Children - Generated 
-
         #region properties
         /// <summary>
         /// Item Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true
