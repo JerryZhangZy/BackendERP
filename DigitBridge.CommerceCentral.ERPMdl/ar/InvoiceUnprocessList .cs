@@ -99,7 +99,7 @@ ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc',
         and ins.InvoiceUuid=epe.ProcessUuid
 )
  LEFT JOIN InvoiceHeaderInfo insi ON (ins.InvoiceUuid = insi.InvoiceUuid)
- LEFT JOIN OrderShipmentHeader shipment on (shipment.OrderShipmentUuid=insi.OrderShipmentUuid) and shipment.ShipmentStatus!={(int)OrderShipmentStatusEnum.Cancelled}
+ LEFT JOIN OrderShipmentHeader osh on (osh.OrderShipmentUuid=insi.OrderShipmentUuid) and osh.ShipmentStatus!={(int)OrderShipmentStatusEnum.Cancelled}
 ";
             return this.SQL_From;
         }
