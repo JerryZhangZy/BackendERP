@@ -89,9 +89,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.CustomIOFormat.MasterAccountNum = pl.MasterAccountNum;
-                dto.CustomIOFormat.ProfileNum = pl.ProfileNum;
-                dto.CustomIOFormat.DatabaseNum = pl.DatabaseNum;
+                dto.CustomFormat.MasterAccountNum = pl.MasterAccountNum;
+                dto.CustomFormat.ProfileNum = pl.ProfileNum;
+                dto.CustomFormat.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
@@ -100,8 +100,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     if (!string.IsNullOrEmpty(number))
                         isValid = CustomIOFormatHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.CustomIOFormat.RowNum.IsZero())
-                        isValid = CustomIOFormatHelper.ExistRowNum(dto.CustomIOFormat.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                    else if(!dto.CustomFormat.RowNum.IsZero())
+                        isValid = CustomIOFormatHelper.ExistRowNum(dto.CustomFormat.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -119,9 +119,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.CustomIOFormat.MasterAccountNum = pl.MasterAccountNum;
-                dto.CustomIOFormat.ProfileNum = pl.ProfileNum;
-                dto.CustomIOFormat.DatabaseNum = pl.DatabaseNum;
+                dto.CustomFormat.MasterAccountNum = pl.MasterAccountNum;
+                dto.CustomFormat.ProfileNum = pl.ProfileNum;
+                dto.CustomFormat.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
@@ -130,8 +130,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     if (!string.IsNullOrEmpty(number))
                         isValid = await CustomIOFormatHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.CustomIOFormat.RowNum.IsZero())
-                        isValid = await CustomIOFormatHelper.ExistRowNumAsync(dto.CustomIOFormat.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                    else if(!dto.CustomFormat.RowNum.IsZero())
+                        isValid = await CustomIOFormatHelper.ExistRowNumAsync(dto.CustomFormat.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -342,21 +342,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.CustomIOFormat.CustomIOFormatUuid = Guid.NewGuid().ToString();
+                dto.CustomFormat.CustomIOFormatUuid = Guid.NewGuid().ToString();
   
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.CustomIOFormat.RowNum.IsZero())
+                if (dto.CustomFormat.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("CustomIOFormat.RowNum is required.");
                 }
                 // This property should not be changed.
-                dto.CustomIOFormat.MasterAccountNum = null;
-                dto.CustomIOFormat.ProfileNum = null;
-                dto.CustomIOFormat.DatabaseNum = null;
-                dto.CustomIOFormat.CustomIOFormatUuid = null;
+                dto.CustomFormat.MasterAccountNum = null;
+                dto.CustomFormat.ProfileNum = null;
+                dto.CustomFormat.DatabaseNum = null;
+                dto.CustomFormat.CustomIOFormatUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
@@ -384,21 +384,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.CustomIOFormat.CustomIOFormatUuid = Guid.NewGuid().ToString();
+                dto.CustomFormat.CustomIOFormatUuid = Guid.NewGuid().ToString();
   
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.CustomIOFormat.RowNum.IsZero())
+                if (dto.CustomFormat.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("CustomIOFormat.RowNum is required.");
                 }
                 // This property should not be changed.
-                dto.CustomIOFormat.MasterAccountNum = null;
-                dto.CustomIOFormat.ProfileNum = null;
-                dto.CustomIOFormat.DatabaseNum = null;
-                dto.CustomIOFormat.CustomIOFormatUuid = null;
+                dto.CustomFormat.MasterAccountNum = null;
+                dto.CustomFormat.ProfileNum = null;
+                dto.CustomFormat.DatabaseNum = null;
+                dto.CustomFormat.CustomIOFormatUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
   

@@ -24,9 +24,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public partial class CustomIOFormatDataDto
     {
-        public CustomIOFormatDto CustomIOFormat { get; set; }
+        public CustomIOFormatDto CustomFormat { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasCustomIOFormat => CustomIOFormat != null;
+        public bool HasCustomIOFormat => CustomFormat != null;
 
     }
 }

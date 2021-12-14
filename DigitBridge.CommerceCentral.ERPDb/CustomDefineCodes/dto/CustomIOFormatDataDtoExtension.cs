@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static CustomIOFormatDataDto GetFakerData(this CustomIOFormatDataDto dto)
         {
             var data = new CustomIOFormatDataDto();
-			data.CustomIOFormat = new CustomIOFormatDto().GetFaker().Generate();
+			data.CustomFormat = new CustomIOFormatDto().GetFaker().Generate();
             return data;
         }
 
