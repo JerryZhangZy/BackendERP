@@ -86,41 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var pl = payload as OrderShipmentPayload;
             var dto = pl.OrderShipment;
 
-            if (processingMode == ProcessingMode.Add)
-            {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-                dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-                dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-                if (dto.HasOrderShipmentCanceledItem)
-                {
-                    foreach (var item in dto.OrderShipmentCanceledItem)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-                    }
-                }
-                if (dto.HasOrderShipmentPackage)
-                {
-                    foreach (var item in dto.OrderShipmentPackage)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-
-                        if (item.OrderShipmentShippedItem == null) continue;
-                        for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
-                        {
-                            var subItem = item.OrderShipmentShippedItem[i];
-                            subItem.MasterAccountNum = pl.MasterAccountNum;
-                            subItem.ProfileNum = pl.ProfileNum;
-                            subItem.DatabaseNum = pl.DatabaseNum;
-                        }
-                    }
-                }
-            }
-            else
+            if (processingMode != ProcessingMode.Add)
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -140,41 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var pl = payload as OrderShipmentPayload;
             var dto = pl.OrderShipment;
 
-            if (processingMode == ProcessingMode.Add)
-            {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-                dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-                dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-                if (dto.HasOrderShipmentCanceledItem)
-                {
-                    foreach (var item in dto.OrderShipmentCanceledItem)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-                    }
-                }
-                if (dto.HasOrderShipmentPackage)
-                {
-                    foreach (var item in dto.OrderShipmentPackage)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-
-                        if (item.OrderShipmentShippedItem == null) continue;
-                        for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
-                        {
-                            var subItem = item.OrderShipmentShippedItem[i];
-                            subItem.MasterAccountNum = pl.MasterAccountNum;
-                            subItem.ProfileNum = pl.ProfileNum;
-                            subItem.DatabaseNum = pl.DatabaseNum;
-                        }
-                    }
-                }
-            }
-            else
+            if (processingMode != ProcessingMode.Add)
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {

@@ -303,6 +303,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasOrderShipment)
                 return false;
 
+            payload.OrderShipment.SetAccount(payload.MasterAccountNum, payload.ProfileNum, payload.DatabaseNum);
+
             // set Add mode and clear data
             Add();
 
@@ -329,6 +331,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
+
+            //Read account info from payload to dto.
+            payload.OrderShipment.SetAccount(payload.MasterAccountNum, payload.ProfileNum, payload.DatabaseNum);
 
             if (!(await ValidateAccountAsync(payload)))
                 return false;

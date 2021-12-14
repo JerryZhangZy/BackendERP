@@ -249,6 +249,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Properties - Generated 
 
         #region Children - Generated 
+        /// <summary>
+        /// This field won't be serialized.
+        /// </summary>
         [JsonIgnore, XmlIgnore]
         public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

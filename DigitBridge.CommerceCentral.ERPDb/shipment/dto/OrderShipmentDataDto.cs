@@ -38,66 +38,70 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentPackage => OrderShipmentPackage != null;
 
-        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem { get; set; }
-
-        //private IList<OrderShipmentShippedItemDto> _orderShipmentShippedItem;
-        ///// <summary>
-        ///// Get shipped items of all package 
-        ///// </summary>
-        //public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem
-        //{
-        //    get
-        //    {
-        //        if (_orderShipmentShippedItem == null && OrderShipmentPackage != null)
-        //            _orderShipmentShippedItem = OrderShipmentPackage.SelectMany(i => i.OrderShipmentShippedItem).ToList();
-        //        return _orderShipmentShippedItem;
-        //    }
-        //    set
-        //    {
-        //        _orderShipmentShippedItem = value;
-        //        //if (_orderShipmentShippedItem == null) return;
-
-        //        //if (!HasOrderShipmentPackage)
-        //        //    OrderShipmentPackage = new List<OrderShipmentPackageDto>();
-
-        //        //foreach (var item in _orderShipmentShippedItem)
-        //        //{
-        //        //    //get package by OrderShipmentPackageNum / OrderShipmentPackageUuid
-        //        //    var package = item.HasOrderShipmentPackageNum
-        //        //        ? OrderShipmentPackage.FirstOrDefault(i => i.OrderShipmentPackageNum == item.OrderShipmentPackageNum)
-        //        //        : OrderShipmentPackage.FirstOrDefault(i => !string.IsNullOrEmpty(item.OrderShipmentPackageUuid) && i.OrderShipmentPackageUuid == item.OrderShipmentPackageUuid);
-
-        //        //    //init package
-        //        //    if (package == null)
-        //        //    {
-        //        //        package = new OrderShipmentPackageDto();
-        //        //        OrderShipmentPackage.Add(package);
-        //        //    }
-
-        //        //    //init OrderShipmentShippedItem
-        //        //    if (package.OrderShipmentShippedItem == null)
-        //        //        package.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
-
-        //        //    //check item exist in package
-        //        //    var isItemExist = package.OrderShipmentShippedItem.Count(i =>
-        //        //     (i.RowNum > 0 && i.RowNum == item.RowNum)
-        //        //     || (!string.IsNullOrEmpty(i.OrderShipmentShippedItemUuid) && i.OrderShipmentShippedItemUuid == item.OrderShipmentShippedItemUuid)
-        //        //     || (i.OrderShipmentShippedItemNum > 0 && i.OrderShipmentShippedItemNum == item.OrderShipmentShippedItemNum)
-        //        //    ) > 0;
-
-        //        //    if (isItemExist) continue;
-
-        //        //    //add item to package.
-        //        //    package.OrderShipmentShippedItem.Add(item);
-
-        //        //}
-        //    }
-        //}
+        private IList<OrderShipmentShippedItemDto> _orderShipmentShippedItem;
+        /// <summary>
+        /// Get shipped items of all package 
+        /// </summary>
+        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem
+        {
+            get
+            {
+                if (_orderShipmentShippedItem == null && OrderShipmentPackage != null)
+                    _orderShipmentShippedItem = OrderShipmentPackage.Where(j => j.OrderShipmentShippedItem != null).SelectMany(i => i.OrderShipmentShippedItem).ToList();
+                return _orderShipmentShippedItem;
+            }
+            set
+            {
+                _orderShipmentShippedItem = value;
+            }
+        }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentShippedItem => OrderShipmentShippedItem != null && OrderShipmentShippedItem.Count() > 0;
 
 
-
+        /// <summary>
+        /// Set account info.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="databaseNum"></param>
+        public void SetAccount(int masterAccountNum, int profileNum, int databaseNum)
+        {
+            if (this.HasOrderShipmentHeader)
+            {
+                this.OrderShipmentHeader.MasterAccountNum = masterAccountNum;
+                this.OrderShipmentHeader.ProfileNum = profileNum;
+                this.OrderShipmentHeader.DatabaseNum = databaseNum;
+            }
+            
+            if (this.HasOrderShipmentCanceledItem)
+            {
+                foreach (var item in this.OrderShipmentCanceledItem)
+                {
+                    item.MasterAccountNum = masterAccountNum;
+                    item.ProfileNum = profileNum;
+                    item.DatabaseNum = databaseNum;
+                }
+            }
+            if (this.HasOrderShipmentPackage)
+            {
+                foreach (var item in this.OrderShipmentPackage)
+                {
+                    item.MasterAccountNum = masterAccountNum;
+                    item.ProfileNum = profileNum;
+                    item.DatabaseNum = databaseNum;
+                }
+            }
+            if (this.HasOrderShipmentShippedItem)
+            {
+                foreach (var item in this.OrderShipmentShippedItem)
+                {
+                    item.MasterAccountNum = masterAccountNum;
+                    item.ProfileNum = profileNum;
+                    item.DatabaseNum = databaseNum;
+                }
+            }
+        }
     }
 }
 
