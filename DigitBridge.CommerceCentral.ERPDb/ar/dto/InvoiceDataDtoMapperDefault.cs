@@ -316,7 +316,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
-
+			if (dto.HasTotalReturnQty) data.TotalReturnQty = dto.TotalReturnQty.ToDecimal();
 			#endregion read properties
 
 			#region read all grand children object

@@ -237,7 +237,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForInventoryUpdate.ttinclude">
-      <LastGenOutput>SettingForWarehouseTransfer.cs</LastGenOutput>
+      <LastGenOutput>SettingForInventoryUpdate.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForSalesOrder.ttinclude">
@@ -395,6 +395,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="T4\DataAccess.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateIOCsv - Copy.cs">
       <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -515,6 +520,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\SettingForInventoryUpdate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventoryUpdate.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\SettingForInvoice.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -539,6 +549,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForWarehouseTransfer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForWarehouseTransfer.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

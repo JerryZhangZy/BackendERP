@@ -15,6 +15,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class SalesOrderHeader
     {
+        public decimal TotalLineCommissionAmount { get; set; }
+
         public IList<SalesOrderHeaderInfo> SalesOrderHeaderInfoJson { get; set; }
         [JsonIgnore] public virtual bool HasSalesOrderHeaderInfoJson => SalesOrderHeaderInfoJson != null && SalesOrderHeaderInfoJson.Count > 0;
         public bool ShouldSerializeSalesOrderHeaderInfoJson() => HasSalesOrderHeaderInfoJson;

@@ -92,14 +92,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
                 dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
                 dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-
                 if (dto.HasOrderShipmentCanceledItem)
                 {
                     foreach (var item in dto.OrderShipmentCanceledItem)
                     {
                         item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.DatabaseNum;
-
+                        item.ProfileNum = pl.ProfileNum;
+                        item.DatabaseNum = pl.DatabaseNum;
                     }
                 }
                 if (dto.HasOrderShipmentPackage)
@@ -107,14 +106,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     foreach (var item in dto.OrderShipmentPackage)
                     {
                         item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.DatabaseNum;
+                        item.ProfileNum = pl.ProfileNum;
+                        item.DatabaseNum = pl.DatabaseNum;
 
                         if (item.OrderShipmentShippedItem == null) continue;
                         for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
                         {
                             var subItem = item.OrderShipmentShippedItem[i];
                             subItem.MasterAccountNum = pl.MasterAccountNum;
-                            subItem.ProfileNum = pl.DatabaseNum;
+                            subItem.ProfileNum = pl.ProfileNum;
+                            subItem.DatabaseNum = pl.DatabaseNum;
                         }
                     }
                 }
@@ -150,8 +151,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     foreach (var item in dto.OrderShipmentCanceledItem)
                     {
                         item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.DatabaseNum;
-
+                        item.ProfileNum = pl.ProfileNum;
+                        item.DatabaseNum = pl.DatabaseNum;
                     }
                 }
                 if (dto.HasOrderShipmentPackage)
@@ -159,14 +160,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     foreach (var item in dto.OrderShipmentPackage)
                     {
                         item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.DatabaseNum;
+                        item.ProfileNum = pl.ProfileNum;
+                        item.DatabaseNum = pl.DatabaseNum;
 
                         if (item.OrderShipmentShippedItem == null) continue;
                         for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
                         {
                             var subItem = item.OrderShipmentShippedItem[i];
                             subItem.MasterAccountNum = pl.MasterAccountNum;
-                            subItem.ProfileNum = pl.DatabaseNum;
+                            subItem.ProfileNum = pl.ProfileNum;
+                            subItem.DatabaseNum = pl.DatabaseNum;
                         }
                     }
                 }

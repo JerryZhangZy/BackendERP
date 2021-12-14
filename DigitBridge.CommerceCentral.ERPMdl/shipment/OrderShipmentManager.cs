@@ -437,7 +437,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!string.IsNullOrEmpty(
                 await orderShipmentService.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(
                     salesOrderData.SalesOrderHeader.SalesOrderUuid,
-                    salesOrderData.SalesOrderHeader.OrderSourceCode
+                    salesOrderData.SalesOrderHeaderInfo.OrderDCAssignmentNum
                 )))
             {
                 this.Messages.AddError("Sales Order has been transferred to shipment.");
@@ -445,12 +445,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return true;
-        }
+        } 
 
         public async Task<string> CreateShipmentFromSalesOrderAsync(string salesOrderUuid)
         {
             if (string.IsNullOrEmpty(salesOrderUuid))
+            {
+                this.AddError("salesOrderUuid cannot be emtpy.");
                 return null;
+            }
 
             // load sales order data           
             if (!(await salesOrderService.ListAsync(salesOrderUuid)))
@@ -461,8 +464,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var salesOrderData = salesOrderService.Data;
             salesOrderService.DetachData(null);
 
-            if (!(await ValidateSalesOrderForShipmentAsync(salesOrderData)))
-                return null;
+            var shipmentUuid = await orderShipmentService.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(
+                    salesOrderData.SalesOrderHeader.SalesOrderUuid,
+                    salesOrderData.SalesOrderHeaderInfo.OrderDCAssignmentNum
+                );
+
+            if (!shipmentUuid.IsZero())
+            {
+                this.Messages.AddInfo($"Sales Order has been transferred to shipment");
+                return shipmentUuid;
+            }
 
             // Create Invoice from shipment and sales order
             return await CreateShipmentFromSalesOrderAsync(salesOrderData);

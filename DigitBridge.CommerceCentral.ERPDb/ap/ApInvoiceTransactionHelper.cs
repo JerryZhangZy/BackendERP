@@ -43,6 +43,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
         public static string TransUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.TransUuid) AS {name ?? "TransUuid".ToCamelCase(camelCase)} ";
         public static string TransNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransNum AS {name ?? "TransNum".ToCamelCase(camelCase)} ";
+        public static string PaymentUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PaymentUuid) AS {name ?? "PaymentUuid".ToCamelCase(camelCase)} ";
+        public static string PaymentNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PaymentNumber AS {name ?? "PaymentNumber".ToCamelCase(camelCase)} ";
         public static string ApInvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ApInvoiceUuid) AS {name ?? "ApInvoiceUuid".ToCamelCase(camelCase)} ";
         public static string ApInvoiceNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ApInvoiceNum) AS {name ?? "ApInvoiceNum".ToCamelCase(camelCase)} ";
         public static string TransType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransType AS {name ?? "TransType".ToCamelCase(camelCase)} ";
@@ -79,6 +81,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}ProfileNum AS ProfileNum,
 RTRIM({allies}TransUuid) AS TransUuid,
 {allies}TransNum AS TransNum,
+RTRIM({allies}PaymentUuid) AS PaymentUuid,
+{allies}PaymentNumber AS PaymentNumber,
 RTRIM({allies}ApInvoiceUuid) AS ApInvoiceUuid,
 RTRIM({allies}ApInvoiceNum) AS ApInvoiceNum,
 {allies}TransType AS TransType,

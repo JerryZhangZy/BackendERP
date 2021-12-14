@@ -396,7 +396,7 @@ WHERE itm.cnt > 0
             var orderShipmentUuid = shipmentData.OrderShipmentHeader.OrderShipmentUuid;
 
             var service = new SalesOrderService(DataBaseFactory);
-            var success = await service.UpdateShippedQtyFromShippedItemAsync(orderShipmentUuid);
+            var success = await service.UpdateShippedQtyAndOpenQtyFromShippedItemAsync(orderShipmentUuid);
             Assert.True(success, "UpdateShippedQtyFromShippedItemAsync error:" + service.Messages.ObjectToString());
 
             success = service.GetDataById(salesOrderData.SalesOrderHeader.SalesOrderUuid);

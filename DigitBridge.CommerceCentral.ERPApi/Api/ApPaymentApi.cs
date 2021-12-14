@@ -326,6 +326,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = srv.Messages;
             return new JsonNetResponse<ApNewPaymentPayload>(payload);
         }
+
+        [FunctionName(nameof(AddApInvoicePayments))]
+        #region open api definition
+        [OpenApiOperation(operationId: "AddApInvoicePayments", tags: new[] { "ApInvoice payments" }, Summary = "Add invoice payments of a customer ")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ApNewPaymentPayload), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApNewPaymentPayload))]
+        #endregion
+        public static async Task<JsonNetResponse<ApNewPaymentPayload>> AddApInvoicePayments(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "apInvoicePayments")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ApNewPaymentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new ApPaymentService(dataBaseFactory);
+            await srv.UpdateApInvoicePaymentAsync(payload);
+            payload.Messages = srv.Messages;
+
+            return new JsonNetResponse<ApNewPaymentPayload>(payload);
+        }
     }
 }
 

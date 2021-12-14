@@ -9,6 +9,9 @@
 	[TransUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice Transaction
     [TransNum] INT NOT NULL DEFAULT 1, --Transaction number
 
+    [PaymentUuid] VARCHAR(50) NOT NULL DEFAULT '', --Group Payment uuid. <br> Display: false, Editable: false.
+    [PaymentNumber] BIGINT NOT NULL DEFAULT 0, --Group Payment readable Number. <br> Display: false, Editable: false.
+
     [ApInvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for ApInvoice
 	[ApInvoiceNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
     [TransType] INT NULL DEFAULT 0, --Transaction type
