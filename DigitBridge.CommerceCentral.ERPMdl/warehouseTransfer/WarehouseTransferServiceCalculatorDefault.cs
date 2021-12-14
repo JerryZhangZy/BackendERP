@@ -39,119 +39,119 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual void PrepareData(WarehouseTransferData  data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data == null || data.WarehouseTransferHeader == null)
-                return;
+            //if (data == null || data.WarehouseTransferHeader == null)
+            //    return;
 
-            if (!string.IsNullOrEmpty(data.WarehouseTransferHeader.FromWarehouseUuid))
-            {
-                var warehouse = GetWarehouseData(data, data.WarehouseTransferHeader.FromWarehouseUuid);
-                if (warehouse != null)
-                {
-                    data.WarehouseTransferHeader.FromWarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
-                }
-            }
+            //if (!string.IsNullOrEmpty(data.WarehouseTransferHeader.FromWarehouseUuid))
+            //{
+            //    var warehouse = GetWarehouseData(data, data.WarehouseTransferHeader.FromWarehouseUuid);
+            //    if (warehouse != null)
+            //    {
+            //        data.WarehouseTransferHeader.FromWarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
+            //    }
+            //}
 
-            if (!string.IsNullOrEmpty(data.WarehouseTransferHeader.ToWarehouseUuid))
-            {
-                var warehouse = GetWarehouseData(data, data.WarehouseTransferHeader.ToWarehouseUuid);
-                if (warehouse != null)
-                {
-                    data.WarehouseTransferHeader.ToWarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
-                }
-            }
+            //if (!string.IsNullOrEmpty(data.WarehouseTransferHeader.ToWarehouseUuid))
+            //{
+            //    var warehouse = GetWarehouseData(data, data.WarehouseTransferHeader.ToWarehouseUuid);
+            //    if (warehouse != null)
+            //    {
+            //        data.WarehouseTransferHeader.ToWarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
+            //    }
+            //}
 
-            if (data.WarehouseTransferItems != null)
-            {
-                #region From
-                var inventoryUuidList = data.WarehouseTransferItems.Where(r => !r.FromInventoryUuid.IsZero()).Select(r => r.FromInventoryUuid)
-                    .Distinct().ToList();
-                var productUuidList = new List<(string, string)>();
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    productUuidList = InventoryServiceHelper.GetProductUuidsByInventoryUuids(inventoryUuidList, data.WarehouseTransferHeader.MasterAccountNum,
-                        data.WarehouseTransferHeader.ProfileNum);
-                }
-                foreach (var tuple in productUuidList)
-                {
-                    var inventory = GetInventory(data, tuple.Item2, tuple.Item1);
-                    if (inventory != null)
-                    {
-                        var items = data.WarehouseTransferItems.Where(i => i.FromInventoryUuid == inventory.InventoryUuid).ToList();
-                        items.ForEach(x =>
-                        {
-                            x.SKU = inventory.SKU;
-                            x.ProductUuid = inventory.ProductUuid;
-                            x.FromWarehouseCode = inventory.WarehouseCode;
-                            x.FromWarehouseUuid = inventory.WarehouseUuid;
-                            x.FromInventoryUuid = inventory.InventoryUuid;
-                        });
-                    }
-                }
+            //if (data.WarehouseTransferItems != null)
+            //{
+            //    #region From
+            //    var inventoryUuidList = data.WarehouseTransferItems.Where(r => !r.FromInventoryUuid.IsZero()).Select(r => r.FromInventoryUuid)
+            //        .Distinct().ToList();
+            //    var productUuidList = new List<(string, string)>();
+            //    using (var trx = new ScopedTransaction(dbFactory))
+            //    {
+            //        productUuidList = InventoryServiceHelper.GetProductUuidsByInventoryUuids(inventoryUuidList, data.WarehouseTransferHeader.MasterAccountNum,
+            //            data.WarehouseTransferHeader.ProfileNum);
+            //    }
+            //    foreach (var tuple in productUuidList)
+            //    {
+            //        var inventory = GetInventory(data, tuple.Item2, tuple.Item1);
+            //        if (inventory != null)
+            //        {
+            //            var items = data.WarehouseTransferItems.Where(i => i.FromInventoryUuid == inventory.InventoryUuid).ToList();
+            //            items.ForEach(x =>
+            //            {
+            //                x.SKU = inventory.SKU;
+            //                x.ProductUuid = inventory.ProductUuid;
+            //                x.FromWarehouseCode = inventory.WarehouseCode;
+            //                x.FromWarehouseUuid = inventory.WarehouseUuid;
+            //                x.FromInventoryUuid = inventory.InventoryUuid;
+            //            });
+            //        }
+            //    }
 
-                var tmpList = data.WarehouseTransferItems.Where(r => r.FromInventoryUuid.IsZero()).Select(r => new { r.SKU, WarehouseCode=r.FromWarehouseCode }).Distinct().ToList();
-                foreach (var tuple in tmpList)
-                {
-                    //only for update items and init InventoryUuid;
-                    var inventory = dbFactory.GetBy<Inventory>("where SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
-                    if (inventory != null)
-                    {
-                        var items = data.WarehouseTransferItems.Where(i => i.FromWarehouseCode == inventory.WarehouseCode && i.SKU == inventory.SKU).ToList();
-                        items.ForEach(x =>
-                        {
-                            x.SKU = inventory.SKU;
-                            x.ProductUuid = inventory.ProductUuid;
-                            x.FromWarehouseCode = inventory.WarehouseCode;
-                            x.FromWarehouseUuid = inventory.WarehouseUuid;
-                            x.FromInventoryUuid = inventory.InventoryUuid;
-                        });
-                    }
-                }
-                #endregion
+            //    var tmpList = data.WarehouseTransferItems.Where(r => r.FromInventoryUuid.IsZero()).Select(r => new { r.SKU, WarehouseCode=r.FromWarehouseCode }).Distinct().ToList();
+            //    foreach (var tuple in tmpList)
+            //    {
+            //        //only for update items and init InventoryUuid;
+            //        var inventory = dbFactory.GetBy<Inventory>("where SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
+            //        if (inventory != null)
+            //        {
+            //            var items = data.WarehouseTransferItems.Where(i => i.FromWarehouseCode == inventory.WarehouseCode && i.SKU == inventory.SKU).ToList();
+            //            items.ForEach(x =>
+            //            {
+            //                x.SKU = inventory.SKU;
+            //                x.ProductUuid = inventory.ProductUuid;
+            //                x.FromWarehouseCode = inventory.WarehouseCode;
+            //                x.FromWarehouseUuid = inventory.WarehouseUuid;
+            //                x.FromInventoryUuid = inventory.InventoryUuid;
+            //            });
+            //        }
+            //    }
+            //    #endregion
 
-                #region To
-                inventoryUuidList = data.WarehouseTransferItems.Where(r => !r.ToInventoryUuid.IsZero()).Select(r => r.FromInventoryUuid)
-                    .Distinct().ToList();
-                productUuidList = new List<(string, string)>();
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    productUuidList = InventoryServiceHelper.GetProductUuidsByInventoryUuids(inventoryUuidList, data.WarehouseTransferHeader.MasterAccountNum,
-                        data.WarehouseTransferHeader.ProfileNum);
-                }
-                foreach (var tuple in productUuidList)
-                {
-                    var inventory = GetInventory(data, tuple.Item2, tuple.Item1);
-                    if (inventory != null)
-                    {
-                        var items = data.WarehouseTransferItems.Where(i => i.ToInventoryUuid == inventory.InventoryUuid).ToList();
-                        items.ForEach(x =>
-                        {
-                            x.SKU = inventory.SKU;
-                            x.ToWarehouseCode = inventory.WarehouseCode;
-                            x.ToWarehouseUuid = inventory.WarehouseUuid;
-                            x.ToInventoryUuid = inventory.InventoryUuid;
-                        });
-                    }
-                }
+            //    #region To
+            //    inventoryUuidList = data.WarehouseTransferItems.Where(r => !r.ToInventoryUuid.IsZero()).Select(r => r.FromInventoryUuid)
+            //        .Distinct().ToList();
+            //    productUuidList = new List<(string, string)>();
+            //    using (var trx = new ScopedTransaction(dbFactory))
+            //    {
+            //        productUuidList = InventoryServiceHelper.GetProductUuidsByInventoryUuids(inventoryUuidList, data.WarehouseTransferHeader.MasterAccountNum,
+            //            data.WarehouseTransferHeader.ProfileNum);
+            //    }
+            //    foreach (var tuple in productUuidList)
+            //    {
+            //        var inventory = GetInventory(data, tuple.Item2, tuple.Item1);
+            //        if (inventory != null)
+            //        {
+            //            var items = data.WarehouseTransferItems.Where(i => i.ToInventoryUuid == inventory.InventoryUuid).ToList();
+            //            items.ForEach(x =>
+            //            {
+            //                x.SKU = inventory.SKU;
+            //                x.ToWarehouseCode = inventory.WarehouseCode;
+            //                x.ToWarehouseUuid = inventory.WarehouseUuid;
+            //                x.ToInventoryUuid = inventory.InventoryUuid;
+            //            });
+            //        }
+            //    }
 
-                tmpList = data.WarehouseTransferItems.Where(r => r.ToInventoryUuid.IsZero()).Select(r => new { r.SKU, WarehouseCode=r.ToWarehouseCode }).Distinct().ToList();
-                foreach (var tuple in tmpList)
-                {
-                    //only for update items and init InventoryUuid;
-                    var inventory = dbFactory.GetBy<Inventory>("where SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
-                    if (inventory != null)
-                    {
-                        var items = data.WarehouseTransferItems.Where(i => i.ToWarehouseCode == inventory.WarehouseCode && i.SKU == inventory.SKU).ToList();
-                        items.ForEach(x =>
-                        {
-                            x.SKU = inventory.SKU;
-                            x.ToWarehouseCode = inventory.WarehouseCode;
-                            x.ToWarehouseUuid = inventory.WarehouseUuid;
-                            x.ToInventoryUuid = inventory.InventoryUuid;
-                        });
-                    }
-                }
-                #endregion
-            }
+            //    tmpList = data.WarehouseTransferItems.Where(r => r.ToInventoryUuid.IsZero()).Select(r => new { r.SKU, WarehouseCode=r.ToWarehouseCode }).Distinct().ToList();
+            //    foreach (var tuple in tmpList)
+            //    {
+            //        //only for update items and init InventoryUuid;
+            //        var inventory = dbFactory.GetBy<Inventory>("where SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
+            //        if (inventory != null)
+            //        {
+            //            var items = data.WarehouseTransferItems.Where(i => i.ToWarehouseCode == inventory.WarehouseCode && i.SKU == inventory.SKU).ToList();
+            //            items.ForEach(x =>
+            //            {
+            //                x.SKU = inventory.SKU;
+            //                x.ToWarehouseCode = inventory.WarehouseCode;
+            //                x.ToWarehouseUuid = inventory.WarehouseUuid;
+            //                x.ToInventoryUuid = inventory.InventoryUuid;
+            //            });
+            //        }
+            //    }
+            //    #endregion
+            //}
         }
 
         #region Service Property
@@ -241,69 +241,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (item is null || item.IsEmpty)
                 return false;
-
-            data.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.New;
-           var setting = new ERPSetting();
-            var sum = data.WarehouseTransferHeader;
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass(); 
-            var prod = GetInventoryData(data, item.ProductUuid);
-            var inv = GetInventory(data, item.ProductUuid, item.FromInventoryUuid);
-            if (inv != null)
-            {
-                if (item.ItemDate.IsZero()) item.ItemDate = DateTime.UtcNow.Date;
-                if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;
-                item.LotNum = inv.LotNum;
-                if (item.Description.IsZero()) item.Description = inv.LotDescription;
-                if (item.Notes.IsZero()) item.Notes = inv.Notes;
-
-                item.UOM = inv.UOM;
-                item.PackType = inv.PackType;
-                item.PackQty = inv.PackQty;
-                item.UnitCost = inv.UnitCost;
-                item.AvgCost = inv.AvgCost;
-                //item.LotCost;
-                item.LotInDate = inv.LotInDate;
-                item.LotExpDate = inv.LotExpDate;
-                item.FromBeforeInstockQty = inv.Instock;
-            }
-
-            //创建中间仓库库存
-            _inventoryService.CreateInTransitToWarehouseInventory(data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum, item.SKU);
-
-
-            var inventory = _inventoryService.GetInventoryDataByWarehouseAsync(item.SKU, item.ToWarehouseCode, data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum, true).GetAwaiter().GetResult();
-            if (inventory == null)
-            {
-                AddError($"Sku {item.SKU} or warehouse {item.ToWarehouseCode} not found.");
-                return false;
-            }
-            item.ToBeforeInstockQty = inventory.Inventory.FirstOrDefault(r => r.WarehouseCode == item.ToWarehouseCode).Instock;
- 
-            //inv = GetInventory(data, item.ProductUuid, item.ToInventoryUuid);
-            //if (inv != null)
-            //{
-            //    item.ToBeforeInstockQty = inv.Instock;
-            //}
-
-            //InvoiceItemType
-            //InvoiceItemStatus
-            //ItemDate
-            //ItemTime
-            //ShipDate
-            //EtaArrivalDate
-
-            //SKU
-            //ProductUuid
-            //InventoryUuid
-            //WarehouseUuid
-            //LotNum
-            //Description
-            //Notes
-            //UOM
-            //Currency
+            if (string.IsNullOrEmpty(data.WarehouseTransferHeader.BatchNumber))
+                data.WarehouseTransferHeader.BatchNumber = System.Guid.NewGuid().ToString();
 
             return true;
         }

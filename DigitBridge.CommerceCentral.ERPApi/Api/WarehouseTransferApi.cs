@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<WarehouseTransferPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new WarehouseTransferService(dbFactory);
-            payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.New;
+            payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferStatus = (int)TransferStatus.InTransit;
             if (await svc.AddAsync(payload))
                 payload.WarehouseTransfer = svc.ToDto();
             else
@@ -104,7 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadAdd), Description = "WarehouseTransferDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadAdd))]
         public static async Task<JsonNetResponse<WarehouseTransferPayload>> AddAndCloseWarehouseTransfer(
-    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouseTransfers")] HttpRequest req)
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "addAndCloseWarehouseTransfer")] HttpRequest req)
         {
             var payload = await req.GetParameters<WarehouseTransferPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

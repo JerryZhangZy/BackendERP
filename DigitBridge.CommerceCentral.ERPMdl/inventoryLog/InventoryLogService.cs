@@ -1064,7 +1064,7 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
-        public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data, bool isAdd=true)
+        public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data)
         {
             if (data == null || data.WarehouseTransferHeader == null)
                 return false;
@@ -1083,7 +1083,29 @@ where inv.InventoryUuid=il.InventoryUuid
 
             await list.SetDataBaseFactory(dbFactory).SaveAsync();
 
-            UpdateInventoryInStock(logUuid, isAdd?1:0);
+            UpdateInventoryInStock(logUuid, 1);
+            return true;
+        }
+        public async Task<bool> UpdateByWarehouseTransferCloseAsync(WarehouseTransferData data)
+        {
+            if (data == null || data.WarehouseTransferHeader == null)
+                return false;
+            var header = data.WarehouseTransferHeader;
+            var logUuid = data.WarehouseTransferHeader.WarehouseTransferUuid;
+            await DeleteInventoryLogByLogUuidAsync(logUuid);
+            //if remove all items or delete inventoryupdate
+            if (data.WarehouseTransferItems == null || data.WarehouseTransferItems.Count == 0)
+            {
+                return true;
+            }
+            var detailItems = data.WarehouseTransferItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+
+            var list = ConvertWarehouseTransferItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+
+            await list.SetDataBaseFactory(dbFactory).SaveAsync();
+
+            UpdateInventoryInStock(logUuid, 1);
             return true;
         }
 
@@ -1095,7 +1117,7 @@ where inv.InventoryUuid=il.InventoryUuid
                 if (header.WarehouseTransferStatus== (int)TransferStatus.ArriveImmediately)
                     list.AddRange(GetTransferLogByArriveImmediately(header, item, batchNum, logUuid));
 
-               else if (header.WarehouseTransferStatus == (int)TransferStatus.New)
+               else if (header.WarehouseTransferStatus == (int)TransferStatus.InTransit)
                     list.AddRange(GetTransferDeliverLog(header, item, batchNum, logUuid));
                 else
                     list.AddRange(GetTransferReceivingLog(header, item, batchNum, logUuid));
@@ -1206,7 +1228,7 @@ where inv.InventoryUuid=il.InventoryUuid
                 MasterAccountNum = header.MasterAccountNum,
                 ProfileNum = header.ProfileNum,
                 InventoryLogUuid = Guid.NewGuid().ToString(),
-                InventoryUuid = inTransitWarehouse,
+                InventoryUuid = header.MasterAccountNum + "-" + header.ProfileNum + "-" + InTransitToWarehouse.InTransitToWarehouseCode,
                 ProductUuid = item.ProductUuid,
                 LogUuid = logUuid,
                 LogType = InventoyLogType.ToWarehouse.ToString(),
@@ -1240,7 +1262,7 @@ where inv.InventoryUuid=il.InventoryUuid
                 MasterAccountNum = header.MasterAccountNum,
                 ProfileNum = header.ProfileNum,
                 InventoryLogUuid = Guid.NewGuid().ToString(),
-                InventoryUuid = inTransitWarehouse,
+                InventoryUuid = header.MasterAccountNum + "-" + header.ProfileNum + "-" + InTransitToWarehouse.InTransitToWarehouseCode,
                 ProductUuid = item.ProductUuid,
                 LogUuid = logUuid,
                 BatchNum = batchNum,

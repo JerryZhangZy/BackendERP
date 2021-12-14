@@ -50,8 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.WarehouseTransferHeader != null)
                 {
-                    await InventoryLogService.UpdateByWarehouseTransferAsync(_data,false);
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                    
                 }
             }
             catch (Exception)
@@ -94,8 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.WarehouseTransferHeader != null)
                 {
-                    await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+                    
                 }
             }
             catch (Exception)
@@ -269,9 +267,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.WarehouseTransfer);
 
+       
+
             // validate data for Add processing
             if (!(await ValidateAsync()))
                 return false;
+
+            PrepareData(this.Data);
 
             return await SaveDataAsync();
         }
@@ -392,13 +394,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             Edit();
             if (!await this.GetByNumberAsync(masterAccountNum, profileNum, warehouseTransferUuid))
-            { 
-                   
-            }
+                return false;
 
-      
             this._data.WarehouseTransferHeader.WarehouseTransferStatus= (int)TransferStatus.Closed;
-            return await SaveDataAsync();
+            if (await base.SaveDataAsync())
+            {
+                await InventoryLogService.UpdateByWarehouseTransferCloseAsync(_data);
+                return true;
+            }
+            return false;
         }
  
 
@@ -550,6 +554,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 rowNum = await WarehouseTransferHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
             }
             var success = await GetDataAsync(rowNum);
+            if (!(await ValidateAsync()))
+                return false;
             if (success)
                 return await DeleteDataAsync();
             AddError("Data not found");
@@ -568,6 +574,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        private InventoryService _inventoryService;
+        protected InventoryService InventoryService => _inventoryService ??= new InventoryService(dbFactory);
+
         public override bool SaveData()
         {
             if(base.SaveData())
@@ -582,7 +591,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (await base.SaveDataAsync())
             {
-                //await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
+         
+                await InventoryLogService.UpdateByWarehouseTransferAsync(_data);
                 return true;
             }
             return false;
@@ -604,11 +614,83 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if(await base.DeleteDataAsync())
             {
                 _data.WarehouseTransferItems.Clear();
-                await InventoryLogService.UpdateByWarehouseTransferAsync(_data,false);
+                //await InventoryLogService.UpdateByWarehouseTransferAsync(_data,false);
                 return true;
             }
             return false;
         }
+
+        public virtual void PrepareData(WarehouseTransferData data)
+        {
+            if (data == null || data.WarehouseTransferHeader == null)
+                return;
+
+            foreach (var item in data.WarehouseTransferItems)
+            {
+                this.FillDataToWarehouseTransferItem(data, item);
+            }
+
+        }
+
+
+        private bool FillDataToWarehouseTransferItem(WarehouseTransferData data, WarehouseTransferItems item)
+        {
+
+            item.FromWarehouseUuid = data.WarehouseTransferHeader.FromWarehouseUuid;
+            item.FromWarehouseCode = data.WarehouseTransferHeader.FromWarehouseCode;
+            item.ToWarehouseUuid = data.WarehouseTransferHeader.ToWarehouseUuid;
+            item.ToWarehouseCode = data.WarehouseTransferHeader.ToWarehouseCode;
+
+            #region fill from inventory data
+
+            var inv = GetInventory(item.SKU, item.FromWarehouseCode, data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum);
+            if (inv == null) return false;
+            if (item.ItemDate.IsZero()) item.ItemDate = DateTime.UtcNow.Date;
+            if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;
+            item.LotNum = inv.LotNum;
+            if (item.Description.IsZero()) item.Description = inv.LotDescription;
+            if (item.Notes.IsZero()) item.Notes = inv.Notes;
+            item.FromWarehouseUuid = inv.WarehouseUuid;
+            item.FromInventoryUuid = inv.InventoryUuid;
+            item.UOM = inv.UOM;
+            item.PackType = inv.PackType;
+            item.PackQty = inv.PackQty;
+            item.UnitCost = inv.UnitCost;
+            item.AvgCost = inv.AvgCost;
+            item.LotInDate = inv.LotInDate;
+            item.LotExpDate = inv.LotExpDate;
+            item.FromBeforeInstockQty = inv.Instock;
+            item.ProductUuid = inv.ProductUuid;
+            #endregion
+
+            #region fill to inventory data
+
+            var inventory = GetInventory(item.SKU, item.ToWarehouseCode, data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum);
+            if (inventory == null)
+                return false;
+            item.ToWarehouseUuid = inventory.WarehouseUuid;
+            item.ToInventoryUuid = inventory.InventoryUuid;
+            item.ToBeforeInstockQty = inventory.Instock;
+
+            #endregion
+
+            #region create InTransit Warehouse Inventory
+            InventoryService.CreateInTransitWarehouseInventory(data.WarehouseTransferHeader.MasterAccountNum, data.WarehouseTransferHeader.ProfileNum, item.SKU, inv.ProductUuid);
+            #endregion
+            return true;
+        }
+        private Inventory GetInventory(string sku, string warehouseCode, int masterAccountNum,int profileNum)
+        {
+            var inventory = InventoryService.GetInventoryDataByWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum, true).GetAwaiter().GetResult();
+            if (inventory == null)
+            {
+                AddError($"Sku {sku} or warehouse {warehouseCode} not found.");
+                return null;
+            }
+            return inventory.Inventory.FirstOrDefault(r => r.WarehouseCode == warehouseCode);
+        }
+
+      
     }
 }
 
