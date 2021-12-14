@@ -251,7 +251,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Count = p.OrderDCAssignmentLine.Count()
             }).ToList();
             var dcAssDataNoLines = dcAssData.Where(p => p.Count == 0).ToList();
-            if(dcAssDataNoLines.Count > 0)
+            if (dcAssDataNoLines.Count > 0)
             {
                 AddError($"No DCAssigmentLine for DCAssingmentUuid {string.Join(",", dcAssDataNoLines.Select(p => p.Uuid))}.");
                 return (false, null);
@@ -264,7 +264,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (soUuid != null)
                     salesOrderUuids.Add(soUuid);
             }
-            bool ret = salesOrderUuids.Count > 0;
+            bool ret = salesOrderUuids.Count == dcAssigmentDataList.Count;
             return (ret, salesOrderUuids);
         }
 
@@ -323,10 +323,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<string> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
             long orderDCAssignmentNum = dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum;
-            var uuid = await GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
-            if (uuid != null)
+            var salesOrderUuid = await GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
+            if (!salesOrderUuid.IsZero())
             {
-                return uuid;
+                return salesOrderUuid;
             }
 
             SalesOrderTransferFromChannelOrder soTransfer = new SalesOrderTransferFromChannelOrder(this, "");
@@ -340,25 +340,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // create SalesOrderData from DCAssignmentData and ChannelOrderData
             var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData, soSrv);
 
+            if (soData == null)
+            {
+                return null;
+            }
             // load customer
-            await CheckCustomerAsync(soSrv);
+            if (!await CheckCustomerAsync(soData)) return null;
 
             // check sku and warehouse exist, otherwise add new SKU and Warehouse
-            await CheckInventoryAsync(soSrv);
+            if (!await CheckInventoryAsync(soData)) return null;
 
-            soSrv.Data.CheckIntegrity();
+            soData.CheckIntegrity();
 
             if (await soSrv.SaveDataAsync())
                 return soSrv.Data.SalesOrderHeader.SalesOrderUuid;
             return null;
         }
 
-        protected async Task<bool> CheckCustomerAsync(SalesOrderService service)
+        protected async Task<bool> CheckCustomerAsync(SalesOrderData data)
         {
-            if (service == null || service.Data == null)
-                return false;
-
-            var data = service.Data;
             if (!string.IsNullOrEmpty(data.SalesOrderHeader.CustomerCode))
                 return true;
 
@@ -438,12 +438,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        protected async Task<bool> CheckInventoryAsync(SalesOrderService service)
+        protected async Task<bool> CheckInventoryAsync(SalesOrderData data)
         {
-            if (service == null || service.Data == null || service.Data.SalesOrderItems == null || service.Data.SalesOrderItems.Count == 0)
+            if (data == null || data.SalesOrderItems == null || data.SalesOrderItems.Count == 0)
                 return false;
 
-            var data = service.Data;
             var header = data.SalesOrderHeader;
             var masterAccountNum = data.SalesOrderHeader.MasterAccountNum;
             var profileNum = data.SalesOrderHeader.ProfileNum;
@@ -475,7 +474,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
-                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
+            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
 
 

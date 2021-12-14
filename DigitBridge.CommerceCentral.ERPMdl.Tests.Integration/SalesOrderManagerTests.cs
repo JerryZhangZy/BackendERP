@@ -31,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             InitForTest();
 
-            CreateSalesOrder_Test();
+            //CreateSalesOrder_Test();
         }
         protected void InitForTest()
         {
@@ -55,14 +55,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public void CreateSalesOrder_Test()
         {
             // get latest centralorder uuid
-  //select top 10 CentralOrderUuid from[OrderDCAssignmentHeader]
-  //where OrderDCAssignmentNum in 
-  //(
-  //select  top 100  SUBSTRING(OrderSourceCode, 22, 4)  from SalesOrderHeader
-  //  where MasterAccountNum = 10002 and ProfileNum = 10003 and TotalAmount = 0
-  //order by RowNum desc
-  //)
-  //order by OrderDCAssignmentNum desc
+            //select top 10 CentralOrderUuid from[OrderDCAssignmentHeader]
+            //where OrderDCAssignmentNum in 
+            //(
+            //select  top 100  SUBSTRING(OrderSourceCode, 22, 4)  from SalesOrderHeader
+            //  where MasterAccountNum = 10002 and ProfileNum = 10003 and TotalAmount = 0
+            //order by RowNum desc
+            //)
+            //order by OrderDCAssignmentNum desc
 
             var uuids = new List<string> {
                 "040898d5-441d-4b4a-aef4-10c5e3fdf812"
@@ -116,7 +116,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var uuids = new List<string> {
                 "4d629cd3-9fdb-463d-b5bc-30d3e93127e7"
             };
-            
+
             SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
             bool result = true;
             List<string> salesOrderNums = new List<string>();
@@ -141,7 +141,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         }
 
-
+        [Fact]
+        public async Task CreateSalesOrderByChannelOrderIdAsync_Simple_Test()
+        {
+            var salesOrderUuid = "f9bfe447-f992-4db1-8d85-f7b001ba66a2";
+            SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
+            (var result, var salesOrderNums) = await soManager.CreateSalesOrderByChannelOrderIdAsync(salesOrderUuid);
+            Assert.True(result, soManager.Messages.ObjectToString());
+        }
         #endregion async methods
 
     }

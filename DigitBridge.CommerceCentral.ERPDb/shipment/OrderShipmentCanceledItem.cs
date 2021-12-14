@@ -14,6 +14,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class OrderShipmentCanceledItem
     {
+       
+        public override IList<string> IgnoreUpdateColumns() => new List<string>()
+            {
+                "MasterAccountNum",
+                "ProfileNum",
+                "DatabaseNum",
+                "OrderShipmentUuid",
+                "OrderShipmentNum",
+                "OrderShipmentCanceledItemNum",
+                "OrderShipmentCanceledItemUuid",
+            };
     }
 }
 
