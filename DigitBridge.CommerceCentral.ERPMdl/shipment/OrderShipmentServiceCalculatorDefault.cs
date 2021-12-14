@@ -314,6 +314,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (isAddMode || (isEditMode && detailItem.RowNum.IsZero()))
                         detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
                 }
+
             }
         }
         #endregion
