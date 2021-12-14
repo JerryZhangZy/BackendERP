@@ -42,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    await ApInvoiceService.UpdateInvoiceBalanceAsync(this.Data.ApInvoiceTransaction.TransUuid, true);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
                 }
             }
@@ -63,6 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 base.BeforeSave();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    ApInvoiceService.UpdateInvoiceBalance(this.Data.ApInvoiceTransaction.TransUuid, true);
                     //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid, true);
                 }
             }
@@ -85,6 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    await ApInvoiceService.UpdateInvoiceBalanceAsync(this.Data.ApInvoiceTransaction.TransUuid);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
@@ -107,6 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 base.AfterSave();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    ApInvoiceService.UpdateInvoiceBalance(this.Data.ApInvoiceTransaction.TransUuid);
                     //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
