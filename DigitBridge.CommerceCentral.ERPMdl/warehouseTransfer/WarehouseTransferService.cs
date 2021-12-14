@@ -620,7 +620,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return false;
         }
 
-        public virtual void PrepareData(WarehouseTransferData data)
+        public  void PrepareData(WarehouseTransferData data)
         {
             if (data == null || data.WarehouseTransferHeader == null)
                 return;
