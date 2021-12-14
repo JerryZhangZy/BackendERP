@@ -488,31 +488,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 isValid = false;
                 AddError($"Data not found");
             }
-            if (processingMode == ProcessingMode.Add)
-            {
-                //for Add mode, always reset uuid
-                dto.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
-                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
-                        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                        {
-                            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                            {
-                                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                            }
-                        }
-                    }
-                }
-                if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
-                }
-            }
-            else if (processingMode == ProcessingMode.Edit)
+            if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.OrderShipmentHeader.RowNum.IsZero())
                 {
@@ -566,39 +542,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 isValid = false;
                 AddError($"Data not found");
-            }
-            if (processingMode == ProcessingMode.Add)
-            {
-                //for Add mode, always reset uuid
-                //dto.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
-                //if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                //{
-                //    foreach (var detailItem in dto.OrderShipmentPackage)
-                //    {
-                //        detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
-                //        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-
-                //        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                //        {
-                //            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                //            {
-                //                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                //                subItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-                //                subItem.OrderShipmentPackageUuid = detailItem.OrderShipmentPackageUuid;
-                //            }
-                //        }
-                //    }
-                //}
-                //if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                //{
-                //    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                //    {
-                //        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
-                //        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-                //    }
-                //}
-            }
-            else if (processingMode == ProcessingMode.Edit)
+            } 
+            if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.OrderShipmentHeader.RowNum.IsZero())
                 {

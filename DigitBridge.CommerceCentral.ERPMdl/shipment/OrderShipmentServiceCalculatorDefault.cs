@@ -98,6 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool SetDefault(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            ResetUuidForAdding(data, processingMode);
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
@@ -278,6 +279,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion message
 
+        #region Reset uuid
+        protected virtual void ResetUuidForAdding(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            if (processingMode != ProcessingMode.Add) return;
+
+            //for Add mode, always reset uuid
+            data.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            {
+                foreach (var packageItem in data.OrderShipmentPackage)
+                {
+                    packageItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+                    if (packageItem.OrderShipmentShippedItem != null && packageItem.OrderShipmentShippedItem.Count > 0)
+                    {
+                        foreach (var subItem in packageItem.OrderShipmentShippedItem)
+                        {
+                            subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
+                            //subItem.OrderShipmentPackageUuid = packageItem.OrderShipmentPackageUuid;
+                        }
+                    }
+                }
+            }
+            if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0)
+            {
+                foreach (var detailItem in data.OrderShipmentCanceledItem)
+                    detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
+            }
+        }
+        #endregion
     }
 
 }
