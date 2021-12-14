@@ -374,15 +374,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("eventUuid cann't be emtpy.");
                 return false;
             }
-            List();
+            Edit();
 
             if (!await GetDataByIdAsync(eventUuid))
                 return false;
+
             if (!await InQueueAsync())
             {
                 AddError("Send event to queue failed.");
                 return false;
             }
+
+            this.Data.Event_ERP.ActionStatus = (int)ErpEventActionStatus.Pending;
+            this.Data.Event_ERP.ActionDateUtc = DateTime.UtcNow;
+            await SaveDataAsync();
             return true;
         }
 

@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override void InitQueryFilter()
         {
-            _ActionDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _ActionDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-7);
             _ActionDateTo.FilterValue = DateTime.UtcNow.Date;
         }
     }

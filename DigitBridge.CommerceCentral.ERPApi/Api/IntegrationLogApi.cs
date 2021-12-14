@@ -28,6 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load erpevent list
         /// </summary>
         [FunctionName(nameof(CentralOrderTransferLog))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "CentralOrderTransferLog", tags: new[] { "IntegrationLog" },
             Summary = "Load Central Order Transfer to Sales Order Log")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -41,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> CentralOrderTransferLog(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/CentralOrderTransfer/find")]
             HttpRequest req)
@@ -56,6 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load activityLog list
         /// </summary>
         [FunctionName(nameof(ActivityLogList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "ActivityLogList", tags: new[] { "IntegrationLog" },
             Summary = "Load Central Order Transfer to Sales Order Log")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -69,6 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(ActivityLogPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<ActivityLogPayload>> ActivityLogList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/ActivityLog/find")]
             HttpRequest req)
@@ -84,6 +88,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load EventProcessERP list
         /// </summary>
         [FunctionName(nameof(EventProcessERPList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "EventProcessERPList", tags: new[] { "IntegrationLog" },
             Summary = "Load Central Order Transfer to Sales Order Log")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -97,6 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventProcessERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventProcessERPPayload>> EventProcessERPList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/EventProcessERP/find")]
             HttpRequest req)
@@ -111,6 +117,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load InvoiceToCommerceCentral EventProcessERP list
         /// </summary>
         [FunctionName(nameof(InvoiceToCommerceCentralList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "InvoiceToCommerceCentralList", tags: new[] { "IntegrationLog" },
             Summary = "Load Central Order Transfer to Sales Order Log")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -124,6 +131,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventProcessERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventProcessERPPayload>> InvoiceToCommerceCentralList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/InvoiceToCommerceCentral/find")]
             HttpRequest req)
@@ -139,6 +147,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load SalesOrderToWMS EventProcessERP list
         /// </summary>
         [FunctionName(nameof(SalesOrderToWMSList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "SalesOrderToWMSList", tags: new[] { "IntegrationLog" },
             Summary = "Load Central Order Transfer to Sales Order Log")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -152,6 +161,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventProcessERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventProcessERPPayload>> SalesOrderToWMSList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/SalesOrderToWMS/find")]
             HttpRequest req)
@@ -167,6 +177,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load PoToWMS EventProcessERP list
         /// </summary>
         [FunctionName(nameof(PoToWMSList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "PoToWMSList", tags: new[] { "IntegrationLog" },
             Summary = "Load Central Order Transfer to Sales Order Log")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -180,6 +191,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventProcessERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventProcessERPPayload>> PoToWMSList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/PoToWMS/find")]
             HttpRequest req)
@@ -194,6 +206,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
 
         [FunctionName(nameof(ReSendEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "IntegrationLog" }, Summary = "Re send event by eventuuids")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -202,6 +215,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadResendRequest), Required = true, Description = "Array of eventUuid.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadResendResponse))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "IntegrationLog/reSendEvent")]
             HttpRequest req)
@@ -214,6 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(ReSendAllEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "ReSendAllEvent", tags: new[] { "IntegrationLog" }, Summary = "Re send all event by search criteria")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -223,6 +238,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadResendAllResponse))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> ReSendAllEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "IntegrationLog/reSendAllEvent")]
             HttpRequest req)
