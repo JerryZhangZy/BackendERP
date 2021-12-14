@@ -243,6 +243,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (string.IsNullOrEmpty(data.WarehouseTransferHeader.BatchNumber))
                 data.WarehouseTransferHeader.BatchNumber = System.Guid.NewGuid().ToString();
+            if (data.WarehouseTransferHeader.WarehouseTransferStatus == (int)TransferStatus.InTransit)
+                data.WarehouseTransferHeader.InTransitToWarehouseCode = InTransitToWarehouse.InTransitToWarehouseCode;
+
 
             return true;
         }
