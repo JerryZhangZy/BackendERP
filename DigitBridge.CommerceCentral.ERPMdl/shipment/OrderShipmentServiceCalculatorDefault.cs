@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool SetDefault(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            ResetUuidForAdding(data, processingMode);
+            ResetUuidForAddingMode(data, processingMode);
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
@@ -280,7 +280,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion message
 
         #region Reset uuid
-        protected virtual void ResetUuidForAdding(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual void ResetUuidForAddingMode(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (processingMode != ProcessingMode.Add) return;
 
