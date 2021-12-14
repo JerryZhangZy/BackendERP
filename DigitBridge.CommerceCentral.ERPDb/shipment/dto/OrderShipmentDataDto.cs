@@ -38,10 +38,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentPackage => OrderShipmentPackage != null;
 
+        private IList<OrderShipmentShippedItemDto> orderShipmentShippedItem { get; set; }
         /// <summary>
         /// Get shipped items of all package 
         /// </summary>
-        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem { get; set; }
+        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem
+        {
+            get
+            {
+                if (orderShipmentShippedItem == null && HasOrderShipmentPackage)
+                {
+                    orderShipmentShippedItem = OrderShipmentPackage.Where(i => i.OrderShipmentShippedItem != null).SelectMany(i => i.OrderShipmentShippedItem).ToList();
+                }
+                return orderShipmentShippedItem;
+            }
+            set
+            {
+                orderShipmentShippedItem = value;
+            }
+        }
 
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentShippedItem => OrderShipmentShippedItem != null && OrderShipmentShippedItem.Count() > 0;
