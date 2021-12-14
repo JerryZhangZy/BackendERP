@@ -96,7 +96,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             $"{PREFIX}.InvoiceStatus IN (0,1,100)", 
             PREFIX, false);
         public QueryFilterRawSql OutstandingInvoiceOnly => _OutstandingInvoiceOnly;
-       
+
+        protected QueryFilter<string> _SalesRep = new QueryFilter<string>("SalesRep", "SalesRep", new List<string>() { "SalesRep2", "SalesRep3", "SalesRep4" }, PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> SalesRep => _SalesRep;
 
         public InvoiceQuery() : base(PREFIX)
         {
@@ -127,6 +129,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipToState);
             AddFilter(_ShipToPostalCode);
             AddFilter(_OutstandingInvoiceOnly);
+
+            AddFilter(_SalesRep);
         }
         public override void InitQueryFilter()
         {
