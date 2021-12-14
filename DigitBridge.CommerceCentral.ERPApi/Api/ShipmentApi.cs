@@ -323,34 +323,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 
-
-        ///// <summary>
-        ///// Create shipment by sales order uuid
-        ///// </summary>
-        ///// <param name="req"></param>
-        ///// <returns></returns>
-        //[FunctionName(nameof(CreateShipmentBySalesOrderUuid))]
-        //#region swagger Doc
-        //[OpenApiOperation(operationId: "CreateShipmentBySalesOrderUuid", tags: new[] { "Shipments" }, Summary = "Create shipmet by sales order uuid")]
-        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentFromSalesOrderReqest), Description = "Request Body in json format")]
-        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentFromSalesOrderResponse))]
-        //#endregion swagger Doc
-        //public static async Task<JsonNetResponse<OrderShipmentPayload>> CreateShipmentBySalesOrderUuid(
-        //    [HttpTrigger(AuthorizationLevel.Function, "POST"
-        //    , Route = "shipments/createShipmentBySalesOrderUuid")] HttpRequest req)
-        //{
-        //    var payload = await req.GetParameters<OrderShipmentPayload>(true);
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var svc = new OrderShipmentManager(dbFactory);
-        //    payload.OrderShipmetUuid = await svc.CreateShipmentFromSalesOrderAsync(payload.SalesOrderUuid);
-        //    payload.Success = payload.HasOrderShipmetUuid;
-        //    payload.Messages = svc.Messages;
-        //    return new JsonNetResponse<OrderShipmentPayload>(payload);
-        //}
-
         /// <summary>
         /// Get new shipment data by sales order uuid
         /// </summary>
