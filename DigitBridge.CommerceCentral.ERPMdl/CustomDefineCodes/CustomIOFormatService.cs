@@ -297,6 +297,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> GetAsync(CustomIOFormatPayload payload, string formatType, int formatNumber)
         {
+            List();
             var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND FormatType=@2 AND FormatNumber=@3"
                 ,
                 payload.MasterAccountNum.ToSqlParameter("0"),
