@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                             dto = new CustomIOFormatDataDto();
                             isFirst = false;
                         }
-                        dto. CustomIOFormat = csv.GetRecord<CustomIOFormatDto>();
+                        dto. CustomFormat = csv.GetRecord<CustomIOFormatDto>();
                         break;
                     //case "L":
                     //    if (dto.Inventory == null)

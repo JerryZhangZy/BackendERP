@@ -13,7 +13,17 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class OrderShipmentShippedItem
-    { 
+    {
+        public override IList<string> IgnoreUpdateColumns() => new List<string>()
+            {
+                "MasterAccountNum",
+                "ProfileNum",
+                "DatabaseNum",
+                "OrderShipmentUuid",
+                "ordershipmentnum",
+                "ordershipmentpackageuuid",
+                "ordershipmentpackagenum"
+            };
     }
 }
 

@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> UpdateByInventoryUpdateAsync(InventoryUpdateData data);
 
         //TODO Create or update InventoryLog records for Warehouse transfer
-        Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data, bool isAdd = true);
+        Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data);
 
     }
 }

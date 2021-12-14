@@ -194,7 +194,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var mapper = new CustomIOFormatDataDtoMapperDefault();
             var data = new CustomIOFormatData();
             mapper.ReadDto(data, payload.CustomIOFormat);
-            payload.CustomIOFormat.CustomIOFormat.FormatObject = data.CustomIOFormat.FormatObject;
+            payload.CustomIOFormat.CustomFormat.FormatObject = data.CustomIOFormat.FormatObject;
 
             // set Add mode and clear data
             Add();
@@ -229,7 +229,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data 
-            await GetDataAsync(dto.CustomIOFormat.RowNum.ToLong());
+            await GetDataAsync(dto.CustomFormat.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -253,7 +253,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var mapper = new CustomIOFormatDataDtoMapperDefault();
             var data = new CustomIOFormatData();
             mapper.ReadDto(data, payload.CustomIOFormat);
-            payload.CustomIOFormat.CustomIOFormat.FormatObject = data.CustomIOFormat.FormatObject;
+            payload.CustomIOFormat.CustomFormat.FormatObject = data.CustomIOFormat.FormatObject;
 
             Edit();
 
@@ -265,7 +265,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data 
-            await GetDataAsync(payload.CustomIOFormat.CustomIOFormat.RowNum.ToLong());
+            await GetDataAsync(payload.CustomIOFormat.CustomFormat.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.CustomIOFormat);
