@@ -49,12 +49,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 data.SetOrderShipmentCanceledItemDeleted(deleted);
             }
 
-            if (dto.OrderShipmentShippedItem != null)
+            if (dto.OrderShipmentShippedItem != null && dto.OrderShipmentPackage != null)
             {
-                if (dto.OrderShipmentPackage == null)
-                {
-                    dto.OrderShipmentPackage = new List<OrderShipmentPackageDto>();
-                }
                 ReadOrderShipmentShippedItemToPackage(dto.OrderShipmentPackage, dto.OrderShipmentShippedItem);
             }
 
@@ -77,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         protected void ReadOrderShipmentShippedItemToPackage(IList<OrderShipmentPackageDto> allPackages, IList<OrderShipmentShippedItemDto> allShippedItems)
         {
             // no package to split shippeditems.
-            if (allPackages == null)
+            if (allPackages == null || allShippedItems == null)
                 return;
 
             foreach (var package in allPackages)

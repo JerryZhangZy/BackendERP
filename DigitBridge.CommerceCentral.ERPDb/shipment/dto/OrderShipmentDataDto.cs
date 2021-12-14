@@ -38,23 +38,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentPackage => OrderShipmentPackage != null;
 
-        private IList<OrderShipmentShippedItemDto> _orderShipmentShippedItem;
         /// <summary>
         /// Get shipped items of all package 
         /// </summary>
-        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem
-        {
-            get
-            {
-                if (_orderShipmentShippedItem == null && OrderShipmentPackage != null)
-                    _orderShipmentShippedItem = OrderShipmentPackage.Where(j => j.OrderShipmentShippedItem != null).SelectMany(i => i.OrderShipmentShippedItem).ToList();
-                return _orderShipmentShippedItem;
-            }
-            set
-            {
-                _orderShipmentShippedItem = value;
-            }
-        }
+        public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem { get; set; }
+
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentShippedItem => OrderShipmentShippedItem != null && OrderShipmentShippedItem.Count() > 0;
 
@@ -73,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 this.OrderShipmentHeader.ProfileNum = profileNum;
                 this.OrderShipmentHeader.DatabaseNum = databaseNum;
             }
-            
+
             if (this.HasOrderShipmentCanceledItem)
             {
                 foreach (var item in this.OrderShipmentCanceledItem)
@@ -99,6 +87,48 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     item.MasterAccountNum = masterAccountNum;
                     item.ProfileNum = profileNum;
                     item.DatabaseNum = databaseNum;
+                }
+            }
+        }
+
+        /// <summary>
+        /// clear all acount info 
+        /// </summary>
+        public void ClearAccount()
+
+        {
+            if (this.HasOrderShipmentHeader)
+            {
+                this.OrderShipmentHeader.MasterAccountNum = null;
+                this.OrderShipmentHeader.ProfileNum = null;
+                this.OrderShipmentHeader.DatabaseNum = null;
+            }
+
+            if (this.HasOrderShipmentCanceledItem)
+            {
+                foreach (var item in this.OrderShipmentCanceledItem)
+                {
+                    item.MasterAccountNum = null;
+                    item.ProfileNum = null;
+                    item.DatabaseNum = null;
+                }
+            }
+            if (this.HasOrderShipmentPackage)
+            {
+                foreach (var item in this.OrderShipmentPackage)
+                {
+                    item.MasterAccountNum = null;
+                    item.ProfileNum = null;
+                    item.DatabaseNum = null;
+                }
+            }
+            if (this.HasOrderShipmentShippedItem)
+            {
+                foreach (var item in this.OrderShipmentShippedItem)
+                {
+                    item.MasterAccountNum = null;
+                    item.ProfileNum = null;
+                    item.DatabaseNum = null;
                 }
             }
         }

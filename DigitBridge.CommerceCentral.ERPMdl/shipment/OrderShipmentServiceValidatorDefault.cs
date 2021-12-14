@@ -570,33 +570,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
-                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
-                        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
+                //dto.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
+                //if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
+                //{
+                //    foreach (var detailItem in dto.OrderShipmentPackage)
+                //    {
+                //        detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+                //        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
 
-                        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                        {
-                            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                            {
-                                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                                subItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-                                subItem.OrderShipmentPackageUuid = detailItem.OrderShipmentPackageUuid;
-                            }
-                        }
-                    }
-                }
-                if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                    {
-                        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
-                        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-                    }
-                }
+                //        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
+                //        {
+                //            foreach (var subItem in detailItem.OrderShipmentShippedItem)
+                //            {
+                //                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
+                //                subItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
+                //                subItem.OrderShipmentPackageUuid = detailItem.OrderShipmentPackageUuid;
+                //            }
+                //        }
+                //    }
+                //}
+                //if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
+                //{
+                //    foreach (var detailItem in dto.OrderShipmentCanceledItem)
+                //    {
+                //        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
+                //        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
+                //    }
+                //}
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -605,35 +605,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     isValid = false;
                     AddError("OrderShipmentHeader.RowNum is required.");
                 }
-                // This property should not be changed.
-                dto.OrderShipmentHeader.MasterAccountNum = null;
-                dto.OrderShipmentHeader.ProfileNum = null;
-                dto.OrderShipmentHeader.DatabaseNum = null;
-                dto.OrderShipmentHeader.OrderShipmentUuid = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
-                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        detailItem.OrderShipmentPackageUuid = null;
-                        detailItem.OrderShipmentNum = null;
-                        detailItem.OrderShipmentUuid = null;
-                        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                        {
-                            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                            {
-                                subItem.OrderShipmentShippedItemUuid = null;
-                                //subItem.OrderShipmentNum = null;
-                            }
-                        }
-                    }
-                }
-                if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                        detailItem.OrderShipmentCanceledItemUuid = null;
-                }
+                //TODO move to ignore column.
+                //// This property should not be changed.
+                //dto.OrderShipmentHeader.MasterAccountNum = null;
+                //dto.OrderShipmentHeader.ProfileNum = null;
+                //dto.OrderShipmentHeader.DatabaseNum = null;
+                //dto.OrderShipmentHeader.OrderShipmentUuid = null;
+                //// TODO 
+                ////dto.SalesOrderHeader.OrderNumber = null;
+                //if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
+                //{
+                //    foreach (var detailItem in dto.OrderShipmentPackage)
+                //    {
+                //        detailItem.OrderShipmentPackageUuid = null;
+                //        detailItem.OrderShipmentNum = null;
+                //        detailItem.OrderShipmentUuid = null;
+                //        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
+                //        {
+                //            foreach (var subItem in detailItem.OrderShipmentShippedItem)
+                //            {
+                //                subItem.OrderShipmentShippedItemUuid = null;
+                //                //subItem.OrderShipmentNum = null;
+                //            }
+                //        }
+                //    }
+                //}
+                //if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
+                //{
+                //    foreach (var detailItem in dto.OrderShipmentCanceledItem)
+                //        detailItem.OrderShipmentCanceledItemUuid = null;
+                //}
             }
             IsValid = isValid;
             return isValid;
