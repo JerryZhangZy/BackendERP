@@ -303,6 +303,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasOrderShipment)
                 return false;
 
+            payload.OrderShipment.SetAccount(payload.MasterAccountNum, payload.ProfileNum, payload.DatabaseNum);
+
             // set Add mode and clear data
             Add();
 
@@ -329,6 +331,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
+
+            //Read account info from payload to dto.
+            payload.OrderShipment.SetAccount(payload.MasterAccountNum, payload.ProfileNum, payload.DatabaseNum);
 
             if (!(await ValidateAccountAsync(payload)))
                 return false;
@@ -537,7 +542,8 @@ WHERE OrderShipmentUuid=@4
         {
             var sql = $@"
 UPDATE spk 
-SET spk.OrderShipmentNum=shd.OrderShipmentNum 
+SET spk.OrderShipmentNum=shd.OrderShipmentNum
+,spk.RowNum=spk.OrderShipmentPackageNum
 FROM OrderShipmentPackage spk 
 INNER JOIN OrderShipmentHeader shd ON (spk.OrderShipmentUuid = shd.OrderShipmentUuid)
 WHERE spk.OrderShipmentUuid=@0 
@@ -548,8 +554,9 @@ WHERE spk.OrderShipmentUuid=@0
 
             var sql1 = $@"
 UPDATE spi
-SET spi.OrderShipmentNum=spk.OrderShipmentNum,
-spi.OrderShipmentPackageNum=spk.OrderShipmentPackageNum
+SET spi.OrderShipmentNum=spk.OrderShipmentNum
+,spi.OrderShipmentPackageNum=spk.OrderShipmentPackageNum
+,spi.RowNum=spi.OrderShipmentShippedItemNum
 FROM OrderShipmentShippedItem spi 
 INNER JOIN OrderShipmentPackage spk ON (spk.OrderShipmentPackageUuid = spi.OrderShipmentPackageUuid)
 WHERE spi.OrderShipmentUuid=@0 
@@ -561,7 +568,8 @@ WHERE spi.OrderShipmentUuid=@0
 
             var sql2 = $@"
 UPDATE spc 
-SET spc.OrderShipmentNum=shd.OrderShipmentNum 
+SET spc.OrderShipmentNum=shd.OrderShipmentNum
+,spc.RowNum=spc.OrderShipmentCanceledItemNum
 FROM OrderShipmentCanceledItem spc
 INNER JOIN OrderShipmentHeader shd ON (spc.OrderShipmentUuid = shd.OrderShipmentUuid)
 WHERE spc.OrderShipmentUuid=@0 

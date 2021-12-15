@@ -25,6 +25,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
     public static class EventApi
     {
         [FunctionName(nameof(AddQuickBooksInvoiceEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddQuickBooksInvoiceEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -34,6 +35,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             bodyType: typeof(EventERPPayloadAdd))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksInvoiceEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoice")]
             HttpRequest req)
@@ -51,6 +53,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddQuickBooksInvoiceVoidEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddQuickBooksInvoiceVoidEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -60,6 +63,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksInvoiceVoidEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoiceVoid")]
             HttpRequest req)
@@ -77,6 +81,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddQuickBooksReturnEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddQuickBooksReturnEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -86,6 +91,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksReturnEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturn")]
             HttpRequest req)
@@ -103,6 +109,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddQuickBooksReturnDeleteEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddQuickBooksReturnDeleteEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -112,6 +119,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksReturnDeleteEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturnDelete")]
             HttpRequest req)
@@ -129,6 +137,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddQuickBooksPaymentEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddQuickBooksPaymentEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -140,6 +149,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksPaymentEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPayment")]
             HttpRequest req)
@@ -157,6 +167,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddCreateSalesOrderByCentralOrderEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddCreateSalesOrderByCentralOrderEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -166,6 +177,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddCreateSalesOrderByCentralOrderEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateSalesOrderByCentralOrder")]
             HttpRequest req)
@@ -183,6 +195,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddCreateInvoiceByOrderShipmentEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddCreateInvoiceByOrderShipmentEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -192,6 +205,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddCreateInvoiceByOrderShipmentEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateInvoiceByOrderShipment")]
             HttpRequest req)
@@ -209,6 +223,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(AddQuickBooksPaymentDeleteEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "AddQuickBooksPaymentDeleteEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -218,6 +233,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "NewEvent ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadAdd))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksPaymentDeleteEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPaymentDelete")]
             HttpRequest req)
@@ -235,6 +251,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         }
 
         [FunctionName(nameof(UpdateEventERP))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "UpdateEventERP", tags: new[] { "EventERPs" })]
         //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -246,6 +263,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "UpdateEventDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadUpdate))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> UpdateEventERP(
             [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "erpevents")]
             HttpRequest req)
@@ -271,6 +289,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// Load erpevent list
         /// </summary>
         [FunctionName(nameof(EventERPsList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "EventERPsList", tags: new[] { "EventERPs" },
             Summary = "Load erpevent list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
@@ -286,6 +305,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> EventERPsList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "erpevents/find")]
             HttpRequest req)
@@ -316,6 +336,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// find erpevent
         /// </summary>
         [FunctionName(nameof(Sample_EventERP_Find))]
+        #region Swagger Docs
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
             Summary = "MasterAccountNum", Description = "From login profile",
             Visibility = OpenApiVisibilityType.Advanced)]
@@ -327,6 +348,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             Summary = "Get new sample of erpevent find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadFind))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayloadFind>> Sample_EventERP_Find(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/erpevents/find")]
             HttpRequest req)
@@ -337,6 +359,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
 
         [FunctionName(nameof(ReSendEvent))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -345,6 +368,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadResendRequest), Required = true, Description = "Array of eventUuid.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadUpdate))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/resend")]
             HttpRequest req)

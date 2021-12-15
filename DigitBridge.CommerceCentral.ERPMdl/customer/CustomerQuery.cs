@@ -83,6 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _SourceCode = new QueryFilter<string>("SourceCode", "SourceCode", PREFIX, FilterBy.bw, string.Empty);
         public QueryFilter<string> SourceCode => _SourceCode;
 
+        protected QueryFilter<string> _SalesRep = new QueryFilter<string>("SalesRep", "SalesRep", new List<string>() { "SalesRep2", "SalesRep3", "SalesRep4" }, PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> SalesRep => _SalesRep;
 
         //protected EnumQueryFilter<BusinessType> _BusinessType = new EnumQueryFilter<BusinessType>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<BusinessType> BusinessType => _BusinessType;
@@ -110,6 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_DepartmentCode);
             AddFilter(_DivisionCode);
             AddFilter(_SourceCode);
+            AddFilter(_SalesRep);
         }
         public override void InitQueryFilter()
         {

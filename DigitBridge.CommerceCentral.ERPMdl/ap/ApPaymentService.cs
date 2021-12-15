@@ -42,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    await ApInvoiceService.UpdateInvoiceBalanceAsync(this.Data.ApInvoiceTransaction.TransUuid, true);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
                 }
             }
@@ -63,6 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 base.BeforeSave();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    ApInvoiceService.UpdateInvoiceBalance(this.Data.ApInvoiceTransaction.TransUuid, true);
                     //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid, true);
                 }
             }
@@ -85,6 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    await ApInvoiceService.UpdateInvoiceBalanceAsync(this.Data.ApInvoiceTransaction.TransUuid);
                     //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
@@ -107,6 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 base.AfterSave();
                 if (this.Data?.ApInvoiceTransaction != null)
                 {
+                    ApInvoiceService.UpdateInvoiceBalance(this.Data.ApInvoiceTransaction.TransUuid);
                     //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
@@ -608,7 +612,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 foreach (var payment in payload.ApplyInvoices.Where(x => x.Success))
                     await DeleteAsync(payment.TransUuid);
 
-            //await GetByPaymentNumberAsync(payload, payload.ApTransaction.PaymentNumber.ToLong());
+            await GetByPaymentNumberAsync(payload, payload.ApTransaction.PaymentNumber.ToLong());
             return succes;
         }
 
@@ -753,7 +757,6 @@ WHERE ApInvoiceUuid=@0
             if (payments == null || payments.Count == 0)
                 return payload.ReturnError($"Payment number {paymentNumber} not found.");
 
-            // use first invoiceTransaction for payment info
             var pay1 = payments[0];
             payload.ApTransaction = new ApInvoiceTransactionDto()
             {
@@ -761,7 +764,6 @@ WHERE ApInvoiceUuid=@0
                 MasterAccountNum = pay1.MasterAccountNum,
                 PaymentUuid = pay1.PaymentUuid,
                 PaymentNumber = pay1.PaymentNumber,
-                //CustomerCode = pay1.CustomerCode,
                 TransDate = pay1.TransDate,
                 PaidBy = pay1.PaidBy,
                 BankAccountUuid = pay1.BankAccountUuid,
@@ -772,7 +774,6 @@ WHERE ApInvoiceUuid=@0
                 Amount = 0
             };
 
-            // load first invoice
             var invoice1 = await ApInvoiceService.GetApInvoiceHeaderAsync(pay1.ApInvoiceUuid);
 
             if (!await LoadApInvoiceList(payload, invoice1.VendorCode))
@@ -780,14 +781,13 @@ WHERE ApInvoiceUuid=@0
                 payload.Payments = new List<ApInvoiceListForPayment>();
             }
 
-            // Get invoiceUuid which exist payment but not in outstanding invoice list
             var invoiceUuids = payments.Select(p =>
             {
                 return p != null && !string.IsNullOrEmpty(p.ApInvoiceUuid) && payload.Payments.FindByInvoiceUuid(p.ApInvoiceUuid) == null
                     ? p.ApInvoiceUuid
                     : null;
             }).Where(x => !string.IsNullOrEmpty(x)).ToList();
-            // load this payment invoice list
+
             if (invoiceUuids != null && invoiceUuids.Count > 0)
             {
                 var newInvoiceList = await LoadInvoiceListByUuidsAsync(payload, invoiceUuids);
@@ -801,11 +801,9 @@ WHERE ApInvoiceUuid=@0
             if (payload.Payments == null || payload.Payments.Count == 0)
                 return payload.ReturnError($"Payment number {paymentNumber} not found.");
 
-            // add exist payment amount and TransUuid tp invoice list
             foreach (var pay in payments)
             {
                 if (pay == null) continue;
-                // find invoiceUuid, if not exist in outstanding invoice list, need load this invoice later
                 var ins = payload.Payments.FindByInvoiceUuid(pay.ApInvoiceUuid);
                 if (ins == null) continue;
                 ins.TransRowNum = pay.RowNum;
@@ -814,8 +812,8 @@ WHERE ApInvoiceUuid=@0
                 ins.Description = pay.Description;
                 ins.Notes = pay.Notes;
                 ins.PayAmount = pay.Amount;
-                ins.PaidAmount -= ins.PaidAmount;
-                ins.Balance += ins.PaidAmount;
+                ins.PaidAmount = ins.PaidAmount;
+                ins.Balance = ins.PaidAmount;
 
                 payload.ApTransaction.Amount += pay.Amount;
             }

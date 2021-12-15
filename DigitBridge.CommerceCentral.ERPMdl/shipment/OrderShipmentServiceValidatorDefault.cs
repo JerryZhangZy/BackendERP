@@ -86,41 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var pl = payload as OrderShipmentPayload;
             var dto = pl.OrderShipment;
 
-            if (processingMode == ProcessingMode.Add)
-            {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-                dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-                dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-                if (dto.HasOrderShipmentCanceledItem)
-                {
-                    foreach (var item in dto.OrderShipmentCanceledItem)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-                    }
-                }
-                if (dto.HasOrderShipmentPackage)
-                {
-                    foreach (var item in dto.OrderShipmentPackage)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-
-                        if (item.OrderShipmentShippedItem == null) continue;
-                        for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
-                        {
-                            var subItem = item.OrderShipmentShippedItem[i];
-                            subItem.MasterAccountNum = pl.MasterAccountNum;
-                            subItem.ProfileNum = pl.ProfileNum;
-                            subItem.DatabaseNum = pl.DatabaseNum;
-                        }
-                    }
-                }
-            }
-            else
+            if (processingMode != ProcessingMode.Add)
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -140,41 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var pl = payload as OrderShipmentPayload;
             var dto = pl.OrderShipment;
 
-            if (processingMode == ProcessingMode.Add)
-            {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-                dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-                dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-                if (dto.HasOrderShipmentCanceledItem)
-                {
-                    foreach (var item in dto.OrderShipmentCanceledItem)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-                    }
-                }
-                if (dto.HasOrderShipmentPackage)
-                {
-                    foreach (var item in dto.OrderShipmentPackage)
-                    {
-                        item.MasterAccountNum = pl.MasterAccountNum;
-                        item.ProfileNum = pl.ProfileNum;
-                        item.DatabaseNum = pl.DatabaseNum;
-
-                        if (item.OrderShipmentShippedItem == null) continue;
-                        for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
-                        {
-                            var subItem = item.OrderShipmentShippedItem[i];
-                            subItem.MasterAccountNum = pl.MasterAccountNum;
-                            subItem.ProfileNum = pl.ProfileNum;
-                            subItem.DatabaseNum = pl.DatabaseNum;
-                        }
-                    }
-                }
-            }
-            else
+            if (processingMode != ProcessingMode.Add)
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -556,31 +488,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 isValid = false;
                 AddError($"Data not found");
             }
-            if (processingMode == ProcessingMode.Add)
-            {
-                //for Add mode, always reset uuid
-                dto.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
-                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
-                        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                        {
-                            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                            {
-                                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                            }
-                        }
-                    }
-                }
-                if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
-                }
-            }
-            else if (processingMode == ProcessingMode.Edit)
+            if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.OrderShipmentHeader.RowNum.IsZero())
                 {
@@ -634,45 +542,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 isValid = false;
                 AddError($"Data not found");
-            }
-            if (processingMode == ProcessingMode.Add)
-            {
-                //for Add mode, always reset uuid
-                dto.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
-                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
-                        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-
-                        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                        {
-                            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                            {
-                                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                                subItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-                                subItem.OrderShipmentPackageUuid = detailItem.OrderShipmentPackageUuid;
-                            }
-                        }
-                    }
-                }
-                if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                    {
-                        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
-                        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
-                    }
-                }
-            }
-            else if (processingMode == ProcessingMode.Edit)
+            } 
+            if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.OrderShipmentHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("OrderShipmentHeader.RowNum is required.");
                 }
+
                 // This property should not be changed.
                 dto.OrderShipmentHeader.MasterAccountNum = null;
                 dto.OrderShipmentHeader.ProfileNum = null;
@@ -692,7 +570,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             foreach (var subItem in detailItem.OrderShipmentShippedItem)
                             {
                                 subItem.OrderShipmentShippedItemUuid = null;
-                                //subItem.OrderShipmentNum = null;
+                                subItem.OrderShipmentUuid = null;
+                                subItem.OrderShipmentNum = null;
                             }
                         }
                     }
@@ -700,7 +579,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
                 {
                     foreach (var detailItem in dto.OrderShipmentCanceledItem)
+                    {
                         detailItem.OrderShipmentCanceledItemUuid = null;
+                    }
                 }
             }
             IsValid = isValid;

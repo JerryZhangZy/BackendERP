@@ -49,12 +49,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 data.SetOrderShipmentCanceledItemDeleted(deleted);
             }
 
-            if (dto.OrderShipmentShippedItem != null)
+            if (dto.OrderShipmentShippedItem != null && dto.OrderShipmentPackage != null)
             {
-                if (dto.OrderShipmentPackage == null)
-                {
-                    dto.OrderShipmentPackage = new List<OrderShipmentPackageDto>();
-                }
                 ReadOrderShipmentShippedItemToPackage(dto.OrderShipmentPackage, dto.OrderShipmentShippedItem);
             }
 
@@ -73,42 +69,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Read all shipped item to package.
         /// </summary>
         /// <param name="allPackages"></param>
-        /// <param name="allShippedItems"></param>
+        /// <param name="allShippedItemDtos"></param>
         protected void ReadOrderShipmentShippedItemToPackage(IList<OrderShipmentPackageDto> allPackages, IList<OrderShipmentShippedItemDto> allShippedItems)
         {
-            if (allPackages == null)
-                allPackages = new List<OrderShipmentPackageDto>();
+            // no package to split shippeditems.
+            if (allPackages == null || allShippedItems == null)
+                return;
 
-            foreach (var item in allShippedItems)
+            foreach (var package in allPackages)
             {
-                //get package by OrderShipmentPackageNum / OrderShipmentPackageUuid
-                var package = item.HasOrderShipmentPackageNum
-                    ? allPackages.FirstOrDefault(i => i.OrderShipmentPackageNum == item.OrderShipmentPackageNum)
-                    : allPackages.FirstOrDefault(i => !string.IsNullOrEmpty(item.OrderShipmentPackageUuid) && i.OrderShipmentPackageUuid == item.OrderShipmentPackageUuid);
-
-                //init package
-                if (package == null)
-                {
-                    package = new OrderShipmentPackageDto();
-                    allPackages.Add(package);
-                }
-
-                //init OrderShipmentShippedItem
-                if (package.OrderShipmentShippedItem == null)
+                if (package is null) continue;
+                if (package.OrderShipmentShippedItem is null)
                     package.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
 
-                //check item exist in package
-                var isItemExist = package.OrderShipmentShippedItem.Count(i =>
-                 (i.RowNum > 0 && i.RowNum == item.RowNum)
-                 || (!string.IsNullOrEmpty(i.OrderShipmentShippedItemUuid) && i.OrderShipmentShippedItemUuid == item.OrderShipmentShippedItemUuid)
-                 || (i.OrderShipmentShippedItemNum > 0 && i.OrderShipmentShippedItemNum == item.OrderShipmentShippedItemNum)
-                ) > 0;
-
-                if (isItemExist) continue;
-
-                //add item to package.
-                package.OrderShipmentShippedItem.Add(item);
-
+                var packageShippedItems = allShippedItems.Where(i => !i.OrderShipmentPackageUuid.IsZero() && i.OrderShipmentPackageUuid == package.OrderShipmentPackageUuid);
+                foreach (var packageShippedItem in packageShippedItems)
+                {
+                    package.OrderShipmentShippedItem.Add(packageShippedItem);
+                }
             }
         }
 
