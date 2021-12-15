@@ -137,13 +137,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
     {
         public string SKU { get; set; }
         public string WarehouseCode { get; set; }
-        public int InventoryUpdateType { get; set; }
+        public string WarehouseTransferType { get; set; }
 
         public static Faker<WarehouseTransferFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<WarehouseTransferFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.SKU, f => "")
+                 .RuleFor(u => u.WarehouseCode, f => "")
+                  .RuleFor(u => u.WarehouseTransferType, f => "")
                 ;
             #endregion faker data rules
         }
