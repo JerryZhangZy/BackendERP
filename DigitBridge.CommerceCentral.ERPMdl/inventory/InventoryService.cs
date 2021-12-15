@@ -531,11 +531,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             try
             {
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    payload.SyncInventoryAvQtyCount = await InventoryServiceHelper.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(payload);
-                }
-
+                    var sql = $@"
+update pdcq set 
+                pdcq.AvailableQuantity= Instock-iv.OpenSoQty-iv.OpenFulfillmentQty
+from
+     ProductDistributionCenterQuantity pdcq
+         left outer join DistributionCenter dc on DC.DistributionCenterNum = pdcq.DistributionCenterNum
+         left outer join ProductBasic pb on pb.CentralProductNum = pdcq.CentralProductNum
+         left outer join Inventory iv on iv.ProductUuid=pb.ProductUuid and iv.WarehouseUuid=dc.DistributionCenterUuid
+where 
+      pdcq.MasterAccountNum={payload.MasterAccountNum} and pdcq.ProfileNum={payload.ProfileNum};";
+                payload.SyncInventoryAvQtyCount = await dbFactory.Db.ExecuteAsync(sql);
                 return true;
             }
             catch (Exception ex)
