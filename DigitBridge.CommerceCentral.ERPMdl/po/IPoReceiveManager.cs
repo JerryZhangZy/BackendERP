@@ -27,6 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public interface IPoReceiveManager
     {
-        Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload);
+        Task<IList<WMSPoReceivePayload>> AddWMSPoReceiveToEventProcessAndQueueAsync(PoReceivePayload payload);
+        Task<bool> CreatePoTransByQueueTriggerAsync(PoReceivePayload payload, string transUuid);
     }
 }

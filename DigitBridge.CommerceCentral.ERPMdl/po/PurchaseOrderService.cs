@@ -640,7 +640,26 @@ AND poh.ProfileNum=@2
             return poHeaders;
 
         }
-        
+
+        public async Task<PoHeader> GetHeader(int masterAccountNum, int profileNum, string poUuid)
+        {
+            var sql_Item = $@" 
+select poh.* 
+from PoHeader poh  
+where poh.PoUuid=@0
+AND poh.MasterAccountNum=@1
+AND poh.ProfileNum=@2 
+;
+";
+            var poHeader = (await dbFactory.FindAsync<PoHeader>(sql_Item
+                      , poUuid.ToParameter<string>("poUuid")
+                      , masterAccountNum.ToSqlParameter("masterAccountNum")
+                      , profileNum.ToSqlParameter("profileNum")
+                      )).FirstOrDefault();
+
+            return poHeader;
+
+        }
         #endregion
     }
 }

@@ -46,10 +46,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-                if (orderShipmentShippedItem == null && HasOrderShipmentPackage)
-                {
-                    orderShipmentShippedItem = OrderShipmentPackage.Where(i => i.OrderShipmentShippedItem != null).SelectMany(i => i.OrderShipmentShippedItem).ToList();
-                }
+                //if (orderShipmentShippedItem == null && HasOrderShipmentPackage)
+                //{
+                //    orderShipmentShippedItem = OrderShipmentPackage.Where(i => i.OrderShipmentShippedItem != null).SelectMany(i => i.OrderShipmentShippedItem).ToList();
+                //}
                 return orderShipmentShippedItem;
             }
             set

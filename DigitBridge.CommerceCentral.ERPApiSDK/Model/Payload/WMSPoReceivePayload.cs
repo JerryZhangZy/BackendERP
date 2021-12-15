@@ -7,6 +7,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class WMSPoReceiveItem
     {
         /// <summary>
+        /// VendorCode
+        /// </summary>
+        public string VendorCode { get; set; }
+
+        /// <summary>
         /// Po unique key erp provided.
         /// </summary>
         public string PoUuid { get; set; }

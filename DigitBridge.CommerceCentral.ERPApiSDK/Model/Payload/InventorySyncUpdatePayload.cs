@@ -18,13 +18,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class InventorySyncUpdatePayload : ResponsePayloadBase
     {
 
-        /// <summary>
-        /// (Request Data) InventorySync object to update.
-        /// (Response Data) InventorySync object which has been updated.
-        /// </summary>
-        public IList<InventorySyncItem> InventorySyncItems { get; set; }
-        public bool HasInventorySyncItems => InventorySyncItems != null && InventorySyncItems.Count > 0;
-        public bool ShouldSerializeInventorySyncItems() => HasInventorySyncItems;
+        ///// <summary>
+        ///// (Request Data) InventorySync object to update.
+        ///// (Response Data) InventorySync object which has been updated.
+        ///// </summary>
+        //public IList<InventorySyncItem> InventorySyncItems { get; set; }
+        //public bool HasInventorySyncItems => InventorySyncItems != null && InventorySyncItems.Count > 0;
+        //public bool ShouldSerializeInventorySyncItems() => HasInventorySyncItems;
 
 
     }

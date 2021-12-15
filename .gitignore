@@ -391,3 +391,4 @@ launchSettings.json
 /DigitBridge.CommerceCentral.ERPBroker/Properties/ServiceDependencies/DigitBridge-ERP-Broker-Func-Dev - Zip Deploy/profile.arm.json
 /DigitBridge.CommerceCentral.ERP.Integration.Api/Properties/launchSettings.json
 /DigitBridge.CommerceCentral.ERPEventApi/Properties/launchSettings.json
+/DigitBridge.CommerceCentral.ERPBroker/Properties/launchSettings.json

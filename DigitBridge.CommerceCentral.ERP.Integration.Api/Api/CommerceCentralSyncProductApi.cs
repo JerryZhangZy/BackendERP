@@ -69,7 +69,8 @@ WHERE pb.MasterAccountNum={masterAccountNum} AND pb.ProfileNum={profileNum} AND 
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-            if (!await svc.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(payload))
+            if (await svc.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(payload)) payload.Success = true;
+            else
             {
                 payload.Messages = svc.Messages;
                 payload.Success = false;

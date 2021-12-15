@@ -651,6 +651,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return list;
-        }  
+        } 
+
+        public async Task<bool> ExistTransUuidAsync(string transUuid)
+        {
+            return await dbFactory.ExistsAsync<PoTransaction>("TransUuid=@0", transUuid.ToSqlParameter("transUuid"));
+        }
     }
 }

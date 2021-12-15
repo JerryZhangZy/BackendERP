@@ -297,7 +297,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //shipHeader.LengthUnit = 1;
             //shipHeader.VolumeUnit = 1;
             //shipHeader.ShipmentStatus = 0;
-            //shipHeader.DBChannelOrderHeaderRowID = string.Empty;
+            shipHeader.DBChannelOrderHeaderRowID = soInfo.DBChannelOrderHeaderRowID;
             shipHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
             shipHeader.ProcessDateUtc = DateTime.MinValue;
             //shipHeader.EnterDateUtc =
