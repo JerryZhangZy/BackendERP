@@ -35,11 +35,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 data.New();
             }
 
-			if (dto.CustomIOFormat != null)
+			if (dto.CustomFormat != null)
 			{
 				if (data.CustomIOFormat is null)
 					data.CustomIOFormat = data.NewCustomIOFormat();
-				ReadCustomIOFormat(data.CustomIOFormat, dto.CustomIOFormat);
+				ReadCustomIOFormat(data.CustomIOFormat, dto.CustomFormat);
 			}
 
             data.CheckIntegrity();
@@ -92,8 +92,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			if (data.CustomIOFormat != null)
 			{
-				dto.CustomIOFormat = new CustomIOFormatDto();
-				WriteCustomIOFormat(data.CustomIOFormat, dto.CustomIOFormat);
+				dto.CustomFormat = new CustomIOFormatDto();
+				WriteCustomIOFormat(data.CustomIOFormat, dto.CustomFormat);
 			}
             return dto;
         }

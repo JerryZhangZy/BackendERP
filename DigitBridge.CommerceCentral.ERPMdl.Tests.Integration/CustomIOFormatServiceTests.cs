@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             await srv.AddAsync(dto);
 
-            var id = dto.CustomIOFormat.CustomIOFormatUuid;
+            var id = dto.CustomFormat.CustomIOFormatUuid;
 
             var srvGet = new CustomIOFormatService(DataBaseFactory);
             srvGet.Edit();
@@ -68,8 +68,8 @@ FROM CustomIOFormat ins
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            dto.CustomIOFormat.RowNum = rowNum;
-            dto.CustomIOFormat.CustomIOFormatUuid = id;
+            dto.CustomFormat.RowNum = rowNum;
+            dto.CustomFormat.CustomIOFormatUuid = id;
 
             srv.Clear();
             await srv.UpdateAsync(dto);
@@ -101,7 +101,7 @@ FROM CustomIOFormat ins
 
             await srv.AddAsync(payload);
 
-            var id = dto.CustomIOFormat.CustomIOFormatUuid;
+            var id = dto.CustomFormat.CustomIOFormatUuid;
 
             var srvGet = new CustomIOFormatService(DataBaseFactory);
             srvGet.Edit();
@@ -130,8 +130,8 @@ FROM CustomIOFormat ins
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            dto.CustomIOFormat.RowNum = rowNum;
-            dto.CustomIOFormat.CustomIOFormatUuid = id;
+            dto.CustomFormat.RowNum = rowNum;
+            dto.CustomFormat.CustomIOFormatUuid = id;
 
             var payload = new CustomIOFormatPayload();
             payload.CustomIOFormat = dto;

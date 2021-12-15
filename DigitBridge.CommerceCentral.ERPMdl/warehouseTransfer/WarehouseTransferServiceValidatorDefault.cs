@@ -20,6 +20,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -191,6 +192,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"BatchNumber: {data.WarehouseTransferHeader.BatchNumber} is duplicate.");
             }
+
+            if (string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.FromWarehouseUuid) || string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.FromWarehouseCode))
+            {
+                IsValid = false;
+                AddError($"FromWarehouseUuid or FromWarehouseCode is empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.ToWarehouseUuid) || string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.ToWarehouseCode))
+            {
+                IsValid = false;
+                AddError($"ToWarehouseUuid or ToWarehouseCode is empty.");
+            }
+
+
+            if (data.WarehouseTransferItems == null || data.WarehouseTransferItems.Count == 0)
+            {
+                IsValid = false;
+                AddError($"WarehouseTransferItems is null or empty.");
+            }
+
             return IsValid;
 
         }
@@ -210,6 +231,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.WarehouseTransferHeader.RowNum} not found.");
                 return IsValid;
+            }
+            if (string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.FromWarehouseUuid) || string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.FromWarehouseCode))
+            {
+                IsValid = false;
+                AddError($"FromWarehouseUuid or FromWarehouseCode is empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.ToWarehouseUuid) || string.IsNullOrWhiteSpace(data.WarehouseTransferHeader.ToWarehouseCode))
+            {
+                IsValid = false;
+                AddError($"ToWarehouseUuid or ToWarehouseCode is empty.");
+            }
+
+            if (data.WarehouseTransferItems == null || data.WarehouseTransferItems.Count == 0)
+            {
+                IsValid = false;
+                AddError($"WarehouseTransferItems is null or empty.");
             }
             return true;
         }
@@ -308,6 +346,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.WarehouseTransferHeader.RowNum} not found.");
                 return IsValid;
             }
+            if (data.WarehouseTransferHeader.WarehouseTransferStatus == (int)TransferStatus.Closed)
+            {
+                IsValid = false;
+                AddError($"BatchNumber :{data.WarehouseTransferHeader.BatchNumber},WarehouseTransfer is closed.");
+                return IsValid;
+            }
+
             return true;
         }
 
@@ -327,6 +372,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.WarehouseTransferHeader.RowNum} not found.");
                 return IsValid;
             }
+
+            if (data.WarehouseTransferHeader.WarehouseTransferStatus==(int)TransferStatus.Closed)
+            {
+                IsValid = false;
+                AddError($"BatchNumber :{data.WarehouseTransferHeader.BatchNumber},WarehouseTransfer is closed.");
+                return IsValid;
+            }
+
             return true;
         }
 
@@ -452,7 +505,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
-                    var list = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.FromWarehouseCode }).Distinct().ToList();
+                    var list = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = dto.WarehouseTransferHeader.FromWarehouseCode }).Distinct().ToList();
                     //var list2 = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.ToWarehouseCode }).Distinct().ToList();
                     //list = list.Union(list2).ToList();
                     using (var trx = new ScopedTransaction(dbFactory))

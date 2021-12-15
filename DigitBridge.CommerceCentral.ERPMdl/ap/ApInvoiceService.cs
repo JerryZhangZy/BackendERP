@@ -709,6 +709,84 @@ where TransUuid=@0";
                 this.NewData();
             return await this.Data.GetApInvoiceHeaderByApInvoiceUuidAsync(invoiceUuid);
         }
+
+        public async Task<bool> UpdateInvoiceBalanceAsync(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.Amount,0)
+    ELSE ins.PaidAmount
+END), 
+CreditAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 2 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.Amount,0)
+    ELSE ins.CreditAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0),
+ApInvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0)) = 0 AND (COALESCE(ins.ApInvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0)) > 0 AND (COALESCE(ins.ApInvoiceStatus,0)!=@1) THEN @1
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0)) < 0 AND (COALESCE(ins.ApInvoiceStatus,0)!=@3) THEN @3
+    ELSE COALESCE(ins.ApInvoiceStatus,0)
+END)
+FROM ApInvoiceHeader ins
+INNER JOIN ApInvoiceTransaction trs ON (trs.ApInvoiceUuid = ins.ApInvoiceUuid AND trs.TransUuid = @0)
+WHERE ins.ApInvoiceStatus != @4 AND ins.ApInvoiceStatus != @5
+";
+            var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2"),
+                ((int)InvoiceStatusEnum.OverPaid).ToSqlParameter("@3"),
+                ((int)InvoiceStatusEnum.Closed).ToSqlParameter("@4"),
+                ((int)InvoiceStatusEnum.Void).ToSqlParameter("@5")
+            );
+            return result > 0;
+        }
+
+        public bool UpdateInvoiceBalance(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.Amount,0)
+    ELSE ins.PaidAmount
+END), 
+CreditAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 2 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.Amount,0)
+    ELSE ins.CreditAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0),
+ApInvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0)) = 0 AND (COALESCE(ins.ApInvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0)) > 0 AND (COALESCE(ins.ApInvoiceStatus,0)!=@1) THEN @1
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.Amount,0)) < 0 AND (COALESCE(ins.ApInvoiceStatus,0)!=@3) THEN @3
+    ELSE COALESCE(ins.ApInvoiceStatus,0)
+END)
+FROM ApInvoiceHeader ins
+INNER JOIN ApInvoiceTransaction trs ON (trs.ApInvoiceUuid = ins.ApInvoiceUuid AND trs.TransUuid = @0)
+WHERE ins.ApInvoiceStatus != @4 AND ins.ApInvoiceStatus != @5
+";
+            var result = dbFactory.Db.Execute(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2"),
+                ((int)InvoiceStatusEnum.OverPaid).ToSqlParameter("@3"),
+                ((int)InvoiceStatusEnum.Closed).ToSqlParameter("@4"),
+                ((int)InvoiceStatusEnum.Void).ToSqlParameter("@5")
+            );
+            return result > 0;
+        }
     }
 }
 

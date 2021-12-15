@@ -92,6 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ResendAllEventAsync(EventERPPayload payload)
         {
             var srv = new EventERPList(dbFactory, new EventERPQuery());
+            payload.LoadAll = true;
             await srv.GetEventERPListAsync(payload);
 
             if (!payload.Success)

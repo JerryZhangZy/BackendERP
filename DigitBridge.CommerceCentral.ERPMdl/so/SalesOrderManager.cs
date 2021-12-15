@@ -261,7 +261,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var dcAssigmentData in dcAssigmentDataList)
             {
                 var soUuid = await CreateSalesOrdersAsync(coData, dcAssigmentData);
-                if (soUuid != null)
+                if (soUuid == null)
+                    AddError($"OrderDCAssignmentNum: {dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum} didn't transfer to ERP Sales order.");
+                else
                     salesOrderUuids.Add(soUuid);
             }
             bool ret = salesOrderUuids.Count == dcAssigmentDataList.Count;
@@ -326,6 +328,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var salesOrderUuid = await GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
             if (!salesOrderUuid.IsZero())
             {
+                AddError($"Sales Order: {salesOrderUuid} is exist.");
                 return salesOrderUuid;
             }
 
@@ -342,13 +345,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (soData == null)
             {
+                AddError($"There is a error when create sales order data from central order.");
                 return null;
             }
             // load customer
-            if (!await CheckCustomerAsync(soData)) return null;
+            if (!await CheckCustomerAsync(soData))
+            {
+                AddError($"Cannot find or create customer for central order.");
+            }
 
             // check sku and warehouse exist, otherwise add new SKU and Warehouse
-            if (!await CheckInventoryAsync(soData)) return null;
+            if (!await CheckInventoryAsync(soData)) 
+            {
+                AddError($"Cannot find or create SKU for central order SKU.");
+            }
 
             soData.CheckIntegrity();
 
@@ -441,7 +451,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<bool> CheckInventoryAsync(SalesOrderData data)
         {
             if (data == null || data.SalesOrderItems == null || data.SalesOrderItems.Count == 0)
+            {
+                AddError($"Sales Order items not found");
                 return false;
+            }
 
             var header = data.SalesOrderHeader;
             var masterAccountNum = data.SalesOrderHeader.MasterAccountNum;
@@ -449,9 +462,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var find = data.SalesOrderItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
             var notExistSkus = await inventoryService.FindNotExistSkuWarehouseAsync(find, masterAccountNum, profileNum);
             if (notExistSkus == null || notExistSkus.Count == 0)
-                return false;
+                return true;
 
-            var rtn = false;
+            var rtn = true;
             foreach (var item in data.SalesOrderItems)
             {
                 if (string.IsNullOrEmpty(item.SKU)) continue;
@@ -464,7 +477,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         ProfileNum = header.ProfileNum,
                         SKU = item.SKU,
                     });
-                    rtn = true;
                 }
             }
             return rtn;

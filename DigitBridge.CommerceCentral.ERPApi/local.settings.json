@@ -13,7 +13,7 @@
     //"UseOrchestration": "false",
     ////"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
     ////"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    "DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
+    //"DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
     //////"DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
     //////"DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
 
@@ -87,7 +87,7 @@
     "UseOrchestration": "false",
     "OrchestrationDbConnString": "Server=bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
     "OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    //"DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
     //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
     //"UseAzureManagedIdentity": "false",
     //"AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",

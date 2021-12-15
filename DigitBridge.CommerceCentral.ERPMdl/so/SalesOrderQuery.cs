@@ -50,6 +50,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerName => _CustomerName;
+
+        protected QueryFilter<string> _SalesRep = new QueryFilter<string>("SalesRep", "SalesRep", new List<string>() { "SalesRep2", "SalesRep3", "SalesRep4" }, PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> SalesRep => _SalesRep;
         #endregion
 
         #region SalesOrderHeaderInfo
@@ -119,6 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipToName);
             AddFilter(_ShipToState);
             AddFilter(_ShipToPostalCode);
+            AddFilter(_SalesRep);
         }
         public override void InitQueryFilter()
         {

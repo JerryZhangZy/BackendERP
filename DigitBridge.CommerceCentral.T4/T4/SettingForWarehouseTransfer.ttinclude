@@ -71,12 +71,13 @@
 
 
 
-        // generate IO functions
+    // generate IO functions
     var generateIO = true;
     var IOServiceName = $"{processName}IOManager";
     var IOFormatName = $"{processName}IOFormat";
     var IOCsvHelperName = $"{processName}IOCsv";
     var IOFolder = $"DigitBridge.CommerceCentral.ERPMdl\\{processForlderName}\\io";
+    var DbIOFolder = $"DigitBridge.CommerceCentral.ERPDb\\{processForlderName}\\io";
 
 
     var indent = 2;

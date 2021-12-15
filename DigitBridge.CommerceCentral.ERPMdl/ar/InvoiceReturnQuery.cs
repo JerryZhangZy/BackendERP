@@ -99,6 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _ShipToPostalCode = new QueryFilter<string>("ShipToPostalCode", "ShipToPostalCode", InvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToPostalCode => _ShipToPostalCode;
 
+        protected QueryFilter<string> _SalesRep = new QueryFilter<string>("SalesRep", "SalesRep", new List<string>() { "SalesRep2", "SalesRep3", "SalesRep4" }, InvoiceHeaderHelper.TableAllies, FilterBy.bw, string.Empty);
+        public QueryFilter<string> SalesRep => _SalesRep;
+
         public InvoiceReturnQuery() : base(TranSactionPREFIX)
         {
             //AddFilter(_TransNum);
@@ -131,6 +134,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipToName);
             AddFilter(_ShipToState);
             AddFilter(_ShipToPostalCode);
+
+            AddFilter(_SalesRep);
         }
         public override void InitQueryFilter()
         {

@@ -1028,7 +1028,7 @@ ON inv.inventoryuuid=poi.inventoryuuid
             return await Data.GetInventoryBySkuWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum);
         }
 
-        public bool CreateInTransitToWarehouseInventory(int masterAccountNum, int profileNum, string sku)
+        public bool CreateInTransitWarehouseInventory(int masterAccountNum, int profileNum, string sku,string productUuid)
         {
             bool isExist = dbFactory.Exists<Inventory>("MasterAccountNum=@0 and ProfileNum=@1 and  SKU=@2  and WarehouseCode=@3",
                  masterAccountNum.ToSqlParameter("0"),
@@ -1039,17 +1039,27 @@ ON inv.inventoryuuid=poi.inventoryuuid
                  );
             if (!isExist)
             {
-
-
-                //var data = new InventoryData();
-                //data.Inventory = new List<Inventory>()
-                //{ new Inventory(){ MasterAccountNum=masterAccountNum,ProfileNum=profileNum,SKU=sku,WarehouseCode=InTransitToWarehouse.InTransitToWarehouseCode,WarehouseUuid=InTransitToWarehouse.InTransitToWarehouseCode}
-                //};
-                //Add();
-                //this.AttachData(data);
-                //this.SaveData();
-                //this.DetachData(data);
-                //AddAsync()
+                Add();
+                this._data.Inventory.Add(new Inventory()
+                {
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    InventoryUuid = masterAccountNum + "-" + profileNum + "-" +InTransitToWarehouse.InTransitToWarehouseCode,
+                    SKU = sku,
+                    WarehouseCode = InTransitToWarehouse.InTransitToWarehouseCode,
+                    WarehouseUuid = InTransitToWarehouse.InTransitToWarehouseCode,
+                    ProductUuid = productUuid
+                }); 
+                this._data.ProductBasic.ProductUuid = productUuid;
+                this._data.ProductBasic.SKU = sku;
+                this._data.ProductBasic.MasterAccountNum = masterAccountNum;
+                this._data.ProductBasic.ProfileNum = profileNum;
+                
+                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+                Data.AddIgnoreSave(InventoryData.ProductExtTable);
+                Data.AddIgnoreSave(InventoryData.ProductExtAttributesTable);
+                this.Data.Save();
+ 
             }
 
             return true;
