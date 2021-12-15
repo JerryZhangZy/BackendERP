@@ -552,6 +552,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 case (int)EventProcessTypeEnum.ShipmentFromWMS:
                     return ErpEventType.ShipmentFromWMS;
+                case (int)EventProcessTypeEnum.PoReceiveFromWMS:
+                    return ErpEventType.PoReceiveFromWMS;
                 default:
                     return ErpEventType.Default;
             }

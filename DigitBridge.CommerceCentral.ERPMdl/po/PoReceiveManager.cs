@@ -35,8 +35,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             SetDataBaseFactory(dbFactory);
         }
-
+        protected string _queueConnectionString;
+        public PoReceiveManager(IDataBaseFactory dbFactory, string queueConnectionString)
+        {
+            SetDataBaseFactory(dbFactory);
+            _queueConnectionString = queueConnectionString;
+        }
         #region service
+
+        [XmlIgnore, JsonIgnore]
+        protected EventProcessERPService _eventProcessERPService;
+        [XmlIgnore, JsonIgnore]
+        public EventProcessERPService eventProcessERPService
+        {
+            get
+            {
+                if (_eventProcessERPService is null)
+                    _eventProcessERPService = new EventProcessERPService(dbFactory, _queueConnectionString);
+                return _eventProcessERPService;
+            }
+        }
 
         [XmlIgnore, JsonIgnore]
         protected PurchaseOrderService _purchaseOrderService;
@@ -65,8 +83,88 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        #region Add po trans for wms po receive.
+        #region Add po received to eventprocess and queue
 
+        public async Task<IList<WMSPoReceivePayload>> AddWMSPoReceiveToEventProcessAndQueueAsync(PoReceivePayload payload)
+        {
+            var results = new List<WMSPoReceivePayload>();
+            if (!ValidateReceiveItem(payload))
+            {
+                results.Add(new WMSPoReceivePayload()
+                {
+                    Success = false,
+                    Messages = this.Messages,
+                });
+            }
+            var vendorCodes = payload.WMSPoReceiveItems.Select(i => i.VendorCode).Distinct();
+
+            // loop vendor to send poreceive items to eventprocess table and queue.
+            foreach (var vendorCode in vendorCodes)
+            {
+                var transUuid = Guid.NewGuid().ToString();
+                var items = payload.WMSPoReceiveItems.Where(i => i.VendorCode == vendorCode);
+                var eventProcessERP = new EventProcessERP()
+                {
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    ProcessData = items.ObjectToString(),
+                    ProcessUuid = transUuid,
+                    ERPEventProcessType = (int)EventProcessTypeEnum.PoReceiveFromWMS,
+                    ActionStatus = (int)EventProcessActionStatusEnum.Pending,
+                };
+
+                // for each shipment, create result object to hold shipment creating result
+                var result = new WMSPoReceivePayload()
+                {
+                    TransUuid = transUuid,
+                    PoItemUuidList = items.Select(i => i.PoItemUuid).ToList(),
+                };
+
+                result.Success = await eventProcessERPService.AddEventAndQueueMessageAsync(eventProcessERP);
+                result.Messages.Add(eventProcessERPService.Messages);
+
+                results.Add(result);
+            }
+            return results;
+        }
+
+        protected bool ValidateReceiveItem(PoReceivePayload payload)
+        {
+            var validate = true;
+            if (!payload.HasWMSPoReceiveItems)
+            {
+                AddError("WMSPoReceiveItems cannot be empty");
+                validate = false;
+            }
+
+            if (payload.WMSPoReceiveItems.Count(i => i.PoUuid.IsZero()) > 0)
+            {
+                AddError("PoUuid cannot be empty");
+                validate = false;
+            }
+
+            if (payload.WMSPoReceiveItems.Count(i => i.VendorCode.IsZero()) > 0)
+            {
+                AddError("VendorCode cannot be empty");
+                validate = false;
+            }
+
+            if (payload.WMSPoReceiveItems.Count(i => i.WarehouseCode.IsZero()) > 0)
+            {
+                AddError("WarehouseCode cannot be empty");
+                validate = false;
+            }
+            if (payload.WMSPoReceiveItems.Count(i => i.SKU.IsZero()) > 0)
+            {
+                AddError("SKU cannot be empty");
+                validate = false;
+            }
+            return validate;
+        }
+
+        #endregion
+
+        #region Add po trans for wms po receive. 
         /// <summary>
         /// Add po trans for wms po receive.
         /// </summary>
@@ -116,36 +214,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return results;
         }
-
-
-        protected bool ValidateReceiveItem(PoReceivePayload payload)
-        {
-            var validate = true;
-            if (!payload.HasWMSPoReceiveItems)
-            {
-                AddError("WMSPoReceiveItems cannot be empty");
-                validate = false;
-            }
-
-            if (payload.WMSPoReceiveItems.Count(i => i.PoUuid.IsZero()) > 0)
-            {
-                AddError("PoUuid cannot be empty");
-                validate = false;
-            }
-
-            if (payload.WMSPoReceiveItems.Count(i => i.WarehouseCode.IsZero()) > 0)
-            {
-                AddError("WarehouseCode cannot be empty");
-                validate = false;
-            }
-            if (payload.WMSPoReceiveItems.Count(i => i.SKU.IsZero()) > 0)
-            {
-                AddError("SKU cannot be empty");
-                validate = false;
-            }
-            return validate;
-        }
-
+         
         #region prepare po trans data
 
         protected async Task<IList<PoTransactionItems>> ConvertWmsReceiveItemsToPoTransItems(PoReceivePayload payload)

@@ -7,7 +7,7 @@ namespace DigitBridge.Base.Common
 {
     public enum ErpEventActionStatus : int
     {
-        Pending=-1,
+        Pending = -1,
         Success = 0,
         Other = 1,
     }
@@ -44,7 +44,10 @@ namespace DigitBridge.Base.Common
         ShipmentFromWMS = 9,
 
         [Description("Create ProductExt and Inventory from ProductBasic")]
-        SyncProduct = 10
+        SyncProduct = 10,
+
+        [Description("Create Po transaction by wms poreceive")]
+        PoReceiveFromWMS = 10,
 
     }
     public static class ErpEventQueueName
@@ -74,6 +77,8 @@ namespace DigitBridge.Base.Common
                     return ERPCreateShipmentByWMS;
                 case ErpEventType.SyncProduct:
                     return SyncProduct;
+                case ErpEventType.PoReceiveFromWMS:
+                    return PoReceiveFromWMS;
                 default:
                     return DefaultQueue;
             }
@@ -96,5 +101,7 @@ namespace DigitBridge.Base.Common
 
         public static string SyncProduct = ERPQueueSetting.ERPSyncProductQueue;
         public static string ERPCreateShipmentByWMS = ERPQueueSetting.ERPCreateShipmentByWMSQueue;
+
+        public static string ERPCreatePoReceiveByWMS = ERPQueueSetting.ERPCreatePoReceiveByWMSQueue;
     }
 }

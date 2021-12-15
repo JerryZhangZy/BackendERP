@@ -11,10 +11,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public class WMSPoReceiveItem
     {
-        ///// <summary>
-        ///// Vendor code
-        ///// </summary>
-        //public string VendorCode { get; set; }
+        /// <summary>
+        /// Vendor code
+        /// </summary>
+        public string VendorCode { get; set; }
 
         /// <summary>
         /// Po unique key erp provided.

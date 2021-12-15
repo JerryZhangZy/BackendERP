@@ -29,5 +29,6 @@ namespace DigitBridge.Base.Common
         SalesOrderToWMS = 2,
         PoToWMS = 3,
         ShipmentFromWMS = 4,
+        PoReceiveFromWMS = 5,
     }
 }
