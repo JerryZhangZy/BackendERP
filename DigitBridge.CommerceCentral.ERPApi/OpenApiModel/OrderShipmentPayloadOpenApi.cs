@@ -39,6 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var data = new OrderShipmentPayloadAdd();
             data.OrderShipment = new OrderShipmentDataDto().GetFakerData();
+            data.OrderShipment.OrderShipmentShippedItem = data.OrderShipment.OrderShipmentPackage.SelectMany(i => i.OrderShipmentShippedItem).ToList();
             return data;
         }
     }
