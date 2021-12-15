@@ -97,8 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 await base.BeforeSaveAsync();
                 if (this.Data?.OrderShipmentHeader != null)
-                {
-                    inventoryLogService.UpdateByShipment(this.Data);
+                { 
 
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentHeader = this.Data.OrderShipmentHeader;
