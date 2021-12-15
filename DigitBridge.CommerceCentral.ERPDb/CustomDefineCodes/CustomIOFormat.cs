@@ -22,98 +22,75 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             CsvFormat fmt = null;
 
-            if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToInt().ToString()))
-            {
-                fmt = new SalesOrderIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<SalesOrderIOFormat>());
-                return fmt;
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToInt().ToString()))
-            {
-                fmt = new PurchaseOrderIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<PurchaseOrderIOFormat>());
-                return fmt;
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToInt().ToString()))
-            {
-                fmt = new PoReceiveIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<PoReceiveIOFormat>());
-                return fmt;
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToInt().ToString()))
-            {
-                fmt = new VendorIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<VendorIOFormat>());
-                return fmt;
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToInt().ToString()))
-            {
-                fmt = new ApInvoiceIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<ApInvoiceIOFormat>());
-                return fmt;
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToInt().ToString()))
-            {
-                fmt = new InvoiceIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<InvoiceIOFormat>());
-                return fmt;
+            if (!int.TryParse(FormatType, out int formatType))
+                formatType = -1;
 
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToInt().ToString()))
-            {
-                fmt = new InvoicePaymentIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<InvoicePaymentIOFormat>());
-                return fmt;
 
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToInt().ToString()))
+            switch (formatType)
             {
-                fmt = new InvoiceReturnIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<InvoiceReturnIOFormat>());
-                return fmt;
-
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToInt().ToString()))
-            {
-                fmt = new CustomerIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<CustomerIOFormat>());
-                return fmt;
-
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToInt().ToString()))
-            {
-                fmt = new InventoryIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryIOFormat>());
-                return fmt;
-
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToInt().ToString()))
-            {
-                fmt = new InventoryUpdateIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryUpdateIOFormat>());
-                return fmt;
-
-            }
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.WarehouseTransfer.ToString()))
-            {
-                fmt = new WarehouseTransferIOFormat();
-                if (!string.IsNullOrEmpty(this.FormatObject))
-                    fmt.LoadFormat(this.FormatObject.JsonToObject<WarehouseTransferIOFormat>());
-                return fmt;
-
+                case (int)ActivityLogType.SalesOrder:
+                    fmt = new SalesOrderIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<SalesOrderIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.PurchaseOrder:
+                    fmt = new PurchaseOrderIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<PurchaseOrderIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.PoReceive:
+                    fmt = new PoReceiveIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<PoReceiveIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.Vendor:
+                    fmt = new VendorIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<VendorIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.ApInvoice:
+                    fmt = new ApInvoiceIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<ApInvoiceIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.Invoice:
+                    fmt = new InvoiceIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<InvoiceIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.InvoicePayment:
+                    fmt = new InvoicePaymentIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<InvoicePaymentIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.InvoiceReturn:
+                    fmt = new InvoiceReturnIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<InvoiceReturnIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.Customer:
+                    fmt = new CustomerIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<CustomerIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.Inventory:
+                    fmt = new InventoryIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.InventoryUpdate:
+                    fmt = new InventoryUpdateIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<InventoryUpdateIOFormat>());
+                    return fmt;
+                case (int)ActivityLogType.WarehouseTransfer:
+                    fmt = new WarehouseTransferIOFormat();
+                    if (!string.IsNullOrEmpty(this.FormatObject))
+                        fmt.LoadFormat(this.FormatObject.JsonToObject<WarehouseTransferIOFormat>());
+                    return fmt;
             }
 
+ 
 
             return fmt;
         }
@@ -121,33 +98,50 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public void SetFormatObject(CsvFormat csvFormat)
         {
             CsvFormat fmt = null;
-            if (FormatType.EqualsIgnoreSpace(ActivityLogType.SalesOrder.ToInt().ToString()))
-                fmt = new SalesOrderIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PurchaseOrder.ToInt().ToString()))
-                fmt = new PurchaseOrderIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.PoReceive.ToInt().ToString()))
-                fmt = new PoReceiveIOFormat();
 
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Vendor.ToInt().ToString()))
-                fmt = new VendorIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.ApInvoice.ToInt().ToString()))
-                fmt = new ApInvoiceIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Invoice.ToInt().ToString()))
-                fmt = new InvoiceIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoicePayment.ToInt().ToString()))
-                fmt = new InvoicePaymentIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InvoiceReturn.ToInt().ToString()))
-                fmt = new InvoiceReturnIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Customer.ToInt().ToString()))
-                fmt = new CustomerIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.Inventory.ToInt().ToString()))
-                fmt = new InventoryIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.InventoryUpdate.ToInt().ToString()))
-                fmt = new InventoryUpdateIOFormat();
-            else if (FormatType.EqualsIgnoreSpace(ActivityLogType.WarehouseTransfer.ToString()))
-                fmt = new WarehouseTransferIOFormat();
+            if (!int.TryParse(FormatType, out int formatType))
+                formatType = -1;
 
-
+            switch (formatType)
+            {
+                case (int)ActivityLogType.SalesOrder:
+                    fmt = new SalesOrderIOFormat();
+                    break;
+                case (int)ActivityLogType.PurchaseOrder:
+                    fmt = new PurchaseOrderIOFormat();
+                    break;
+                case (int)ActivityLogType.PoReceive:
+                    fmt = new PoReceiveIOFormat();
+                    break;
+                case (int)ActivityLogType.Vendor:
+                    fmt = new VendorIOFormat();
+                    break;
+                case (int)ActivityLogType.ApInvoice:
+                    fmt = new ApInvoiceIOFormat();
+                    break;
+                case (int)ActivityLogType.Invoice:
+                    fmt = new InvoiceIOFormat();
+                    break;
+                case (int)ActivityLogType.InvoicePayment:
+                    fmt = new InvoicePaymentIOFormat();
+                    break;
+                case (int)ActivityLogType.InvoiceReturn:
+                    fmt = new InvoiceReturnIOFormat();
+                    break;
+                case (int)ActivityLogType.Customer:
+                    fmt = new CustomerIOFormat();
+                    break;
+                case (int)ActivityLogType.Inventory:
+                    fmt = new InventoryIOFormat();
+                    break;
+                case (int)ActivityLogType.InventoryUpdate:
+                    fmt = new InventoryUpdateIOFormat();
+                    break;
+                case (int)ActivityLogType.WarehouseTransfer:
+                    fmt = new WarehouseTransferIOFormat();
+                    break;
+            }
+ 
             if (fmt != null)
             {
                 fmt.LoadFormat(csvFormat);
