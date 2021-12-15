@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "DigitBridge.CommerceCentral.ERP.Integration.Api": {
+      "commandName": "Executable",
+      "executablePath": "%LocalAppData%\\AzureFunctionsTools\\Releases\\3.23.5\\cli\\func.exe",
+      "commandLineArgs": "host start --verbose",
+      "workingDirectory": "$(TargetDir)",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Dev"
+      }
+    }
+  }
+}
