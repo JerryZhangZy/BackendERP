@@ -64,19 +64,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = ProfileNum,
                 WMSPoReceiveItems = new List<WMSPoReceiveItem>()
                 {
-                 new WMSPoReceiveItem(){PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea" ,PoItemUuid="1a8e53ca-4a0c-4317-952e-445584eee520", Qty=1,SKU="sku1" ,WarehouseCode="WarehouseCode1"},
-                 new WMSPoReceiveItem(){PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea" , PoItemUuid="fc2d34b8-e3f0-443f-89b4-2309f66729ad", Qty=2 ,SKU="sku2" ,WarehouseCode="WarehouseCode2"},
-                 new WMSPoReceiveItem(){PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea" , Qty=3 ,SKU="sku3" ,WarehouseCode="WarehouseCode3"},
+                 new WMSPoReceiveItem(){PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea" ,PoItemUuid="1a8e53ca-4a0c-4317-952e-445584eee520", Qty=1,SKU="sku1" ,WarehouseCode="WarehouseCode1",VendorCode="VendorCode1"},
+                 new WMSPoReceiveItem(){PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea" , PoItemUuid="fc2d34b8-e3f0-443f-89b4-2309f66729ad", Qty=2 ,SKU="sku2" ,WarehouseCode="WarehouseCode2",VendorCode="VendorCode1"},
+                 new WMSPoReceiveItem(){PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea" , Qty=3 ,SKU="sku3" ,WarehouseCode="WarehouseCode3",VendorCode="VendorCode1"},
 
-                 new WMSPoReceiveItem(){PoUuid="e4c06215-5b0c-41f7-9df9-9f4b04f6e10a" ,PoItemUuid="94043d6f-e6bc-4428-8585-0ef133745c2c", Qty=21,SKU="sku1" ,WarehouseCode="WarehouseCode1"},
+                 new WMSPoReceiveItem(){PoUuid="e4c06215-5b0c-41f7-9df9-9f4b04f6e10a" ,PoItemUuid="94043d6f-e6bc-4428-8585-0ef133745c2c", Qty=21,SKU="sku1" ,WarehouseCode="WarehouseCode1",VendorCode="VendorCode1"},
 
                 }
             };
 
+            var transUuid = "80c5dab1-f0d8-4184-a7ee-7b1849f4585a";//get this from eventprocess table processuuid
             var service = new PoReceiveManager(DataBaseFactory);
-            var result = await service.AddTransForWMSPoReceiveAsync(payload);
-            var success = result != null && result.Count(i => !i.Success) <= 0;
-            Assert.True(success, result.SelectMany(i => i.Messages).ObjectToString());
+            var success = await service.CreatePoTransByQueueTriggerAsync(payload,transUuid); 
+            Assert.True(success, service.Messages.ObjectToString());
         }
 
 

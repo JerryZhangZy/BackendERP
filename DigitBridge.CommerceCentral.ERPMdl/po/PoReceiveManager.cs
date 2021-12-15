@@ -245,11 +245,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
+            if (await PoReceiveService.ExistTransUuidAsync(transUuid))
+            {
+                AddInfo($"Data was transfered,ProcessUuid:{transUuid}");
+                return true;
+            }
+
             var poTransItems = await ConvertWmsReceiveItemsToPoTransItems(payload);
 
             var poUuids = payload.WMSPoReceiveItems.Select(i => i.PoUuid).Distinct();
 
             var poHeader = await purchaseOrderService.GetHeader(payload.MasterAccountNum, payload.ProfileNum, poUuids.FirstOrDefault());
+
+            if (poHeader == null)
+            {
+                AddError($"Data not found. PoUuid:{ poUuids.FirstOrDefault()}");
+                return false;
+            }
 
             var poTrans = GetPoTransaction(payload, poHeader, poUuids.Count() > 0, transUuid);
 

@@ -646,9 +646,8 @@ AND poh.ProfileNum=@2
             var sql_Item = $@" 
 select poh.* 
 from PoHeader poh  
-where 
-poh.PoUuid=@0
-poh.MasterAccountNum=@1
+where poh.PoUuid=@0
+AND poh.MasterAccountNum=@1
 AND poh.ProfileNum=@2 
 ;
 ";
