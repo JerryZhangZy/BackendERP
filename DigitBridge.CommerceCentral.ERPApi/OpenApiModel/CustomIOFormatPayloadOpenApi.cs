@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<CustomIOFormatFilter>()
-                .RuleFor(u => u.FormatType, f => "SalesOrder")
+                .RuleFor(u => u.FormatType, f => "0")
                  .RuleFor(u => u.FormatNumber, f => 0)
                   .RuleFor(u => u.FormatName, f => "")
                 ;
