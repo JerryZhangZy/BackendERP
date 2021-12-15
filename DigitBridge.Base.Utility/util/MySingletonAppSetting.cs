@@ -32,7 +32,7 @@ namespace DigitBridge.Base.Utility
                 return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             }
         }
-#if false
+#if DEBUG
         public static string AzureWebJobsStorage => "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net";
 #else
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");

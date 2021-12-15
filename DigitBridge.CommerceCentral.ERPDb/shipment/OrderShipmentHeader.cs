@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
                 "MasterAccountNum",
                 "ProfileNum",
-                "DatabaseNum",
+                //"DatabaseNum",
                 "OrderShipmentUuid",
                 "OrderShipmentNum"
             };

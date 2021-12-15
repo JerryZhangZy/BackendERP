@@ -46,6 +46,7 @@ declare @n int,@rows int,@ProcessData varchar(max)
 insert into  #ProcessData (ProcessData) 
 select ProcessData from  EventProcessERP 
 where ERPEventProcessType=4 and ProcessStatus=1 and ProfileNum=10003 and MasterAccountNum=10002
+and EnterDateUtc>'2021-12-14'
 --and RowNum 
 --not in (4756,
 --4774,

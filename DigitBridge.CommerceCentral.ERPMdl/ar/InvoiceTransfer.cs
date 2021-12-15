@@ -174,7 +174,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeaderInfo.ShippingClass = osHeader.ShippingClass;
             invoiceHeaderInfo.WarehouseCode = osHeader.WarehouseCode;
             invoiceHeaderInfo.OrderDCAssignmentNum = osHeader.OrderDCAssignmentNum;
-            invoiceHeaderInfo.DBChannelOrderHeaderRowID = osHeader.DBChannelOrderHeaderRowID;
+            invoiceHeaderInfo.DBChannelOrderHeaderRowID = soHeaderInfo.DBChannelOrderHeaderRowID;
             //TODO Check this logic Save OrderShipment.InvoiceNumber to InvoiceHeaderInfo.RefNum
             invoiceHeaderInfo.RefNum = osHeader.ShipmentReferenceID;
 

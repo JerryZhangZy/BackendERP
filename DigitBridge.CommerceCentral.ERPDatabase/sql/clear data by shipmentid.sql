@@ -1,6 +1,6 @@
 ﻿
 select ProcessUuid into #tmpProcessUuid from EventProcessERP 
-where ERPEventProcessType=4   and MasterAccountNum=10002 and ProfileNum=10003
+where ERPEventProcessType=4   and MasterAccountNum=10002 and ProfileNum=10003 and EnterDateUtc>'2021-12-14'
 
 select SalesOrderUuid,InvoiceUuid,OrderShipmentUuid
 into #ToDeleteUuids
@@ -30,13 +30,13 @@ delete from OrderShipmentPackage where OrderShipmentUuid in (select  OrderShipme
 delete from OrderShipmentShippedItem where OrderShipmentUuid in (select  OrderShipmentUuid from #ToDeleteUuids)
 delete from OrderShipmentCanceledItem where OrderShipmentUuid in (select  OrderShipmentUuid from #ToDeleteUuids) 
 
---delete eventprocess
-delete from EventProcessERP
-where ERPEventProcessType=4  
-and ProcessUuid in 
-(
- select * from #tmpProcessUuid
-) 
+----delete eventprocess
+--delete from EventProcessERP
+--where ERPEventProcessType=4  
+--and ProcessUuid in 
+--(
+-- select * from #tmpProcessUuid
+--) 
 
 drop table #tmpProcessUuid
 drop table #ToDeleteUuids

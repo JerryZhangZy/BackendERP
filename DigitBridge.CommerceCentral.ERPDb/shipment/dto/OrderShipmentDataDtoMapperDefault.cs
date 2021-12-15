@@ -69,7 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Read all shipped item to package.
         /// </summary>
         /// <param name="allPackages"></param>
-        /// <param name="allShippedItemDtos"></param>
+        /// <param name="allShippedItems"></param>
         protected void ReadOrderShipmentShippedItemToPackage(IList<OrderShipmentPackageDto> allPackages, IList<OrderShipmentShippedItemDto> allShippedItems)
         {
             // no package to split shippeditems.

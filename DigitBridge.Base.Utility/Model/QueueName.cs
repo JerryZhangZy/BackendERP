@@ -18,5 +18,7 @@ namespace DigitBridge.Base.Utility
         public const string Erp_Qbo_Return_Delete_Queue = "erp-quickbooks-return-delete-queue";
          
         public const string Erp_Create_Shipment_By_WMS = "erp-create-shipment-by-wms";
+
+        public const string Erp_Create_PoReceive_By_WMS = "erp-create-poreceive-by-wms";
     }
 }
