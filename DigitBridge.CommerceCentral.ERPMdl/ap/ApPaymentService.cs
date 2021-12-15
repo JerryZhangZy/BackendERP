@@ -551,18 +551,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> NewPaymentByApInvoiceNumAsync(ApNewPaymentPayload payload, string apInvoiceNum)
         {
-            NewData();
-            if (!await LoadApInvoiceAsync(payload.MasterAccountNum, payload.ProfileNum, apInvoiceNum))
+            if (!await LoadApInvoice(payload, apInvoiceNum))
                 return false;
 
-            CopyApInvoiceHeaderToTrans();
+            NewData();
 
-            //unpaid amount.
-            Data.ApInvoiceTransaction.Amount = Data.ApInvoiceData.ApInvoiceHeader.Balance.IsZero() ? 0 : Data.ApInvoiceData.ApInvoiceHeader.Balance.ToDecimal();
+            payload.ApplyInvoices = payload.Payments
+                .Select(i => new ApplyInvoice
+                {
+                    InvoiceUuid = i.ApInvoiceUuid,
+                    InvoiceNumber = i.ApInvoiceNumber,
+                    Success = false,
+                    PaidAmount = 0
+                }).ToList();
 
             payload.ApTransaction = this.ToDto().ApInvoiceTransaction;
 
-            return await LoadApInvoiceList(payload, Data.ApInvoiceData.ApInvoiceHeader.VendorCode);
+            return true;
         }
 
         public async Task<bool> NewPaymentByVendorNum(ApNewPaymentPayload payload, string vendorCode)
@@ -898,6 +903,9 @@ WHERE ApInvoiceUuid=@0
         }
         private async Task<bool> LoadApInvoiceList(ApNewPaymentPayload payload, string vendorCode)
         {
+            if (string.IsNullOrEmpty(vendorCode))
+                return false;
+
             var apInvoicePayload = new ApInvoicePayload()
             {
                 MasterAccountNum = payload.MasterAccountNum,
@@ -906,7 +914,7 @@ WHERE ApInvoiceUuid=@0
             };
 
             var apInvoiceQuery = new ApInvoiceQuery();
-            apInvoiceQuery.InitForNewPaymet(vendorCode);
+            apInvoiceQuery.InitFilterByVendor(vendorCode);
 
             var srv = new ApInvoiceList(this.dbFactory, apInvoiceQuery);
             await srv.GetApInvoiceListAsync(apInvoicePayload);
@@ -915,7 +923,33 @@ WHERE ApInvoiceUuid=@0
                 this.Messages = this.Messages.Concat(srv.Messages).ToList();
 
             payload.Payments = apInvoicePayload.ApInvoiceList.ToObject<IList<ApInvoiceListForPayment>>();
+            payload.ApInvoiceListCount = apInvoicePayload.ApInvoiceListCount;
 
+            return apInvoicePayload.Success;
+        }
+
+        private async Task<bool> LoadApInvoice(ApNewPaymentPayload payload, string invoiceNum)
+        {
+            if (string.IsNullOrEmpty(invoiceNum))
+                return false;
+
+            var apInvoicePayload = new ApInvoicePayload
+            { 
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                LoadAll = true
+            };
+
+            var apInvoiceQuery = new ApInvoiceQuery();
+            apInvoiceQuery.InitFilterByInvoiceNum(invoiceNum);
+
+            var srv = new ApInvoiceList(this.dbFactory, apInvoiceQuery);
+            await srv.GetApInvoiceListAsync(apInvoicePayload);
+
+            if (!apInvoicePayload.Success)
+                this.Messages = this.Messages.Concat(srv.Messages).ToList();
+
+            payload.Payments = apInvoicePayload.ApInvoiceList.ToObject<IList<ApInvoiceListForPayment>>();
             payload.ApInvoiceListCount = apInvoicePayload.ApInvoiceListCount;
 
             return apInvoicePayload.Success;
