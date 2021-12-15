@@ -45,20 +45,19 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
 
         [Fact()]
-        public async Task SendAddData_Test()
+        public async Task InventorySyncAsync_Test()
         {
             var client = new ErpInventorySyncClient(_baseUrl, _code);
 
             var result = await client.InventorySyncAsync(MasterAccountNum, ProfileNum, new InventorySyncUpdatePayload()
             {
-                InventorySyncItems = new List<InventorySyncItem>()
-                {
-                    new InventorySyncItem() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 }
-                }
+                //InventorySyncItems = new List<InventorySyncItem>()
+                //{
+                //    new InventorySyncItem() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 }
+                //}
             });
             Assert.True(result, "succ");
             Assert.True(client.Messages.Count == 0, "succ");
-
         }
 
 
