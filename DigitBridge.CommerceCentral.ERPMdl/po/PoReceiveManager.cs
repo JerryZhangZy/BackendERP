@@ -19,6 +19,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -165,56 +166,102 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region Add po trans for wms po receive. 
+
         /// <summary>
-        /// Add po trans for wms po receive.
+        /// create po trans triggered by queue for wms uploaded po receive items 
         /// </summary>
         /// <param name="payload"></param>
-        /// <param name="receiveItems"></param>
+        /// <param name="transUuid"></param>
         /// <returns></returns>
-        public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
+        public async Task<bool> CreatePoTransByQueueTriggerAsync(PoReceivePayload payload, string transUuid)
+        {
+            payload.WMSPoReceiveItems = await GetWMSPoReceiveItems(transUuid);
+            if (payload.WMSPoReceiveItems == null)
+            {
+                AddError($"Data not found,ProcessUuid:{transUuid}");
+                payload.Success = false;
+            }
+            else
+            {
+                payload.Success = await AddPoTransAsync(payload, transUuid);
+            }
+            if (!payload.Success)
+                payload.Messages = this.Messages;
+            // update all result back to event process.
+            return await UpdateProcessResultAsync(payload, transUuid);
+        }
+        /// <summary>
+        /// update process result back to  event process 
+        /// </summary>
+        /// <returns></returns>
+        protected async Task<bool> UpdateProcessResultAsync(PoReceivePayload payload, string transUuid)
+        {
+            var processResult = new ProcessResult()
+            {
+                EventMessage = payload.HasMessages ? new JObject() { { "message", JArray.FromObject(payload.Messages) } } : null,
+                ProcessUuid = transUuid,
+                ProcessStatus = payload.Success ? (int)EventProcessProcessStatusEnum.Success : (int)EventProcessProcessStatusEnum.Failed
+            };
+
+            var ackPayload = new AcknowledgeProcessPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                EventProcessType = EventProcessTypeEnum.PoReceiveFromWMS,
+                ProcessResults = new List<ProcessResult>()
+                { processResult }
+            };
+
+            return await eventProcessERPService.UpdateProcessStatusAsync(ackPayload);
+        }
+        /// <summary>
+        /// Get wmsPoReceiveItems from event process table.
+        /// </summary>
+        /// <param name="transUuid"></param>
+        /// <returns></returns>
+        protected async Task<IList<WMSPoReceiveItem>> GetWMSPoReceiveItems(string transUuid)
+        {
+            eventProcessERPService.List();
+            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.PoReceiveFromWMS, transUuid);
+            if (!success)
+            {
+                this.Messages.Add(eventProcessERPService.Messages);
+                return null;
+            }
+            var wmsPoReceiveItems = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<IList<WMSPoReceiveItem>>();
+            return wmsPoReceiveItems;
+        }
+
+        /// <summary>
+        /// Add po trans
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        protected async Task<bool> AddPoTransAsync(PoReceivePayload payload, string transUuid)
         {
             var results = new List<WMSPoReceivePayload>();
             if (!ValidateReceiveItem(payload))
             {
-                results.Add(new WMSPoReceivePayload()
-                {
-                    Success = false,
-                    Messages = this.Messages,
-                });
+                return false;
             }
 
-            var poTransAllItems = await ConvertWmsReceiveItemsToPoTransItems(payload);
+            var poTransItems = await ConvertWmsReceiveItemsToPoTransItems(payload);
 
-            var poUuids = payload.WMSPoReceiveItems.Select(i => i.PoUuid).Distinct().ToList();
-            //get poHeaders 
-            var poHeaders = await purchaseOrderService.GetHeaders(payload.MasterAccountNum, payload.ProfileNum, poUuids);
+            var poUuids = payload.WMSPoReceiveItems.Select(i => i.PoUuid).Distinct();
 
-            var vendorCodes = poHeaders.Select(i => i.VendorCode).Distinct();
-            foreach (var vendorCode in vendorCodes)
+            var poHeader = await purchaseOrderService.GetHeader(payload.MasterAccountNum, payload.ProfileNum, poUuids.FirstOrDefault());
+
+            var poTrans = GetPoTransaction(payload, poHeader, poUuids.Count() > 0, transUuid);
+
+            var poTransData = new PoTransactionData()
             {
-                var poTrans = GetPoTransactionByVendor(payload, vendorCode, poHeaders);
-                var vendorPoUuids = poHeaders.Where(i => i.VendorCode == vendorCode).Select(j => j.PoUuid).Distinct();
-                var poTransItems = poTransAllItems.Where(i => vendorPoUuids.Contains(i.PoUuid)).ToList();
+                PoTransaction = poTrans,
+                PoTransactionItems = poTransItems,
+            };
 
-                var poTransData = new PoTransactionData()
-                {
-                    PoTransaction = poTrans,
-                    PoTransactionItems = poTransItems,
-                };
-
-                var success = await PoReceiveService.AddAsync(poTransData);
-
-                results.Add(new WMSPoReceivePayload()
-                {
-                    Messages = this.Messages,
-                    Success = success,
-                    PoItemUuidList = poTransData.PoTransactionItems.Select(i => i.PoItemUuid).ToList(),
-                    TransUuid = poTransData.PoTransaction.TransUuid,
-                });
-            }
-            return results;
+            return await PoReceiveService.AddAsync(poTransData);
         }
-         
+
         #region prepare po trans data
 
         protected async Task<IList<PoTransactionItems>> ConvertWmsReceiveItemsToPoTransItems(PoReceivePayload payload)
@@ -254,24 +301,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return poTransItem;
         }
-        protected PoTransaction GetPoTransactionByVendor(PoReceivePayload payload, string vendorCode, IEnumerable<PoHeader> poHeaders)
+        protected PoTransaction GetPoTransaction(PoReceivePayload payload, PoHeader poHeader, bool multiplePo, string transUuid)
         {
-            return poHeaders.Where(i => i.VendorCode == vendorCode).GroupBy(j => (j.VendorCode, j.VendorName, j.VendorUuid))
-                  .Select(x => new PoTransaction()
-                  {
-                      TransUuid = Guid.NewGuid().ToString(),
-                      MasterAccountNum = payload.MasterAccountNum,
-                      ProfileNum = payload.ProfileNum,
-                      VendorUuid = x.Key.VendorUuid,
-                      VendorName = x.Key.VendorName,
-                      VendorCode = x.Key.VendorCode,
-                      PoNum = x.Count() > 1 ? string.Empty : x.Min(j => j.PoNum),
-                      PoUuid = x.Count() > 1 ? string.Empty : x.Min(j => j.PoUuid),
-                      TransStatus = (int)PoTransStatus.StockReceive
-                  }).FirstOrDefault();
+            return new PoTransaction()
+            {
+                TransUuid = transUuid,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                VendorUuid = poHeader.VendorUuid,
+                VendorName = poHeader.VendorName,
+                VendorCode = poHeader.VendorCode,
+                PoNum = multiplePo ? string.Empty : poHeader.PoNum,
+                PoUuid = multiplePo ? string.Empty : poHeader.PoUuid,
+                TransStatus = (int)PoTransStatus.StockReceive
+            };
         }
 
-        #endregion 
+        #endregion
 
         #endregion
 
