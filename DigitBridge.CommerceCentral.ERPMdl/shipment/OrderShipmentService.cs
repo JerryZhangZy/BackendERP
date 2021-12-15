@@ -464,6 +464,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasOrderShipment)
                 return false;
+
+            //Read account info from payload to dto.
+            payload.OrderShipment.SetAccount(payload.MasterAccountNum, payload.ProfileNum, payload.DatabaseNum);
+
             //set edit mode before validate
             Edit();
             if (!(await ValidateAccountAsync(payload)))
