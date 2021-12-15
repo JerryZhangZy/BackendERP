@@ -154,7 +154,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task CreateShipmentAsync_For_Wms_Test()
         {
             //To get  processuuid from event process which eventprocesstype is shipmentfromwms.
-            var shipmentID = "b29fe59e-9850-9232-2888-d13ec9a70055";
+            var shipmentID = "113-10000001812";
 
             var payload = new OrderShipmentPayload()
             {
