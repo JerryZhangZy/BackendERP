@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public static class ImportFilesApi
     {
 
-        [FunctionName(nameof(ImportCustomer))]
+        [FunctionName(nameof(ImportCustomerFiles))]
         #region swagger Doc
         [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -32,13 +32,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(ImportFilesPayload), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportFilesPayload))]
         #endregion swagger Doc
-        public static async Task<JsonNetResponse<ImportFilesPayload>> ImportCustomer(
+        public static async Task<JsonNetResponse<ImportFilesPayload>> ImportCustomerFiles(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "importFiles/customer")] HttpRequest req)
         {
             var payload = await req.GetParameters<ImportFilesPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             payload.ImportFiles = req.Form.Files;
-            //payload.Options = req.Form["options"];
+            payload.Options = req.Form["options"].ToString().JsonToObject<ImportOptions>();
             var svc = new SalesOrderManager(dbFactory);
 
             //await svc.ImportAsync(payload, files);
