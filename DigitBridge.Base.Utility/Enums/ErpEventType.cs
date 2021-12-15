@@ -47,7 +47,7 @@ namespace DigitBridge.Base.Common
         SyncProduct = 10,
 
         [Description("Create Po transaction by wms poreceive")]
-        PoReceiveFromWMS = 10,
+        PoReceiveFromWMS = 11,
 
     }
     public static class ErpEventQueueName
@@ -78,7 +78,7 @@ namespace DigitBridge.Base.Common
                 case ErpEventType.SyncProduct:
                     return SyncProduct;
                 case ErpEventType.PoReceiveFromWMS:
-                    return PoReceiveFromWMS;
+                    return ERPCreatePoReceiveByWMS;
                 default:
                     return DefaultQueue;
             }
