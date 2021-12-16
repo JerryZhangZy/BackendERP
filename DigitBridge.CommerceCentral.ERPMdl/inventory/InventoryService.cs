@@ -523,7 +523,8 @@ from
          inner join ProductBasic pb on pb.CentralProductNum = pdcq.CentralProductNum
          inner join Inventory iv on iv.ProductUuid=pb.ProductUuid and iv.WarehouseUuid=dc.DistributionCenterUuid
 where 
-      pdcq.MasterAccountNum={payload.MasterAccountNum} and pdcq.ProfileNum={payload.ProfileNum};";
+    pdcq.MasterAccountNum={payload.MasterAccountNum} and pdcq.ProfileNum={payload.ProfileNum}
+    AND (pdcq.AvailableQuantity != iv.Instock-iv.OpenSoQty-iv.OpenFulfillmentQty OR (pdcq.AvailableQuantity IS NULL AND iv.Instock-iv.OpenSoQty-iv.OpenFulfillmentQty IS NOT NULL));";
                 payload.SyncInventoryAvQtyCount = await dbFactory.Db.ExecuteAsync(sql);
                 return true;
             }
