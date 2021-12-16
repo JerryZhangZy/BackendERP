@@ -98,13 +98,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 });
                 return results;
             }
-            var vendorCodes = payload.WMSPoReceiveItems.Select(i => i.VendorCode).Distinct();
+            var wmsBatchNums = payload.WMSPoReceiveItems.Select(i => i.WMSBatchNum).Distinct();
 
             // loop vendor to send poreceive items to eventprocess table and queue.
-            foreach (var vendorCode in vendorCodes)
+            foreach (var wmsBatchNum in wmsBatchNums)
             {
-                var items = payload.WMSPoReceiveItems.Where(i => i.VendorCode == vendorCode);
-                var wmsBatchNum = items.Select(i => i.WMSBatchNum).FirstOrDefault();
+                var items = payload.WMSPoReceiveItems.Where(i => i.WMSBatchNum == wmsBatchNum);
+
                 var eventProcessERP = new EventProcessERP()
                 {
                     MasterAccountNum = payload.MasterAccountNum,
@@ -151,12 +151,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 validate = false;
             }
 
-            if (payload.WMSPoReceiveItems.Count(i => i.WMSBatchNum.IsZero()) > 0)
-            {
-                AddError("WMSBatchNum cannot be empty");
-                validate = false;
-            }
-
             if (payload.WMSPoReceiveItems.Count(i => i.WarehouseCode.IsZero()) > 0)
             {
                 AddError("WarehouseCode cannot be empty");
@@ -167,6 +161,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("SKU cannot be empty");
                 validate = false;
             }
+
+            if (payload.WMSPoReceiveItems.Count(i => i.WMSBatchNum.IsZero()) > 0)
+            {
+                AddError("WMSBatchNum cannot be empty");
+                validate = false;
+            }
+
+            var wmsBatchNums = payload.WMSPoReceiveItems.Select(i => i.WMSBatchNum).Distinct();
+            foreach (var wmsBatchNum in wmsBatchNums)
+            {
+                var vendorCount = payload.WMSPoReceiveItems.Where(i => i.WMSBatchNum == wmsBatchNum).Select(j => j.VendorCode).Distinct().Count();
+                if (vendorCount > 1)
+                {
+                    AddError($"Each batch can only contain one vendor. WMSBatchNum:{wmsBatchNum}");
+                    validate = false;
+                    break;
+                }
+            }
+
+
             return validate;
         }
 
@@ -272,7 +286,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var poTrans = GetPoTransaction(payload, poHeader, poUuids.Count() > 0, wmsBatchNum);
+            var poTrans = GetPoTransaction(payload, poHeader, poUuids.Count() > 1, wmsBatchNum);
 
             var poTransData = new PoTransactionData()
             {
