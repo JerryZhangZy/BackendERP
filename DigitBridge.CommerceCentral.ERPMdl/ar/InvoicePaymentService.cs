@@ -856,6 +856,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 CustomerCode = pay1.CustomerCode,
                 TransDate = pay1.TransDate,
                 PaidBy = pay1.PaidBy,
+                Notes = pay1.Notes,
                 BankAccountUuid = pay1.BankAccountUuid,
                 BankAccountCode = pay1.BankAccountCode,
                 CheckNum = pay1.CheckNum,
@@ -866,6 +867,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load first invoice
             var invoice1 = await InvoiceService.GetInvoiceHeaderAsync(pay1.InvoiceUuid);
+            payload.InvoiceTransaction.CustomerCode = invoice1.CustomerCode;
 
             // load outstanding invoice list for customer
             if (!await LoadInvoiceListAsync(payload, invoice1.CustomerCode))

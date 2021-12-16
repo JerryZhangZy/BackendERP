@@ -117,12 +117,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddApInvoice))]
+        #region open api definition
         [OpenApiOperation(operationId: "AddApInvoice", tags: new[] { "ApInvoices" }, Summary = "Add one apInvoice")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ApInvoicePayloadAdd), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApInvoicePayloadAdd))]
+        #endregion
         public static async Task<JsonNetResponse<ApInvoicePayload>> AddApInvoice(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "apInvoices")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
@@ -132,7 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             payload.Success = await srv.AddAsync(payload);
             if (payload.Success)
             {
-                srv.GetByNumber(payload.MasterAccountNum, payload.ProfileNum, payload.ApInvoice.ApInvoiceHeader.ApInvoiceNum);
+                srv.GetByNumber(payload.MasterAccountNum, payload.ProfileNum, srv.Data.ApInvoiceHeader.ApInvoiceNum);
                 payload.ApInvoice = srv.ToDto();
             }
             payload.Messages = srv.Messages;
