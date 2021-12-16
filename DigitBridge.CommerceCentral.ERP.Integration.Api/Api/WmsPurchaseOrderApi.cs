@@ -16,7 +16,8 @@ using Microsoft.OpenApi.Models;
 
 namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
 {
-    public class PurchaseOrderIntegrationApi
+    [ApiFilter(typeof(WmsPurchaseOrderApi))]
+    public static class WmsPurchaseOrderApi
     {
 
         /// <summary>

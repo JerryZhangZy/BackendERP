@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
@@ -38,6 +39,12 @@ SELECT
 {Helper.BatchNumber()},
 {Helper.WarehouseTransferUuid()},
 {Helper.WarehouseTransferType()},
+{Helper.TransferDate()},
+{Helper.TransferTime()},
+{Helper.ReceiveDate()},
+{Helper.ReceiveTime()},
+{Helper.ToWarehouseCode()},
+{Helper.InTransitToWarehouseCode()},
 COALESCE(iut.text, '') warehouseTransferTypeText, 
 {ItemsHelper.WarehouseTransferItemsUuid()},
 {ItemsHelper.Seq()},
@@ -191,5 +198,41 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             }
             return rowNumList;
         }
+
+        public virtual async Task GetWarehouseTransferListSummaryAsync(WarehouseTransferPayload payload)
+        {
+            if (payload == null)
+                payload = new WarehouseTransferPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.WarehouseTransferListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.WarehouseTransferListCount = 0;
+                payload.WarehouseTransferListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
+
+
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.WarehouseTransferStatus, 0) = 0 THEN 1 ELSE 0 END) as arriveImmediatelyCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.WarehouseTransferStatus, 0) = 1 THEN 1 ELSE 0 END) as inTransitCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.WarehouseTransferStatus, 0) = 2 THEN 1 ELSE 0 END) as closedCount
+";
+            return this.SQL_SelectSummary;
+        }
+        
     }
 }
