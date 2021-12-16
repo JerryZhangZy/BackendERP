@@ -40,13 +40,13 @@
 	[ShippingAmountAssign] INT NOT NULL DEFAULT 0, --How to assign shipping fee to each item
 	[MiscAmountAssign] INT NOT NULL DEFAULT 0, --How to assign MiscAmount fee to each item
 
+	[WMSBatchNum] varchar(50) not null default '', --(Readonly) WMS po rececived batch number. <br> Title: Update By, Display: true, Editable: false
+
     [EnterDateUtc] DATETIME NOT NULL,--(Readonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
     [UpdateDateUtc] DATETIME NOT NULL,--(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL,--(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL,--(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
-
-	[WMSBatchNum] varchar(50) not null default '' --(Readonly) WMS po rececived batch number. <br> Title: Update By, Display: true, Editable: false
 
     CONSTRAINT [PK_PoTransaction] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
