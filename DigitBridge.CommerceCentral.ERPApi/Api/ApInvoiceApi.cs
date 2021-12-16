@@ -132,7 +132,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             payload.Success = await srv.AddAsync(payload);
             if (payload.Success)
             {
-                srv.GetByNumber(payload.MasterAccountNum, payload.ProfileNum, payload.ApInvoice.ApInvoiceHeader.ApInvoiceNum);
+                srv.GetByNumber(payload.MasterAccountNum, payload.ProfileNum, srv.ToDto().ApInvoiceHeader.ApInvoiceNum);
                 payload.ApInvoice = srv.ToDto();
             }
             payload.Messages = srv.Messages;
