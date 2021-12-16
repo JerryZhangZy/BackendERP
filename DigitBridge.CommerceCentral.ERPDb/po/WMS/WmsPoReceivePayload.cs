@@ -36,9 +36,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public List<string> PoItemUuidList { get; set; }
 
         /// <summary>
-        /// the uuid of Po transaction
+        /// WMSBatchNum which wms uploaded.
         /// </summary>
-        public string TransUuid { get; set; }
+        public string WMSBatchNum { get; set; }
     }
 }
 

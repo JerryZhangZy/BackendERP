@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -442,7 +443,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasUpdateBy => UpdateBy != null;
 
 
-
+        public decimal PaidAmount => TotalAmount.ToDecimal();
         #endregion Properties - Generated 
 
         #region Children - Generated 

@@ -7,6 +7,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class WMSPoReceiveItem
     {
         /// <summary>
+        /// WMS batch num
+        /// </summary>
+        public string WMSBatchNum { get; set; }
+
+        /// <summary>
         /// VendorCode
         /// </summary>
         public string VendorCode { get; set; }

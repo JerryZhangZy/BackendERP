@@ -141,6 +141,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("MiscAmountAssign",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _miscAmountAssign;
 
+        [Column("WMSBatchNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _wMSBatchNum;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime,NotNull=true)]
         private DateTime _updateDateUtc;
 
@@ -699,6 +702,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) WMS po rececived batch number. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
+        public virtual string WMSBatchNum
+        {
+            get
+            {
+				return _wMSBatchNum?.TrimEnd(); 
+            }
+            set
+            {
+				_wMSBatchNum = value.TruncateTo(50); 
+				OnPropertyChanged("WMSBatchNum", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime UpdateDateUtc
@@ -807,6 +826,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_chargeAndAllowanceAmount = default(decimal); 
 			_shippingAmountAssign = default(int); 
 			_miscAmountAssign = default(int); 
+			_wMSBatchNum = String.Empty; 
 			_updateDateUtc = new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
