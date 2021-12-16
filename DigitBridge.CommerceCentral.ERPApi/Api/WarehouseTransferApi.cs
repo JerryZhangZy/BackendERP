@@ -255,6 +255,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<WarehouseTransferPayloadFind>(WarehouseTransferPayloadFind.GetSampleData());
         }
 
+
+
+
+        [FunctionName(nameof(WarehouseTransferListSummary))]
+        [OpenApiOperation(operationId: "WarehouseTransferListSummary", tags: new[] { "WarehouseTransfers" }, Summary = "Load WarehouseTransfers list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadFind))]
+        public static async Task<JsonNetResponse<WarehouseTransferPayload>> WarehouseTransferListSummary(
+     [HttpTrigger(AuthorizationLevel.Function, "post", Route = "warehouseTransfers/find/summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<WarehouseTransferPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new WarehouseTransferList(dataBaseFactory, new WarehouseTransferQuery());
+            await srv.GetWarehouseTransferListSummaryAsync(payload);
+            return new JsonNetResponse<WarehouseTransferPayload>(payload);
+        }
+
+
         [FunctionName(nameof(ExportWarehouseTransfer))]
         [OpenApiOperation(operationId: "ExportWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]

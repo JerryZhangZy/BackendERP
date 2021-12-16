@@ -96,6 +96,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeWarehouseTransferListCount() => HasWarehouseTransferListCount;
 
         #endregion list service
+
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder WarehouseTransferListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasWarehouseTransferListSummary => WarehouseTransferListSummary != null && WarehouseTransferListSummary.Length > 0;
+        public bool ShouldSerializeVendorSummary() => HasWarehouseTransferListSummary;
+
+        ///// <summary>
+        ///// (Response Data) List result count which load filter and paging.
+        ///// </summary>
+        //public int WarehouseTransferListCount { get; set; }
+        //[JsonIgnore] public virtual bool HasWarehouseTransferListCount => WarehouseTransferListCount > 0;
+        //public bool ShouldSerializeVendorListCount() => HasWarehouseTransferListCount;
     }
 }
 
