@@ -53,6 +53,10 @@ namespace DigitBridge.Base.Utility
         public static string ERPSummaryTableName => GetValueByName("ERPSummaryTableName");
         public static string ERPSummaryTableConnectionString => GetValueByName("ERPSummaryTableConnectionString");
 
+        public static string ERPImportContainerName => GetValueByName("ERPImportContainerName");
+        public static string ERPExportContainerName => GetValueByName("ERPExportContainerName");
+        public static string ERPBlobConnectionString => GetValueByName("ERPBlobConnectionString");
+
         public static bool UseAzureManagedIdentity
         {
             get

@@ -37,9 +37,20 @@ namespace DigitBridge.CommerceCentral.AzureStorage
             return fileItemList;
         }
 
+        public BlobClient GetBlobClient(string blobName)
+        {
+            return blobContainerClient.GetBlobClient(blobName);
+        }
+
+        public async Task<bool> ExistBlob(string blobName)
+        {
+            return await GetBlobClient(blobName)?.ExistsAsync();
+        }
+
         public async Task<byte[]> GetBlobAsync(string blobName)
         {
-            var blob= blobContainerClient.GetBlobClient(blobName);
+            var blob= GetBlobClient(blobName);
+            if (blob == null) return null;
             using(var ms=new MemoryStream())
             {
                 await blob.DownloadToAsync(ms);
@@ -47,36 +58,56 @@ namespace DigitBridge.CommerceCentral.AzureStorage
             }
         }
 
-        public async Task DownloadBlobAsync(string blobName,string filePath)
+        public async Task DownloadBlobToFileAsync(string blobName,string filePath)
         {
-            var blob= blobContainerClient.GetBlobClient(blobName);
-            await blob.DownloadToAsync(filePath);
+            await GetBlobClient(blobName)?.DownloadToAsync(filePath);
         }
 
-        public async Task UploadBlobAsync(string blobName,string filePath,bool overwrite=true)
+        public async Task DownloadBlobAsync(string blobName, Stream stream)
         {
-            var blob = blobContainerClient.GetBlobClient(blobName);
-            await blob.UploadAsync(filePath,overwrite);
+            await GetBlobClient(blobName)?.DownloadToAsync(stream);
         }
 
-        public async Task UploadBlobAsync(string blobName,byte[] buffer,bool overrite=true)
+        public async Task<byte[]> DownloadBlobAsync(string blobName)
+        {
+            using (var ms = new MemoryStream())
+            {
+                await DownloadBlobAsync(blobName, ms);
+                return ms.ToArray();
+            }
+        }
+        public async Task<string> DownloadBlobToStringAsync(string blobName)
+        {
+            var result = await DownloadBlobAsync(blobName);
+            return result != null ? new BinaryData(result).ToString() : string.Empty;
+        }
+
+        public async Task UploadBlobByFileAsync(string blobName,string filePath,bool overwrite=true)
+        {
+            await GetBlobClient(blobName)?.UploadAsync(filePath,overwrite);
+        }
+
+        public async Task UploadBlobAsync(string blobName,byte[] buffer,bool overwrite=true)
         {
             using(var ms=new MemoryStream(buffer))
             {
-                await UploadBlobAsync(blobName, ms,overrite);
+                await UploadBlobAsync(blobName, ms,overwrite);
             }
         }
 
         public async Task UploadBlobAsync(string blobName,Stream stream,bool overwrite=true)
         {
-            var blob = blobContainerClient.GetBlobClient(blobName);
-            await blob.UploadAsync(stream,overwrite);
+            await GetBlobClient(blobName)?.UploadAsync(stream,overwrite);
+        }
+
+        public async Task UploadBlobAsync(string blobName, string content, bool overwrite = true)
+        {
+            await GetBlobClient(blobName)?.UploadAsync(new BinaryData(content), overwrite);
         }
 
         public async Task<bool> DeleteBlobAsync(string blobName)
         {
-            var blob = blobContainerClient.GetBlobClient(blobName);
-            return (await blob.DeleteIfExistsAsync()).Value;
+            return (await GetBlobClient(blobName)?.DeleteIfExistsAsync()).Value;
 
         }
     }
