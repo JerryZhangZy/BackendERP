@@ -27,6 +27,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class ImportExportFilesPayload : PayloadBase
     {
         /// <summary>
+        /// (Request Data) Uuid for this Import batch, this will be Azure Blob name.
+        /// </summary>
+        public string ImportUuid { get; set; }
+        public virtual bool HasImportUuid => !string.IsNullOrEmpty(ImportUuid);
+
+        /// <summary>
         /// (Response Data) List result which load filter and paging.
         /// </summary>
         [JsonIgnore] public IFormFileCollection ImportFiles { get; set; }

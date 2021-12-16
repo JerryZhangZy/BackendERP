@@ -12,31 +12,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public class ImportBlobService
     {
-        public const string CONTAINER_NAME = "erp_impot_files";
-        public const string OPTIONS_NAME = "erp_impot_options";
+        public const string CONTAINER_NAME = "erp_import";
+        public const string OPTIONS_NAME = "erp_import_options";
+        public const string RESULT_NAME = "erp_import_result";
 
         private BlobUniversal _blobUniversal;
 
-        public string ContainerName 
+        public string ContainerName(string importUuid) 
         { 
-            get => string.IsNullOrWhiteSpace(MySingletonAppSetting.ERPSummaryTableName) ? "erp_impot_files" : MySingletonAppSetting.ERPSummaryTableName; 
+            return $"{CONTAINER_NAME}_{importUuid}"; 
         }
         public string ConnectionString
         {
             get => MySingletonAppSetting.ERPBlobConnectionString;
         }
 
-        protected async Task<BlobUniversal> GetBlobContainerAsync()
+        protected async Task<BlobUniversal> GetBlobContainerAsync(string importUuid)
         {
             if (_blobUniversal == null)
-                _blobUniversal = await BlobUniversal.CreateAsync(ContainerName, ConnectionString);
+                _blobUniversal = await BlobUniversal.CreateAsync(ContainerName(importUuid), ConnectionString);
             return _blobUniversal;
         }
 
         #region save to blob
         public async Task<bool> SaveToBlob(ImportExportFilesPayload payload)
         {
-            var blobContainer = await GetBlobContainerAsync();
+            var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
 
             var blobList = blobContainer.GetBlobList();
 
@@ -59,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             try
             {
-                var blobContainer = await GetBlobContainerAsync();
+                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
                 await blobContainer.UploadBlobAsync(OPTIONS_NAME, payload.Options.ObjectToString());
                 return true;
             }
@@ -94,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             try
             {
-                var blobContainer = await GetBlobContainerAsync();
+                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
                 using (var ms = file.OpenReadStream())
                 {
                     await blobContainer.UploadBlobAsync(file.Name, ms);
@@ -115,7 +116,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             try
             {
-                var blobContainer = await GetBlobContainerAsync();
+                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
                 var optionJson = await blobContainer.DownloadBlobToStringAsync(OPTIONS_NAME);
                 if (string.IsNullOrWhiteSpace(optionJson))
                 {
@@ -133,17 +134,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         protected async Task<bool> LoadFileNamesFromBlob(ImportExportFilesPayload payload)
         {
-            if (!payload.HasImportFiles)
+            var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+            var fileList = blobContainer.GetBlobList();
+            if (fileList == null || fileList.Count == 0)
             {
-                payload.ReturnError($"Import file is required.");
+                payload.ReturnError($"Import files not found.");
                 return false;
             }
 
-            foreach (var file in payload.ImportFiles)
+            payload.FileNames = new List<string>();
+            foreach (var fileName in fileList)
             {
-                if (file == null) continue;
-                if (!(await SaveFileToBlob(file, payload)))
-                    return false;
+                if (string.IsNullOrWhiteSpace(fileName) || 
+                    fileName.EqualsIgnoreSpace(OPTIONS_NAME) ||
+                    fileName.EqualsIgnoreSpace(RESULT_NAME)
+                    ) continue;
+                payload.AddFileName(fileName);
+            }
+
+            if (payload.FileNames == null || payload.FileNames.Count == 0)
+            {
+                payload.ReturnError($"Import files not found.");
+                return false;
             }
             return true;
         }
@@ -155,7 +167,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             try
             {
-                var blobContainer = await GetBlobContainerAsync();
+                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
                 return await blobContainer.DownloadBlobAsync(fileName);
             }
             catch (Exception e)
