@@ -166,7 +166,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _ApInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
- 
+        public void InitFilterByVendor(string vendorCode)
+        {
+            _ApInvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
+            _ApInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);
+            _ApInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
+            _VendorCode.FilterValue = vendorCode;
+        }
+
+        public void InitFilterByInvoiceNum(string apInvoiceNum)
+        {
+            _ApInvoiceNumFrom.FilterValue = apInvoiceNum;
+            _ApInvoiceNumTo.FilterValue = apInvoiceNum;
+        }
 
         protected override void SetAvailableOrderByList()
         {

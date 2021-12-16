@@ -97,8 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 await base.BeforeSaveAsync();
                 if (this.Data?.OrderShipmentHeader != null)
-                {
-                    inventoryLogService.UpdateByShipment(this.Data);
+                { 
 
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentHeader = this.Data.OrderShipmentHeader;
@@ -465,6 +464,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasOrderShipment)
                 return false;
+
+            //Read account info from payload to dto.
+            payload.OrderShipment.SetAccount(payload.MasterAccountNum, payload.ProfileNum, payload.DatabaseNum);
+
             //set edit mode before validate
             Edit();
             if (!(await ValidateAccountAsync(payload)))

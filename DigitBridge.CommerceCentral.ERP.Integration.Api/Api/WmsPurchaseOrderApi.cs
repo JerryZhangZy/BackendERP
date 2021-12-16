@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPApi;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -58,8 +59,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-            var service = new PoReceiveManager(dataBaseFactory);
-            var result = await service.AddTransForWMSPoReceiveAsync(payload);
+            var service = new PoReceiveManager(dataBaseFactory, MySingletonAppSetting.AzureWebJobsStorage);
+            var result = await service.AddWMSPoReceiveToEventProcessAndQueueAsync(payload);
 
             return new JsonNetResponse<IList<WMSPoReceivePayload>>(result);
         }

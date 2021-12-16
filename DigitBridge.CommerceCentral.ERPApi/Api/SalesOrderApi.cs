@@ -109,12 +109,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="orderNumber"></param>
         /// <returns></returns>
         [FunctionName("DeleteSalesOrders")]
+        #region swagger Doc
         [OpenApiOperation(operationId: "DeleteSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Delete one sales order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadDelete))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> DeleteSalesOrders(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "salesOrders/{orderNumber}")]
             HttpRequest req,
@@ -135,12 +137,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(UpdateSalesOrders))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Update one sales order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadUpdate), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadUpdate))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> UpdateSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesOrders")] HttpRequest req)
         {
@@ -152,15 +156,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = srv.Messages;
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
+
         /// <summary>
         /// Add sales order
         /// </summary>
         [FunctionName(nameof(AddSalesOrders))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Add one sales order")]
         [OpenApiParameter(name: Consts.MasterAccountNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: Consts.ProfileNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> AddSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders")] HttpRequest req)
         {
@@ -178,12 +185,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load sales order list
         /// </summary>
         [FunctionName(nameof(SalesOrdersList))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "SalesOrdersList", tags: new[] { "SalesOrders" }, Summary = "Load sales order list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
         {
@@ -198,12 +207,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load sales order list
         /// </summary>
         [FunctionName(nameof(SalesOrdersListSummary))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "SalesOrdersListSummary", tags: new[] { "SalesOrders" }, Summary = "Load sales order list summary")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersListSummary(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find/summary")] HttpRequest req)
         {
@@ -218,12 +229,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Load sales order list
         /// </summary>
         [FunctionName(nameof(SalesOrderDataList))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "SalesOrderDataList", tags: new[] { "SalesOrders" }, Summary = "Load sales order data list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrderDataList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/finddata")] HttpRequest req)
         {
@@ -238,11 +251,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Add sales order
         /// </summary>
         [FunctionName(nameof(Sample_SalesOrders_Post))]
+        #region swagger Doc
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "SalesOrdersSample", tags: new[] { "Sample" }, Summary = "Get new sample of sales order")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayloadAdd>> Sample_SalesOrders_Post(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/salesOrders")] HttpRequest req)
         {
@@ -250,11 +265,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(Sample_SalesOrder_Find))]
+        #region swagger Doc
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "SalesOrderFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of salesorder find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayloadFind>> Sample_SalesOrder_Find(
            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/salesOrders/find")] HttpRequest req)
         {
@@ -262,12 +279,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(ExportSalesOrder))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "ExportSalesOrder", tags: new[] { "SalesOrders" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        #endregion swagger Doc
         public static async Task<FileContentResult> ExportSalesOrder(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/export")] HttpRequest req)
         {
@@ -282,12 +301,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(ImportSalesOrder))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        #endregion swagger Doc
         public static async Task<SalesOrderPayload> ImportSalesOrder(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/import")] HttpRequest req)
         {
@@ -308,12 +329,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(CreateSalesOrderByCentralOrderUuid))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "CreateSalesOrderByCentralOrderUuid", tags: new[] { "SalesOrders" }, Summary = "Create SalesOrder by CentralOrderUuid")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid))]
+        #endregion swagger Doc
         public static async Task<SalesOrderPayload> CreateSalesOrderByCentralOrderUuid(
             [HttpTrigger(AuthorizationLevel.Function, "POST"
             , Route = "salesOrders/createsalesorderbycentralorderuuid")] HttpRequest req)
@@ -345,11 +368,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         /// <param name="req"></param> 
         [FunctionName(nameof(SalesOrderSummary))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "SalesOrderSummary", tags: new[] { "SalesOrders" }, Summary = "Get sales order summary")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetMultiple), Description = "Result is List<SalesOrderDataDto>")]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrderSummary(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/Summary")] HttpRequest req)
         {
@@ -364,12 +389,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Add sales order prepayment 
         /// </summary>
         [FunctionName(nameof(AddPrepayment))]
+        #region swagger Doc
         [OpenApiOperation(operationId: "AddPrepayment", tags: new[] { "SalesOrders" }, Summary = "Add pre payment amount to salesorder")]
         [OpenApiParameter(name: Consts.MasterAccountNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: Consts.ProfileNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "amount", In = ParameterLocation.Path, Required = true, Type = typeof(decimal), Summary = "pre sales amount", Description = "pre sales amount. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        #endregion swagger Doc
         public static async Task<JsonNetResponse<SalesOrderPayload>> AddPrepayment(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/prepayment/{orderNumber}/{amount}")] HttpRequest req,
            string orderNumber, decimal amount)

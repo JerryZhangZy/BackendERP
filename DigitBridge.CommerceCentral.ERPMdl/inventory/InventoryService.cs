@@ -510,32 +510,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return inventory;
         }
 
-        public bool SyncInventoryAvQtyToProductDistributionCenterQuantity(InventoryPayload payload)
-        {
-            try
-            {
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    payload.SyncInventoryAvQtyCount = InventoryServiceHelper.SyncInventoryAvQtyToProductDistributionCenterQuantity(payload);
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AddError(ex.Message);
-                return false;
-            }
-        }
-
         public async Task<bool> SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(InventoryPayload payload)
         {
             try
             {
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    payload.SyncInventoryAvQtyCount = await InventoryServiceHelper.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(payload);
-                }
-
+                    var sql = $@"
+update pdcq set 
+                pdcq.AvailableQuantity= iv.Instock-iv.OpenSoQty-iv.OpenFulfillmentQty
+from
+     ProductDistributionCenterQuantity pdcq
+         inner join DistributionCenter dc on DC.DistributionCenterNum = pdcq.DistributionCenterNum
+         inner join ProductBasic pb on pb.CentralProductNum = pdcq.CentralProductNum
+         inner join Inventory iv on iv.ProductUuid=pb.ProductUuid and iv.WarehouseUuid=dc.DistributionCenterUuid
+where 
+      pdcq.MasterAccountNum={payload.MasterAccountNum} and pdcq.ProfileNum={payload.ProfileNum};";
+                payload.SyncInventoryAvQtyCount = await dbFactory.Db.ExecuteAsync(sql);
                 return true;
             }
             catch (Exception ex)

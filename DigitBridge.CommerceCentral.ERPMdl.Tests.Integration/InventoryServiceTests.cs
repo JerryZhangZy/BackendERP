@@ -338,6 +338,17 @@ WHERE itm.cnt > 0
         }
         #endregion
 
+        [Fact]
+        public async Task SyncInventoryAvQtyToProductDistributionCenterQuantityAsync_Test()
+        {
+            var srv = new InventoryService(DataBaseFactory);
+            var result = await srv.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(new InventoryPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001
+            });
+            Assert.True(result);
+        }
     }
 }
 
