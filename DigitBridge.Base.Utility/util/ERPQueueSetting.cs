@@ -26,6 +26,8 @@ namespace DigitBridge.Base.Common
         public static string ERPCreateInvoiceByOrdershipmentQueue => "erp-create-invoice-by-ordershipment";
         public static string ERPCreateSalesOrderByCentralorderQueue => "erp-create-salesorder-by-centralorder";
         public static string ERPCreateShipmentByWMSQueue => "erp-create-shipment-by-wms";
+
+        public static string ERPCreatePoReceiveByWMSQueue = "erp-create-poreceive-by-wms";
         public static string ERPSyncProductQueue => "erp-sync-product-from-productbasic-queue";
         public static string ERPSyncInventoryByWmsQueue => "erp-sync-inventory-by-wms";
 #else
@@ -42,6 +44,7 @@ namespace DigitBridge.Base.Common
         public static string ERPCreateInvoiceByOrdershipmentQueue => GetValueByName("ERPCreateInvoiceByOrdershipmentQueueName");
         public static string ERPCreateSalesOrderByCentralorderQueue => GetValueByName("ERPCreateSalesOrderByCentralorderQueueName");
         public static string ERPCreateShipmentByWMSQueue => GetValueByName("ERPCreateShipmentByWMSQueueName");
+        public static string ERPCreatePoReceiveByWMSQueue => GetValueByName("ERPCreatePoReceiveByWMSQueueName");
         public static string ERPSyncProductQueue => GetValueByName("ERPSyncProductQueueName");
         public static string ERPSyncInventoryByWmsQueue => GetValueByName("ERPSyncInventoryByWmsQueueName");
 #endif

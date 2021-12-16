@@ -551,6 +551,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!success)
             {
                 this.Messages.Add(eventProcessERPService.Messages);
+                return null;
             }
             var wmsShipment = (eventProcessERPService.Data?.EventProcessERP?.ProcessData).StringToObject<InputOrderShipmentType>();
             return wmsShipment;

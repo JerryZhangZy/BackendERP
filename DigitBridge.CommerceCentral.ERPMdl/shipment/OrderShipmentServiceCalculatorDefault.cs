@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool SetDefault(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            ResetUuidForAddingMode(data, processingMode);
+            ReSetUuid(data, processingMode);
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
@@ -279,8 +279,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion message
 
-        #region Reset uuid
-        protected virtual void ResetUuidForAddingMode(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        #region Reset uuid 
+
+        protected virtual void ReSetUuid(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isAddMode = processingMode == ProcessingMode.Add;
             var isEditMode = processingMode == ProcessingMode.Edit;
@@ -294,25 +295,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 foreach (var packageItem in data.OrderShipmentPackage)
                 {
+                    packageItem.OrderShipmentUuid = data.OrderShipmentHeader.OrderShipmentUuid;
                     if (isAddMode || (isEditMode && packageItem.RowNum.IsZero()))
                         packageItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+
                     if (packageItem.OrderShipmentShippedItem != null && packageItem.OrderShipmentShippedItem.Count > 0)
                     {
-                        foreach (var subItem in packageItem.OrderShipmentShippedItem)
+                        foreach (var shippedItem in packageItem.OrderShipmentShippedItem)
                         {
+                            shippedItem.OrderShipmentPackageUuid = packageItem.OrderShipmentPackageUuid;
+                            shippedItem.OrderShipmentUuid = data.OrderShipmentHeader.OrderShipmentUuid;
                             if (isAddMode || (isEditMode && packageItem.RowNum.IsZero()))
-                                subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                            subItem.OrderShipmentPackageUuid = packageItem.OrderShipmentPackageUuid;
+                                shippedItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
                         }
                     }
                 }
             }
             if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0)
             {
-                foreach (var detailItem in data.OrderShipmentCanceledItem)
+                foreach (var canceledItem in data.OrderShipmentCanceledItem)
                 {
-                    if (isAddMode || (isEditMode && detailItem.RowNum.IsZero()))
-                        detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
+                    canceledItem.OrderShipmentUuid = data.OrderShipmentHeader.OrderShipmentUuid;
+                    if (isAddMode || (isEditMode && canceledItem.RowNum.IsZero()))
+                        canceledItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
                 }
 
             }

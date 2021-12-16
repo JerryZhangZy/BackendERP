@@ -143,8 +143,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact]
         public async Task CreateSalesOrderByChannelOrderIdAsync_Simple_Test()
-        {
-            var salesOrderUuid = "f9bfe447-f992-4db1-8d85-f7b001ba66a2";
+        { 
+            var salesOrderUuid = "84dab093-0f35-4fca-87b1-57a06570d52e";
             SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
             (var result, var salesOrderNums) = await soManager.CreateSalesOrderByChannelOrderIdAsync(salesOrderUuid);
             Assert.True(result, soManager.Messages.ObjectToString());

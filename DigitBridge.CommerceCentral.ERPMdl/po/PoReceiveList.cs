@@ -46,6 +46,7 @@ SELECT
 {Helper.Description()}, 
 {Helper.Notes()}, 
 {Helper.VendorUuid()}, 
+{Helper.VendorCode()}, 
 {Helper.VendorInvoiceNum()}, 
 {Helper.VendorInvoiceDate()}, 
 {Helper.DueDate()}, 

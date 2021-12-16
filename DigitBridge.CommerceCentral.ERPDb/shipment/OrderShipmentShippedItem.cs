@@ -18,11 +18,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
                 "MasterAccountNum",
                 "ProfileNum",
-                "DatabaseNum",
+                //"DatabaseNum",
                 "OrderShipmentUuid",
-                "ordershipmentnum",
-                "ordershipmentpackageuuid",
-                "ordershipmentpackagenum"
+                "OrderShipmentNum",
+                "OrderShipmentPackageUuid",
+                "OrderShipmentPackageNum"
             };
     }
 }

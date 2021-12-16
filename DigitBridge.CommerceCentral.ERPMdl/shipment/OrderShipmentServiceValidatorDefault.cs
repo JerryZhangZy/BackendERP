@@ -550,44 +550,83 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     isValid = false;
                     AddError("OrderShipmentHeader.RowNum is required.");
                 }
-
-                // This property should not be changed.
-                dto.OrderShipmentHeader.MasterAccountNum = null;
-                dto.OrderShipmentHeader.ProfileNum = null;
-                dto.OrderShipmentHeader.DatabaseNum = null;
+                //move to ignore upate columns
+                //// This property should not be changed.
+                //dto.OrderShipmentHeader.MasterAccountNum = null;
+                //dto.OrderShipmentHeader.ProfileNum = null;
+                //dto.OrderShipmentHeader.DatabaseNum = null;
                 dto.OrderShipmentHeader.OrderShipmentUuid = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
-                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        detailItem.OrderShipmentPackageUuid = null;
-                        detailItem.OrderShipmentNum = null;
-                        detailItem.OrderShipmentUuid = null;
-                        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
-                        {
-                            foreach (var subItem in detailItem.OrderShipmentShippedItem)
-                            {
-                                subItem.OrderShipmentShippedItemUuid = null;
-                                subItem.OrderShipmentUuid = null;
-                                subItem.OrderShipmentNum = null;
-                            }
-                        }
-                    }
-                }
-                if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
-                {
-                    foreach (var detailItem in dto.OrderShipmentCanceledItem)
-                    {
-                        detailItem.OrderShipmentCanceledItemUuid = null;
-                    }
-                }
+
+                //if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
+                //{
+                //    foreach (var detailItem in dto.OrderShipmentPackage)
+                //    { 
+                //        detailItem.OrderShipmentPackageUuid = null;
+                //        detailItem.OrderShipmentNum = null;
+                //        detailItem.OrderShipmentUuid = null;
+                //        if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
+                //        {
+                //            foreach (var subItem in detailItem.OrderShipmentShippedItem)
+                //            {
+                //                subItem.OrderShipmentShippedItemUuid = null;
+                //                subItem.OrderShipmentUuid = null;
+                //                subItem.OrderShipmentNum = null;
+                //            }
+                //        }
+                //    }
+                //}
+                //if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
+                //{
+                //    foreach (var detailItem in dto.OrderShipmentCanceledItem)
+                //    {
+                //        detailItem.OrderShipmentCanceledItemUuid = null;
+                //    }
+                //}
             }
             IsValid = isValid;
             return isValid;
         }
         #endregion
+
+        //#region Reset uuid
+        //protected virtual void ResetUuidForAddingMode(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        //{
+        //    var isAddMode = processingMode == ProcessingMode.Add;
+        //    var isEditMode = processingMode == ProcessingMode.Edit;
+        //    if (isAddMode)
+        //    {
+        //        //for Add mode, always reset uuid
+        //        data.OrderShipmentHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
+        //    }
+
+        //    if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+        //    {
+        //        foreach (var packageItem in data.OrderShipmentPackage)
+        //        {
+        //            if (isAddMode || (isEditMode && packageItem.RowNum.IsZero()))
+        //                packageItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+        //            if (packageItem.OrderShipmentShippedItem != null && packageItem.OrderShipmentShippedItem.Count > 0)
+        //            {
+        //                foreach (var subItem in packageItem.OrderShipmentShippedItem)
+        //                {
+        //                    if (isAddMode || (isEditMode && packageItem.RowNum.IsZero()))
+        //                        subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
+        //                    subItem.OrderShipmentPackageUuid = packageItem.OrderShipmentPackageUuid;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0)
+        //    {
+        //        foreach (var detailItem in data.OrderShipmentCanceledItem)
+        //        {
+        //            if (isAddMode || (isEditMode && detailItem.RowNum.IsZero()))
+        //                detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
+        //        }
+
+        //    }
+        //}
+        //#endregion
     }
 }
 

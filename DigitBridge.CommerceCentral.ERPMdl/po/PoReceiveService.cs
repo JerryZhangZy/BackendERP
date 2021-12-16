@@ -487,7 +487,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (transactions.Count == 0)
             {
-                AddError($"Data not found for {vendorCode}.");
+                AddError($"Data not found or po is completed for {vendorCode}.");
                
                 return false;
             }
@@ -651,6 +651,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return list;
-        }  
+        } 
+
+        public async Task<bool> ExistTransUuidAsync(string transUuid)
+        {
+            return await dbFactory.ExistsAsync<PoTransaction>("TransUuid=@0", transUuid.ToSqlParameter("transUuid"));
+        }
     }
 }
