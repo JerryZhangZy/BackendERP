@@ -208,7 +208,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true
+		/// WarehouseTransfer type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: false
 		/// </summary>
         public virtual int WarehouseTransferType
         {
@@ -224,7 +224,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// WarehouseTransfer status. <br> Title: Status, Display: true, Editable: true
+		/// WarehouseTransfer status. <br> Title: Status, Display: true, Editable: false
 		/// </summary>
         public virtual int WarehouseTransferStatus
         {
