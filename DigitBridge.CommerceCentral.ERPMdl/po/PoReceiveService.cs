@@ -487,7 +487,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (transactions.Count == 0)
             {
-                AddError($"Data not found for {vendorCode}.");
+                AddError($"Data not found or po is completed for {vendorCode}.");
                
                 return false;
             }
