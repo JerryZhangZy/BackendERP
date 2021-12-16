@@ -353,6 +353,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasMiscAmountAssign => MiscAmountAssign != null;
 
 		/// <summary>
+		/// (Readonly) WMS po rececived batch number. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) WMS po rececived batch number. <br> Title: Update By, Display: true, Editable: false")]
+        [StringLength(50, ErrorMessage = "The WMSBatchNum value cannot exceed 50 characters. ")]
+        public string WMSBatchNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasWMSBatchNum => WMSBatchNum != null;
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]

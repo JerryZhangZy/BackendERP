@@ -40,3 +40,11 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_PoTransaction_ProfileNum_VendorCode_TransNu
 	[TransNum] ASC
 ) 
 GO
+
+
+
+-- 12/16/2021 By junxian
+IF COL_LENGTH('PoTransaction', 'WMSBatchNum') IS NULL
+BEGIN
+    ALTER TABLE PoTransaction ADD [WMSBatchNum] varchar(50) not null default ''
+END

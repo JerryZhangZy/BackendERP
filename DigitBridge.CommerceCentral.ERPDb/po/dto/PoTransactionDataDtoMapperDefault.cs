@@ -93,6 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
 			if (dto.HasShippingAmountAssign) data.ShippingAmountAssign = dto.ShippingAmountAssign.ToInt();
 			if (dto.HasMiscAmountAssign) data.MiscAmountAssign = dto.MiscAmountAssign.ToInt();
+			if (dto.HasWMSBatchNum) data.WMSBatchNum = dto.WMSBatchNum;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc.ToDateTime();
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -259,6 +260,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ChargeAndAllowanceAmount = data.ChargeAndAllowanceAmount;
 			dto.ShippingAmountAssign = data.ShippingAmountAssign;
 			dto.MiscAmountAssign = data.MiscAmountAssign;
+			dto.WMSBatchNum = data.WMSBatchNum;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
