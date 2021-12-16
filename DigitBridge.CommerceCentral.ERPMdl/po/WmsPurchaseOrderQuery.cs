@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public EnumQueryFilter<EventProcessTypeEnum> ERPEventProcessType => _ERPEventProcessType;
 
 
-        protected EnumQueryFilter<PoStatus> _PoStatus_Cancelled = new EnumQueryFilter<PoStatus>("PoStatus_Cancelled", "InvoiceStatus", PREFIX_Po, FilterBy.ne, -1);
+        protected EnumQueryFilter<PoStatus> _PoStatus_Cancelled = new EnumQueryFilter<PoStatus>("PoStatus_Cancelled", "PoStatus", PREFIX_Po, FilterBy.ne, -1);
         public EnumQueryFilter<PoStatus> PoStatus_Cancelled => _PoStatus_Cancelled;
 
         public WmsPurchaseOrderQuery() : base(PREFIX_Event)

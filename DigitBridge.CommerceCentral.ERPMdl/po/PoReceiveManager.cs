@@ -96,6 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     Success = false,
                     Messages = this.Messages,
                 });
+                return results;
             }
             var vendorCodes = payload.WMSPoReceiveItems.Select(i => i.VendorCode).Distinct();
 
