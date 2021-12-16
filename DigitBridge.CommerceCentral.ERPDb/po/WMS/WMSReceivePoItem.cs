@@ -12,6 +12,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class WMSPoReceiveItem
     {
         /// <summary>
+        /// WMS batch num
+        /// </summary>
+        public string WMSBatchNum { get; set; }
+
+        /// <summary>
         /// Vendor code
         /// </summary>
         public string VendorCode { get; set; }

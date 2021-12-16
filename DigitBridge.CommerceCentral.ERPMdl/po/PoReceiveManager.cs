@@ -103,14 +103,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // loop vendor to send poreceive items to eventprocess table and queue.
             foreach (var vendorCode in vendorCodes)
             {
-                var transUuid = Guid.NewGuid().ToString();
                 var items = payload.WMSPoReceiveItems.Where(i => i.VendorCode == vendorCode);
+                var wmsBatchNum = items.Select(i => i.WMSBatchNum).FirstOrDefault();
                 var eventProcessERP = new EventProcessERP()
                 {
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
                     ProcessData = items.ObjectToString(),
-                    ProcessUuid = transUuid,
+                    ProcessUuid = wmsBatchNum,
                     ERPEventProcessType = (int)EventProcessTypeEnum.PoReceiveFromWMS,
                     ActionStatus = (int)EventProcessActionStatusEnum.Pending,
                 };
@@ -118,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 // for each shipment, create result object to hold shipment creating result
                 var result = new WMSPoReceivePayload()
                 {
-                    TransUuid = transUuid,
+                    WMSBatchNum = wmsBatchNum,
                     PoItemUuidList = items.Select(i => i.PoItemUuid).ToList(),
                 };
 
@@ -151,6 +151,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 validate = false;
             }
 
+            if (payload.WMSPoReceiveItems.Count(i => i.WMSBatchNum.IsZero()) > 0)
+            {
+                AddError("WMSBatchNum cannot be empty");
+                validate = false;
+            }
+
             if (payload.WMSPoReceiveItems.Count(i => i.WarehouseCode.IsZero()) > 0)
             {
                 AddError("WarehouseCode cannot be empty");
@@ -172,24 +178,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// create po trans triggered by queue for wms uploaded po receive items 
         /// </summary>
         /// <param name="payload"></param>
-        /// <param name="transUuid"></param>
+        /// <param name="wmsBatchNum"></param>
         /// <returns></returns>
-        public async Task<bool> CreatePoTransByQueueTriggerAsync(PoReceivePayload payload, string transUuid)
+        public async Task<bool> CreatePoTransByQueueTriggerAsync(PoReceivePayload payload, string wmsBatchNum)
         {
-            payload.WMSPoReceiveItems = await GetWMSPoReceiveItems(transUuid);
+            payload.WMSPoReceiveItems = await GetWMSPoReceiveItems(wmsBatchNum);
             if (payload.WMSPoReceiveItems == null)
             {
-                AddError($"Data not found,ProcessUuid:{transUuid}");
+                AddError($"Data not found,ProcessUuid:{wmsBatchNum}");
                 payload.Success = false;
             }
             else
             {
-                payload.Success = await AddPoTransAsync(payload, transUuid);
+                payload.Success = await AddPoTransAsync(payload);
             }
             if (!payload.Success)
                 payload.Messages = this.Messages;
             // update all result back to event process.
-            return await UpdateProcessResultAsync(payload, transUuid);
+            return await UpdateProcessResultAsync(payload, wmsBatchNum);
         }
         /// <summary>
         /// update process result back to  event process 
@@ -218,12 +224,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Get wmsPoReceiveItems from event process table.
         /// </summary>
-        /// <param name="transUuid"></param>
+        /// <param name="wmsBatchNum"></param>
         /// <returns></returns>
-        protected async Task<IList<WMSPoReceiveItem>> GetWMSPoReceiveItems(string transUuid)
+        protected async Task<IList<WMSPoReceiveItem>> GetWMSPoReceiveItems(string wmsBatchNum)
         {
             eventProcessERPService.List();
-            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.PoReceiveFromWMS, transUuid);
+            var success = await eventProcessERPService.GetByProcessUuidAsync((int)EventProcessTypeEnum.PoReceiveFromWMS, wmsBatchNum);
             if (!success)
             {
                 this.Messages.Add(eventProcessERPService.Messages);
@@ -238,7 +244,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="payload"></param>
         /// <returns></returns>
-        protected async Task<bool> AddPoTransAsync(PoReceivePayload payload, string transUuid)
+        protected async Task<bool> AddPoTransAsync(PoReceivePayload payload)
         {
             var results = new List<WMSPoReceivePayload>();
             if (!ValidateReceiveItem(payload))
@@ -246,9 +252,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            if (await PoReceiveService.ExistTransUuidAsync(transUuid))
+            var wmsBatchNum = payload.WMSPoReceiveItems.Select(i => i.WMSBatchNum).FirstOrDefault();
+
+            if (await PoReceiveService.ExistWMSBatchNumAsync(wmsBatchNum))
             {
-                AddInfo($"Data was transfered,ProcessUuid:{transUuid}");
+                AddInfo($"Data was transfered,ProcessUuid:{wmsBatchNum}");
                 return true;
             }
 
@@ -264,7 +272,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var poTrans = GetPoTransaction(payload, poHeader, poUuids.Count() > 0, transUuid);
+            var poTrans = GetPoTransaction(payload, poHeader, poUuids.Count() > 0, wmsBatchNum);
 
             var poTransData = new PoTransactionData()
             {
@@ -314,11 +322,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return poTransItem;
         }
-        protected PoTransaction GetPoTransaction(PoReceivePayload payload, PoHeader poHeader, bool multiplePo, string transUuid)
+        protected PoTransaction GetPoTransaction(PoReceivePayload payload, PoHeader poHeader, bool multiplePo, string wmsBatchNum)
         {
             return new PoTransaction()
             {
-                TransUuid = transUuid,
+                TransUuid = Guid.NewGuid().ToString(),
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
                 VendorUuid = poHeader.VendorUuid,
@@ -326,7 +334,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 VendorCode = poHeader.VendorCode,
                 PoNum = multiplePo ? string.Empty : poHeader.PoNum,
                 PoUuid = multiplePo ? string.Empty : poHeader.PoUuid,
-                TransStatus = (int)PoTransStatus.StockReceive
+                TransStatus = (int)PoTransStatus.StockReceive,
+                WMSBatchNum = wmsBatchNum,
             };
         }
 

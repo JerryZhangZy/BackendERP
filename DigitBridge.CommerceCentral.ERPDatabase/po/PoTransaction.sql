@@ -45,6 +45,9 @@
     [EnterBy] Varchar(100) NOT NULL,--(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL,--(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
+
+	[WMSBatchNum] varchar(50) not null default '' --(Readonly) WMS po rececived batch number. <br> Title: Update By, Display: true, Editable: false
+
     CONSTRAINT [PK_PoTransaction] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
