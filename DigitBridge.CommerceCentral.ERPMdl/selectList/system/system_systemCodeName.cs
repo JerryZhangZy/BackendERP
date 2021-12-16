@@ -14,11 +14,11 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
 {
  
-    public partial class systemCodes_systemCodeName : SelectListBase
+    public partial class system_systemCodeName : SelectListBase
     {
-        public override string Name => "systemCodes_systemCodeName";
+        public override string Name => "system_systemCodeName";
 
-        public systemCodes_systemCodeName(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public system_systemCodeName(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {

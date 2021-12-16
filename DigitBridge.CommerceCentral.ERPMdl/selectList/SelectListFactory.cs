@@ -66,8 +66,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
 
             #region system global
-            if (payload.Name.EqualsIgnoreSpace("systemCodes_systemCodeName")) return new systemCodes_systemCodeName(dbFactory);
-            if (payload.Name.EqualsIgnoreSpace("systemCodes_ColorPatternCode")) return new systemCodes_ColorPatternCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_systemCodeName")) return new system_systemCodeName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_ColorPatternCode")) return new system_ColorPatternCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_SizeType")) return new system_SizeType(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_SizeCode")) return new system_SizeCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_WidthCode")) return new system_WidthCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_LengthCode")) return new system_LengthCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_ClassCode")) return new system_ClassCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_SubClassCode")) return new system_SubClassCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_DivisionCode")) return new system_DivisionCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_DepartmentCode")) return new system_DepartmentCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_GroupCode")) return new system_GroupCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_SubGroupCode")) return new system_SubGroupCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_CategoryCode")) return new system_CategoryCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_Model")) return new system_Model(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_UOM")) return new system_UOM(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_Terms")) return new system_Terms(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_BusinessType")) return new system_BusinessType(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("oms_ar_term"))
             //    return new DemList_oms_ar_term(obj);
             //if (obj.listFor.EqualsIgnoreSpace("oms_src_file"))

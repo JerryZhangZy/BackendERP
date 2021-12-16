@@ -641,6 +641,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task SystemCodes_Test()
+        {
+            foreach(var name in SystemCodeNames.GetList())
+            {
+                var payload = new SelectListPayload()
+                {
+                    MasterAccountNum = 10001,
+                    ProfileNum = 10001,
+                    LoadAll = false,
+                    Name = "system_"+name,
+                    Term = "",
+                    Top = 20,
+                };
+                bool result;
+                using (var b = new Benchmark(payload.Name + "_Test"))
+                {
+                    var factory = new SelectListFactory(dataBaseFactory);
+                    result = await factory.GetSelectListAsync(payload);
+                }
+                if (result)
+                {
+                    Assert.True(payload.Success, payload.Name + " success");
+                    Assert.True(payload.Data.Length > 0, payload.Name + " not empty");
+                }
+            }
+        }
         #endregion async methods
     }
 }
