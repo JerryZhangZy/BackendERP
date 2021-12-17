@@ -230,6 +230,23 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
             return new List<long>();
         }
 
+        public static string GetInventoryUKBySkuAndWarehouseCode(int masterAccountNum, int profileNum, string sku, string warehouseCode)
+        {
+            if (string.IsNullOrEmpty(sku) || string.IsNullOrEmpty(warehouseCode))
+                return null;
+
+            var sql = $@"
+SELECT TOP 1 InventoryUuid FROM Inventory
+WHERE MasterAccountNum={masterAccountNum} AND ProfileNum={profileNum}
+AND WarehouseCode='{warehouseCode}' AND SKU='{sku}'
+";
+
+            var result = SqlQuery.Execute(sql, (string uk) => uk);
+            if (result.Any())
+                return result.First();
+            else
+                return null;
+        }
     }
 }
 
