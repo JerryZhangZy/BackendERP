@@ -35,20 +35,20 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             var service = new CustomerIOManager(dbFactory);
             await service.ImportAsync(payload);
         }
-        [FunctionName("ImportVendor")]
-        public static async Task ImportVendor([QueueTrigger(QueueName.Erp_Import_Vendor)] string myQueueItem, ILogger log)
-        {
-            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-            var payload = new ImportExportFilesPayload()
-            {
-                MasterAccountNum = message.MasterAccountNum,
-                ProfileNum = message.ProfileNum,
-                ImportUuid = message.ProcessUuid,
-            };
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var service = new VendorIOManager(dbFactory);
-            await service.ImportAsync(payload);
-        }
+        //[FunctionName("ImportVendor")]
+        //public static async Task ImportVendor([QueueTrigger(QueueName.Erp_Import_Vendor)] string myQueueItem, ILogger log)
+        //{
+        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+        //    var payload = new ImportExportFilesPayload()
+        //    {
+        //        MasterAccountNum = message.MasterAccountNum,
+        //        ProfileNum = message.ProfileNum,
+        //        ImportUuid = message.ProcessUuid,
+        //    };
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var service = new VendorIOManager(dbFactory);
+        //    await service.ImportAsync(payload);
+        //}
 
 
     }

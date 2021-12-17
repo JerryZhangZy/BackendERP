@@ -288,6 +288,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+
+
         /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -392,7 +394,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAsync(payload.Customer)))
                 return false;
-
+            // load data 
+           //await GetDataAsync(payload.Customer.Customer.RowNum.ToLong());
             // set Add mode and clear data
             await EditAsync(payload.Customer.Customer.RowNum.ToLong());
 
@@ -611,6 +614,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 customerCode);
         }
 
+
+        public bool ExistCustomer(string customerUuid, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Exists<Customer>(
+                $"WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND customerUuid = @2",
+                masterAccountNum,
+                profileNum,
+                customerUuid);
+        }
         #region customer Address
         public async Task<bool> AddCustomerAddressAsync(CustomerAddressPayload payload)
         {
