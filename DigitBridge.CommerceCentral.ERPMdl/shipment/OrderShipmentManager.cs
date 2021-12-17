@@ -445,7 +445,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return true;
-        } 
+        }
 
         public async Task<string> CreateShipmentFromSalesOrderAsync(string salesOrderUuid)
         {
@@ -503,22 +503,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return service.Data.OrderShipmentHeader.OrderShipmentUuid;
         }
 
-        public async Task<OrderShipmentData> CreateShipmentDataFromSalesOrderAsync(string salesOrderUuid)
+        public async Task<OrderShipmentData> CreateShipmentDataFromSalesOrderAsync(OrderShipmentPayload payload)
         {
-            if (string.IsNullOrEmpty(salesOrderUuid))
+            if (!payload.HasSalesOrderNumber)
+            {
+                AddError("SalesOrderNumber cannot be emtpy.");
                 return null;
+            }
 
             // load sales order data           
-            if (!(await salesOrderService.ListAsync(salesOrderUuid)))
+            salesOrderService.List();
+            var success = await salesOrderService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, payload.SalesOrderNumber);
+            if (!success)
             {
                 this.Messages.Add(salesOrderService.Messages);
                 return null;
             }
-            var salesOrderData = salesOrderService.Data;
-            salesOrderService.DetachData(null);
-
             // Create Invoice from shipment and sales order
-            return await CreateShipmentDataFromSalesOrderAsync(salesOrderData);
+            return await CreateShipmentDataFromSalesOrderAsync(salesOrderService.Data);
         }
 
         /// <summary>

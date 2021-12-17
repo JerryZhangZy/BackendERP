@@ -40,6 +40,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments);
 
         Task<string> CreateShipmentFromSalesOrderAsync(string salesOrderUuid);
-        Task<OrderShipmentData> CreateShipmentDataFromSalesOrderAsync(string salesOrderUuid);
+        Task<OrderShipmentData> CreateShipmentDataFromSalesOrderAsync(OrderShipmentPayload payload);
     }
 }

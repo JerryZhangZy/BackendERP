@@ -49,7 +49,30 @@ namespace DigitBridge.Base.Common
         [Description("Create Po transaction by wms poreceive")]
         PoReceiveFromWMS = 11,
 
+        [Description("Import customer file to erp")]
+        ErpImportCustomer = 20,
+        [Description("Import inventory file to erp")]
+        ErpImportInventory = 21,
+        [Description("Import inventoryupdate file to erp")]
+        ErpImportInventoryUpdate = 22,
+        [Description("Import warehousetransfer file to erp")]
+        ErpImportWarehouseTransfer = 23,
+        [Description("Import salesorder file to erp")]
+        ErpImportSalesOrder = 24,
+        [Description("Import shipment file to erp")]
+        ErpImportShipment = 25,
+        [Description("Import invoice file to erp")]
+        ErpImportInvoice = 26,
+        [Description("Import invoicepayment file to erp")]
+        ErpImportInvoicePayment = 27,
+        [Description("Import vendor file to erp")]
+        ErpImportVendor = 28,
+        [Description("Import purchaseorder file to erp")]
+        ErpImportPurchaseOrder = 29,
+        [Description("Import poreceive file to erp")]
+        ErpImportPoReceive = 30,
     }
+
     public static class ErpEventQueueName
     {
 
@@ -79,10 +102,38 @@ namespace DigitBridge.Base.Common
                     return SyncProduct;
                 case ErpEventType.PoReceiveFromWMS:
                     return ERPCreatePoReceiveByWMS;
+
+                case ErpEventType.ErpImportCustomer:
+                    return ERPQueueSetting.ErpImportCustomerQueue;
+                case ErpEventType.ErpImportInventory:
+                    return ERPQueueSetting.ErpImportInventoryQueue;
+                case ErpEventType.ErpImportInventoryUpdate:
+                    return ERPQueueSetting.ErpImportInventoryUpdateQueue;
+                case ErpEventType.ErpImportWarehouseTransfer:
+                    return ERPQueueSetting.ErpImportWarehouseTransferQueue;
+                case ErpEventType.ErpImportSalesOrder:
+                    return ERPQueueSetting.ErpImportSalesOrderQueue;
+                case ErpEventType.ErpImportShipment:
+                    return ERPQueueSetting.ErpImportShipmentQueue;
+                case ErpEventType.ErpImportInvoice:
+                    return ERPQueueSetting.ErpImportInvoiceQueue;
+                case ErpEventType.ErpImportInvoicePayment:
+                    return ERPQueueSetting.ErpImportInvoicePaymentQueue;
+                case ErpEventType.ErpImportVendor:
+                    return ERPQueueSetting.ErpImportVendorQueue;
+                case ErpEventType.ErpImportPurchaseOrder:
+                    return ERPQueueSetting.ErpImportPurchaseOrderQueue;
+                case ErpEventType.ErpImportPoReceive:
+                    return ERPQueueSetting.ErpImportPoReceiveQueue;
+
                 default:
                     return DefaultQueue;
             }
         }
+
+
+
+
 
         public static string DefaultQueue = "erp-default-queue";
 

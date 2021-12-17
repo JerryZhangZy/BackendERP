@@ -193,6 +193,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //var invCost = new ItemCostClass(inv);
             var invCost = new ItemCostClass();
             var prod = GetInventoryData(data, item.ProductUuid);
+            if (string.IsNullOrEmpty(item.InventoryUuid))
+            {
+                int masterAccountNum = data.InventoryUpdateHeader.MasterAccountNum;
+                int profileNum = data.InventoryUpdateHeader.ProfileNum;
+                item.InventoryUuid = InventoryHelper.GetInventoryUKBySkuAndWarehouseCode(masterAccountNum, profileNum, item.SKU, item.WarehouseCode);
+            }
             var inv = GetInventory(data, item.ProductUuid, item.InventoryUuid);
             if (item.ItemDate.IsZero()) item.ItemDate = DateTime.UtcNow.Date;
             if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;

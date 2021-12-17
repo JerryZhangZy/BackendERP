@@ -187,6 +187,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     if (!(await blobSvc.LoadFileFromBlobAsync(fileName, payload, ms)))
                         continue;
+                    ms.Position = 0;
+
                     var dto = await ImportAsync(ms);
                     if (dto == null || dto.Count == 0) continue;
                     dtoList.AddRange(dto);

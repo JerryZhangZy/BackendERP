@@ -355,7 +355,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // check sku and warehouse exist, otherwise add new SKU and Warehouse
-            if (!await CheckInventoryAsync(soData)) 
+            if (!await CheckInventoryAsync(soData))
             {
                 AddError($"Cannot find or create SKU for central order SKU.");
             }
@@ -514,5 +514,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    return true;
         //}
 
+        #region import salesorder
+
+        public async Task SaveImportDataAsync(IList<SalesOrderDataDto> dtos, ImportExportFilesPayload payload)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+            }
+            foreach (var dto in dtos)
+            {
+                salesOrderService.Clear();
+                salesOrderService.Add(dto);
+            }
+        }
+        #endregion
     }
 }

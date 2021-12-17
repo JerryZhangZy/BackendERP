@@ -324,27 +324,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// Get new shipment data by sales order uuid
+        /// Get new shipment data by sales order number.
         /// </summary>
         /// <param name="req"></param>
+        /// <param name="orderNumber"></param>
         /// <returns></returns>
         [FunctionName(nameof(NewShipmentFromSalesOrder))]
         #region swagger Doc
-        [OpenApiOperation(operationId: "NewShipmentFromSalesOrder", tags: new[] { "Shipments" }, Summary = "Get new shipmet structure by sales order uuid")]
+        [OpenApiOperation(operationId: "NewShipmentFromSalesOrder", tags: new[] { "Shipments" }, Summary = "Get new shipmet by sales order number")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentFromSalesOrderReqest), Description = "Request Body in json format")]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "sales order number", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentFromSalesOrderReqest), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadGetSingle))]
         #endregion swagger Doc
         public static async Task<JsonNetResponse<OrderShipmentPayload>> NewShipmentFromSalesOrder(
-            [HttpTrigger(AuthorizationLevel.Function, "POST"
-            , Route = "shipments/newShipmentFromSalesOrder")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET"
+            , Route = "shipments/newShipment/salesOrder/{orderNumber}")] HttpRequest req, string orderNumber)
         {
-            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+            var payload = await req.GetParameters<OrderShipmentPayload>();
+            payload.SalesOrderNumber = orderNumber;
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new OrderShipmentManager(dbFactory);
-            var shipmentData = await svc.CreateShipmentDataFromSalesOrderAsync(payload.SalesOrderUuid);
+            var shipmentData = await svc.CreateShipmentDataFromSalesOrderAsync(payload);
             if (shipmentData != null)
             {
                 payload.OrderShipment = new OrderShipmentDataDtoMapperDefault().WriteDto(shipmentData);
