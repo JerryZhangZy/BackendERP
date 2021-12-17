@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         protected void InitForTest()
         {
             var Seq = 0;
-            DataBaseFactory = new DataBaseFactory(Configuration["DBConnectionString"]);
+            DataBaseFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {
@@ -115,14 +115,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var fileName = "c:\\temp\\Dto_4.csv";
             var service = new SalesOrderIOManager(DataBaseFactory);
             IList<SalesOrderDataDto> dtos = new List<SalesOrderDataDto>();
-            var SalesOrderService = new SalesOrderService(DataBaseFactory);
-            if (SalesOrderService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
-                dtos.Add(SalesOrderService.ToDto());
-            if (SalesOrderService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
-                dtos.Add(SalesOrderService.ToDto());
-            if (SalesOrderService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(SalesOrderService.ToDto());
-
+            AddSalesOrderDto(dtos, "9027ebbd-a022-434e-965d-adb20cc27dac");
+            AddSalesOrderDto(dtos, "117227d4-43cc-476c-9257-29695d08fdd1");
+            AddSalesOrderDto(dtos, "22da3dbb-6d02-4852-a2b8-04c380b36dd6");
 
             try
             {

@@ -9,6 +9,11 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
+    "ERPImportContainerName": "erp-impot",
+    "ERPExportContainerName": "erp-export",
+    "ERPBlobConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpblobdev;AccountKey=MhOAPgLvQmoegauK8llL1T4qrA2BI+KIlzZ/fJ0k6L1ZdU7+Ko/Hcm3tNfElqS4HmoyH6z4t0pxeAZ2uNuVLVg==;EndpointSuffix=core.windows.net",
+
+
     //local
     "DebugMode": "true",
     "UseOrchestration": "false",
