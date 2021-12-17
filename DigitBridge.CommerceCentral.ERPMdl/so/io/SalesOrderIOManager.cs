@@ -200,7 +200,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> LoadFormatAsync(ImportExportFilesPayload payload)
         {
-            if (!(await SalesOrderService.GetByNumberAsync(
+            if (!(await CustomIOFormatService.GetByNumberAsync(
                 payload.MasterAccountNum,
                 payload.ProfileNum,
                 payload.Options.FormatType,

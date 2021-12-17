@@ -325,6 +325,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string formatType, int formatNumber)
         {
+            if (formatType.IsZero())
+            {
+                AddError($"formatType cannot be empty.");
+                return false;
+            }
+
             var rownum = await GetRowNumAsync(masterAccountNum, profileNum, formatType, formatNumber);
             if (rownum <= 0)
             {
