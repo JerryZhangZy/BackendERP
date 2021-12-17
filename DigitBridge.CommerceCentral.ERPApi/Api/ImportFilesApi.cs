@@ -37,13 +37,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            payload.ImportFiles = req.Form.Files;
-            payload.Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
-            var svc = new SalesOrderManager(dbFactory);
+            payload.LoadRequest(req);
+            // load request parameter to payload
+            //payload.ImportFiles = req.Form.Files;
+            //payload.Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
+            //payload.ImportUuid = payload.Options.ImportUuid;
+            //payload.AddFiles(req.Form.Files);
 
-            //await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
+            var svc = new ImportBlobService();
+            await svc.SaveToBlobAsync(payload);
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
 

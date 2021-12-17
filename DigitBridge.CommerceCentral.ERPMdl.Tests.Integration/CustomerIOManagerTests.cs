@@ -83,6 +83,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
+        public async Task ImportByBlobAsync_Test()
+        {
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                ImportUuid = "d3646ab8521246f1a997b04f8280ae01",
+            };
+
+            var service = new CustomerIOManager(DataBaseFactory);
+
+            IList<CustomerDataDto> data;
+            try
+            {
+                using (var b = new Benchmark("ImportByBlobAsync_Test"))
+                {
+                    await service.ImportAsync(payload);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
         public async Task ImportAllColumnsAsync_Test()
         {
             var fileName = "c:\\temp\\Dto_3.csv";
@@ -145,15 +175,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\Customer_3.csv";
             var service = new CustomerIOManager(DataBaseFactory);
             IList<CustomerDataDto> dtos = new List<CustomerDataDto>();
             var CustomerService = new CustomerService(DataBaseFactory);
-            if (CustomerService.List("1afedfec-bae7-4337-9036-6a99c4f4d364"))
+            if (CustomerService.List("63470137-d547-4bdf-8fea-c8eeb7495e81"))
                 dtos.Add(CustomerService.ToDto());
-            if (CustomerService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+            if (CustomerService.List("eb5eca67-d3f9-4f5d-87b4-06432c2454c4"))
                 dtos.Add(CustomerService.ToDto());
-            if (CustomerService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+            if (CustomerService.List("95865990-dec7-4ee7-ae38-48d407408cf0"))
                 dtos.Add(CustomerService.ToDto());
 
             try

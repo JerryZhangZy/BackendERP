@@ -64,7 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var svc = new CustomIOFormatService(dbFactory);
 
 
-            payload.Success = await svc.GetAsync(payload, formatType, formatNumber);
+            payload.Success = await svc.GetByNumberAsync(payload, formatType, formatNumber);
             if(payload.Success)
                 payload.CustomIOFormat = svc.ToDto();
             else
@@ -131,14 +131,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomIOFormatPayloadDelete), Description = "The OK response")]
         #endregion swagger Doc
         public static async Task<JsonNetResponse<CustomIOFormatPayload>> DeleteCustomIOFormat(
-            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customIOFormats/{formatNumber}")] HttpRequest req,
-            int formatNumber)
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customIOFormats/{formatType}/{formatNumber}")] HttpRequest req,
+            string formatType, int formatNumber)
         {
             var payload = await req.GetParameters<CustomIOFormatPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomIOFormatService(dbFactory);
 
-            payload.Success = await svc.DeleteByNumberAsync(payload, formatNumber.ToString());
+            payload.Success = await svc.DeleteByNumberAsync(payload, formatType, formatNumber);
             if (payload.Success)
                 payload.CustomIOFormat = svc.ToDto();
             else

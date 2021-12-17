@@ -8,7 +8,7 @@ namespace DigitBridge.Base.Utility
 {
     public class ERPQueueMessage: IQueueEntity
     {
-        public int  DatabaseNum{get;set;}
+        public int DatabaseNum{get;set;}
 
         public int MasterAccountNum { get; set; }
 

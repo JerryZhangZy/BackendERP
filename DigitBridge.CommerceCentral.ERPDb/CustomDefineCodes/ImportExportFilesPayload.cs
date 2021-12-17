@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -33,10 +34,34 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual bool HasImportUuid => !string.IsNullOrEmpty(ImportUuid);
 
         /// <summary>
-        /// (Response Data) List result which load filter and paging.
+        /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        [JsonIgnore] public IFormFileCollection ImportFiles { get; set; }
+        [JsonIgnore] public IDictionary<string, byte[]> ImportFiles { get; set; }
         [JsonIgnore] public virtual bool HasImportFiles => ImportFiles != null && ImportFiles.Count > 0;
+        public virtual ImportExportFilesPayload AddFiles(IFormFileCollection files)
+        {
+            ImportFiles = new Dictionary<string, byte[]>();
+            foreach (var file in files)
+            {
+                if (file == null) continue;
+                if (!file.FileName.ToLower().EndsWith("csv") && !file.FileName.ToLower().EndsWith("txt")) continue;
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.OpenReadStream().CopyTo(ms);
+                        ImportFiles.TryAdd(file.FileName.ToLower(), ms.ToArray());
+                    }
+                }
+                catch (Exception e)
+                {
+                    ReturnError($"Import file {file.FileName} has error. {e.Message}");
+                    continue;
+                }
+            }
+            return this;
+        }
+
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
@@ -67,12 +92,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasResult => Result != null;
         public bool ShouldSerializeResult() => HasResult;
 
+        public bool LoadRequest(HttpRequest req)
+        {
+            Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
+            Options.DatabaseNum = this.DatabaseNum;
+            Options.MasterAccountNum = this.MasterAccountNum;
+            Options.ProfileNum = this.ProfileNum;
+
+            ImportUuid = Options.ImportUuid;
+            AddFiles(req.Form.Files);
+            return true;
+        }
     }
 
     [Serializable()]
     public class ImportExportOptions
     {
         public bool IsImport { get; set; }
+
+        public virtual int DatabaseNum { get; set; }
+        public virtual bool HasDatabaseNum => DatabaseNum > 0;
+
+
+        public virtual int MasterAccountNum { get; set; }
+        public virtual bool HasMasterAccountNum => MasterAccountNum > 0;
+
+        public virtual int ProfileNum { get; set; }
+        public virtual bool HasProfileNum => ProfileNum > 0;
 
         /// <summary>
         /// (Request Data) Uuid for this Import batch, this will be Azure Blob name.

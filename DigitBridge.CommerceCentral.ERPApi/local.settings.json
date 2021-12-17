@@ -60,9 +60,9 @@
     "ERPSummaryTableName": "ErpSummaryCache",
     "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpeventapidev;AccountKey=DCDiLGxMy8m+efWvPjhG86HuDOtPME94nUaWmRtcAkB2ZD5xv/JbvW9MsDKKjKbtf13HsdCwtrqLz/pzS0iIyw==;EndpointSuffix=core.windows.net",
 
-    "ERPImportContainerName": "erp_impot_files",
-    "ERPExportContainerName": "erp_export_files",
-    "ERPBlobConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpeventapidev;AccountKey=DCDiLGxMy8m+efWvPjhG86HuDOtPME94nUaWmRtcAkB2ZD5xv/JbvW9MsDKKjKbtf13HsdCwtrqLz/pzS0iIyw==;EndpointSuffix=core.windows.net",
+    "ERPImportContainerName": "erp-impot",
+    "ERPExportContainerName": "erp-export",
+    "ERPBlobConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpblobdev;AccountKey=MhOAPgLvQmoegauK8llL1T4qrA2BI+KIlzZ/fJ0k6L1ZdU7+Ko/Hcm3tNfElqS4HmoyH6z4t0pxeAZ2uNuVLVg==;EndpointSuffix=core.windows.net",
 
 
     // User account

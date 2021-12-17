@@ -223,5 +223,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+
+        public async Task SaveImportDataAsync(IList<CustomerDataDto> dtos, ImportExportFilesPayload payload)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            foreach (var dto in dtos)
+            {
+                //if (!file.FileName.ToLower().EndsWith("csv"))
+                //{
+                //    AddError($"invalid file type:{file.FileName}");
+                //    continue;
+                //}
+                //var list = customerDataDtoCsv.Import(file.OpenReadStream());
+                //var readcount = list.Count();
+                //var addsucccount = 0;
+                //var errorcount = 0;
+                //foreach (var item in list)
+                //{
+                //    payload.Customer = item;
+                //    if (await customerService.AddAsync(payload))
+                //        addsucccount++;
+                //    else
+                //    {
+                //        errorcount++;
+                //        foreach (var msg in customerService.Messages)
+                //            Messages.Add(msg);
+                //        customerService.Messages.Clear();
+                //    }
+                //}
+                //if (payload.HasCustomer)
+                //    payload.Customer = null;
+                //AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+            }
+        }
+
     }
 }
