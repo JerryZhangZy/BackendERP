@@ -201,10 +201,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 			// build Customer header
 			var (header1, values1) = Format.GetHeaderAndData<CustomerDto>(dataList[0].Customer);
 			if (header1 != null) headers.AddRange(header1);
-			
-			// build CustomerAddress header
-			var (header2, values2) = Format.GetHeaderAndData<CustomerAddressDto>(dataList[0].CustomerAddress[0]);
-			if (header2 != null) headers.AddRange(header2);
+
+            // build CustomerAddress header
+            if (dataList[0].CustomerAddress.Count != 0)
+            {
+                var (header2, values2) = Format.GetHeaderAndData<CustomerAddressDto>(dataList[0].CustomerAddress[0]);
+                if (header2 != null) headers.AddRange(header2);
+            }
 			
 			// build CustomerAttributes header
 			var (header3, values3) = Format.GetHeaderAndData<CustomerAttributesDto>(dataList[0].CustomerAttributes);

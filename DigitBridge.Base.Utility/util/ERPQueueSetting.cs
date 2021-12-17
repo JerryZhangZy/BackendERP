@@ -31,7 +31,7 @@ namespace DigitBridge.Base.Common
         public static string ERPSyncProductQueue => "erp-sync-product-from-productbasic-queue";
         public static string ERPSyncInventoryByWmsQueue => "erp-sync-inventory-by-wms";
 
-        public static string ErpImportCustomerQueue = "erp-import-customer";
+        public static string ErpImportCustomerQueue = "erp-import-customer-poison";
         public static string ErpImportInventoryQueue = "erp-import-inventory";
         public static string ErpImportInventoryUpdateQueue = "erp-import-inventoryupdate";
         public static string ErpImportWarehouseTransferQueue = "erp-import-warehousetransfer";
