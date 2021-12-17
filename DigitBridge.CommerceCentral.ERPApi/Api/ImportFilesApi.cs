@@ -67,9 +67,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             payload.LoadRequest(req);
 
-            var svc = new ImportManger(); 
+            var svc = new ImportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportSalesOrder);
-            payload.Messages = svc.Messages;
+            payload.Messages.Add(svc.Messages);
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }

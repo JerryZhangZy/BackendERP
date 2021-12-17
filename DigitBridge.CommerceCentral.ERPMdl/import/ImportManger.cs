@@ -11,7 +11,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class ImportManger : IMessage
     {
         /// <summary>
-        /// send import info to blob and queue.
+        /// Import file to blob and send message to queue
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="erpEventType"></param>

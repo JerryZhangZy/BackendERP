@@ -19,12 +19,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private BlobUniversal _blobUniversal;
 
-        public string ContainerName(string importUuid) 
+        public string ContainerName(string importUuid)
         {
             var nm = MySingletonAppSetting.ERPImportContainerName;
             if (string.IsNullOrWhiteSpace(nm))
                 nm = CONTAINER_NAME;
-            return $"{nm.ToLower()}-{importUuid}"; 
+            return $"{nm.ToLower()}-{importUuid}";
         }
         public string ConnectionString
         {
@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
 
             // save options Blob
-            if (!(await SaveOptionsToBlobAsync(payload))) 
+            if (!(await SaveOptionsToBlobAsync(payload)))
                 return false;
 
             // save options Blob
@@ -67,6 +67,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.ReturnError($"Import Options is required.");
                 return false;
             }
+            if (!payload.Options.HasFormatType)
+            {
+                payload.ReturnError($"Import Options FormatType is required.");
+                return false;
+            }
+            //if (!payload.Options.HasFormatNumber)
+            //{
+            //    payload.ReturnError($"Import Options FormatNumber is required.");
+            //    return false;
+            //}
 
             try
             {
@@ -157,7 +167,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.FileNames = new List<string>();
             foreach (var fileName in fileList)
             {
-                if (string.IsNullOrWhiteSpace(fileName) || 
+                if (string.IsNullOrWhiteSpace(fileName) ||
                     fileName.EqualsIgnoreSpace(OPTIONS_NAME) ||
                     fileName.EqualsIgnoreSpace(RESULT_NAME)
                     ) continue;

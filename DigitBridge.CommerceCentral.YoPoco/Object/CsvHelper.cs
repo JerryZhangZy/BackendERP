@@ -251,6 +251,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             IList<T> data = new List<T>();
             using (var reader = new StreamReader(stream))
             {
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
                 // skip lines
                 if (SkipLines > 0)
                 {
