@@ -143,9 +143,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var fileName = "c:\\temp\\Dto_5.csv";
             var service = new SalesOrderIOManager(DataBaseFactory);
             IList<SalesOrderDataDto> dtos = new List<SalesOrderDataDto>();
-             
+
             AddSalesOrderDto(dtos, "9027ebbd-a022-434e-965d-adb20cc27dac");
-            AddSalesOrderDto(dtos, "117227d4-43cc-476c-9257-29695d08fdd1"); 
+            AddSalesOrderDto(dtos, "117227d4-43cc-476c-9257-29695d08fdd1");
             AddSalesOrderDto(dtos, "22da3dbb-6d02-4852-a2b8-04c380b36dd6");
 
             try
@@ -176,7 +176,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
 
         }
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task ImportAsync_Test()
+        {
 
+            var service = new SalesOrderIOManager(DataBaseFactory);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = 10002,
+                ProfileNum = 10003,
+                ImportUuid = "468945ac-dfab-42f7-85ea-0fa8bfb8fe87",
+            };
+            var success = await service.ImportAsync(payload);
+            Assert.True(success, service.Messages.ObjectToString());
+
+        }
     }
 }
 
