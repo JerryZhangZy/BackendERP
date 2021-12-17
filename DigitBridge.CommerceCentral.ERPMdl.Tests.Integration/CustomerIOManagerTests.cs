@@ -115,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ImportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\Customer_1.csv";
             var service = new CustomerIOManager(DataBaseFactory);
             IList<CustomerDataDto> data;
 
@@ -142,16 +142,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_2.csv";
+            var fileName = "c:\\temp\\Customer_1.csv";
             var service = new CustomerIOManager(DataBaseFactory);
             IList<CustomerDataDto> dtos = new List<CustomerDataDto>();
             var CustomerService = new CustomerService(DataBaseFactory);
-            if (CustomerService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
+            if (CustomerService.List("eadf5c15-3702-ff74-7d68-5be78956ad45"))
                 dtos.Add(CustomerService.ToDto());
-            if (CustomerService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
-                dtos.Add(CustomerService.ToDto());
-            if (CustomerService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(CustomerService.ToDto());
+            //if (CustomerService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+            //    dtos.Add(CustomerService.ToDto());
+            //if (CustomerService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+            //    dtos.Add(CustomerService.ToDto());
 
 
             try
@@ -179,12 +179,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var service = new CustomerIOManager(DataBaseFactory);
             IList<CustomerDataDto> dtos = new List<CustomerDataDto>();
             var CustomerService = new CustomerService(DataBaseFactory);
-            if (CustomerService.List("63470137-d547-4bdf-8fea-c8eeb7495e81"))
+            if (CustomerService.List("0417e3f8-b552-48dc-ab89-935e8a626bfa"))
                 dtos.Add(CustomerService.ToDto());
-            if (CustomerService.List("eb5eca67-d3f9-4f5d-87b4-06432c2454c4"))
-                dtos.Add(CustomerService.ToDto());
-            if (CustomerService.List("95865990-dec7-4ee7-ae38-48d407408cf0"))
-                dtos.Add(CustomerService.ToDto());
+            //if (CustomerService.List("eb5eca67-d3f9-4f5d-87b4-06432c2454c4"))
+            //    dtos.Add(CustomerService.ToDto());
+            //if (CustomerService.List("95865990-dec7-4ee7-ae38-48d407408cf0"))
+            //    dtos.Add(CustomerService.ToDto());
 
             try
             {

@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         [FunctionName(nameof(ImportCustomerFiles))]
         #region swagger Doc
-        [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
+        [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "ImportFiles" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -40,15 +40,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             payload.LoadRequest(req);
-            // load request parameter to payload
-            //payload.ImportFiles = req.Form.Files;
-            //payload.Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
-            //payload.ImportUuid = payload.Options.ImportUuid;
-            //payload.AddFiles(req.Form.Files);
 
-            var svc = new ImportBlobService();
-            await svc.SaveToBlobAsync(payload);
+            var svc = new ImportManger();
+            payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportCustomer);
+            payload.Messages = svc.Messages;
+
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
+
+        
         }
 
         [FunctionName(nameof(ImportSalesOrderFiles))]
