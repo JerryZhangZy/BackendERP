@@ -135,15 +135,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeSentWMSShipmentIDs() => HasSentWMSShipmentIDs;
         #endregion
 
-        #region create shipment by salesorderuuid
+        #region create shipment by SalesOrderNumber
 
         /// <summary>
-        /// (Request Data) salesorderuuid.
+        /// (Request Data) SalesOrderNumber.
         /// </summary>
-        [OpenApiPropertyDescription("(Request Data) salesorderuuid.")]
-        public string SalesOrderUuid { get; set; }
-        [JsonIgnore] public virtual bool HasSalesOrderUuid => !SalesOrderUuid.IsZero();
-        public bool ShouldSerializeSalesOrderUuid() => HasSalesOrderUuid;
+        [OpenApiPropertyDescription("(Request Data) SalesOrderNumber.")]
+        public string SalesOrderNumber { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrderNumber => !SalesOrderNumber.IsZero();
+        public bool ShouldSerializeSalesOrderNumber() => HasSalesOrderNumber;
 
         /// <summary>
         /// (Response Data) OrderShipmetUuid.
