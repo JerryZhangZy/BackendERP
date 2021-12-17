@@ -286,7 +286,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return customIOFormatPayload.Success;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="formatType">formatType</param>
+        /// <param name="formatNumber">formatNumber</param>
+        /// <returns></returns>
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string formatType, int formatNumber)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND FormatType=@2 AND FormatNumber=@3"
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                formatType.ToSqlParameter("2"),
+                formatNumber.ToSqlParameter("3")
+                );
+        }
 
         /// <summary>
         /// 
@@ -295,34 +311,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="formatType">formatType</param>
         /// <param name="formatNumber">formatNumber</param>
         /// <returns></returns>
-        public virtual async Task<bool> GetAsync(CustomIOFormatPayload payload, string formatType, int formatNumber)
+        public virtual async Task<bool> GetByNumberAsync(CustomIOFormatPayload payload, string formatType, int formatNumber)
         {
-            List();
-            var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND FormatType=@2 AND FormatNumber=@3"
-                ,
-                payload.MasterAccountNum.ToSqlParameter("0"),
-                payload.ProfileNum.ToSqlParameter("1"),
-                formatType.ToSqlParameter("2"),
-                formatNumber.ToSqlParameter("3")
-                );
-           if (rownum == 0)
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, formatType, formatNumber);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="formatType">formatType</param>
+        /// <param name="formatNumber">formatNumber</param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string formatType, int formatNumber)
+        {
+            var rownum = await GetRowNumAsync(masterAccountNum, profileNum, formatType, formatNumber);
+            if (rownum <= 0)
             {
                 AddError($"Data not found for formatType:{formatType}formatNumber{formatNumber} .");
                 return false;
             }
 
-            return _data.Get(rownum);
-        }
-
-        /// <summary>
-        ///  get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> GetDataAsync(CustomIOFormatPayload payload, string orderNumber)
-        {
-            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            return await ListAsync(rownum);
         }
 
         /// <summary>
@@ -330,34 +340,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(CustomIOFormatPayload payload, string orderNumber)
+        public virtual async Task<bool> DeleteByNumberAsync(CustomIOFormatPayload payload, string formatType, int formatNumber)
         {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
-            return success;
+            return await DeleteByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, formatType, formatNumber);
         }
 
-        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="formatType">formatType</param>
+        /// <param name="formatNumber">formatNumber</param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByNumberAsync(int masterAccountNum, int profileNum, string formatType, int formatNumber)
         {
-            var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1    AND FormatNumber=@2"
-                 ,
-                 masterAccountNum.ToSqlParameter("0"),
-                 profileNum.ToSqlParameter("1"),
-                 number.ToSqlParameter("2")
-                 );
-            if (rownum == 0)
+            var rownum = await GetRowNumAsync(masterAccountNum, profileNum, formatType, formatNumber);
+            if (rownum <= 0)
             {
-                AddError($"Data not found for formatNumber:{number} .");
+                AddError($"Data not found for formatType:{formatType}formatNumber{formatNumber} .");
                 return false;
             }
 
-            return _data.Get(rownum);
+            return await DeleteAsync(rownum);
         }
+
+        //public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        //{
+        //    var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1    AND FormatNumber=@2"
+        //         ,
+        //         masterAccountNum.ToSqlParameter("0"),
+        //         profileNum.ToSqlParameter("1"),
+        //         number.ToSqlParameter("2")
+        //         );
+        //    if (rownum == 0)
+        //    {
+        //        AddError($"Data not found for formatNumber:{number} .");
+        //        return false;
+        //    }
+
+        //    return _data.Get(rownum);
+        //}
 
     }
 }

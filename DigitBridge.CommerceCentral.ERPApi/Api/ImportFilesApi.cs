@@ -29,22 +29,24 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(ImportFilesPayload), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportFilesPayload))]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(ImportExportFilesPayload), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         #endregion swagger Doc
-        public static async Task<JsonNetResponse<ImportFilesPayload>> ImportCustomerFiles(
+        public static async Task<JsonNetResponse<ImportExportFilesPayload>> ImportCustomerFiles(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "importFiles/customer")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportFilesPayload>();
+            var payload = await req.GetParameters<ImportExportFilesPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            payload.ImportFiles = req.Form.Files;
-            payload.Options = req.Form["options"].ToString().JsonToObject<ImportOptions>();
-            var svc = new SalesOrderManager(dbFactory);
+            payload.LoadRequest(req);
+            // load request parameter to payload
+            //payload.ImportFiles = req.Form.Files;
+            //payload.Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
+            //payload.ImportUuid = payload.Options.ImportUuid;
+            //payload.AddFiles(req.Form.Files);
 
-            //await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
-            return new JsonNetResponse<ImportFilesPayload>(payload);
+            var svc = new ImportBlobService();
+            await svc.SaveToBlobAsync(payload);
+            return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
 
     }

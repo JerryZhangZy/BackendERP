@@ -12,6 +12,7 @@ namespace DigitBridge.Base.Utility
         private static IConfigurationRoot _config = new ConfigurationBuilder().
                     SetBasePath(Environment.CurrentDirectory).
                     AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
+                    AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
                     AddEnvironmentVariables().
                     Build();
 
@@ -52,6 +53,10 @@ namespace DigitBridge.Base.Utility
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
         public static string ERPSummaryTableName => GetValueByName("ERPSummaryTableName");
         public static string ERPSummaryTableConnectionString => GetValueByName("ERPSummaryTableConnectionString");
+
+        public static string ERPImportContainerName => GetValueByName("ERPImportContainerName");
+        public static string ERPExportContainerName => GetValueByName("ERPExportContainerName");
+        public static string ERPBlobConnectionString => GetValueByName("ERPBlobConnectionString");
 
         public static bool UseAzureManagedIdentity
         {
