@@ -186,7 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 MasterAccountNum = 10002,
                 ProfileNum = 10003,
-                ImportUuid = "468945ac-dfab-42f7-85ea-0fa8bfb8fe87",
+                ImportUuid = "2a542e3e-cf8f-4ff0-9df2-11cbffe5641d",
             };
             var success = await service.ImportAsync(payload);
             Assert.True(success, service.Messages.ObjectToString());
