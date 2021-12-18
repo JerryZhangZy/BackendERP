@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -32,6 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> AddAsync(CustomIOFormatDataDto dto);
        
         Task<bool> UpdateAsync(CustomIOFormatDataDto dto);
+
+        int GetFormatNumber(int masterAccountNum, int profileNum, int formatType);
 
     }
 }

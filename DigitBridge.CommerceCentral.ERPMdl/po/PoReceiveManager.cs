@@ -357,6 +357,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
+
+        public async Task SaveImportDataAsync(IList<PoTransactionDataDto> dtos, ImportExportFilesPayload payload)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            PoReceivePayload vendorPayload = new PoReceivePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
+            foreach (var dto in dtos)
+            {
+                 
+                vendorPayload.PoTransaction = dto;
+                await _poReceiveService.ImportAsync(vendorPayload);
+                vendorPayload.PoTransaction = null;
+
+
+            }
+        }
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;

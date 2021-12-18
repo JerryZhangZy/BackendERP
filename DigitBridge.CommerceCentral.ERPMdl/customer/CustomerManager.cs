@@ -241,28 +241,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
               
                 customerPayload.Customer = dto;
-                if (customerService.ExistCustomer(dto.Customer.CustomerUuid, customerPayload.MasterAccountNum, customerPayload.ProfileNum))
-                {
-                    var result = await customerService.UpdateAsync(customerPayload);
-                }
-                else
-                {
-                    var result1 = await customerService.AddAsync(customerPayload);
-                }
-
-
-                //if (await customerService.AddAsync(customerPayload))
-                //    addsucccount++;
-                //else
-                //{
-                //    errorcount++;
-                //    foreach (var msg in customerService.Messages)
-                //        Messages.Add(msg);
-                //    customerService.Messages.Clear();
-                //}
-           
-                if (customerPayload.HasCustomer)
+                await customerService.ImportAsync(customerPayload);
                 customerPayload.Customer = null;
+ 
             }
         }
 
