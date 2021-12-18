@@ -72,11 +72,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.ReturnError($"Import Options FormatType is required.");
                 return false;
             }
-            //if (!payload.Options.HasFormatNumber)
-            //{
-            //    payload.ReturnError($"Import Options FormatNumber is required.");
-            //    return false;
-            //}
+            if (!payload.Options.HasFormatNumber)
+            {
+                payload.ReturnError($"Import Options FormatNumber is required.");
+                return false;
+            }
 
             try
             {
