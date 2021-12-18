@@ -520,6 +520,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         /// <summary>
         /// Get row num by CustomerFindClass 
+        /// 1. try find by CustomerUuid
+        /// 2. try find by CustomerCode
+        /// 3. try find by Phone1 + CustomerName
+        /// 4. try find by Email + CustomerName
         /// </summary>
         public virtual async Task<long> GetRowNumByCustomerFindAsync(CustomerFindClass find)
         {
