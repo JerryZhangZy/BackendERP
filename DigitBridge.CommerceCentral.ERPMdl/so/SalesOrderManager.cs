@@ -516,17 +516,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region import salesorder
 
-        public async Task SaveImportDataAsync(IList<SalesOrderDataDto> dtos, ImportExportFilesPayload payload)
+        public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos)
         {
             if (dtos == null || dtos.Count == 0)
             {
                 AddError("no files upload");
+                return false;
             }
+            var success = true;
             foreach (var dto in dtos)
             {
                 salesOrderService.Clear();
-                salesOrderService.Add(dto);
+                if (!await salesOrderService.AddAsync(dto))
+                {
+                    success = false;
+                    AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");
+                    this.Messages.Add(salesOrderService.Messages);
+                }
             }
+            return success;
         }
         #endregion
     }
