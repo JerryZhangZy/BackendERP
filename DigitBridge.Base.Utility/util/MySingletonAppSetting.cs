@@ -9,14 +9,13 @@ namespace DigitBridge.Base.Utility
 {
     public static class MySingletonAppSetting
     {
-        //private static IConfigurationRoot _config = new ConfigurationBuilder().
-        //            SetBasePath(Environment.CurrentDirectory).
-        //            //AddJsonFile($"local.settings.json", optional: true, reloadOnChange: true).
-        //            AddJsonFile($"localsettings.{Environment.MachineName}.json", optional: true, reloadOnChange: true).
-        //            AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
-        //            AddEnvironmentVariables().
-        //            Build();
-        private static IConfigurationRoot _config => ConfigUtil.ConfigurationRoot;
+        private static IConfigurationRoot _config = new ConfigurationBuilder().
+                    SetBasePath(Environment.CurrentDirectory).
+                    AddJsonFile($"local.settings.json", optional: true, reloadOnChange: true).
+                    AddEnvironmentVariables().
+                    Build();
+        //AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
+        //private static IConfigurationRoot _config => ConfigUtil.ConfigurationRoot;
         public static bool DebugMode
         {
             get
@@ -52,6 +51,11 @@ namespace DigitBridge.Base.Utility
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
+
+        public static string ERP_Integration_Api_BaseUrl => GetValueByName("ERP_Integration_Api_BaseUrl");
+        public static string ERP_Integration_Api_AuthCode => GetValueByName("ERP_Integration_Api_AuthCode");
+
+
         public static string ERPSummaryTableName => GetValueByName("ERPSummaryTableName");
         public static string ERPSummaryTableConnectionString => GetValueByName("ERPSummaryTableConnectionString");
 

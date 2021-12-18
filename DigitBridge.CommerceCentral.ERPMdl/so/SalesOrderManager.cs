@@ -489,31 +489,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
 
-
-        //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
-        //{
-        //    if (soDataList == null || soDataList.Count == 0)
-        //    {
-        //        return true;
-        //    }
-
-        //    foreach (var soData in soDataList)
-        //    {
-        //        salesOrderService.Add();
-
-        //        soData.CheckIntegrity();
-
-        //        salesOrderService.AttachData(soData);
-
-        //        if (await salesOrderService.SaveDataAsync() == false)
-        //        {
-        //            return false;
-        //        }
-        //    }
-
-        //    return true;
-        //}
-
         #region import salesorder
 
         public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos)

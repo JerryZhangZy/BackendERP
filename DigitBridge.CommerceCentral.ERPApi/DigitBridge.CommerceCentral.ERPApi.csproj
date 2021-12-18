@@ -14,7 +14,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="local.settings.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
@@ -37,10 +36,7 @@
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="local.settings.DESKTOP-6C6398M.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="local.settings.DESKTOP-AIG3DDD.json">
+    <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.DESKTOP-SSB3DTP.json">

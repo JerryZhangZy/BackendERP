@@ -9,5 +9,6 @@ namespace DigitBridge.Base.Common
         WholeSales = 0,
         ECommerce = 1,
         Channel = 2,
+        ImportNewCustomer = 3,
     }
 }
