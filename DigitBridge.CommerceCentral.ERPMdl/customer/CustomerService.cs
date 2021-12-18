@@ -409,6 +409,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> ImportAsync(CustomerPayload payload)
+        {
+            if (payload is null || !payload.HasCustomer)
+                return false;
+            #region delete
+            if (!string.IsNullOrWhiteSpace(payload.Customer.Customer.CustomerUuid))
+            {
+                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.Customer.Customer.CustomerUuid);
+                if (rownum >= 0)
+                    await DeleteAsync(rownum);
+            }
+            #endregion
+
+            #region add
+            return await this.AddAsync(payload);
+            #endregion
+        }
+
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string customerUuid)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND CustomerUuid=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                customerUuid.ToSqlParameter("2")
+                );
+        }
+
         public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
         {
             if (!payload.HasCustomerCodes)

@@ -28,37 +28,15 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             var payload = new ImportExportFilesPayload()
             {
                 MasterAccountNum = message.MasterAccountNum,
-                ProfileNum = message.ProfileNum,
+                ProfileNum = message.ProfileNum, 
                 ImportUuid = message.ProcessUuid,
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new CustomerIOManager(dbFactory);
             await service.ImportAsync(payload);
         }
-        //[FunctionName("ImportVendor")]
-        //public static async Task ImportVendor([QueueTrigger(QueueName.Erp_Import_Vendor)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ImportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new VendorIOManager(dbFactory);
-        //    await service.ImportAsync(payload);
-        //}
-
-
-        /// <summary>
-        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to salesorder data.
-        /// </summary>
-        /// <param name="myQueueItem"></param>
-        /// <param name="log"></param>
-        /// <returns></returns>
-        [FunctionName("ImportSalesOrderFiles")]
-        public static async Task ImportSalesOrderFiles([QueueTrigger(QueueName.Erp_Import_SalesOrder)] string myQueueItem, ILogger log)
+        [FunctionName("ImportVendor")]
+        public static async Task ImportVendor([QueueTrigger(QueueName.Erp_Import_Vendor)] string myQueueItem, ILogger log)
         {
             var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
             var payload = new ImportExportFilesPayload()
@@ -68,8 +46,78 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 ImportUuid = message.ProcessUuid,
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var service = new SalesOrderIOManager(dbFactory);
+            var service = new VendorIOManager(dbFactory);
             await service.ImportAsync(payload);
         }
+
+        [FunctionName("ImportPurchaseOrder")]
+        public static async Task ImportPurchaseOrder([QueueTrigger(QueueName.Erp_Import_PurchaseOrder)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new PurchaseOrderIOManager(dbFactory);
+            await service.ImportAsync(payload);
+        }
+
+
+        [FunctionName("ImportPoReceive")]
+        public static async Task ImportPoReceive([QueueTrigger(QueueName.Erp_Import_PoReceive)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new PoReceiveIOManager(dbFactory);
+            await service.ImportAsync(payload);
+        }
+
+
+        [FunctionName("ImportWarehouseTransfer")]
+        public static async Task ImportWarehouseTransfer([QueueTrigger(QueueName.Erp_Import_WarehouseTransfer)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new WarehouseTransferIOManager(dbFactory);
+            await service.ImportAsync(payload);
+        }
+
+
+
+        ///// <summary>
+        ///// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to salesorder data.
+        ///// </summary>
+        ///// <param name="myQueueItem"></param>
+        ///// <param name="log"></param>
+        ///// <returns></returns>
+        //[FunctionName("ImportSalesOrderFiles")]
+        //public static async Task ImportSalesOrderFiles([QueueTrigger(QueueName.Erp_Import_SalesOrder)] string myQueueItem, ILogger log)
+        //{
+        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+        //    var payload = new ImportExportFilesPayload()
+        //    {
+        //        MasterAccountNum = message.MasterAccountNum,
+        //        ProfileNum = message.ProfileNum,
+        //        ImportUuid = message.ProcessUuid,
+        //    };
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var service = new SalesOrderIOManager(dbFactory);
+        //    await service.ImportAsync(payload);
+        //}
     }
 }

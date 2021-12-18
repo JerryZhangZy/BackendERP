@@ -176,6 +176,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        public async Task SaveImportDataAsync(IList<VendorDataDto> dtos, ImportExportFilesPayload payload)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            VendorPayload vendorPayload = new VendorPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
+            foreach (var dto in dtos)
+            {
+                
+                vendorPayload.Vendor = dto;
+                await vendorService.ImportAsync(vendorPayload);
+                vendorPayload.Vendor = null;
+               
+
+            }
+        }
+
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;

@@ -512,7 +512,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.PurchaseOrders = result;
         }
 
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> ImportAsync(PurchaseOrderPayload payload)
+        {
+            if (payload is null || !payload.HasPurchaseOrder)
+                return false;
+            #region delete
+            if (!string.IsNullOrWhiteSpace(payload.PurchaseOrder.PoHeader.PoUuid))
+            {
+                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.PurchaseOrder.PoHeader.PoUuid);
+                if (rownum >= 0)
+                    await DeleteAsync(rownum);
+            }
+            #endregion
 
+            #region add
+            return await this.AddAsync(payload);
+            #endregion
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="formatType">formatType</param>
+        /// <param name="formatNumber">formatNumber</param>
+        /// <returns></returns>
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string poUuidUuid)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM PoHeader WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND PoUuid=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                poUuidUuid.ToSqlParameter("2")
+                );
+        }
         //public virtual async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
         //{
         //    if (data == null || data.PoTransaction == null)

@@ -38,6 +38,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Service Property
         [XmlIgnore, JsonIgnore]
+        protected ImportBlobService _ImportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ImportBlobService ImportBlobService
+        {
+            get
+            {
+                if (_ImportBlobService is null)
+                    _ImportBlobService = new ImportBlobService();
+                return _ImportBlobService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected CustomIOFormatService _CustomIOFormatService;
+        [XmlIgnore, JsonIgnore]
+        public CustomIOFormatService CustomIOFormatService
+        {
+            get
+            {
+                if (_CustomIOFormatService is null)
+                    _CustomIOFormatService = new CustomIOFormatService(dbFactory);
+                return _CustomIOFormatService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected VendorManager _VendorManager;
+        [XmlIgnore, JsonIgnore]
+        public VendorManager VendorManager
+        {
+            get
+            {
+                if (_VendorManager is null)
+                    _VendorManager = new VendorManager(dbFactory);
+                return _VendorManager;
+            }
+        }
+
+
+        [XmlIgnore, JsonIgnore]
         protected VendorService _VendorService;
         [XmlIgnore, JsonIgnore]
         public VendorService VendorService
@@ -116,6 +156,75 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        public async Task<bool> LoadFormatAsync(ImportExportFilesPayload payload)
+        {
+            if (!(await CustomIOFormatService.GetByNumberAsync(
+                payload.MasterAccountNum,
+                payload.ProfileNum,
+                payload.Options.FormatType,
+                payload.Options.FormatNumber
+                )))
+            {
+                payload.ReturnError($"Import format not found.");
+                return false;
+            }
+            Format = new VendorIOFormat();
+            Format.LoadFormat(CustomIOFormatService.Data.CustomIOFormat.GetFormatObject());
+            return true;
+        }
+
+        #region import 
+        /// <summary>
+        /// Import csv file stream to IList of Dto, depend on format setting
+        /// </summary>
+        public async Task<bool> ImportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ImportUuid))
+                return false;
+            var blobSvc = ImportBlobService;
+            // load import files and import options from Blob
+            if (!(await blobSvc.LoadFromBlobAsync(payload)))
+            {
+                payload.ReturnError($"Import files or options not found.");
+                return false;
+            }
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+                return false;
+
+            var dtoList = new List<VendorDataDto>();
+            // load each file to import
+            foreach (var fileName in payload.FileNames)
+            {
+                // load one file stram from Blob
+                using (var ms = new MemoryStream())
+                {
+                    if (!(await blobSvc.LoadFileFromBlobAsync(fileName, payload, ms)))
+                        continue;
+              
+
+                    var dto = await ImportAsync(ms);
+                    if (dto == null || dto.Count == 0) continue;
+                    dtoList.AddRange(dto);
+                }
+            }
+
+            // Verify Dto and save dto to database
+            var manager = VendorManager;
+            await manager.SaveImportDataAsync(dtoList, payload);
+            return true;
+        }
+
+        /// <summary>
+        /// Import csv file stream to IList of Dto, depend on format setting
+        /// </summary>
+        public async Task<IList<VendorDataDto>> ImportAsync(byte[] buffer)
+        {
+            if (buffer == null) return null;
+            using (var ms = new MemoryStream(buffer))
+                return await ImportAsync(ms);
+        }
+
         /// <summary>
         /// Import csv file stream to IList of Dto, depend on format setting
         /// </summary>
@@ -135,7 +244,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await VendorIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+        #endregion import 
 
+        #region export
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
@@ -155,6 +266,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await VendorIOCsv.ExportAllColumnsAsync(dtos);
         }
+        #endregion export
+       
 
     }
 }

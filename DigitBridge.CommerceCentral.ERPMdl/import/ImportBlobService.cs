@@ -208,6 +208,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
                 await blobContainer.DownloadBlobAsync(fileName, stream);
+                stream.Position = 0;
                 return true;
             }
             catch (Exception e)

@@ -690,7 +690,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return inventory.Inventory.FirstOrDefault(r => r.WarehouseCode == warehouseCode);
         }
 
-      
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> ImportAsync(WarehouseTransferPayload payload)
+        {
+            if (payload is null || !payload.HasWarehouseTransfer)
+                return false;
+            #region delete
+            if (!string.IsNullOrWhiteSpace(payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid))
+            {
+                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid);
+                if (rownum >= 0)
+                    await DeleteAsync(rownum);
+            }
+            #endregion
+
+            #region add
+            return await this.AddAsync(payload);
+            #endregion
+        }
+
+
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string warehouseTransferUuid)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM WarehouseTransferHeader WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND WarehouseTransferUuid=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                warehouseTransferUuid.ToSqlParameter("2")
+                );
+        }
     }
 }
 

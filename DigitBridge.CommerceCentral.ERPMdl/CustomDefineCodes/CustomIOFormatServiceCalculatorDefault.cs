@@ -29,10 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class CustomIOFormatServiceCalculatorDefault : ICalculator<CustomIOFormatData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
-
-        public CustomIOFormatServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        private ICustomIOFormatService _customIOFormatService;
+        public CustomIOFormatServiceCalculatorDefault(ICustomIOFormatService customIOFormatService , IDataBaseFactory dbFactory)
         {
-            this.ServiceMessage = serviceMessage;
+            this.ServiceMessage = (IMessage)customIOFormatService;
+            this._customIOFormatService = customIOFormatService;
             this.dbFactory = dbFactory;
         }
 
@@ -109,7 +110,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
+            if (processingMode == ProcessingMode.Add)
+            {
+                //if (data.CustomIOFormat.FormatNumber==0 || _customerService.ExistCustomerCode(data.Customer.CustomerCode, data.Customer.MasterAccountNum, data.Customer.ProfileNum))
+                if (data.CustomIOFormat.FormatNumber <= 0 )
+                {
 
+                    data.CustomIOFormat.FormatNumber = _customIOFormatService.GetFormatNumber(data.CustomIOFormat.MasterAccountNum, data.CustomIOFormat.ProfileNum, data.CustomIOFormat.FormatType.ToInt());
+                }
+
+            }
             //TODO: add set default summary data logic
             /* This is generated sample code
             var sum = data.CustomIOFormat;

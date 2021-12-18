@@ -145,16 +145,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\vendor_5.csv";
             var service = new VendorIOManager(DataBaseFactory);
             IList<VendorDataDto> dtos = new List<VendorDataDto>();
             var VendorService = new VendorService(DataBaseFactory);
-            if (VendorService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
+            if (VendorService.List("825912ec-dc62-4e62-a074-e08d88a9694e"))
                 dtos.Add(VendorService.ToDto());
-            if (VendorService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+            if (VendorService.List("2a84b1ad-191e-4d75-bd06-5ea259cad53a"))
                 dtos.Add(VendorService.ToDto());
-            if (VendorService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(VendorService.ToDto());
+            //if (VendorService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+            //    dtos.Add(VendorService.ToDto());
 
             try
             {
