@@ -506,7 +506,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!await invoiceService.AddAsync(dto))
                 {
                     success = false;
-                    AddError($"Add salesorder failed, ordernumber{dto.InvoiceHeader.OrderNumber}");
+                    AddError($"Add invoice failed, InvoiceNumber:{dto.InvoiceHeader.InvoiceNumber}");
                     this.Messages.Add(invoiceService.Messages);
                 }
             }

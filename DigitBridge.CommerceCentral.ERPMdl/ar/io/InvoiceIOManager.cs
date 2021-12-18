@@ -204,6 +204,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!await manager.SaveImportDataAsync(dtoList))
             {
                 this.Messages.Add(manager.Messages);
+                return false;
             }
             return true;
         }
