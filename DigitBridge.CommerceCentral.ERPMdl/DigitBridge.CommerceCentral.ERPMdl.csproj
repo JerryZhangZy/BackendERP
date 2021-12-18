@@ -33,6 +33,7 @@
     <Folder Include="event\" />
     <Folder Include="inventoryUpdate\io\" />
     <Folder Include="inventory\io\" />
+    <Folder Include="channel\" />
     <Folder Include="po\io\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
