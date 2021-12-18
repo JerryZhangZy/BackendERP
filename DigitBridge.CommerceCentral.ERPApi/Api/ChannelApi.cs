@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     public static class ChannelApi
     {
         [FunctionName(nameof(ChannelList))]
-        [OpenApiOperation(operationId: "ChannelList", tags: new[] { "Channel" }, Summary = "Load central order list data")]
+        [OpenApiOperation(operationId: "ChannelList", tags: new[] { "Channel" }, Summary = "Load channel list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
