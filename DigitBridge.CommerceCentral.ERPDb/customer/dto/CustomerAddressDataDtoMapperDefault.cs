@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return;
 
 			#region read all not null properties
-
+			 data.RowNum = dto.RowNum.ToLong();
 			if (dto.HasAddressUuid) data.AddressUuid = dto.AddressUuid;
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
 			if (dto.HasAddressCode) data.AddressCode = dto.AddressCode;

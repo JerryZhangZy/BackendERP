@@ -66,6 +66,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
+			var fmt = data.NewFormatObject(data.FormatType);
+			fmt.LoadFormatHeader(dto.Format);
+			dto.Format = fmt;
 			dto.Format.UpdateParentObjectColumns(dto.FormatColumns);
 			data.SetFormatObject(dto.Format);
 

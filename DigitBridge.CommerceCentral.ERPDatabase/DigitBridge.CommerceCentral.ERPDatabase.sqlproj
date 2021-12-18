@@ -313,6 +313,8 @@
     <Build Include="channelOrder\OrderLineMiscExt.sql" />
     <None Include="channelOrder\OrderLineMiscExt_Update.sql" />
     <None Include="ar\InvoiceItems_Update.sql" />
+    <None Include="setting\Setting_ShippingCarrier.sql" />
+    <None Include="setting\Setting_ShippingCarrierService.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />

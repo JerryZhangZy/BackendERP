@@ -232,33 +232,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("no files upload");
                 return;
             }
+            CustomerPayload customerPayload = new CustomerPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
             foreach (var dto in dtos)
             {
-                //if (!file.FileName.ToLower().EndsWith("csv"))
+              
+                customerPayload.Customer = dto;
+                if (customerService.ExistCustomer(dto.Customer.CustomerUuid, customerPayload.MasterAccountNum, customerPayload.ProfileNum))
+                {
+                    var result = await customerService.UpdateAsync(customerPayload);
+                }
+                else
+                {
+                    var result1 = await customerService.AddAsync(customerPayload);
+                }
+
+
+                //if (await customerService.AddAsync(customerPayload))
+                //    addsucccount++;
+                //else
                 //{
-                //    AddError($"invalid file type:{file.FileName}");
-                //    continue;
+                //    errorcount++;
+                //    foreach (var msg in customerService.Messages)
+                //        Messages.Add(msg);
+                //    customerService.Messages.Clear();
                 //}
-                //var list = customerDataDtoCsv.Import(file.OpenReadStream());
-                //var readcount = list.Count();
-                //var addsucccount = 0;
-                //var errorcount = 0;
-                //foreach (var item in list)
-                //{
-                //    payload.Customer = item;
-                //    if (await customerService.AddAsync(payload))
-                //        addsucccount++;
-                //    else
-                //    {
-                //        errorcount++;
-                //        foreach (var msg in customerService.Messages)
-                //            Messages.Add(msg);
-                //        customerService.Messages.Clear();
-                //    }
-                //}
-                //if (payload.HasCustomer)
-                //    payload.Customer = null;
-                //AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+           
+                if (customerPayload.HasCustomer)
+                customerPayload.Customer = null;
             }
         }
 

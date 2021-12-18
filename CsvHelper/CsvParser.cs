@@ -775,7 +775,7 @@ namespace CsvHelper
 			fieldStartPosition -= rowStartPosition;
 			rowStartPosition = 0;
 			bufferPosition = charsLeft;
-
+			 
 			charsRead = await reader.ReadAsync(buffer, charsLeft, buffer.Length - charsLeft);
 			if (charsRead == 0)
 			{
