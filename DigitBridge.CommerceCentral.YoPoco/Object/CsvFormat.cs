@@ -59,7 +59,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// Enable this column mapper
         /// </summary>
         [JsonIgnore]
-        public virtual bool IsEnable 
+        public virtual bool IsEnable
         {
             get => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(HeaderName) && !Ignore && !Disable;
         }
@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual IList<CsvFormatColumn> Columns { get; set; } = new List<CsvFormatColumn>();
         public virtual bool HasColumns() => Columns != null && Columns.Count > 0;
-            
+
 
         public CsvFormatParentObject(Type type, string name = null)
         {
@@ -296,11 +296,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual void SortByIndex()
         {
-            if (HasParentObject()) 
+            if (HasParentObject())
                 ParentObject.SortByIndex();
         }
 
-        public virtual IList<string> GetHeaderNames(bool firstNameOnly = false) 
+        public virtual IList<string> GetHeaderNames(bool firstNameOnly = false)
             => !HasParentObject()
                 ? null
                 : ParentObject.GetHeaderNames(firstNameOnly);
@@ -338,7 +338,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     result.Add(string.Empty);
                     continue;
                 }
-                if (values != null && values.TryGetValue(col.Name, out var val))
+                if (values != null && values.TryGetValue(col.Name, out var val) && val != null)
                     result.Add(val.ToFormatString(col.TextFormat));
                 else
                     result.Add(string.Empty);

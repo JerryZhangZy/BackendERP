@@ -117,7 +117,8 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new SalesOrderIOManager(dbFactory);
-            await service.ImportAsync(payload);
+            var success = await service.ImportAsync(payload);
+            // TODO if false write error to log.
         }
     }
 }
