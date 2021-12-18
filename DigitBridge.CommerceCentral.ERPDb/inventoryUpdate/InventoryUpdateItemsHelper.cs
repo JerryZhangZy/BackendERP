@@ -70,6 +70,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
+        public static string Processor(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Processor) AS {name ?? "Processor".ToCamelCase(camelCase)} ";
+
 
         #endregion - static SQL fileds statement
 
@@ -90,6 +92,7 @@ RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
 RTRIM({allies}WarehouseCode) AS WarehouseCode,
 RTRIM({allies}LotNum) AS LotNum,
 RTRIM({allies}Description) AS Description,
+RTRIM({allies}Processor) AS Processor,
 RTRIM({allies}Notes) AS Notes,
 RTRIM({allies}UOM) AS UOM,
 RTRIM({allies}PackType) AS PackType,

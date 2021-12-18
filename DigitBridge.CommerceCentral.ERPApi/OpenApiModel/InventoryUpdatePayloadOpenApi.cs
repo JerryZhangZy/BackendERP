@@ -138,6 +138,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string InventoryUpdateType { get; set; }
         public string SKU { get; set; }
         public string WarehouseCode { get; set; }
+        public DateTime UpdateDateFrom { get; set; }
+        public DateTime UpdateDateTo { get; set; }
+        public string Processor { get; set; }
 
         public static Faker<InventoryUpdateFilter> GetFaker()
         {
@@ -146,6 +149,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.SKU, f => "")
                 .RuleFor(u => u.InventoryUpdateType, f => "")
                 .RuleFor(u => u.WarehouseCode, f => "")
+                .RuleFor(u => u.UpdateDateFrom, f => f.Date.Recent())
+                .RuleFor(u => u.UpdateDateTo, f => f.Date.Recent())
+                .RuleFor(u => u.Processor, f => "")
                 ;
             #endregion faker data rules
         }

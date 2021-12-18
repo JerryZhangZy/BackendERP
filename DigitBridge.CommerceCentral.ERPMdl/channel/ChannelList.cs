@@ -15,17 +15,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.InventoryUpdateHeaderHelper;
-using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.InventoryUpdateItemsHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.Setting_ChannelHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InventoryUpdateList : SqlQueryBuilder<InventoryUpdateQuery>
+    public class ChannelList : SqlQueryBuilder<ChannelQuery>
     {
-        public InventoryUpdateList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public ChannelList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public InventoryUpdateList(IDataBaseFactory dbFactory, InventoryUpdateQuery queryObject)
+        public ChannelList(IDataBaseFactory dbFactory, ChannelQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -36,23 +35,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.BatchNumber()},
-{Helper.InventoryUpdateUuid()},
-{Helper.InventoryUpdateType()},
-COALESCE(iut.text, '') inventoryUpdateTypeText, 
-{ItemsHelper.InventoryUpdateItemsUuid()},
-{ItemsHelper.Seq()},
-{ItemsHelper.ItemDate()},
-{ItemsHelper.ItemTime()},
-{ItemsHelper.Processor()},
-{ItemsHelper.SKU()},
-{ItemsHelper.ProductUuid()},
-{ItemsHelper.WarehouseCode()},
-{ItemsHelper.WarehouseUuid()},
-{ItemsHelper.LotNum()},
-{ItemsHelper.BeforeInstockQty()},
-{ItemsHelper.CountPack()},
-{ItemsHelper.UpdateQty()}
+{Helper.TableAllies}.ChannelNum,
+{Helper.TableAllies}.ChannelName,
+{Helper.ChannelAccountAlias}.ChannelAccountNum,
+{Helper.ChannelAccountAlias}.ChannelAccountName
 ";
             return this.SQL_Select;
         }
@@ -61,8 +47,10 @@ COALESCE(iut.text, '') inventoryUpdateTypeText,
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
- LEFT JOIN {ItemsHelper.TableName} {ItemsHelper.TableAllies} ON ({ItemsHelper.TableAllies}.InventoryUpdateUuid = {Helper.TableAllies}.InventoryUpdateUuid)
- LEFT JOIN @UpdateType iut ON ({Helper.TableAllies}.InventoryUpdateType = iut.num)
+LEFT JOIN Setting_ChannelAccount {Helper.ChannelAccountAlias} ON
+({Helper.TableAllies}.MasterAccountNum=chna.MasterAccountNum AND
+{Helper.TableAllies}.ProfileNum={Helper.ChannelAccountAlias}.ProfileNum AND
+{Helper.TableAllies}.ChannelNum={Helper.ChannelAccountAlias}.ChannelNum)
 ";
             return this.SQL_From;
         }
@@ -70,78 +58,83 @@ COALESCE(iut.text, '') inventoryUpdateTypeText,
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-
+                        
             //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            paramList.Add("@UpdateType".ToEnumParameter<InventoryUpdateType>());
+            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         }
-        
+
+        protected override void AddDefaultOrderBy()
+        {
+            if (!QueryObject.HasOrderBy)
+                QueryObject.AddOrderBy("ChannelNum DESC");
+        }
         #endregion override methods
-        
-        public virtual InventoryUpdatePayload GetInventoryUpdateList(InventoryUpdatePayload payload)
+
+        public virtual ChannelPayload GetChannelList(ChannelPayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new ChannelPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryUpdateListCount = Count();
+                payload.ChannelListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.InventoryUpdateList = sb;
+                    payload.ChannelList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryUpdateListCount = 0;
-                payload.InventoryUpdateList = null;
+                payload.ChannelListCount = 0;
+                payload.ChannelList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<InventoryUpdatePayload> GetInventoryUpdateListAsync(InventoryUpdatePayload payload)
+        public virtual async Task<ChannelPayload> GetChannelListAsync(ChannelPayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new ChannelPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryUpdateListCount = await CountAsync();
+                payload.ChannelListCount = await CountAsync();
                 result = await ExcuteJsonAsync(sb);
                 if (result)
-                    payload.InventoryUpdateList = sb;
+                    payload.ChannelList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryUpdateListCount = 0;
-                payload.InventoryUpdateList = null;
+                payload.ChannelListCount = 0;
+                payload.ChannelList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<IList<long>> GetRowNumListAsync(InventoryUpdatePayload payload)
+        public virtual async Task<IList<long>> GetRowNumListAsync(ChannelPayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new ChannelPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.MasterAccountNum 
 {GetSQL_from()} 
 {GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.RowNum  
+ORDER BY  {Helper.TableAllies}.MasterAccountNum  
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
@@ -162,18 +155,18 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             return rowNumList;
         }
 
-        public virtual IList<long> GetRowNumList(InventoryUpdatePayload payload)
+        public virtual IList<long> GetRowNumList(ChannelPayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new ChannelPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.MasterAccountNum 
 {GetSQL_from()} 
 {GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.RowNum  
+ORDER BY  {Helper.TableAllies}.MasterAccountNum  
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
