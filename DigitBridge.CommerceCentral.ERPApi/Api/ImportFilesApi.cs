@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
 
-        
+
         }
 
         [FunctionName(nameof(ImportSalesOrderFiles))]
@@ -68,6 +68,52 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             var svc = new ImportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportSalesOrder);
+            payload.Messages.Add(svc.Messages);
+
+            return new JsonNetResponse<ImportExportFilesPayload>(payload);
+        }
+
+        [FunctionName(nameof(ImportInvoiceFiles))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "ImportInvoiceFiles", tags: new[] { "ImportFiles" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(ImportExportFilesPayload), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<ImportExportFilesPayload>> ImportInvoiceFiles(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "importFiles/invoice")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ImportExportFilesPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            payload.LoadRequest(req);
+
+            var svc = new ImportManger();
+            payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportInvoice);
+            payload.Messages.Add(svc.Messages);
+
+            return new JsonNetResponse<ImportExportFilesPayload>(payload);
+        }
+
+        [FunctionName(nameof(ImportShipmentFiles))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "ImportShipmentFiles", tags: new[] { "ImportFiles" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(ImportExportFilesPayload), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<ImportExportFilesPayload>> ImportShipmentFiles(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "importFiles/shipment")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ImportExportFilesPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            payload.LoadRequest(req);
+
+            var svc = new ImportManger();
+            payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportShipment);
             payload.Messages.Add(svc.Messages);
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
