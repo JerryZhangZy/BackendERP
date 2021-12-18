@@ -10,9 +10,7 @@
 
   <ItemGroup>
     <None Remove="appsettings - Copy.test.json" />
-    <None Update="appsettings.test.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Remove="appsettings.test.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,7 +42,13 @@
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="appsettings.test.json">
+    <None Update="appsettings.test.DESKTOP-6C6398M.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.test.DESKTOP-AIG3DDD.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.test.DESKTOP-SSB3DTP.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

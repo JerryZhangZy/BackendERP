@@ -341,7 +341,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"Shipment has been transferred to invoice.");
                     return false;
                 }
-            } else if (!string.IsNullOrEmpty(await invoiceService.GetInvoiceUuidByOrderShipmentUuidAsync(orderShipmentUuid)))
+            }
+            else if (!string.IsNullOrEmpty(await invoiceService.GetInvoiceUuidByOrderShipmentUuidAsync(orderShipmentUuid)))
             {
                 AddError($"Shipment has been transferred to invoice.");
                 return false;
@@ -356,8 +357,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
         /// <summary>
-            /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
-            /// </summary>
+        /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
+        /// </summary>
         public async Task<string> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
         {
             if (!(await ValidateShipmentForInvoiceAsync(shipmentData)))
@@ -413,7 +414,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set InvoiceNumber back to shipment and update shipment to ready.
             shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
             await orderShipmentService.UpdateProcessStatusAsync(
-                shipmentData.OrderShipmentHeader.OrderShipmentUuid, 
+                shipmentData.OrderShipmentHeader.OrderShipmentUuid,
                 OrderShipmentProcessStatusEnum.InvoiceReady,
                 invoiceService.Data.InvoiceHeader.InvoiceUuid,
                 invoiceService.Data.InvoiceHeader.InvoiceNumber
@@ -438,7 +439,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        
+
 
 
 
@@ -486,6 +487,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 responseList.Add(response);
             }
             return responseList;
+        }
+        #endregion
+
+        #region import salesorder
+
+        public async Task<bool> SaveImportDataAsync(IList<InvoiceDataDto> dtos)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return false;
+            }
+            var success = true;
+            foreach (var dto in dtos)
+            {
+                invoiceService.Clear();
+                if (!await invoiceService.AddAsync(dto))
+                {
+                    success = false;
+                    AddError($"Add invoice failed, InvoiceNumber:{dto.InvoiceHeader.InvoiceNumber}");
+                    this.Messages.Add(invoiceService.Messages);
+                }
+            }
+            return success;
         }
         #endregion
     }
