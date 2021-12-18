@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             var svc = new ImportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportSalesOrder);
-            payload.Messages.Add(svc.Messages);
+            payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             var svc = new ImportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportInvoice);
-            payload.Messages.Add(svc.Messages);
+            payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
@@ -114,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             var svc = new ImportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpImportShipment);
-            payload.Messages.Add(svc.Messages);
+            payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
