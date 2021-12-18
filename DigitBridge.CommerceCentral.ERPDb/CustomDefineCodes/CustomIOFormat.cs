@@ -95,6 +95,41 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return fmt;
         }
 
+        public CsvFormat NewFormatObject(string passFormatType)
+        {
+            if (!int.TryParse(passFormatType, out int formatType))
+                formatType = -1;
+
+            switch (formatType)
+            {
+                case (int)ActivityLogType.SalesOrder:
+                    return new SalesOrderIOFormat();
+                case (int)ActivityLogType.PurchaseOrder:
+                    return new PurchaseOrderIOFormat();
+                case (int)ActivityLogType.PoReceive:
+                    return new PoReceiveIOFormat();
+                case (int)ActivityLogType.Vendor:
+                    return new VendorIOFormat();
+                case (int)ActivityLogType.ApInvoice:
+                    return new ApInvoiceIOFormat();
+                case (int)ActivityLogType.Invoice:
+                    return new InvoiceIOFormat();
+                case (int)ActivityLogType.InvoicePayment:
+                    return new InvoicePaymentIOFormat();
+                case (int)ActivityLogType.InvoiceReturn:
+                    return new InvoiceReturnIOFormat();
+                case (int)ActivityLogType.Customer:
+                    return new CustomerIOFormat();
+                case (int)ActivityLogType.Inventory:
+                    return new InventoryIOFormat();
+                case (int)ActivityLogType.InventoryUpdate:
+                    return new InventoryUpdateIOFormat();
+                case (int)ActivityLogType.WarehouseTransfer:
+                    return new WarehouseTransferIOFormat();
+            }
+            return new CsvFormat();
+        }
+
         public void SetFormatObject(CsvFormat csvFormat)
         {
             CsvFormat fmt = null;
