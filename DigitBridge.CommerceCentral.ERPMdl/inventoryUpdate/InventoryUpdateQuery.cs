@@ -38,11 +38,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
 
+        protected QueryFilter<DateTime> _UpdateDateFrom = new QueryFilter<DateTime>("UpdateDateFrom", "UpdateDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
+        public QueryFilter<DateTime> UpdateDateFrom => _UpdateDateFrom;
+
+        protected QueryFilter<DateTime> _UpdateDateTo = new QueryFilter<DateTime>("UpdateDateTo", "UpdateDate", PREFIX, FilterBy.le, SqlQuery._SqlMinDateTime);
+        public QueryFilter<DateTime> UpdateDateTo => _UpdateDateTo;
+
+        protected QueryFilter<string> _Processor = new QueryFilter<string>("Processor", "Processor", PREFIX, FilterBy.eq, "");
+        public QueryFilter<string> Processor => _Processor;
+
         public InventoryUpdateQuery() : base(PREFIX)
         {
             AddFilter(_SKU);
             AddFilter(_WarehouseCode);
             AddFilter(_UpdateType);
+            AddFilter(_UpdateDateFrom);
+            AddFilter(_UpdateDateTo);
+            AddFilter(_Processor);
             //AddFilter(_OrderDateFrom);
             //AddFilter(_OrderDateTo);
             //AddFilter(_CustomerCode);

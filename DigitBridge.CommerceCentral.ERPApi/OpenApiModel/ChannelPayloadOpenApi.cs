@@ -63,7 +63,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<ChannelFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.ChannelNumber, f => f.Random.Number(10000, 10010))
+                .RuleFor(u => u.ChannelAccountNum, f => f.Random.Number(10000, 10010))
+                .RuleFor(u => u.ChannelName, f => "")
+                .RuleFor(u => u.ChannelAccountName, "")
                 ;
             #endregion faker data rules
         }
