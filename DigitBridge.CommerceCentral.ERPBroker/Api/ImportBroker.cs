@@ -99,25 +99,25 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
 
 
-        ///// <summary>
-        ///// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to salesorder data.
-        ///// </summary>
-        ///// <param name="myQueueItem"></param>
-        ///// <param name="log"></param>
-        ///// <returns></returns>
-        //[FunctionName("ImportSalesOrderFiles")]
-        //public static async Task ImportSalesOrderFiles([QueueTrigger(QueueName.Erp_Import_SalesOrder)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ImportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new SalesOrderIOManager(dbFactory);
-        //    await service.ImportAsync(payload);
-        //}
+        /// <summary>
+        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to salesorder data.
+        /// </summary>
+        /// <param name="myQueueItem"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        [FunctionName("ImportSalesOrderFiles")]
+        public static async Task ImportSalesOrderFiles([QueueTrigger(QueueName.Erp_Import_SalesOrder)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new SalesOrderIOManager(dbFactory);
+            await service.ImportAsync(payload);
+        }
     }
 }
