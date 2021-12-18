@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -48,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string GetConnectionString(int masterAccountNum)
         {
-            return ConfigHelper.Dsn;
+            return MySingletonAppSetting.Dsn;
         }
     }
 }

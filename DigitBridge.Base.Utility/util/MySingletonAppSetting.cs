@@ -9,13 +9,14 @@ namespace DigitBridge.Base.Utility
 {
     public static class MySingletonAppSetting
     {
-        private static IConfigurationRoot _config = new ConfigurationBuilder().
-                    SetBasePath(Environment.CurrentDirectory).
-                    AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
-                    AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
-                    AddEnvironmentVariables().
-                    Build();
-
+        //private static IConfigurationRoot _config = new ConfigurationBuilder().
+        //            SetBasePath(Environment.CurrentDirectory).
+        //            //AddJsonFile($"local.settings.json", optional: true, reloadOnChange: true).
+        //            AddJsonFile($"localsettings.{Environment.MachineName}.json", optional: true, reloadOnChange: true).
+        //            AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
+        //            AddEnvironmentVariables().
+        //            Build();
+        private static IConfigurationRoot _config => ConfigUtil.ConfigurationRoot;
         public static bool DebugMode
         {
             get
@@ -39,7 +40,7 @@ namespace DigitBridge.Base.Utility
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
 #endif
         public static string OrchestrationDbConnString => GetValueByName("OrchestrationDbConnString");
-
+        public static string Dsn => GetValueByName("dsn");
         public static string DBConnectionString => GetValueByName("DBConnectionString");
         public static string DbTenantId => GetValueByName("DbTenantId");
 
@@ -47,7 +48,7 @@ namespace DigitBridge.Base.Utility
 
         public static string CryptKey => GetValueByName("CryptKey");
 
-        
+
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
