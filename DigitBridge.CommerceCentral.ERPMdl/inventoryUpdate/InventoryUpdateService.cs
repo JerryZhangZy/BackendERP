@@ -588,7 +588,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             header.ProfileNum = profileNum;
             header.MasterAccountNum = masterAccountNum;
             header.InventoryUpdateUuid = Guid.NewGuid().ToString();
-            header.BatchNumber = (await GetNextPaymentNumberAsync(masterAccountNum, profileNum)).ToString();
+            header.BatchNumber = (await GetNextBatchNumberAsync(masterAccountNum, profileNum)).ToString();
             header.InventoryUpdateType = (int)InventoryUpdateType.CycleCount;
             header.InventoryUpdateStatus = 0;
             header.UpdateDate = DateTime.UtcNow.Date;
@@ -681,7 +681,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion inventory update for one sku and warehouse
 
-        public async Task<long> GetNextPaymentNumberAsync(int masterAccountNum, int profileNum)
+        public async Task<long> GetNextBatchNumberAsync(int masterAccountNum, int profileNum)
         {
             var sql = $@"
     SELECT COALESCE(MAX(CAST(BatchNumber AS bigint)), 0) AS num

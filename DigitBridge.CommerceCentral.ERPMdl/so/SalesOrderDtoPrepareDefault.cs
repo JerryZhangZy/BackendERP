@@ -93,6 +93,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto == null || dto.SalesOrderHeader == null)
                 return false;
+
+            // Load customer info to Dto 
+            if (!await CheckCustomerAsync(dto))
+            {
+                AddError($"Cannot find or create customer for {dto.SalesOrderHeader.OrderSourceCode}.");
+            }
+
+            // Load inventory info to Dto 
+            // check sku and warehouse exist, otherwise add new SKU and Warehouse
+            if (!await CheckInventoryAsync(dto))
+            {
+                AddError($"Cannot find or create SKU for {dto.SalesOrderHeader.OrderSourceCode}.");
+            }
+
             return true;
         }
 
@@ -147,6 +161,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
+        /// <summary>
+        /// Load info from customer to Dto
+        /// Try use customer uuid, code, name or phone find customer
+        /// If customer code not exist, add new customer. 
+        /// </summary>
         protected async Task<bool> CheckCustomerAsync(SalesOrderDataDto dto)
         {
             if (!string.IsNullOrEmpty(dto.SalesOrderHeader.CustomerCode))
@@ -260,33 +279,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await customerService.AddCustomerAsync(newCustomer);
         }
 
-        protected async Task<bool> CheckInventoryAsync(SalesOrderData data)
+        /// <summary>
+        /// Load info from inventory to Dto
+        /// Try use inventory uuid, sku, upc or phone find customer
+        /// If customer code not exist, add new customer. 
+        /// </summary>
+        protected async Task<bool> CheckInventoryAsync(SalesOrderDataDto dto)
         {
-            if (data == null || data.SalesOrderItems == null || data.SalesOrderItems.Count == 0)
+            if (dto == null || dto.SalesOrderItems == null || dto.SalesOrderItems.Count == 0)
             {
                 AddError($"Sales Order items not found");
                 return false;
             }
 
-            var header = data.SalesOrderHeader;
-            var masterAccountNum = data.SalesOrderHeader.MasterAccountNum;
-            var profileNum = data.SalesOrderHeader.ProfileNum;
-            var find = data.SalesOrderItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
+            var header = dto.SalesOrderHeader;
+            var masterAccountNum = dto.SalesOrderHeader.MasterAccountNum.ToInt();
+            var profileNum = dto.SalesOrderHeader.ProfileNum.ToInt();
+
+            // find product SKU for each item
+            var findSku = dto.SalesOrderItems.Select(x => new ProductFindClass() 
+                { 
+                    SKU = x.SKU,
+                    UPC = x.SKU,
+                }
+            ).ToList();
+            findSku = (await inventoryService.FindSkuByProductFindAsync(findSku, masterAccountNum, profileNum)).ToList();
+            foreach (var item in dto.SalesOrderItems)
+            {
+                if (item == null) continue;
+                var sku = findSku.FindBySku(item.SKU);
+                if (sku == null || sku.FoundSKU.IsZero()) continue;
+                item.SKU = sku.FoundSKU;
+            }
+
+            // find inventory data
+            var find = dto.SalesOrderItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
             var notExistSkus = await inventoryService.FindNotExistSkuWarehouseAsync(find, masterAccountNum, profileNum);
             if (notExistSkus == null || notExistSkus.Count == 0)
                 return true;
 
             var rtn = true;
-            foreach (var item in data.SalesOrderItems)
+            foreach (var item in dto.SalesOrderItems)
             {
-                if (string.IsNullOrEmpty(item.SKU)) continue;
+                if (item == null || item.SKU.IsZero()) continue;
+
                 if (notExistSkus.FindBySkuWarehouse(item.SKU, item.WarehouseCode) != null)
                 {
                     await inventoryService.AddNewProductOrInventoryAsync(new ProductBasic()
                     {
-                        DatabaseNum = header.DatabaseNum,
-                        MasterAccountNum = header.MasterAccountNum,
-                        ProfileNum = header.ProfileNum,
+                        DatabaseNum = header.DatabaseNum.ToInt(),
+                        MasterAccountNum = header.MasterAccountNum.ToInt(),
+                        ProfileNum = header.ProfileNum.ToInt(),
                         SKU = item.SKU,
                     });
                 }
