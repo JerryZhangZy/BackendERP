@@ -26,12 +26,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public int MasterAccountNum { get; set; }
         public int ProfileNum { get; set; }
 
-        public string ProductUuid { get; set; }
-        public int CentralProductNum { get; set; }
-        public string SKU { get; set; }
-        public string WarehouseCode { get; set; }
-        public string LotNum { get; set; }
-        public string LpnNum { get; set; }
+        public string ProductUuid { get; set; } = string.Empty;
+        public int CentralProductNum { get; set; } = 0;
+        public string SKU { get; set; } = string.Empty;
+        public string UPC { get; set; } = string.Empty;
+        public string WarehouseCode { get; set; } = string.Empty;
+        public string LotNum { get; set; } = string.Empty;
+        public string LpnNum { get; set; } = string.Empty;
     }
 
     public static class InventoryFindClassExtensions

@@ -501,7 +501,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = true;
             foreach (var dto in dtos)
             {
-                salesOrderService.Clear();
+                salesOrderService.DetachData(null);
+                salesOrderService.NewData();
+                var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
                 if (!await salesOrderService.AddAsync(dto))
                 {
                     success = false;

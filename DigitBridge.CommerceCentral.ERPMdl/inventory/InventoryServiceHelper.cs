@@ -453,6 +453,47 @@ WHERE inv.SKU IS NULL OR prd.SKU IS NULL
             return result;
         }
 
+        /// <summary>
+        /// Get row num by CustomerFindClass 
+        /// </summary>
+        public static async Task<IList<ProductFindClass>> FindSkuByProductFindAsync(IList<ProductFindClass> list, int masterAccountNum, int profileNum)
+        {
+            if (list == null || list.Count == 0)
+                return null;
+            // create SKUTable from ProductFindClass list
+            var arrList = list.ToStringArray();
+
+            var sql = $@"
+SELECT 
+tbl.item0 AS idx,
+COALESCE(
+    (SELECT TOP 1 SKU FROM ProductBasic WHERE tbl.item1 != '' AND SKU=tbl.item1 AND MasterAccountNum=@masterAccountNum AND ProfileNum=@profileNum ),
+    (SELECT TOP 1 SKU FROM ProductBasic WHERE tbl.item2 != '' AND ProductUuid=tbl.item2 AND MasterAccountNum=@masterAccountNum AND ProfileNum=@profileNum ),
+    (SELECT TOP 1 SKU FROM ProductBasic WHERE tbl.item3 != 0 AND CentralProductNum=tbl.item3 AND MasterAccountNum=@masterAccountNum AND ProfileNum=@profileNum ),
+    (SELECT TOP 1 SKU FROM ProductBasic WHERE tbl.item4 != '' AND UPC=tbl.item4 AND MasterAccountNum=@masterAccountNum AND ProfileNum=@profileNum ),
+    ''
+) AS sku
+FROM @SKUTable tbl
+            ";
+
+            var sqlParameters = new IDataParameter[3]
+            {
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                arrList.ToStringArrayListParameters("SKUTable")
+            };
+            await SqlQuery.ExecuteAsync<string, string, bool>(
+                sql,
+                (string idx, string sku)
+                => {
+                    if (list[idx.ToInt()] != null)
+                        list[idx.ToInt()].FoundSKU = sku;
+                    return true;
+                },
+                sqlParameters);
+            return list;
+        }
+
 
         public static async Task<List<StringArray>> GetInventoryKeyInfoBySkuWithWarehouseCodesAsync(List<StringArray> param, int masterAccountNum, int profileNum)
         {
