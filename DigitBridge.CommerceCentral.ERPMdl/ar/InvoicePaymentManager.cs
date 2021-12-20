@@ -189,6 +189,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
+        public async Task<bool> SaveImportDataAsync(IList<InvoiceTransactionDataDto> dtos)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return false;
+            }
+            var success = true;
+            var invoicePaymentService = new InvoicePaymentService(dbFactory);
+            foreach (var dto in dtos)
+            {
+                invoicePaymentService.DetachData(null);
+                invoicePaymentService.NewData();
+                var prepare = new InvoiceTransactionDtoPrepareDefault(invoicePaymentService);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                if (!await invoicePaymentService.AddAsync(dto))
+                {
+                    success = false;
+                    AddError($"Add invoicepayment failed, uniqueid {dto.InvoiceTransaction.UniqueId}");
+                    this.Messages.Add(invoicePaymentService.Messages);
+                }
+            }
+            return success;
+        }
         #endregion
 
         //#region Add payment from prepayment.

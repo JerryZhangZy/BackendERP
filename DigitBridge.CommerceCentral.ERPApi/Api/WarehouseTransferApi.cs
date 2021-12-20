@@ -226,6 +226,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
+        /// Load warehouseTransfer list
+        /// </summary>
+        [FunctionName(nameof(WarehouseTransferItemsList))]
+        [OpenApiOperation(operationId: "WarehouseTransferItemsList", tags: new[] { "WarehouseTransfers" }, Summary = "Load warehouseTransfer list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferItemPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferItemPayloadFind))]
+        public static async Task<JsonNetResponse<WarehouseTransferItemPayload>> WarehouseTransferItemsList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "warehouseTransfers/items/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<WarehouseTransferItemPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new WarehouseTransferItemList(dataBaseFactory, new WarehouseTransferItemQuery());
+            payload = await srv.GetWarehouseTransferItemListAsync(payload);
+            return new JsonNetResponse<WarehouseTransferItemPayload>(payload);
+        }
+
+        /// <summary>
         /// Add warehouseTransfer
         /// </summary>
         [FunctionName(nameof(Sample_WarehouseTransfer_Post))]

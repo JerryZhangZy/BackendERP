@@ -37,6 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT 
 {Helper.BatchNumber()},
+{Helper.WarehouseTransferStatus()},
 {Helper.WarehouseTransferUuid()},
 {Helper.WarehouseTransferType()},
 {Helper.TransferDate()},

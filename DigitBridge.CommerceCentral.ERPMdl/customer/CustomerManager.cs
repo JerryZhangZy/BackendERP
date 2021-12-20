@@ -241,7 +241,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
               
                 customerPayload.Customer = dto;
-                await customerService.ImportAsync(customerPayload);
+                var prepare = new CustomerDtoPrepareDefault(customerService, customerPayload.MasterAccountNum, customerPayload.ProfileNum);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                if (!await customerService.ImportAsync(customerPayload))
+                {
+
+                    AddError($"Add Customer failed, CustomerCode{dto.Customer.CustomerCode}");
+                    this.Messages.Add(customerService.Messages);
+                }
                 customerPayload.Customer = null;
  
             }

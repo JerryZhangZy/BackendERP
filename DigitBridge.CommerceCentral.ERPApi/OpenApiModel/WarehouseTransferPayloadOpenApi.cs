@@ -132,20 +132,87 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return data;
         }
     }
-
     public class WarehouseTransferFilter
     {
         public string SKU { get; set; }
         public string WarehouseCode { get; set; }
         public string WarehouseTransferType { get; set; }
+        public string BatchNumberFrom { get; set; }
+        public string BatchNumberTo { get; set; }
+        public DateTime TransferDateFrom { get; set; }
+        public DateTime TransferDateTo { get; set; }
+        public DateTime ReceiveDateFrom { get; set; }
+        public DateTime ReceiveDateTo { get; set; }
+        public string FromWarehouseCode { get; set; }
+        public string ToWarehouseCode { get; set; }
 
         public static Faker<WarehouseTransferFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<WarehouseTransferFilter>()
                 .RuleFor(u => u.SKU, f => "")
-                 .RuleFor(u => u.WarehouseCode, f => "")
-                  .RuleFor(u => u.WarehouseTransferType, f => "")
+                .RuleFor(u => u.WarehouseCode, f => "")
+                .RuleFor(u => u.WarehouseTransferType, f => "")
+                .RuleFor(u => u.BatchNumberFrom, f => "")
+                .RuleFor(u => u.BatchNumberTo, f => "")
+                .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(30))
+                .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(1))
+                .RuleFor(u => u.ReceiveDateFrom, f => f.Date.Recent(30))
+                .RuleFor(u => u.ReceiveDateTo, f => f.Date.Recent(1))
+                .RuleFor(u => u.FromWarehouseCode, f => "")
+                .RuleFor(u => u.ToWarehouseCode, f => "")
+                ;
+            #endregion faker data rules
+        }
+    }
+
+    public class WarehouseTransferItemPayloadFind
+    {
+        /// <summary>
+        /// (Response) List result which load by filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response) List result which load by filter and paging.")]
+        public IList<Object> WarehouseTransferItemsList { get; set; }
+
+        /// <summary>
+        /// (Response) List result count which load by filter and paging.
+        /// </summary>
+        public int WarehouseTransferItemsListCount { get; set; }
+
+        public static WarehouseTransferPayloadFind GetSampleData()
+        {
+            var data = new WarehouseTransferPayloadFind()
+            {
+                LoadAll = false,
+                Skip = 0,
+                Top = 20,
+                SortBy = "",
+                Filter = WarehouseTransferItemFilter.GetFaker().Generate()
+            };
+            return data;
+        }
+    }
+    public class WarehouseTransferItemFilter
+    {
+        public string SKU { get; set; }
+        public DateTime TransferDateFrom { get; set; }
+        public DateTime TransferDateTo { get; set; }
+        public DateTime ReceiveDateFrom { get; set; }
+        public DateTime ReceiveDateTo { get; set; }
+        public string FromWarehouseCode { get; set; }
+        public string ToWarehouseCode { get; set; }
+
+        public static Faker<WarehouseTransferFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<WarehouseTransferFilter>()
+                .RuleFor(u => u.SKU, f => "")
+                .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(30))
+                .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(1))
+                .RuleFor(u => u.ReceiveDateFrom, f => f.Date.Recent(30))
+                .RuleFor(u => u.ReceiveDateTo, f => f.Date.Recent(1))
+                .RuleFor(u => u.FromWarehouseCode, f => "")
+                .RuleFor(u => u.ToWarehouseCode, f => "")
                 ;
             #endregion faker data rules
         }

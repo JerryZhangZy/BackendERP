@@ -38,6 +38,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Service Property
         [XmlIgnore, JsonIgnore]
+        protected ImportBlobService _ImportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ImportBlobService ImportBlobService
+        {
+            get
+            {
+                if (_ImportBlobService is null)
+                    _ImportBlobService = new ImportBlobService();
+                return _ImportBlobService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
         protected InventoryService _InventoryService;
         [XmlIgnore, JsonIgnore]
         public InventoryService InventoryService
@@ -50,6 +63,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        [XmlIgnore, JsonIgnore]
+        protected CustomIOFormatService _CustomIOFormatService;
+        [XmlIgnore, JsonIgnore]
+        public CustomIOFormatService CustomIOFormatService
+        {
+            get
+            {
+                if (_CustomIOFormatService is null)
+                    _CustomIOFormatService = new CustomIOFormatService(dbFactory);
+                return _CustomIOFormatService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InventoryManager _InventoryManager;
+        [XmlIgnore, JsonIgnore]
+        public InventoryManager InventoryManager
+        {
+            get
+            {
+                if (_InventoryManager is null)
+                    _InventoryManager = new InventoryManager(dbFactory);
+                return _InventoryManager;
+            }
+        }
         #endregion
 
         #region DataBase
@@ -115,6 +153,76 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _InventoryIOCsv;
             }
         }
+
+        #region import
+        /// <summary>
+        /// Import csv file stream to IList of Dto, depend on format setting
+        /// </summary>
+        public async Task<bool> ImportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ImportUuid))
+                return false;
+            var blobSvc = ImportBlobService;
+            // load import files and import options from Blob
+            if (!(await blobSvc.LoadFromBlobAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            var dtoList = new List<InventoryDataDto>();
+            // load each file to import
+            foreach (var fileName in payload.FileNames)
+            {
+                // load one file stram from Blob
+                using (var ms = new MemoryStream())
+                {
+                    if (!(await blobSvc.LoadFileFromBlobAsync(fileName, payload, ms)))
+                    {
+                        this.Messages.Add(payload.Messages);
+                        continue;
+                    }
+
+                    var dto = await ImportAsync(ms);
+                    if (dto == null || dto.Count == 0) continue;
+                    dtoList.AddRange(dto);
+                }
+            }
+
+            // Verify Dto and save dto to database
+            var manager = InventoryManager;
+            if (!await manager.SaveImportDataAsync(dtoList))
+            {
+                this.Messages.Add(manager.Messages);
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> LoadFormatAsync(ImportExportFilesPayload payload)
+        {
+            if (!(await CustomIOFormatService.GetByNumberAsync(
+                payload.MasterAccountNum,
+                payload.ProfileNum,
+                payload.Options.FormatType,
+                payload.Options.FormatNumber
+                )))
+            {
+                payload.ReturnError($"Import format not found.");
+                return false;
+            }
+            Format = new InventoryIOFormat();
+            Format.LoadFormat(CustomIOFormatService.Data.CustomIOFormat.GetFormatObject());
+            return true;
+        }
+        #endregion
+
 
         /// <summary>
         /// Import csv file stream to IList of Dto, depend on format setting
