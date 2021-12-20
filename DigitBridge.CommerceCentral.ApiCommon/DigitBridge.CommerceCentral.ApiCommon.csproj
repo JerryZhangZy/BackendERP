@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helper\ConfigHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DigitBridge.Orchestration.OrchestrationDb" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.1.0" />

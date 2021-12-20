@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -62,21 +63,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         protected async Task<bool> SaveOptionsToBlobAsync(ImportExportFilesPayload payload)
         {
-            if (!payload.HasOptions)
+            if (!ValidateOptions(payload))
             {
-                payload.ReturnError($"Import Options is required.");
                 return false;
             }
-            if (!payload.Options.HasFormatType)
-            {
-                payload.ReturnError($"Import Options FormatType is required.");
-                return false;
-            }
-            //if (!payload.Options.HasFormatNumber)
-            //{
-            //    payload.ReturnError($"Import Options FormatNumber is required.");
-            //    return false;
-            //}
 
             try
             {
@@ -89,6 +79,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.ReturnError($"Import Options save error. {e.Message}");
                 return false;
             }
+        }
+
+        protected bool ValidateOptions(ImportExportFilesPayload payload)
+        {
+            if (!payload.HasOptions)
+            {
+                payload.ReturnError($"Import Options is required.");
+                return false;
+            }
+
+            var validate = true;
+            if (!payload.Options.HasFormatType)
+            {
+                payload.ReturnError($"Import Options FormatType is required.");
+                validate = false;
+            }
+            if (!payload.Options.HasFormatNumber)
+            {
+                payload.ReturnError($"Import Options FormatNumber is required.");
+                validate = false;
+            }
+            if (!payload.Options.HasMasterAccountNum)
+            {
+                payload.ReturnError($"Import Options MasterAccountNum is required.");
+                validate = false;
+            }
+            if (!payload.Options.HasProfileNum)
+            {
+                payload.ReturnError($"Import Options ProfileNum is required.");
+                validate = false;
+            }
+            if (!payload.Options.HasImportUuid)
+            {
+                payload.ReturnError($"Import Options ImportUuid is required.");
+                validate = false;
+            }
+            
+            return validate;
         }
 
         protected async Task<bool> SaveFilesToBlobAsync(ImportExportFilesPayload payload)
@@ -208,6 +236,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
                 await blobContainer.DownloadBlobAsync(fileName, stream);
+                stream.Position = 0;
                 return true;
             }
             catch (Exception e)
@@ -217,7 +246,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        #endregion load from blob
-
+        #endregion load from blob 
     }
 }

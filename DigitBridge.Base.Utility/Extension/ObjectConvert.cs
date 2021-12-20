@@ -702,7 +702,7 @@ namespace DigitBridge.Base.Utility
         public static bool IsZero(this long input) => input <= 0;
         public static bool IsZero(this long? input) => (input is null) ? true : input.ToLong().IsZero();
 
-        public static bool IsZero(this string input) => string.IsNullOrEmpty(input);
+        public static bool IsZero(this string input) => string.IsNullOrWhiteSpace(input);
 
         public static bool IsZero(this DateTime input) => input <= ObjectConvert.SystemMinDatatime;
         public static bool IsZero(this DateTime? input) => (input is null) ? true : input.ToDateTime().IsZero();

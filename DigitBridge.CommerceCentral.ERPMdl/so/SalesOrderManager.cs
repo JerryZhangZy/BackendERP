@@ -489,44 +489,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
 
-
-        //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
-        //{
-        //    if (soDataList == null || soDataList.Count == 0)
-        //    {
-        //        return true;
-        //    }
-
-        //    foreach (var soData in soDataList)
-        //    {
-        //        salesOrderService.Add();
-
-        //        soData.CheckIntegrity();
-
-        //        salesOrderService.AttachData(soData);
-
-        //        if (await salesOrderService.SaveDataAsync() == false)
-        //        {
-        //            return false;
-        //        }
-        //    }
-
-        //    return true;
-        //}
-
         #region import salesorder
 
-        public async Task SaveImportDataAsync(IList<SalesOrderDataDto> dtos, ImportExportFilesPayload payload)
+        public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos)
         {
             if (dtos == null || dtos.Count == 0)
             {
                 AddError("no files upload");
+                return false;
             }
+            var success = true;
             foreach (var dto in dtos)
             {
-                salesOrderService.Clear();
-                salesOrderService.Add(dto);
+                salesOrderService.DetachData(null);
+                salesOrderService.NewData();
+                var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                if (!await salesOrderService.AddAsync(dto))
+                {
+                    success = false;
+                    AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");
+                    this.Messages.Add(salesOrderService.Messages);
+                }
             }
+            return success;
         }
         #endregion
     }

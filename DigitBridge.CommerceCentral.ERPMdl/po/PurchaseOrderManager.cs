@@ -198,8 +198,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
             return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
-        } 
-
+        }
+        public async Task SaveImportDataAsync(IList<PurchaseOrderDataDto> dtos, ImportExportFilesPayload payload)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            PurchaseOrderPayload   purchaseOrderPayload = new PurchaseOrderPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
+            foreach (var dto in dtos)
+            {
+                
+                purchaseOrderPayload.PurchaseOrder = dto;
+                await purchaseOrderService.ImportAsync(purchaseOrderPayload);
+                purchaseOrderPayload.PurchaseOrder = null;
+            }
+        }
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;

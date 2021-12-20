@@ -370,6 +370,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await DeleteAsync(rownum);
         }
 
+        public virtual int GetFormatNumber(int masterAccountNum, int profileNum, int formatType)
+        {
+            var formatNumber=  dbFactory.Db.ExecuteScalar<int>("SELECT COALESCE(MAX(FormatNumber)+1,1) FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND FormatType=@2 "
+                   ,
+                   masterAccountNum.ToSqlParameter("0"),
+                   profileNum.ToSqlParameter("1"),
+                   formatType.ToSqlParameter("2")
+                   );
+
+            return formatNumber;
+        }
+
+
         //public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
         //{
         //    var rownum = await dbFactory.Db.ExecuteScalarAsync<int>("SELECT RowNum FROM CustomIOFormat WHERE MasterAccountNum=@0 AND ProfileNum=@1    AND FormatNumber=@2"

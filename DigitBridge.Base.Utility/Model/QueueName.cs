@@ -21,7 +21,7 @@ namespace DigitBridge.Base.Utility
 
         public const string Erp_Create_PoReceive_By_WMS = "erp-create-poreceive-by-wms";
 
-        public const string Erp_Import_Customer = "erp-import-customer-poison";
+        public const string Erp_Import_Customer = "erp-import-customer";
         public const string Erp_Import_Inventory = "erp-import-inventory";
         public const string Erp_Import_InventoryUpdate = "erp-import-inventoryupdate";
         public const string Erp_Import_WarehouseTransfer = "erp-import-warehousetransfer";

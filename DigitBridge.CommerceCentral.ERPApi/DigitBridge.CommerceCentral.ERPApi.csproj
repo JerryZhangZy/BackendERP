@@ -14,7 +14,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="local - Copy.settings.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
@@ -38,6 +37,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.DESKTOP-SSB3DTP.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -67,5 +69,5 @@
     <Folder Include="JsType\warehouseTransfer\service\" />
     <Folder Include="JsType\warehouseTransfer\store\" />
   </ItemGroup>
-  <ProjectExtensions><VisualStudio><UserProperties local_1settings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

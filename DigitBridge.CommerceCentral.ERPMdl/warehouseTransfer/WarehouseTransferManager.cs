@@ -241,6 +241,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
+        public async Task SaveImportDataAsync(IList<WarehouseTransferDataDto> dtos, ImportExportFilesPayload payload)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            WarehouseTransferPayload  warehouseTransferPayload = new WarehouseTransferPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
+            foreach (var dto in dtos)
+            {
+
+                warehouseTransferPayload.WarehouseTransfer = dto;
+                await warehouseTransferService.ImportAsync(warehouseTransferPayload);
+                warehouseTransferPayload.WarehouseTransfer = null;
+
+
+            }
+        }
+
 
         #region DataBase
         [XmlIgnore, JsonIgnore]

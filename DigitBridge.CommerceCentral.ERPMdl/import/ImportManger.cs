@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!success)
             {
-                //Add save to blob error to current message.
+                this.Messages.Add(payload.Messages);
                 return false;
             }
 

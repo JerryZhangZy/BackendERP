@@ -657,5 +657,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return await dbFactory.ExistsAsync<PoTransaction>("WMSBatchNum=@0", wmsBatchNum.ToSqlParameter("wmsBatchNum"));
         }
+
+
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> ImportAsync(PoReceivePayload payload)
+        {
+            if (payload is null || !payload.HasPoTransaction)
+                return false;
+            #region delete
+            if (!string.IsNullOrWhiteSpace(payload.PoTransaction.PoTransaction.TransUuid))
+            {
+                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.PoTransaction.PoTransaction.TransUuid);
+                if (rownum >= 0)
+                    await DeleteAsync(rownum);
+            }
+            #endregion
+
+            #region add
+            return await this.AddAsync(payload);
+            #endregion
+        }
+
+
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string transUuid)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM PoTransaction WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND TransUuid=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                transUuid.ToSqlParameter("2")
+                );
+        }
     }
 }

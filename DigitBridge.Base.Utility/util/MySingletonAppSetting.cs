@@ -11,11 +11,11 @@ namespace DigitBridge.Base.Utility
     {
         private static IConfigurationRoot _config = new ConfigurationBuilder().
                     SetBasePath(Environment.CurrentDirectory).
-                    AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
-                    AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
+                    AddJsonFile($"local.settings.json", optional: true, reloadOnChange: true).
                     AddEnvironmentVariables().
                     Build();
-
+        //AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true).
+        //private static IConfigurationRoot _config => ConfigUtil.ConfigurationRoot;
         public static bool DebugMode
         {
             get
@@ -39,7 +39,7 @@ namespace DigitBridge.Base.Utility
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
 #endif
         public static string OrchestrationDbConnString => GetValueByName("OrchestrationDbConnString");
-
+        public static string Dsn => GetValueByName("dsn");
         public static string DBConnectionString => GetValueByName("DBConnectionString");
         public static string DbTenantId => GetValueByName("DbTenantId");
 
@@ -47,10 +47,15 @@ namespace DigitBridge.Base.Utility
 
         public static string CryptKey => GetValueByName("CryptKey");
 
-        
+
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
+
+        public static string ERP_Integration_Api_BaseUrl => GetValueByName("ERP_Integration_Api_BaseUrl");
+        public static string ERP_Integration_Api_AuthCode => GetValueByName("ERP_Integration_Api_AuthCode");
+
+
         public static string ERPSummaryTableName => GetValueByName("ERPSummaryTableName");
         public static string ERPSummaryTableConnectionString => GetValueByName("ERPSummaryTableConnectionString");
 
