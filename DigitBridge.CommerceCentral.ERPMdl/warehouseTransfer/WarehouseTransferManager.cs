@@ -257,9 +257,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
 
                 warehouseTransferPayload.WarehouseTransfer = dto;
-                await warehouseTransferService.ImportAsync(warehouseTransferPayload);
-                warehouseTransferPayload.WarehouseTransfer = null;
 
+                var prepare = new WarehouseTransferDtoPrepareDefault(warehouseTransferService, warehouseTransferPayload.MasterAccountNum, warehouseTransferPayload.ProfileNum);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                if (!await warehouseTransferService.ImportAsync(warehouseTransferPayload))
+                {
+                    AddError($"Add warehouseTransfer failed, WarehouseTransferUuid{dto.WarehouseTransferHeader.WarehouseTransferUuid}");
+                    this.Messages.Add(warehouseTransferService.Messages);
+                }
+                warehouseTransferPayload.WarehouseTransfer = null;
 
             }
         }

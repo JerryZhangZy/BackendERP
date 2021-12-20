@@ -699,16 +699,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasWarehouseTransfer)
                 return false;
             #region delete
-            if (!string.IsNullOrWhiteSpace(payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid))
-            {
-                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid);
-                if (rownum >= 0)
-                    await DeleteAsync(rownum);
-            }
+            //if (!string.IsNullOrWhiteSpace(payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid))
+            //{
+            //    var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.WarehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid);
+            //    if (rownum >= 0)
+            //        await DeleteAsync(rownum);
+            //}
             #endregion
 
             #region add
-            return await this.AddAsync(payload);
+            // return await this.AddAsync(payload);
+
+            if (payload is null || !payload.HasWarehouseTransfer)
+                return false;
+            // set Add mode and clear data
+            Add();
+            FromDto(payload.WarehouseTransfer);
+            //PrepareData(this.Data);
+            return await SaveDataAsync();
             #endregion
         }
 
