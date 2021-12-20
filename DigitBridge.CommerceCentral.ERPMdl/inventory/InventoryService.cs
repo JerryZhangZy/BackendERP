@@ -695,6 +695,21 @@ ON inv.inventoryuuid=poi.inventoryuuid
 
 
         /// <summary>
+        /// Get SKU by ProductFindClass list
+        /// </summary>
+        public virtual async Task<IList<ProductFindClass>> FindSkuByProductFindAsync(IList<ProductFindClass> list, int masterAccountNum, int profileNum)
+        {
+            if (list == null || list.Count == 0)
+                return null;
+            IList<ProductFindClass> result;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                result = await InventoryServiceHelper.FindSkuByProductFindAsync(list, masterAccountNum, profileNum);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Get row num by CustomerFindClass 
         /// </summary>
         public virtual async Task<long> GetRowNumByProductFindAsync(ProductFindClass find)

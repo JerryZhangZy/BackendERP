@@ -20,6 +20,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected int NameIndex = 0;
         public CsvFormatMapper(CsvFormat fmt)
         {
+            
             Format = fmt;
             //AutoMap(CultureInfo.InvariantCulture);
             var props = ObjectSchema.GetProperties<T>();
@@ -87,7 +88,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
             // set all column is Optional
             map.Optional();
 
+            // set index from format
             map.NameIndex(fmt.Index);
+
+            // set N/A means null
+            map.TypeConverterOption.NullValues("N/A");
+
+            // set default from format
+            if (!fmt.DefaultValue.IsZero())
+                map.Default(fmt.DefaultValue, true);
+
+            // set constant from format
+            if (!fmt.ConstantValue.IsZero())
+                map.Constant(fmt.ConstantValue);
 
             return map;
         }
