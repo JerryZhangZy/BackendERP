@@ -506,7 +506,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion Messages
 
-        #region import salesorder
+        #region import
 
         public async Task<bool> SaveImportDataAsync(IList<InventoryUpdateDataDto> dtos)
         {
