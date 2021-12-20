@@ -11,7 +11,9 @@ namespace DigitBridge.Base.Utility
         public static IConfigurationRoot ConfigurationRoot => _config;
         private static IConfigurationRoot _config = new ConfigurationBuilder().
                     SetBasePath(Environment.CurrentDirectory).
-                    AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
+                    AddJsonFile($"local.settings.json", optional: true, reloadOnChange: true).
+                    AddJsonFile($"appsettings.test.json", optional: true, reloadOnChange: true).
+                    AddJsonFile($"personal.settings.{Environment.MachineName}.json", optional: true, reloadOnChange: true).
                     AddEnvironmentVariables().
                     Build();
 
