@@ -39,16 +39,10 @@
     <None Update="local - Copy %282%29.settings.DESKTOP-6C6398M.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="local.settings.DESKTOP-6C6398M.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="localsettings--20211220-bak.json">
+    <None Update="local.settings.defaul.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.DESKTOP-AIG3DDD.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.DESKTOP-SSB3DTP.json">
