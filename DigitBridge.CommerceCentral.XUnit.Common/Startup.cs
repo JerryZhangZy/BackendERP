@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.XUnit.Common
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.test.json", optional: true, reloadOnChange: true);
+                .AddJsonFile($"appsettings.test.{Environment.MachineName}.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
         }
