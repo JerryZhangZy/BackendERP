@@ -42,7 +42,7 @@
     <None Update="local.settings.DESKTOP-6C6398M.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="local - Copy.settings--20211220.json">
+    <None Update="localsettings--20211220-bak.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.DESKTOP-AIG3DDD.json">
