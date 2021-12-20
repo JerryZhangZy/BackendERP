@@ -84,9 +84,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             dto.WarehouseTransferHeader.MasterAccountNum = this.masterAccountNum;
             dto.WarehouseTransferHeader.ProfileNum = this.profileNum;
 
+            if (string.IsNullOrWhiteSpace(dto.WarehouseTransferHeader.FromWarehouseCode) || string.IsNullOrWhiteSpace(dto.WarehouseTransferHeader.ToWarehouseCode))
+            {
+                AddError($"FromWarehouseCode  or ToWarehouseCode is null or empty.");
+                return false;
+            }
             foreach (var item in dto.WarehouseTransferItems)
             {
-                this.FillDataToWarehouseTransferItem(dto, item);
+                if (!this.FillDataToWarehouseTransferItem(dto, item))
+                    return false;
             }
 
             return true;
