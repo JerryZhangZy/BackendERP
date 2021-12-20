@@ -333,5 +333,32 @@ AND NOT EXISTS (SELECT * FROM Inventory i WHERE i.ProductUuid = prd.ProductUuid)
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+        #region import
+        public async Task<bool> SaveImportDataAsync(IList<InventoryDataDto> dtos)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return false;
+            }
+            var success = true;
+            foreach (var dto in dtos)
+            {
+                inventoryService.DetachData(null);
+                inventoryService.NewData();
+                var prepare = new InventoryDtoPrepareDefault(inventoryService);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                if (!await inventoryService.AddAsync(dto))
+                {
+                    success = false;
+                    AddError($"Add inventory failed, product sku {dto.ProductBasic.SKU}");
+                    this.Messages.Add(inventoryService.Messages);
+                }
+            }
+            return success;
+        }
+        #endregion
     }
 }

@@ -34,11 +34,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<InventoryUpdateType> _UpdateType = new EnumQueryFilter<InventoryUpdateType>("WarehouseTransferType", "WarehouseTransferType", PREFIX, FilterBy.eq, 0);
         public EnumQueryFilter<InventoryUpdateType> UpdateType => _UpdateType;
 
+
+        protected QueryFilter<string> _BatchNumberFrom = new QueryFilter<string>("BatchNumberFrom", "BatchNumber", PREFIX, FilterBy.ge, string.Empty);
+        public QueryFilter<string> BatchNumberFrom => _BatchNumberFrom;
+        protected QueryFilter<string> _BatchNumberTo = new QueryFilter<string>("BatchNumberTo", "BatchNumber", PREFIX, FilterBy.le, string.Empty);
+        public QueryFilter<string> BatchNumberTo => _BatchNumberTo;
+
+
+        protected QueryFilter<DateTime> _TransferDateFrom = new QueryFilter<DateTime>("TransferDateFrom", "TransferDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> TransferDateFrom => _TransferDateFrom;
+        protected QueryFilter<DateTime> _TransferDateTo = new QueryFilter<DateTime>("TransferDateTo", "TransferDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> TransferDateTo => _TransferDateTo;
+
+
+        protected QueryFilter<DateTime> _ReceiveDateFrom = new QueryFilter<DateTime>("ReceiveDateFrom", "ReceiveDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> ReceiveDateFrom => _ReceiveDateFrom;
+        protected QueryFilter<DateTime> _ReceiveDateTo = new QueryFilter<DateTime>("ReceiveDateTo", "ReceiveDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> ReceiveDateTo => _ReceiveDateTo;
+
+
+        protected QueryFilter<string> _FromWarehouseCode = new QueryFilter<string>("FromWarehouseCode", "FromWarehouseCode", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> FromWarehouseCode => _FromWarehouseCode;
+
+        protected QueryFilter<string> _ToWarehouseCode = new QueryFilter<string>("ToWarehouseCode", "ToWarehouseCode", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> ToWarehouseCode => _ToWarehouseCode;
+
         public WarehouseTransferQuery() : base(PREFIX)
         {
             AddFilter(_SKU);
             AddFilter(_WarehouseCode);
             AddFilter(_UpdateType);
+            AddFilter(_BatchNumberFrom);
+            AddFilter(_BatchNumberTo);
+            AddFilter(_TransferDateFrom);
+            AddFilter(_TransferDateTo);
+            AddFilter(_ReceiveDateFrom);
+            AddFilter(_ReceiveDateTo);
+            AddFilter(_FromWarehouseCode);
+            AddFilter(_ToWarehouseCode);
         }
 
         public override void InitQueryFilter()

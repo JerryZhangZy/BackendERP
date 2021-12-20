@@ -24,7 +24,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
         [Fact]
         public async Task CreateSalesOrder_Test()
         {
-            string connectStr = ConfigHelper.GetValueByName("DBConnectionString");
+            //string connectStr = ConfigHelper.GetValueByName("DBConnectionString");
+            string connectStr = "";
             var dbFactory = new DataBaseFactory(connectStr);
             var uuids = new List<string> {
             "29c75212-d16d-4b9a-be9d-acb3408f94bf"

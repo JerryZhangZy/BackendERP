@@ -190,12 +190,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             foreach (var dto in dtos)
             {
-                
                 vendorPayload.Vendor = dto;
-                await vendorService.ImportAsync(vendorPayload);
-                vendorPayload.Vendor = null;
-               
+                var prepare = new VendorDtoPrepareDefault(vendorService, vendorPayload.MasterAccountNum, vendorPayload.ProfileNum);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
 
+                if (!await vendorService.ImportAsync(vendorPayload))
+                {
+                    AddError($"Add Vendor failed, vendor{dto.Vendor.VendorCode}");
+                    this.Messages.Add(vendorService.Messages);
+                }
+                vendorPayload.Vendor = null;
             }
         }
 

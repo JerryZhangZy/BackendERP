@@ -485,16 +485,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasVendor)
                 return false;
             #region delete
-            if (!string.IsNullOrWhiteSpace(payload.Vendor.Vendor.VendorUuid))
-            {
-                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.Vendor.Vendor.VendorUuid);
-                if (rownum >= 0)
-                    await DeleteAsync(rownum);
-            }
+            //if (!string.IsNullOrWhiteSpace(payload.Vendor.Vendor.VendorUuid))
+            //{
+            //    var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.Vendor.Vendor.VendorUuid);
+            //    if (rownum >= 0)
+            //        await DeleteAsync(rownum);
+            //}
             #endregion
 
             #region add
-            return await this.AddAsync(payload);
+            //return await this.AddAsync(payload);
+
+            if (payload is null || !payload.HasVendor)
+                return false;
+            Add();
+            FromDto(payload.Vendor);
+            return await SaveDataAsync();
             #endregion
         }
 
