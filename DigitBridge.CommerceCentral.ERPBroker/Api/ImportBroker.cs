@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             var payload = new ImportExportFilesPayload()
             {
                 MasterAccountNum = message.MasterAccountNum,
-                ProfileNum = message.ProfileNum, 
+                ProfileNum = message.ProfileNum,
                 ImportUuid = message.ProcessUuid,
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

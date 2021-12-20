@@ -112,16 +112,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_2.csv";
+            var fileName = "c:\\temp\\PurchaseOrder_2.csv";
             var service = new PurchaseOrderIOManager(DataBaseFactory);
             IList<PurchaseOrderDataDto> dtos = new List<PurchaseOrderDataDto>();
             var PurchaseOrderService = new PurchaseOrderService(DataBaseFactory);
-            if (PurchaseOrderService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
+            if (PurchaseOrderService.List("1f27069b-b5d9-4370-86c6-28236caa0aee"))
                 dtos.Add(PurchaseOrderService.ToDto());
-            if (PurchaseOrderService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
-                dtos.Add(PurchaseOrderService.ToDto());
-            if (PurchaseOrderService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(PurchaseOrderService.ToDto());
+            //if (PurchaseOrderService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+            //    dtos.Add(PurchaseOrderService.ToDto());
+            //if (PurchaseOrderService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+            //    dtos.Add(PurchaseOrderService.ToDto());
 
 
             try
@@ -145,16 +145,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\PO_Dto_3.csv";
+            var fileName = "c:\\temp\\PurchaseOrder_2.csv";
             var service = new PurchaseOrderIOManager(DataBaseFactory);
             IList<PurchaseOrderDataDto> dtos = new List<PurchaseOrderDataDto>();
             var PurchaseOrderService = new PurchaseOrderService(DataBaseFactory);
-            if (PurchaseOrderService.List("ff4cd473-1fec-4ae2-8246-55a49931f665"))
+            if (PurchaseOrderService.List("1f27069b-b5d9-4370-86c6-28236caa0aee"))
                 dtos.Add(PurchaseOrderService.ToDto());
-            if (PurchaseOrderService.List("575d2985-28d8-4543-bada-d59dab28c87f"))
-                dtos.Add(PurchaseOrderService.ToDto());
-            if (PurchaseOrderService.List("7a44fef8-3151-437e-bb5c-d17620671f30"))
-                dtos.Add(PurchaseOrderService.ToDto());
+            //if (PurchaseOrderService.List("575d2985-28d8-4543-bada-d59dab28c87f"))
+            //    dtos.Add(PurchaseOrderService.ToDto());
+            //if (PurchaseOrderService.List("7a44fef8-3151-437e-bb5c-d17620671f30"))
+            //    dtos.Add(PurchaseOrderService.ToDto());
 
             try
             {

@@ -418,16 +418,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomer)
                 return false;
             #region delete
-            if (!string.IsNullOrWhiteSpace(payload.Customer.Customer.CustomerUuid))
-            {
-                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.Customer.Customer.CustomerUuid);
-                if (rownum >= 0)
-                    await DeleteAsync(rownum);
-            }
+            //if (!string.IsNullOrWhiteSpace(payload.Customer.Customer.CustomerUuid))
+            //{
+            //    var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.Customer.Customer.CustomerUuid);
+            //    if (rownum >= 0)
+            //        await DeleteAsync(rownum);
+            //}
             #endregion
 
             #region add
-            return await this.AddAsync(payload);
+            //return await this.AddAsync(payload);
+            if (payload is null || !payload.HasCustomer)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            FromDto(payload.Customer);
+            return await SaveDataAsync();
             #endregion
         }
 
