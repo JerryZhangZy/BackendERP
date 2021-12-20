@@ -505,5 +505,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+        #region import salesorder
+
+        public async Task<bool> SaveImportDataAsync(IList<InventoryUpdateDataDto> dtos)
+        {
+            if (dtos == null || dtos.Count == 0)
+            {
+                AddError("no files upload");
+                return false;
+            }
+            var success = true;
+            foreach (var dto in dtos)
+            {
+                inventoryUpdateService.DetachData(null);
+                inventoryUpdateService.NewData();
+                var prepare = new InventoryUpdateDtoPrepareDefault(inventoryUpdateService);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                if (!await inventoryUpdateService.AddAsync(dto))
+                {
+                    success = false;
+                    AddError($"Add inventoryupdate failed, uniqueid {dto.InventoryUpdateHeader.UniqueId}");
+                    this.Messages.Add(inventoryUpdateService.Messages);
+                }
+            }
+            return success;
+        }
+        #endregion
     }
 }
