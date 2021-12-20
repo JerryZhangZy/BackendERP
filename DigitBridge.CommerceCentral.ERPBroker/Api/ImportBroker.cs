@@ -120,5 +120,71 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             var success = await service.ImportAsync(payload);
             // TODO if false write error to log.
         }
+
+        /// <summary>
+        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to inventory data.
+        /// </summary>
+        /// <param name="myQueueItem"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        [FunctionName("ImportInventoryFiles")]
+        public static async Task ImportInventoryFiles([QueueTrigger(QueueName.Erp_Import_Inventory)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new InventoryIOManager(dbFactory);
+            var success = await service.ImportAsync(payload);
+            // TODO if false write error to log.
+        }
+
+        /// <summary>
+        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to inventoryupdate data.
+        /// </summary>
+        /// <param name="myQueueItem"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        [FunctionName("ImportInventoryUpdateFiles")]
+        public static async Task ImportInventoryUpdateFiles([QueueTrigger(QueueName.Erp_Import_InventoryUpdate)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new InventoryUpdateIOManager(dbFactory);
+            var success = await service.ImportAsync(payload);
+            // TODO if false write error to log.
+        }
+
+        /// <summary>
+        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to invoicepayment data.
+        /// </summary>
+        /// <param name="myQueueItem"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        [FunctionName("ImportInvoicePaymentFiles")]
+        public static async Task ImportInvoicePaymentFiles([QueueTrigger(QueueName.Erp_Import_InvoicePayment)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ImportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new InvoicePaymentIOManager(dbFactory);
+            var success = await service.ImportAsync(payload);
+            // TODO if false write error to log.
+        }
     }
 }
