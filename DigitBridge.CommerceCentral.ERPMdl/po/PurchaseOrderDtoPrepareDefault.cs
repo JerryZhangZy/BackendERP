@@ -26,17 +26,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default SalesOrderService Calculator class.
     /// </summary>
-    public partial class PurchaseOrderDtoPrepareDefault : IPrepare<SalesOrderService, SalesOrderData, SalesOrderDataDto>
+    public partial class PurchaseOrderDtoPrepareDefault : IPrepare<PurchaseOrderService, PurchaseOrderData, PurchaseOrderDataDto>
     {
-        public PurchaseOrderDtoPrepareDefault(SalesOrderService salesOrderService)
+        public PurchaseOrderDtoPrepareDefault(PurchaseOrderService purchaseOrderService)
         {
-            _salesOrderService = salesOrderService;
+            _purchaseOrderService = purchaseOrderService;
         }
 
-        protected SalesOrderService _salesOrderService;
-        protected SalesOrderService Service 
+        protected PurchaseOrderService _purchaseOrderService;
+        protected PurchaseOrderService Service 
         { 
-            get => _salesOrderService; 
+            get => _purchaseOrderService; 
         }
         protected IDataBaseFactory dbFactory 
         { 
@@ -58,15 +58,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Service Property
 
-        private CustomerService _customerService;
+        private VendorService _vendorService;
 
-        protected CustomerService customerService
+        protected VendorService vendorService
         {
             get
             {
-                if (_customerService is null)
-                    _customerService = new CustomerService(dbFactory);
-                return _customerService;
+                if (_vendorService is null)
+                    _vendorService = new VendorService(dbFactory);
+                return _vendorService;
             }
         }
 
@@ -89,15 +89,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Check Dto data, fill customer and inventory info.
         /// </summary>
-        public virtual async Task<bool> PrepareDtoAsync(SalesOrderDataDto dto)
+        public virtual async Task<bool> PrepareDtoAsync(PurchaseOrderDataDto dto)
         {
-            if (dto == null || dto.SalesOrderHeader == null)
+            if (dto == null || dto.PoHeader == null)
                 return false;
 
             // Load customer info to Dto 
-            if (!await CheckCustomerAsync(dto))
+            if (!await CheckVendorAsync(dto))
             {
-                AddError($"Cannot find or create customer for {dto.SalesOrderHeader.OrderSourceCode}.");
+                AddError($"Cannot find or create customer for {dto.PoHeader.VendorCode}.");
+                return false;
             }
 
             // Load inventory info to Dto 
@@ -166,39 +167,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Try use customer uuid, code, name or phone find customer
         /// If customer code not exist, add new customer. 
         /// </summary>
-        protected async Task<bool> CheckCustomerAsync(SalesOrderDataDto dto)
+        protected async Task<bool> CheckVendorAsync(PurchaseOrderDataDto dto)
         {
-            if (!string.IsNullOrEmpty(dto.SalesOrderHeader.CustomerCode))
+            if (!string.IsNullOrEmpty(dto.PoHeader.VendorCode))
                 return true;
 
-            // try to find customer
-            var find = new CustomerFindClass()
+            // try to find Vendor
+            var find = new VendorFindClass()
             {
-                MasterAccountNum = dto.SalesOrderHeader.MasterAccountNum.ToInt(),
-                ProfileNum = dto.SalesOrderHeader.ProfileNum.ToInt(),
-                CustomerUuid = dto.SalesOrderHeader.CustomerUuid,
-                CustomerCode = dto.SalesOrderHeader.CustomerCode,
-                ChannelNum = dto.SalesOrderHeaderInfo.ChannelNum.ToInt(),
-                ChannelAccountNum = dto.SalesOrderHeaderInfo.ChannelAccountNum.ToInt(),
-                CustomerName = dto.SalesOrderHeader.CustomerName,
-                Phone1 = dto.SalesOrderHeaderInfo.BillToDaytimePhone,
-                Email = dto.SalesOrderHeaderInfo.BillToEmail,
+                MasterAccountNum = dto.PoHeader.MasterAccountNum.ToInt(),
+                ProfileNum = dto.PoHeader.ProfileNum.ToInt(),
+                VendorUuid = dto.PoHeader.VendorUuid,
+                VendorCode = dto.PoHeader.VendorCode,
+                VendorName = dto.PoHeader.VendorName,
             };
 
             // if not found exist customer, add new customer
-            if (!(await customerService.GetCustomerByCustomerFindAsync(find)))
+            if (!(await vendorService.GetCustomerByCustomerFindAsync(find)))
             {
                 await AddNewCustomerFromDtoAsync(dto, customerService);
             }
 
             // load info from customer data
-            var customer = customerService.Data.Customer;
+            var customer = vendorService.Data.Customer;
 
-            dto.SalesOrderHeader.CustomerUuid = customer.CustomerUuid;
-            dto.SalesOrderHeader.CustomerCode = customer.CustomerCode;
-            dto.SalesOrderHeader.CustomerName = customer.CustomerName;
-            dto.SalesOrderHeader.Terms = customer.Terms;
-            dto.SalesOrderHeader.TermsDays = customer.TermsDays;
+            dto.PoHeader.VendorUuid = customer.CustomerUuid;
+            dto.PoHeader.VendorCode = customer.CustomerCode;
+            dto.PoHeader.VendorName = customer.CustomerName;
+          
 
             if (string.IsNullOrEmpty(dto.SalesOrderHeader.SalesRep))
             {

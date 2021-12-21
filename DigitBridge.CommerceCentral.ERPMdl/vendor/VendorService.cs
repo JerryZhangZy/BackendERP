@@ -685,6 +685,48 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 profileNum,
                 vendorUuid);
         }
+        /// <summary>
+        /// Get CustomerData by CustomerFindClass
+        /// </summary>
+        public async Task<bool> GetCustomerByCustomerFindAsync(VendorFindClass find)
+        {
+            if (find == null)
+                return false;
+
+            List();
+            var rowNum = await GetRowNumByVendorFindAsync(find);
+            if (rowNum == 0)
+                return false;
+            return await GetDataAsync(rowNum);
+        }
+        /// <summary>
+        /// Get row num by CustomerFindClass 
+        /// 1. try find by CustomerUuid
+        /// 2. try find by CustomerCode
+        /// 3. try find by Phone1 + CustomerName
+        /// 4. try find by Email + CustomerName
+        /// </summary>
+        public virtual async Task<long> GetRowNumByVendorFindAsync(VendorFindClass find)
+        {
+            if (find == null)
+                return 0;
+
+            var sql = $@"
+                SELECT  
+                COALESCE(
+                    (SELECT TOP 1 RowNum FROM Vendor WHERE VendorUuid=@2 AND VendorUuid != ''),
+                    (SELECT TOP 1 RowNum FROM Vendor WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND VendorCode=@3 AND VendorCode!=''),
+                    0
+                )
+            ";
+            return (await dbFactory.GetValueAsync<Vendor, long?>(
+                    sql,
+                    find.MasterAccountNum,      //0
+                    find.ProfileNum,            //1
+                    find.VendorUuid,
+                    find.VendorCode
+                )).ToLong();
+        }
     }
 }
 
