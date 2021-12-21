@@ -26,21 +26,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default SalesOrderService Calculator class.
     /// </summary>
-    public partial class PurchaseOrderDtoPrepareDefault : IPrepare<PurchaseOrderService, PurchaseOrderData, PurchaseOrderDataDto>
+    public partial class PoReceiveDtoPrepareDefault : IPrepare<PoTransactionService, PoTransactionData, PoTransactionDataDto>
     {
         private int _masterAccountNum;
         private int _profileNum;
-        public PurchaseOrderDtoPrepareDefault(PurchaseOrderService purchaseOrderService,int masterAccountNum,int profileNum)
+        public PoReceiveDtoPrepareDefault(PoReceiveService  poReceiveService,int masterAccountNum,int profileNum)
         {
-            _purchaseOrderService = purchaseOrderService;
+            _poReceiveService = poReceiveService;
             this._masterAccountNum = masterAccountNum;
             this._profileNum = profileNum;
         }
 
-        protected PurchaseOrderService _purchaseOrderService;
-        protected PurchaseOrderService Service 
+        protected PoReceiveService _poReceiveService;
+        protected PoReceiveService Service 
         { 
-            get => _purchaseOrderService; 
+            get => _poReceiveService; 
         }
         protected IDataBaseFactory dbFactory 
         { 
@@ -93,19 +93,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Check Dto data, fill customer and inventory info.
         /// </summary>
-        public virtual async Task<bool> PrepareDtoAsync(PurchaseOrderDataDto dto)
+        public virtual async Task<bool> PrepareDtoAsync(PoTransactionDataDto dto)
         {
-            if (dto == null || dto.PoHeader == null)
+            if (dto == null || dto.PoTransaction == null)
                 return false;
 
-            dto.PoHeader.MasterAccountNum = this._masterAccountNum;
-            dto.PoHeader.ProfileNum = this._profileNum;
+            dto.PoTransaction.MasterAccountNum = this._masterAccountNum;
+            dto.PoTransaction.ProfileNum = this._profileNum;
 
 
             // Load Vendor info to Dto 
             if (!await CheckVendorAsync(dto))
             {
-                AddError($"Cannot find or create customer for {dto.PoHeader.VendorCode}.");
+                AddError($"Cannot find or create customer for {dto.PoTransaction.VendorCode}.");
                 return false;
             }
 
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // check sku and warehouse exist, otherwise add new SKU and Warehouse
             if (!await CheckInventoryAsync(dto))
             {
-                AddError($"Cannot find or create SKU for {dto.PoHeader.PoNum}.");
+                AddError($"Cannot find or create SKU for {dto.PoTransaction.PoNum}.");
             }
 
             return true;
@@ -175,19 +175,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Try use customer uuid, code, name or phone find customer
         /// If customer code not exist, add new customer. 
         /// </summary>
-        protected async Task<bool> CheckVendorAsync(PurchaseOrderDataDto dto)
+        protected async Task<bool> CheckVendorAsync(PoTransactionDataDto dto)
         {
-            if (!string.IsNullOrEmpty(dto.PoHeader.VendorCode))
+            if (!string.IsNullOrEmpty(dto.PoTransaction.VendorCode))
                 return true;
 
             // try to find Vendor
             var find = new VendorFindClass()
             {
-                MasterAccountNum = dto.PoHeader.MasterAccountNum.ToInt(),
-                ProfileNum = dto.PoHeader.ProfileNum.ToInt(),
-                VendorUuid = dto.PoHeader.VendorUuid,
-                VendorCode = dto.PoHeader.VendorCode,
-                VendorName = dto.PoHeader.VendorName,
+                MasterAccountNum = dto.PoTransaction.MasterAccountNum.ToInt(),
+                ProfileNum = dto.PoTransaction.ProfileNum.ToInt(),
+                VendorUuid = dto.PoTransaction.VendorUuid,
+                VendorCode = dto.PoTransaction.VendorCode,
+                VendorName = dto.PoTransaction.VendorName,
             };
 
             // if not found exist customer, add new customer
@@ -199,23 +199,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load info from customer data
             var vendor = vendorService.Data.Vendor;
 
-            dto.PoHeader.VendorUuid = vendor.VendorUuid;
-            dto.PoHeader.VendorCode = vendor.VendorCode;
-            dto.PoHeader.VendorName = vendor.VendorName;
+            dto.PoTransaction.VendorUuid = vendor.VendorUuid;
+            dto.PoTransaction.VendorCode = vendor.VendorCode;
+            dto.PoTransaction.VendorName = vendor.VendorName;
  
             return true;
         }
 
-        protected async Task<bool> AddNewVendorFromDtoAsync(PurchaseOrderDataDto dto)
+        protected async Task<bool> AddNewVendorFromDtoAsync(PoTransactionDataDto dto)
         {
             vendorService.NewData();
             var newVendor = vendorService.Data;
-            newVendor.Vendor.MasterAccountNum = dto.PoHeader.MasterAccountNum.ToInt();
-            newVendor.Vendor.ProfileNum = dto.PoHeader.ProfileNum.ToInt();
-            newVendor.Vendor.DatabaseNum = dto.PoHeader.DatabaseNum.ToInt();
+            newVendor.Vendor.MasterAccountNum = dto.PoTransaction.MasterAccountNum.ToInt();
+            newVendor.Vendor.ProfileNum = dto.PoTransaction.ProfileNum.ToInt();
+            newVendor.Vendor.DatabaseNum = dto.PoTransaction.DatabaseNum.ToInt();
             newVendor.Vendor.VendorUuid = Guid.NewGuid().ToString();
             newVendor.Vendor.VendorCode = string.Empty;
-            newVendor.Vendor.VendorName = dto.PoHeader.VendorName;
+            newVendor.Vendor.VendorName = dto.PoTransaction.VendorName;
             newVendor.Vendor.VendorType = (int)VendorType.ImportNewVendor;
             newVendor.Vendor.VendorStatus = (int)VendorStatus.Active;
             newVendor.Vendor.FirstDate = DateTime.UtcNow.Date;
@@ -223,41 +223,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             newVendor.AddVendorAddress(new VendorAddress()
             {
                 AddressCode = AddressCodeType.Ship,
-                Name = dto.PoHeaderInfo.ShipToName,
-                Company = dto.PoHeaderInfo.ShipToCompany,
-                AddressLine1 = dto.PoHeaderInfo.ShipToAddressLine1,
-                AddressLine2 = dto.PoHeaderInfo.ShipToAddressLine2,
-                AddressLine3 = dto.PoHeaderInfo.ShipToAddressLine3,
-                City = dto.PoHeaderInfo.ShipToCity,
-                State = dto.PoHeaderInfo.ShipToState,
-                StateFullName = dto.PoHeaderInfo.ShipToStateFullName,
-                PostalCode = dto.PoHeaderInfo.ShipToPostalCode,
-                PostalCodeExt = dto.PoHeaderInfo.ShipToPostalCodeExt,
-                County = dto.PoHeaderInfo.ShipToCounty,
-                Country = dto.PoHeaderInfo.ShipToCountry,
-                Email = dto.PoHeaderInfo.ShipToEmail,
-                DaytimePhone = dto.PoHeaderInfo.ShipToDaytimePhone,
-                NightPhone = dto.PoHeaderInfo.ShipToNightPhone,
+                Name = dto.PoTransaction.VendorName,
+                VendorUuid=dto.PoTransaction.VendorUuid,
             });
-            newVendor.AddVendorAddress(new VendorAddress()
-            {
-                AddressCode = AddressCodeType.Bill,
-                Name = dto.PoHeaderInfo.BillToName,
-                Company = dto.PoHeaderInfo.BillToCompany,
-                AddressLine1 = dto.PoHeaderInfo.BillToAddressLine1,
-                AddressLine2 = dto.PoHeaderInfo.BillToAddressLine2,
-                AddressLine3 = dto.PoHeaderInfo.BillToAddressLine3,
-                City = dto.PoHeaderInfo.BillToCity,
-                State = dto.PoHeaderInfo.BillToState,
-                StateFullName = dto.PoHeaderInfo.BillToStateFullName,
-                PostalCode = dto.PoHeaderInfo.BillToPostalCode,
-                PostalCodeExt = dto.PoHeaderInfo.BillToPostalCodeExt,
-                County = dto.PoHeaderInfo.BillToCounty,
-                Country = dto.PoHeaderInfo.BillToCountry,
-                Email = dto.PoHeaderInfo.BillToEmail,
-                DaytimePhone = dto.PoHeaderInfo.BillToDaytimePhone,
-                NightPhone = dto.PoHeaderInfo.BillToNightPhone,
-            });
+           
             return await vendorService.AddVendorAsync(newVendor);
         }
 
@@ -266,19 +235,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Try use inventory uuid, sku, upc or phone find customer
         /// If customer code not exist, add new customer. 
         /// </summary>
-        protected async Task<bool> CheckInventoryAsync(PurchaseOrderDataDto dto)
+        protected async Task<bool> CheckInventoryAsync(PoTransactionDataDto dto)
         {
-            if (dto == null || dto.PoItems == null || dto.PoItems.Count == 0)
+            if (dto == null || dto.PoTransactionItems == null || dto.PoTransactionItems.Count == 0)
             {
                 AddError($"PurchaseOrder items not found");
                 return false;
             }
 
-            var header = dto.PoHeader;
-            var masterAccountNum = dto.PoHeader.MasterAccountNum.ToInt();
-            var profileNum = dto.PoHeader.ProfileNum.ToInt();
+            var header = dto.PoTransaction;
+            var masterAccountNum = dto.PoTransaction.MasterAccountNum.ToInt();
+            var profileNum = dto.PoTransaction.ProfileNum.ToInt();
 
-            foreach (var item in dto.PoItems)
+            foreach (var item in dto.PoTransactionItems)
             {
                 if (string.IsNullOrWhiteSpace(item.WarehouseCode))
                 {
@@ -290,14 +259,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
             // find product SKU for each item
-            var findSku = dto.PoItems.Select(x => new ProductFindClass() 
+            var findSku = dto.PoTransactionItems.Select(x => new ProductFindClass() 
                 { 
                     SKU = x.SKU,
                     UPC = x.SKU,
                 }
             ).ToList();
             findSku = (await inventoryService.FindSkuByProductFindAsync(findSku, masterAccountNum, profileNum)).ToList();
-            foreach (var item in dto.PoItems)
+            foreach (var item in dto.PoTransactionItems)
             {
                 if (item == null) continue;
                 var sku = findSku.FindBySku(item.SKU);
@@ -306,13 +275,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // find inventory data
-            var find = dto.PoItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
+            var find = dto.PoTransactionItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
             var notExistSkus = await inventoryService.FindNotExistSkuWarehouseAsync(find, masterAccountNum, profileNum);
             if (notExistSkus == null || notExistSkus.Count == 0)
                 return true;
 
             var rtn = true;
-            foreach (var item in dto.PoItems)
+            foreach (var item in dto.PoTransactionItems)
             {
                 if (item == null || item.SKU.IsZero()) continue;
 
