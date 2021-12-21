@@ -28,9 +28,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class PurchaseOrderDtoPrepareDefault : IPrepare<PurchaseOrderService, PurchaseOrderData, PurchaseOrderDataDto>
     {
-        public PurchaseOrderDtoPrepareDefault(PurchaseOrderService purchaseOrderService)
+        private int _masterAccountNum;
+        private int _profileNum;
+        public PurchaseOrderDtoPrepareDefault(PurchaseOrderService purchaseOrderService,int masterAccountNum,int profileNum)
         {
             _purchaseOrderService = purchaseOrderService;
+            this._masterAccountNum = masterAccountNum;
+            this._profileNum = profileNum;
         }
 
         protected PurchaseOrderService _purchaseOrderService;
@@ -94,7 +98,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dto == null || dto.PoHeader == null)
                 return false;
 
-            // Load customer info to Dto 
+            dto.PoHeader.MasterAccountNum = this._masterAccountNum;
+            dto.PoHeader.ProfileNum = this._profileNum;
+
+
+            // Load Vendor info to Dto 
             if (!await CheckVendorAsync(dto))
             {
                 AddError($"Cannot find or create customer for {dto.PoHeader.VendorCode}.");
@@ -269,6 +277,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var header = dto.PoHeader;
             var masterAccountNum = dto.PoHeader.MasterAccountNum.ToInt();
             var profileNum = dto.PoHeader.ProfileNum.ToInt();
+
+            foreach (var item in dto.PoItems)
+            {
+                if (string.IsNullOrWhiteSpace(item.WarehouseCode))
+                {
+                    AddError($"PurchaseOrder items sku {item.SKU}'s WarehouseCode is null or empty");
+                    return false;
+                }
+
+            }
+
 
             // find product SKU for each item
             var findSku = dto.PoItems.Select(x => new ProductFindClass() 
