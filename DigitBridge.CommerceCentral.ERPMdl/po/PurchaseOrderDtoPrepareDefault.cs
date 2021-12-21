@@ -105,7 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // check sku and warehouse exist, otherwise add new SKU and Warehouse
             if (!await CheckInventoryAsync(dto))
             {
-                AddError($"Cannot find or create SKU for {dto.SalesOrderHeader.OrderSourceCode}.");
+                AddError($"Cannot find or create SKU for {dto.PoHeader.PoNum}.");
             }
 
             return true;
@@ -118,12 +118,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="data"></param>
         /// <param name="sku"></param>
         /// <returns></returns>
-        public virtual InventoryData GetInventoryData(SalesOrderData data, string sku)
+        public virtual InventoryData GetInventoryData(PurchaseOrderData data, string sku)
         {
-            var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + sku;
+            var key = data.PoHeader.MasterAccountNum + "_" + data.PoHeader.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                if (inventoryService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, sku))
+                if (inventoryService.GetByNumber(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum, sku))
                     return inventoryService.Data;
                 return null;
             });
@@ -134,9 +134,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="data"></param>
         /// <param name="sku"></param>
         /// <returns></returns>
-        public virtual InventoryData GetInventoryData_InventoryUuid(SalesOrderData data, string inventoryUuid)
+        public virtual InventoryData GetInventoryData_InventoryUuid(PurchaseOrderData data, string inventoryUuid)
         {
-            var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + inventoryUuid;
+            var key = data.PoHeader.MasterAccountNum + "_" + data.PoHeader.ProfileNum + '_' + inventoryUuid;
             return data.GetCache(key, () =>
             {
                 if (inventoryService.GetDataById(inventoryUuid))
@@ -145,18 +145,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             });
         }
         /// <summary>
-        /// Get Customer Data by customerCode
+        /// Get Vendor Data by VendorCode
         /// </summary>
         /// <param name="data"></param>
         /// <param name="customerCode"></param>
         /// <returns></returns>
-        public virtual CustomerData GetCustomerData(SalesOrderData data, string customerCode)
+        public virtual VendorData GetCustomerData(PurchaseOrderData data, string vendorCode)
         {
-            var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + customerCode;
+            var key = data.PoHeader.MasterAccountNum + "_" + data.PoHeader.ProfileNum + '_' + vendorCode;
             return data.GetCache(key, () =>
             {
-                if (customerService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, customerCode))
-                    return customerService.Data;
+                if (vendorService.GetByNumber(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum, vendorCode))
+                    return vendorService.Data;
                 return null;
             });
         }
@@ -185,94 +185,72 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // if not found exist customer, add new customer
             if (!(await vendorService.GetCustomerByCustomerFindAsync(find)))
             {
-                await AddNewCustomerFromDtoAsync(dto, customerService);
+                await AddNewCustomerFromDtoAsync(dto);
             }
 
             // load info from customer data
-            var customer = vendorService.Data.Customer;
+            var vendor = vendorService.Data.Vendor;
 
-            dto.PoHeader.VendorUuid = customer.CustomerUuid;
-            dto.PoHeader.VendorCode = customer.CustomerCode;
-            dto.PoHeader.VendorName = customer.CustomerName;
-          
-
-            if (string.IsNullOrEmpty(dto.SalesOrderHeader.SalesRep))
-            {
-                dto.SalesOrderHeader.SalesRep = customer.SalesRep;
-                dto.SalesOrderHeader.CommissionRate = customer.CommissionRate;
-            }
-            if (string.IsNullOrEmpty(dto.SalesOrderHeader.SalesRep2))
-            {
-                dto.SalesOrderHeader.SalesRep2 = customer.SalesRep2;
-                dto.SalesOrderHeader.CommissionRate2 = customer.CommissionRate2;
-            }
-            if (string.IsNullOrEmpty(dto.SalesOrderHeader.SalesRep3))
-            {
-                dto.SalesOrderHeader.SalesRep3 = customer.SalesRep3;
-                dto.SalesOrderHeader.CommissionRate3 = customer.CommissionRate3;
-            }
-            if (string.IsNullOrEmpty(dto.SalesOrderHeader.SalesRep4))
-            {
-                dto.SalesOrderHeader.SalesRep4 = customer.SalesRep4;
-                dto.SalesOrderHeader.CommissionRate4 = customer.CommissionRate4;
-            }
+            dto.PoHeader.VendorUuid = vendor.VendorUuid;
+            dto.PoHeader.VendorCode = vendor.VendorCode;
+            dto.PoHeader.VendorName = vendor.VendorName;
+ 
             return true;
         }
 
-        protected async Task<bool> AddNewCustomerFromDtoAsync(SalesOrderDataDto dto, CustomerService service)
+        protected async Task<bool> AddNewCustomerFromDtoAsync(PurchaseOrderDataDto dto)
         {
-            customerService.NewData();
-            var newCustomer = customerService.Data;
-            newCustomer.Customer.MasterAccountNum = dto.SalesOrderHeader.MasterAccountNum.ToInt();
-            newCustomer.Customer.ProfileNum = dto.SalesOrderHeader.ProfileNum.ToInt();
-            newCustomer.Customer.DatabaseNum = dto.SalesOrderHeader.DatabaseNum.ToInt();
-            newCustomer.Customer.CustomerUuid = Guid.NewGuid().ToString();
-            newCustomer.Customer.CustomerCode = string.Empty;
-            newCustomer.Customer.CustomerName = dto.SalesOrderHeaderInfo.BillToName;
-            newCustomer.Customer.CustomerType = (int)CustomerType.ImportNewCustomer;
-            newCustomer.Customer.CustomerStatus = (int)CustomerStatus.Active;
-            newCustomer.Customer.FirstDate = DateTime.UtcNow.Date;
-            newCustomer.Customer.ChannelNum = dto.SalesOrderHeaderInfo.ChannelNum.ToInt();
-            newCustomer.Customer.ChannelAccountNum = dto.SalesOrderHeaderInfo.ChannelAccountNum.ToInt();
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            vendorService.NewData();
+            var newVendor = vendorService.Data;
+            newVendor.Vendor.MasterAccountNum = dto.PoHeader.MasterAccountNum.ToInt();
+            newVendor.Vendor.ProfileNum = dto.PoHeader.ProfileNum.ToInt();
+            newVendor.Vendor.DatabaseNum = dto.PoHeader.DatabaseNum.ToInt();
+            newVendor.Vendor.VendorUuid = Guid.NewGuid().ToString();
+            newVendor.Vendor.VendorCode = string.Empty;
+            newVendor.Vendor.VendorName = dto.PoHeader.VendorName;
+            newVendor.Vendor.VendorType = (int)VendorType.ImportNewVendor;
+            newVendor.Vendor.VendorStatus = (int)VendorStatus.Active;
+            newVendor.Vendor.FirstDate = DateTime.UtcNow.Date;
+ 
+            newVendor.AddVendorAddress(new VendorAddress()
             {
                 AddressCode = AddressCodeType.Ship,
-                Name = dto.SalesOrderHeaderInfo.ShipToName,
-                Company = dto.SalesOrderHeaderInfo.ShipToCompany,
-                AddressLine1 = dto.SalesOrderHeaderInfo.ShipToAddressLine1,
-                AddressLine2 = dto.SalesOrderHeaderInfo.ShipToAddressLine2,
-                AddressLine3 = dto.SalesOrderHeaderInfo.ShipToAddressLine3,
-                City = dto.SalesOrderHeaderInfo.ShipToCity,
-                State = dto.SalesOrderHeaderInfo.ShipToState,
-                StateFullName = dto.SalesOrderHeaderInfo.ShipToStateFullName,
-                PostalCode = dto.SalesOrderHeaderInfo.ShipToPostalCode,
-                PostalCodeExt = dto.SalesOrderHeaderInfo.ShipToPostalCodeExt,
-                County = dto.SalesOrderHeaderInfo.ShipToCounty,
-                Country = dto.SalesOrderHeaderInfo.ShipToCountry,
-                Email = dto.SalesOrderHeaderInfo.ShipToEmail,
-                DaytimePhone = dto.SalesOrderHeaderInfo.ShipToDaytimePhone,
-                NightPhone = dto.SalesOrderHeaderInfo.ShipToNightPhone,
+                Name = dto.PoHeaderInfo.ShipToName,
+                Company = dto.PoHeaderInfo.ShipToCompany,
+                AddressLine1 = dto.PoHeaderInfo.ShipToAddressLine1,
+                AddressLine2 = dto.PoHeaderInfo.ShipToAddressLine2,
+                AddressLine3 = dto.PoHeaderInfo.ShipToAddressLine3,
+                City = dto.PoHeaderInfo.ShipToCity,
+                State = dto.PoHeaderInfo.ShipToState,
+                StateFullName = dto.PoHeaderInfo.ShipToStateFullName,
+                PostalCode = dto.PoHeaderInfo.ShipToPostalCode,
+                PostalCodeExt = dto.PoHeaderInfo.ShipToPostalCodeExt,
+                County = dto.PoHeaderInfo.ShipToCounty,
+                Country = dto.PoHeaderInfo.ShipToCountry,
+                Email = dto.PoHeaderInfo.ShipToEmail,
+                DaytimePhone = dto.PoHeaderInfo.ShipToDaytimePhone,
+                NightPhone = dto.PoHeaderInfo.ShipToNightPhone,
             });
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newVendor.AddVendorAddress(new VendorAddress()
             {
                 AddressCode = AddressCodeType.Bill,
-                Name = dto.SalesOrderHeaderInfo.BillToName,
-                Company = dto.SalesOrderHeaderInfo.BillToCompany,
-                AddressLine1 = dto.SalesOrderHeaderInfo.BillToAddressLine1,
-                AddressLine2 = dto.SalesOrderHeaderInfo.BillToAddressLine2,
-                AddressLine3 = dto.SalesOrderHeaderInfo.BillToAddressLine3,
-                City = dto.SalesOrderHeaderInfo.BillToCity,
-                State = dto.SalesOrderHeaderInfo.BillToState,
-                StateFullName = dto.SalesOrderHeaderInfo.BillToStateFullName,
-                PostalCode = dto.SalesOrderHeaderInfo.BillToPostalCode,
-                PostalCodeExt = dto.SalesOrderHeaderInfo.BillToPostalCodeExt,
-                County = dto.SalesOrderHeaderInfo.BillToCounty,
-                Country = dto.SalesOrderHeaderInfo.BillToCountry,
-                Email = dto.SalesOrderHeaderInfo.BillToEmail,
-                DaytimePhone = dto.SalesOrderHeaderInfo.BillToDaytimePhone,
-                NightPhone = dto.SalesOrderHeaderInfo.BillToNightPhone,
+                Name = dto.PoHeaderInfo.BillToName,
+                Company = dto.PoHeaderInfo.BillToCompany,
+                AddressLine1 = dto.PoHeaderInfo.BillToAddressLine1,
+                AddressLine2 = dto.PoHeaderInfo.BillToAddressLine2,
+                AddressLine3 = dto.PoHeaderInfo.BillToAddressLine3,
+                City = dto.PoHeaderInfo.BillToCity,
+                State = dto.PoHeaderInfo.BillToState,
+                StateFullName = dto.PoHeaderInfo.BillToStateFullName,
+                PostalCode = dto.PoHeaderInfo.BillToPostalCode,
+                PostalCodeExt = dto.PoHeaderInfo.BillToPostalCodeExt,
+                County = dto.PoHeaderInfo.BillToCounty,
+                Country = dto.PoHeaderInfo.BillToCountry,
+                Email = dto.PoHeaderInfo.BillToEmail,
+                DaytimePhone = dto.PoHeaderInfo.BillToDaytimePhone,
+                NightPhone = dto.PoHeaderInfo.BillToNightPhone,
             });
-            return await customerService.AddCustomerAsync(newCustomer);
+            return await vendorService.AddVendorAsync(newVendor);
         }
 
         /// <summary>
@@ -280,27 +258,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Try use inventory uuid, sku, upc or phone find customer
         /// If customer code not exist, add new customer. 
         /// </summary>
-        protected async Task<bool> CheckInventoryAsync(SalesOrderDataDto dto)
+        protected async Task<bool> CheckInventoryAsync(PurchaseOrderDataDto dto)
         {
-            if (dto == null || dto.SalesOrderItems == null || dto.SalesOrderItems.Count == 0)
+            if (dto == null || dto.PoItems == null || dto.PoItems.Count == 0)
             {
-                AddError($"Sales Order items not found");
+                AddError($"PurchaseOrder items not found");
                 return false;
             }
 
-            var header = dto.SalesOrderHeader;
-            var masterAccountNum = dto.SalesOrderHeader.MasterAccountNum.ToInt();
-            var profileNum = dto.SalesOrderHeader.ProfileNum.ToInt();
+            var header = dto.PoHeader;
+            var masterAccountNum = dto.PoHeader.MasterAccountNum.ToInt();
+            var profileNum = dto.PoHeader.ProfileNum.ToInt();
 
             // find product SKU for each item
-            var findSku = dto.SalesOrderItems.Select(x => new ProductFindClass() 
+            var findSku = dto.PoItems.Select(x => new ProductFindClass() 
                 { 
                     SKU = x.SKU,
                     UPC = x.SKU,
                 }
             ).ToList();
             findSku = (await inventoryService.FindSkuByProductFindAsync(findSku, masterAccountNum, profileNum)).ToList();
-            foreach (var item in dto.SalesOrderItems)
+            foreach (var item in dto.PoItems)
             {
                 if (item == null) continue;
                 var sku = findSku.FindBySku(item.SKU);
@@ -309,13 +287,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // find inventory data
-            var find = dto.SalesOrderItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
+            var find = dto.PoItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
             var notExistSkus = await inventoryService.FindNotExistSkuWarehouseAsync(find, masterAccountNum, profileNum);
             if (notExistSkus == null || notExistSkus.Count == 0)
                 return true;
 
             var rtn = true;
-            foreach (var item in dto.SalesOrderItems)
+            foreach (var item in dto.PoItems)
             {
                 if (item == null || item.SKU.IsZero()) continue;
 

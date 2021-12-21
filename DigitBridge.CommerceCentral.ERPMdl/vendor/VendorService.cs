@@ -626,7 +626,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 vendorCode.ToSqlParameter("VendorCode")).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Get CustomerData by CustomerFindClass
+        /// </summary>
+        public async Task<bool> AddVendorAsync(VendorData data)
+        {
+            if (data == null)
+                return false;
 
+            // set Add mode and clear data
+            Add();
+            this.AttachData(data);
+
+            // validate data for Add processing
+            if (!(await ValidateAsync()))
+                return false;
+
+            return await SaveDataAsync();
+        }
 
         public async Task<bool> AddVendorAddressAsync(VendorAddressPayload payload)
         {
