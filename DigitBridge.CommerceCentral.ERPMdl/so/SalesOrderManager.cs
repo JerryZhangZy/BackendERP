@@ -501,20 +501,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = true;
             foreach (var dto in dtos)
             {
-                salesOrderService.DetachData(null);
-                salesOrderService.NewData();
-                var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
-                if (!(await prepare.PrepareDtoAsync(dto))) continue;
-
-                if (!await salesOrderService.AddWithoutValidateAsync(dto))
+                try
                 {
-                    success = false;
-                    AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");
-                    this.Messages.Add(salesOrderService.Messages);
+                    var orderExist = salesOrderService.ExistOrderNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.MasterAccountNum.ToInt(), dto.SalesOrderHeader.ProfileNum.ToInt());
+                    if (orderExist)
+                    {
+                        continue;
+                    }
+                    salesOrderService.DetachData(null);
+                    salesOrderService.NewData();
+                    var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
+                    if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                    if (!await salesOrderService.AddWithoutValidateAsync(dto))
+                    {
+                        success = false;
+                        AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");
+                        this.Messages.Add(salesOrderService.Messages);
+                    }
+                }
+                catch (Exception e)
+                {
+                    AddError($"Save sales order faied:{e.Message}");
                 }
             }
             return success;
-        } 
+        }
         #endregion
     }
 }
