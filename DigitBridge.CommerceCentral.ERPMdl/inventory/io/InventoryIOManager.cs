@@ -166,15 +166,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load import files and import options from Blob
             if (!(await blobSvc.LoadFromBlobAsync(payload)))
             {
-                this.Messages.Add(payload.Messages);
+                payload.ReturnError($"Import files or options not found.");
                 return false;
             }
             // load format object
             if (!(await LoadFormatAsync(payload)))
-            {
-                this.Messages.Add(payload.Messages);
                 return false;
-            }
 
             var dtoList = new List<InventoryDataDto>();
             // load each file to import
@@ -184,10 +181,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var ms = new MemoryStream())
                 {
                     if (!(await blobSvc.LoadFileFromBlobAsync(fileName, payload, ms)))
-                    {
-                        this.Messages.Add(payload.Messages);
                         continue;
-                    }
+                    ms.Position = 0;
 
                     var dto = await ImportAsync(ms);
                     if (dto == null || dto.Count == 0) continue;

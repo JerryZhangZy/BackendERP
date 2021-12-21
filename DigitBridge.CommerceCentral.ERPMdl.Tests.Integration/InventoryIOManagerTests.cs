@@ -58,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ImportCsvAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_2.csv";
+            var fileName = "c:\\temp\\inventory.csv";
             var service = new InventoryIOManager(DataBaseFactory);
             IList<InventoryDataDto> data;
 
@@ -85,7 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ImportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\inventory.csv";
             var service = new InventoryIOManager(DataBaseFactory);
             IList<InventoryDataDto> data;
 
@@ -145,23 +145,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\inventory.csv";
             var service = new InventoryIOManager(DataBaseFactory);
             IList<InventoryDataDto> dtos = new List<InventoryDataDto>();
             var InventoryService = new InventoryService(DataBaseFactory);
-            if (InventoryService.List("245a3ace-7ad0-84d1-cd9a-23670d7506c1"))
+            if (InventoryService.List("869413f8-b532-50c6-fe64-8405f58522f1"))
                 dtos.Add(InventoryService.ToDto());
-            if (InventoryService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
-                dtos.Add(InventoryService.ToDto());
-            if (InventoryService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(InventoryService.ToDto());
+            //if (InventoryService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+            //    dtos.Add(InventoryService.ToDto());
+            //if (InventoryService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+            //    dtos.Add(InventoryService.ToDto());
 
             try
             {
                 using (var b = new Benchmark("ExportAsync_Test"))
                 {
                     var dataArray = await service.ExportAllColumnsAsync(dtos);
-                    File.WriteAllBytesAsync(fileName, dataArray);
+                    await File.WriteAllBytesAsync(fileName, dataArray);
                 }
 
                 Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
