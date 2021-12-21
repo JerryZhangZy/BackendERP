@@ -506,7 +506,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
                 if (!(await prepare.PrepareDtoAsync(dto))) continue;
 
-                if (!await salesOrderService.AddAsync(dto))
+                if (!await salesOrderService.AddWithoutValidateAsync(dto))
                 {
                     success = false;
                     AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");
@@ -514,7 +514,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
             return success;
-        }
+        } 
         #endregion
     }
 }
