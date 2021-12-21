@@ -39,6 +39,37 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// WMSBatchNum which wms uploaded.
         /// </summary>
         public string WMSBatchNum { get; set; }
+
+        #region list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder WMSPoReceiveProcessesList { get; set; }
+        [JsonIgnore] public virtual bool HasWMSPoReceiveProcessesList => WMSPoReceiveProcessesList != null && WMSPoReceiveProcessesList.Length > 0;
+        public bool ShouldSerializeWMSPoReceiveProcessesList() => HasWMSPoReceiveProcessesList;
+
+        #endregion 
+    }
+
+    [Serializable()]
+    public class WMSPoReceiveListPayload: ResponsePayloadBase
+    {  
+
+        #region list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder WMSPoReceiveProcessesList { get; set; }
+        [JsonIgnore] public virtual bool HasWMSPoReceiveProcessesList => WMSPoReceiveProcessesList != null && WMSPoReceiveProcessesList.Length > 0;
+        public bool ShouldSerializeWMSPoReceiveProcessesList() => HasWMSPoReceiveProcessesList;
+
+        #endregion 
     }
 }
 

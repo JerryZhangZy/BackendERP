@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="local - Copy.settings.json" />
-    <None Remove="local.settings.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
@@ -22,13 +21,13 @@
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="local.settings.DESKTOP-6C6398M.json">
+    <None Update="local.settings.default.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.DESKTOP-AIG3DDD.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="local.settings.DESKTOP-SSB3DTP.json">
+    <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Properties\launchSettings.json">

@@ -930,6 +930,26 @@ AND OrderStatus !=@2
         {
             return initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
         }
+
+        #region ImportSalesOrder
+
+        /// <summary>
+        /// Add new data from Dto object
+        /// </summary>
+        public virtual async Task<bool> AddWithoutValidateAsync(SalesOrderDataDto dto)
+        {
+            if (dto is null)
+                return false;
+            // set Add mode and clear data
+            Add(); 
+
+            // load data from dto
+            FromDto(dto); 
+
+            return await SaveDataAsync(); 
+        }
+
+        #endregion
     }
 }
 

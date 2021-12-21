@@ -215,6 +215,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 
                 purchaseOrderPayload.PurchaseOrder = dto;
+                var prepare = new PurchaseOrderDtoPrepareDefault(purchaseOrderService, purchaseOrderPayload.MasterAccountNum, purchaseOrderPayload.ProfileNum);
+                if (!(await prepare.PrepareDtoAsync(dto))) continue;
+              
+
                 await purchaseOrderService.ImportAsync(purchaseOrderPayload);
                 purchaseOrderPayload.PurchaseOrder = null;
             }

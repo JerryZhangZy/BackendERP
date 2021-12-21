@@ -385,11 +385,14 @@ launchSettings.json
 /DigitBridge.Base.Utility/Extension/GenericExtensions.cs
 /centralerp/DigitBridge.CommerceCentral.ERPDb/DigitBridge.CommerceCentral.ERPDb.xml
 /centralerp/DigitBridge.CommerceCentral.ERPApi/DigitBridge.CommerceCentral.ERPApi.xml
-/centralerp/DigitBridge.CommerceCentral.ERPApi/local.settings.cuijunxian.json
-/DigitBridge.CommerceCentral.ERPApi/local.settings.cuijunxian.json
 /centralerp/DigitBridge.CommerceCentral.ERPApi/local.settings.json
 /DigitBridge.CommerceCentral.ERPApi/local.settings.json
 /DigitBridge.CommerceCentral.ERPBroker/Properties/ServiceDependencies/DigitBridge-ERP-Broker-Func-Dev - Zip Deploy/profile.arm.json
 /DigitBridge.CommerceCentral.ERP.Integration.Api/Properties/launchSettings.json
 /DigitBridge.CommerceCentral.ERPEventApi/Properties/launchSettings.json
 /DigitBridge.CommerceCentral.ERPBroker/Properties/launchSettings.json
+/DigitBridge.CommerceCentral.ERPApi/local.settings.json
+/DigitBridge.CommerceCentral.ERP.Integration.Api/local.settings.json
+/DigitBridge.CommerceCentral.ERPBroker/local.settings.json
+/DigitBridge.CommerceCentral.ERPEventApi/local.settings.json
+/DigitBridge.CommerceCentral.XUnit.Common/appsettings.test.json

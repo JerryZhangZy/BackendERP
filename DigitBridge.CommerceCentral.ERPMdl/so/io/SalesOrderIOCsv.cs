@@ -28,8 +28,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class SalesOrderIOCsv : CsvHelper<SalesOrderDataDto>
+    public partial class SalesOrderIOCsv : CsvHelper<SalesOrderDataDto>, IMessage
     {
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
         public SalesOrderIOCsv(SalesOrderIOFormat format) : base(format)
         {
         }
@@ -73,8 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         csv.ReadHeader();
                         hasReadSummary = false;
                         headerFound = true;
-                        continue;
                     }
+                    // skip read this line.
+                    continue;
                 }
 
                 // if not define KeyName, read all line to same Dto object
@@ -92,30 +119,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     // get this line key values 
                     var keyValues = GetKeyField(csv);
-                    if (keyValues != null)
+                    if (keyValues == null)
                     {
-                        // if this line key values is not same as saved key values
-                        if (!keyValues.IsEqualTo(currentKeyValues))
-                        {
-                            // save current key values
-                            currentKeyValues = keyValues.Clone();
-                            // if already read summary data, need add current data to list and create new data object
-                            if (hasReadSummary)
-                            {
-                                data.Add(dto);
-                                dto = new SalesOrderDataDto().NewData();
-                                hasReadSummary = false;
-                            }
-                        }
-                        // Dto summary object will repeat in multiple csv lines, it only need read once
-                        if (!hasReadSummary)
-                        {
-                            await ReadSummaryRecordAsync(csv, dto);
-                            hasReadSummary = true;
-                        }
-                        // read each detail lines
-                        await ReadDetailRecordAsync(csv, dto);
+                        AddError($"Key not found. KeyName:{Format.KeyName}");
+                        continue;
                     }
+
+                    // if this line key values is not same as saved key values
+                    if (!keyValues.IsEqualTo(currentKeyValues))
+                    {
+                        // save current key values
+                        currentKeyValues = keyValues.Clone();
+                        // if already read summary data, need add current data to list and create new data object
+                        if (hasReadSummary)
+                        {
+                            data.Add(dto);
+                            dto = new SalesOrderDataDto().NewData();
+                            hasReadSummary = false;
+                        }
+                    }
+                    // Dto summary object will repeat in multiple csv lines, it only need read once
+                    if (!hasReadSummary)
+                    {
+                        await ReadSummaryRecordAsync(csv, dto);
+                        hasReadSummary = true;
+                    }
+                    // read each detail lines
+                    await ReadDetailRecordAsync(csv, dto);
 
                 }
             }
@@ -137,8 +167,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
+                AddError(e.Message);
                 return false;
-                //throw;
             }
         }
 
@@ -158,8 +188,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
+                AddError(e.Message);
                 return false;
-                //throw;
             }
         }
         #endregion import
