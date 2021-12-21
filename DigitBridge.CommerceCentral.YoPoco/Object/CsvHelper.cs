@@ -252,18 +252,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             using (var reader = new StreamReader(stream))
             {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                // skip lines
-                if (SkipLines > 0)
+                
+                using (var csv = new CsvReader(reader, GetConfiguration()))
                 {
+                    // skip lines
                     var lines = 0;
                     while (lines < SkipLines)
                     {
                         await reader.ReadLineAsync();
                         lines++;
                     }
-                }
-                using (var csv = new CsvReader(reader, GetConfiguration()))
-                {
+
                     RegisterMapper(csv.Context);
                     await ReadEntitiesAsync(csv, data);
                 }

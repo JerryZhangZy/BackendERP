@@ -192,12 +192,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         this.Messages.Add(payload.Messages);
                         continue;
                     }
-
-                    var dto = await ImportAsync(ms);
-                    if (dto == null || dto.Count == 0) continue;
-                    dtoList.AddRange(dto);
+                    //TODO Get transfer error 
+                    var dtos = await ImportAsync(ms);
+                    if (dtos == null || dtos.Count == 0) continue;
+                    dtoList.AddRange(dtos);
                 }
             }
+
+            SetAccount(payload, dtoList);
 
             // Verify Dto and save dto to database
             var manager = SalesOrderManager;
@@ -207,6 +209,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
             return true;
+        }
+
+        protected void SetAccount(ImportExportFilesPayload payload, IList<SalesOrderDataDto> dtos)
+        {
+            foreach (var dto in dtos)
+            {
+                if (dto is null || dto.SalesOrderHeader is null) continue;
+                dto.SalesOrderHeader.MasterAccountNum = payload.MasterAccountNum;
+                dto.SalesOrderHeader.ProfileNum = payload.ProfileNum;
+                dto.SalesOrderHeader.DatabaseNum = payload.DatabaseNum;
+            }
         }
 
         public async Task<bool> LoadFormatAsync(ImportExportFilesPayload payload)

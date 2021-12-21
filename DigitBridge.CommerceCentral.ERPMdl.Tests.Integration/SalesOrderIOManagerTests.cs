@@ -190,7 +190,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             };
             var success = await service.ImportAsync(payload);
             Assert.True(success, service.Messages.ObjectToString());
-
         }
     }
 }
