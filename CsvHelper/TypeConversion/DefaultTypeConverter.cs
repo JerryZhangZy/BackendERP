@@ -13,36 +13,38 @@ namespace CsvHelper.TypeConversion
     /// </summary>
     public class DefaultTypeConverter : ITypeConverter
     {
-		/// <inheritdoc/>
-		public virtual object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-		{
-			if (memberMapData.UseDefaultOnConversionFailure && memberMapData.IsDefaultSet && memberMapData.Member.MemberType() == memberMapData.Default?.GetType())
-			{
-				return memberMapData.Default;
-			}
+        /// <inheritdoc/>
+        public virtual object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            if (memberMapData.UseDefaultOnConversionFailure && memberMapData.IsDefaultSet && memberMapData.Member.MemberType() == memberMapData.Default?.GetType())
+            {
+                return memberMapData.Default;
+            }
 
-			if (!row.Configuration.ExceptionMessagesContainRawData)
-			{
-				text = $"Hidden because {nameof(IParserConfiguration.ExceptionMessagesContainRawData)} is false.";
-			}
+            //if (!row.Configuration.ExceptionMessagesContainRawData)
+            //{
+            //    text = $"Hidden because {nameof(IParserConfiguration.ExceptionMessagesContainRawData)} is false.";
+            //}
 
-			var message =
-				$"The conversion cannot be performed.{Environment.NewLine}" +
-				$"    Text: '{text}'{Environment.NewLine}" +
-				$"    MemberType: {memberMapData.Member?.MemberType().FullName}{Environment.NewLine}" +
-				$"    TypeConverter: '{memberMapData.TypeConverter?.GetType().FullName}'";
-			throw new TypeConverterException(this, memberMapData, text, row.Context, message);
-		}
+            var message =
+                $"The conversion cannot be performed.{Environment.NewLine}" +
+                $"    ReflectType: '{memberMapData.Member?.ReflectedType?.Name}'{Environment.NewLine}" +
+                $"    Member: '{memberMapData.Member?.Name}'{Environment.NewLine}" +
+                $"    MemberType: {memberMapData.Member?.MemberType().FullName}{Environment.NewLine}" +
+                $"    MemberValue: '{text}'{Environment.NewLine}" +
+                $"    TypeConverter: '{memberMapData.TypeConverter?.GetType().FullName}'";
+            throw new TypeConverterException(this, memberMapData, text, row.Context, message);
+        }
 
-		/// <inheritdoc/>
-		public virtual string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        /// <inheritdoc/>
+        public virtual string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
             if (value == null)
             {
-				if (memberMapData.TypeConverterOptions.NullValues.Count > 0)
-				{
-					return memberMapData.TypeConverterOptions.NullValues.First();
-				}
+                if (memberMapData.TypeConverterOptions.NullValues.Count > 0)
+                {
+                    return memberMapData.TypeConverterOptions.NullValues.First();
+                }
 
                 return string.Empty;
             }

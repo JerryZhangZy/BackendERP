@@ -116,6 +116,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration SDK", "Integrat
 		payload\SDK\readme.txt = payload\SDK\readme.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Import", "Import", "{072F18B5-E3A4-4A7D-80EB-48EF70116709}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SalesOrder", "SalesOrder", "{255AB185-F74E-46EF-8B1C-B9FB9DEE779B}"
+	ProjectSection(SolutionItems) = preProject
+		payload\Import\SalesOrder\CommerceHub_order.csv = payload\Import\SalesOrder\CommerceHub_order.csv
+		payload\Import\SalesOrder\CommerceHub_order_mapping.json = payload\Import\SalesOrder\CommerceHub_order_mapping.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -247,6 +255,8 @@ Global
 		{EF7FE3AA-F03A-4FA4-BBFA-F64FF3B7E5F9} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
 		{87E361FA-AB95-4D41-9D05-9F628F22A32F} = {7F0AE32C-CADC-463E-AB2C-7C02CA495071}
 		{67394CE8-C236-437E-8909-072C11544946} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
+		{072F18B5-E3A4-4A7D-80EB-48EF70116709} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
+		{255AB185-F74E-46EF-8B1C-B9FB9DEE779B} = {072F18B5-E3A4-4A7D-80EB-48EF70116709}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9341E990-605F-49D2-86E7-EEDD882E9D82}

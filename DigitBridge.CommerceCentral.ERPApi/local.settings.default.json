@@ -1,8 +1,7 @@
 {
   "IsEncrypted": false,
   "Host": {
-    "CORS": "*",
-    "LocalHttpPort": 7074
+    "CORS": "*"
   },
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
@@ -115,7 +114,7 @@
     //"DBConnectionString": "Server=DESKTOP-6C6398M\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
     //"DBConnectionString": "DESKTOP-SSB3DTP\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;"
 
-    "dsn": "Data Source=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "dsn": "Data Source=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     //"dsn": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
     //"dsn": "Data Source=DESKTOP-6C6398M\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
     //"dsn": "Data Source=DESKTOP-SSB3DTP\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;"
