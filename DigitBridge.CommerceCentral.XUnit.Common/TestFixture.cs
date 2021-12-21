@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.XUnit.Common
         {
             //var projectDir = Directory.GetCurrentDirectory();
             //var configPath = Path.Combine(projectDir, "appsettings.test.json");
-            ConfigurationPath = Path.Combine(Directory.GetCurrentDirectory(), $"appsettings.test.{Environment.MachineName}.json");
+            ConfigurationPath = Path.Combine(Directory.GetCurrentDirectory(), $"appsettings.test.json");
 
             var builder = new WebHostBuilder()
                 .UseStartup<TStartup>()
