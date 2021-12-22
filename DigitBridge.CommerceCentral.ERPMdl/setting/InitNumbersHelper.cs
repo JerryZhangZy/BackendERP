@@ -161,7 +161,12 @@ AND OrderNumber = @number
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.OrderNumber+1 AS number
-    FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
+    FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1
+       UNION 
+SELECT [Number] as OrderNumber From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+UNION 
+SELECT [MaxNumber] as OrderNumber From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+) t1
     WHERE NOT EXISTS(
 		SELECT * 
 		FROM (SELECT CAST(LTRIM(OrderNumber) AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
@@ -176,7 +181,13 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.InvoiceNumber+1 AS number
-    FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t1
+    FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1
+UNION 
+SELECT [Number] as InvoiceNumber From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+UNION 
+SELECT [MaxNumber] as InvoiceNumber From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+
+) t1
     WHERE NOT EXISTS(
 		SELECT * 
 		FROM (SELECT CAST(LTRIM(InvoiceNumber) AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t2 
@@ -191,7 +202,13 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.PoNum+1 AS number
-    FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t1
+    FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1
+
+UNION 
+SELECT [Number] as PoNum From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+UNION 
+SELECT [MaxNumber] as PoNum From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+) t1
     WHERE NOT EXISTS(
 		SELECT * 
 		FROM (SELECT CAST(LTRIM(PoNum) AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t2 
@@ -206,7 +223,14 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.ApInvoiceNum+1 AS number
-    FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t1
+    FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1
+
+UNION 
+SELECT [Number] as ApInvoiceNum From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+UNION 
+SELECT [MaxNumber] as ApInvoiceNum From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+
+) t1
     WHERE NOT EXISTS(
 		SELECT * 
 		FROM (SELECT CAST(LTRIM(ApInvoiceNum) AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t2 
@@ -221,7 +245,13 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.VendorCode+1 AS number
-    FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t1
+    FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1
+UNION 
+SELECT [Number] as VendorCode From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+UNION 
+SELECT [MaxNumber] as VendorCode From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+
+) t1
     WHERE NOT EXISTS(
 		SELECT * 
 		FROM (SELECT CAST(LTRIM(VendorCode) AS bigint) AS VendorCode FROM Vendor WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(VendorCode) < 20 AND ISNUMERIC(VendorCode) = 1) t2 
@@ -235,7 +265,14 @@ ORDER BY ot.number";
         {
             return $@"SELECT TOP 1 * FROM (
     SELECT t1.CustomerCode+1 AS number
-    FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t1
+    FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1
+UNION 
+SELECT [Number] as CustomerCode From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+UNION 
+SELECT [MaxNumber] as CustomerCode From [dbo].[InitNumbers] where MasterAccountNum=@masterAccountNum and ProfileNum=@profileNum and [Type]=@type
+
+
+) t1
     WHERE NOT EXISTS(
 		SELECT * 
 		FROM (SELECT CAST(LTRIM(CustomerCode) AS bigint) AS CustomerCode FROM Customer WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(CustomerCode) < 20 AND ISNUMERIC(CustomerCode) = 1) t2 
