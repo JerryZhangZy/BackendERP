@@ -151,7 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_SalesOrderIOCsv is null)
-                    _SalesOrderIOCsv = new SalesOrderIOCsv(Format);
+                    _SalesOrderIOCsv = new SalesOrderIOCsv(Format, this);
                 return _SalesOrderIOCsv;
             }
         }
