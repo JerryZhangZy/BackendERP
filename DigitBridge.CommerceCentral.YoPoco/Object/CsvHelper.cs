@@ -7,14 +7,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using CsvHelper;
 using CsvHelper.Configuration;
+using DigitBridge.Base.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
-    public class CsvHelper<T> : ICsvHelper<T> where T : class, new()
+    public class CsvHelper<T> : IMessage, ICsvHelper<T> where T : class, new()
     {
         protected IList<ClassMap> _mappers;
         public IList<ClassMap> CsvMappers => _mappers;
@@ -27,6 +29,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         public CsvHelper(CsvFormat format)
         {
+            Format = format;
+            GetMapper();
+        }
+        public CsvHelper(CsvFormat format, IMessage serviceMessage)
+        {
+            this.ServiceMessage = serviceMessage;
             Format = format;
             GetMapper();
         }
@@ -321,5 +329,42 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         #endregion import 
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
+
     }
 }
