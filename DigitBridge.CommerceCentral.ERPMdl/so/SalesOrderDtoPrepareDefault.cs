@@ -296,6 +296,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var masterAccountNum = dto.SalesOrderHeader.MasterAccountNum.ToInt();
             var profileNum = dto.SalesOrderHeader.ProfileNum.ToInt();
 
+            var skuTitles = dto.SalesOrderItems.Where(i => !i.HasSKU).Select(j => j.SKUTitle);
+
+            if (skuTitles.Count() > 0)
+            {
+                FindSKUByTitle(skuTitles);
+            }
+
             // find product SKU for each item
             var findSku = dto.SalesOrderItems.Select(x => new ProductFindClass()
             {
@@ -336,6 +343,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
             return rtn;
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="skuTitles"></param>
+        protected void FindSKUByTitle(IEnumerable<string> skuTitles)
+        {
+
         }
 
     }
