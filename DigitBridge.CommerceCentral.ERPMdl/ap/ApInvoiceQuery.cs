@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<long> ApInvoiceType => _ApInvoiceType;
 
 
-        protected QueryFilter<long> _ApInvoiceStatus = new QueryFilter<long>("ApInvoiceStatus", "ApInvoiceStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<long> _ApInvoiceStatus = new QueryFilter<long>("ApInvoiceStatus", "ApInvoiceStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<long> ApInvoiceStatus => _ApInvoiceStatus;
 
 

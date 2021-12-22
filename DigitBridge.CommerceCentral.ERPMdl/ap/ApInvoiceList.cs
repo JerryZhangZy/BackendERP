@@ -62,7 +62,7 @@ SELECT
 {Helper.PoNum()},
 {Helper.DigitBridgeGuid()} 
 ";
-            return this.SQL_Select;
+             return this.SQL_Select;
         }
 
         protected override string GetSQL_from()
