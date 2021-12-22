@@ -158,7 +158,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 var ln = csv.GetRecord<SalesOrderItemsDto>();
-                if (ln == null || !ln.HasSKU)
+                if (ln == null || (!ln.HasSKU && !ln.HasSKUTitle))
                     return false;
                 dto.SalesOrderItems.Add(ln);
                 return true;

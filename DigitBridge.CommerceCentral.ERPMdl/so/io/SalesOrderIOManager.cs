@@ -191,8 +191,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         this.Messages.Add(payload.Messages);
                         continue;
-                    }
-                    //TODO Get transfer error 
+                    } 
+
                     var dtos = await ImportAsync(ms);
                     if (dtos == null || dtos.Count == 0) continue;
                     dtoList.AddRange(dtos);

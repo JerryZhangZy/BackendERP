@@ -164,10 +164,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSKU => SKU != null;
 
-		/// <summary>
-		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false")]
+        /// <summary>
+		/// Product SKU title. <br> Title: SKU title, Display: false, Editable: false
+		/// </summary> 
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public string SKUTitle { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSKUTitle => SKUTitle != null;
+
+        /// <summary>
+        /// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+        /// </summary>
+        [OpenApiPropertyDescription("(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The ProductUuid value cannot exceed 50 characters. ")]
         public string ProductUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
