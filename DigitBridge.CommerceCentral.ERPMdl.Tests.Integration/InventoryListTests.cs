@@ -60,49 +60,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
 
 
-        public InventoryData Save_Test(string prefix = "")
-        {
-            var data = InventoryDataTests.GetFakerData();
-
-            data.ProductBasic.MasterAccountNum = 10001;
-            data.ProductBasic.ProfileNum = 10001;
-            data.ProductBasic.SKU = $"{prefix}{data.ProductBasic.SKU}";
-            data.ProductBasic.Brand = $"{prefix}{data.ProductBasic.Brand}";
-            data.ProductBasic.Manufacturer = $"{prefix}{data.ProductBasic.Manufacturer}";
-            data.ProductBasic.ProductTitle = $"{prefix}{data.ProductBasic.ProductTitle}";
-            data.ProductBasic.UPC = $"{prefix}{data.ProductBasic.UPC}";
-            //data.Customer.CustomerType = $"{prefix}{data.Customer.CustomerType}";
-            //data.Customer.CustomerStatus = $"{prefix}{data.Customer.CustomerCode}";
-            //data.Customer.BusinessType = $"{prefix}{data.Customer.CustomerCode}";
-            //data.Customer.FirstDate = $"{prefix}{data.Customer.CustomerCode}";
-            data.ProductExt.ClassCode = $"{prefix}{data.ProductExt.ClassCode}";
-            data.ProductExt.SubClassCode = $"{prefix}{data.ProductExt.SubClassCode}";
-            data.ProductExt.DepartmentCode = $"{prefix}{data.ProductExt.DepartmentCode}";
-            data.ProductExt.DivisionCode = $"{prefix}{data.ProductExt.DivisionCode}";
-            data.ProductExt.OEMCode = $"{prefix}{data.ProductExt.OEMCode}";
-            data.ProductExt.AlternateCode = $"{prefix}{data.ProductExt.AlternateCode}";
-            data.ProductExt.Remark = $"{prefix}{data.ProductExt.Remark}";
-            data.ProductExt.Model = $"{prefix}{data.ProductExt.Model}";
-            data.ProductExt.CategoryCode = $"{prefix}{data.ProductExt.CategoryCode}";
-            data.ProductExt.GroupCode = $"{prefix}{data.ProductExt.GroupCode}";
-            data.ProductExt.SubGroupCode = $"{prefix}{data.ProductExt.SubGroupCode}";
-
-            data.Inventory[0].StyleCode = $"{prefix}{data.Inventory[0].StyleCode}";
-            data.Inventory[0].ColorPatternCode = $"{prefix}{data.Inventory[0].ColorPatternCode}";
-            data.Inventory[0].SizeCode = $"{prefix}{data.Inventory[0].SizeCode}";
-            data.Inventory[0].WidthCode = $"{prefix}{data.Inventory[0].WidthCode}";
-            data.Inventory[0].LengthCode = $"{prefix}{data.Inventory[0].LengthCode}";
-            data.Inventory[0].WarehouseCode = $"{prefix}{data.Inventory[0].WarehouseCode}";
-            data.Inventory[0].LotNum = $"{prefix}{data.Inventory[0].LotNum}";
-            data.Inventory[0].LpnNum = $"{prefix}{data.Inventory[0].LpnNum}";
-
-            data.SetDataBaseFactory(dataBaseFactory);
-            data.Save();
-            var dataGet = new InventoryData(dataBaseFactory);
-            dataGet.GetById(data.UniqueId);
-            return dataGet;
-        }
-
         private JObject GetFilters(InventoryData data)
         {
             return new JObject()
@@ -143,85 +100,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #endregion sync methods
 
         #region async methods
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public async Task ExcuteJsonAsync_Test()
-        {
-            var payload = new InventoryPayload();
-            payload.LoadAll = true;
-            payload.MasterAccountNum = 10001;
-            payload.ProfileNum = 10001;
-            var data = Save_Test("JSON_ASYNC");
-            var filters = GetFilters(data);
-            var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
-            foreach (var obj in filters)
-            {
-                payload.Filter = new JObject() { { obj.Key, obj.Value } };
-                await srv.GetProductListAsync(payload);
-
-                System.Diagnostics.Debug.WriteLine($"filter:{obj.Key},{obj.Value.ToString()}.Success:{payload.Success},List:{payload.InventoryListCount}");
-                Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
-                Assert.True(payload.InventoryList != null && payload.InventoryList.Length > 0, obj.Key);
-                Assert.True(payload.InventoryListCount > 0, "This is a generated tester, please report any tester bug to team leader.");
-
-            }
-
-            //var qry = new InventoryQuery();
-            //var srv = new InventoryList(dataBaseFactory, qry);
-            //srv.LoadRequestParameter(payload);
-            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
-            //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
-            //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
-            //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
-
-            //var totalRecords = 0;
-            //var result = false;
-            //StringBuilder sb = new StringBuilder();
-            //try
-            //{
-            //    using (var b = new Benchmark("ExcuteJsonAsync_Test"))
-            //    {
-            //        payload.InventoryListCount = await srv.CountAsync();
-            //        result = await srv.ExcuteJsonAsync(sb);
-            //        if (result)
-            //            payload.InventoryList = sb;
-
-            //        //using (var trs = new ScopedTransaction())
-            //        //{
-            //        //}
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
-            //    //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
-            //    //for this IP address or address range.  It may take up to five minutes for this change to take effect.
-            //    throw;
-            //}
-
-            //var json = payload.ObjectToString();
-
-            //Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public async Task GetInventoryListAsync_Test()
         {
-            var payload = new InventoryPayload();
-            payload.LoadAll = true;
-            var data = Save_Test("JSON_ASYNC");
-            payload.Filter = GetFilters(data);
-
-            using (var b = new Benchmark("GetInventoryListAsync_Test"))
+            var payload = new InventoryPayload()
             {
-                var qry = new InventoryQuery();
-                var srv = new InventoryList(dataBaseFactory, qry);
-                await srv.GetProductListAsync(payload);
-                var json = payload.ObjectToString();
-            }
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Top = 50,
+            };
 
-            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            var listService = new InventoryList(dataBaseFactory);
+
+            try
+            {
+                using (var b = new Benchmark("GetInventoryListAsync_Test"))
+                {
+                    await listService.GetProductListAsync(payload);
+                }
+
+                //make sure query is correct.
+                Assert.True(payload.Success, listService.Messages.ObjectToString());
+            }
+            catch (Exception ex)
+            {
+                //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
+                //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
+                //for this IP address or address range.  It may take up to five minutes for this change to take effect.
+                throw;
+            }
         }
 
         [Fact()]
@@ -265,23 +175,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #endregion async methods
 
-        [Fact()]
-        public void ExportSql_Test()
-        {
-            var payload = new InventoryPayload()
-            {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                Skip = 0,
-                Top = 100
-            };
-            var customerList = new InventoryList(dataBaseFactory);
-            customerList.GetExportJsonList(payload);
-            var jArray = JArray.Parse(payload.InventoryDataList.ToString());
-            var attr = JObject.Parse(jArray[0]["InventoryAttributes"].ToString());
-
-            Assert.True(attr != null, "succ");
-        }
 
     }
 }
