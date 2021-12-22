@@ -6,6 +6,7 @@ namespace DigitBridge.Base.Common
 {
     public enum VendorType : int
     {
-        Default = 0
+        Default = 0,
+        ImportNewVendor = 1,
     }
 }

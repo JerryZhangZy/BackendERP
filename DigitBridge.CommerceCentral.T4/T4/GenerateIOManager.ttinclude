@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_<#= IOCsvHelperName #> is null)
-                    _<#= IOCsvHelperName #> = new <#= IOCsvHelperName #>(Format);
+                    _<#= IOCsvHelperName #> = new <#= IOCsvHelperName #>(Format, this);
                 return _<#= IOCsvHelperName #>;
             }
         }

@@ -315,6 +315,42 @@ for json path
             var success = await SqlQuery.QueryJsonAsync(sb, sql, CommandType.Text, paramList.ToArray());
             return (success, sb);
         }
+        public static async Task<(bool, StringBuilder)> GetWMSPoReceiveListAsync(int masterAccountNum, int profileNum, IList<string> wmsBatchNums)
+        {
+            var sql = $@"
+select 
+ ep.ProcessDate
+,ep.ProcessUuid as WMSBatchNum
+,ep.ProcessStatus
+,COALESCE(epps.text, '') as ProcessStatusText
+,ep.EventMessage
+,ep.LastUpdateDate
+,ep.UpdateDateUtc
+,ep.EnterDateUtc
+,ep.EnterBy
+,ep.UpdateBy
+from EventProcessERP ep
+JOIN @wmsBatchNums wmsBatchNum on wmsBatchNum.item=ep.ProcessUuid
+LEFT JOIN @ProcessStatus epps on epps.num=ep.ProcessStatus
+where MasterAccountNum=@masterAccountNum
+AND ProfileNum=@profileNum
+AND ERPEventProcessType=@EventProcessType
+for json path
+";
+
+
+            var paramList = new List<IDataParameter>();
+            paramList.Add("@ProcessStatus".ToEnumParameter<EventProcessProcessStatusEnum>());
+            paramList.Add(wmsBatchNums.ToParameter<string>("wmsBatchNums"));
+            paramList.Add(masterAccountNum.ToParameter("masterAccountNum"));
+            paramList.Add(profileNum.ToParameter("profileNum"));
+            paramList.Add(((int)EventProcessTypeEnum.PoReceiveFromWMS).ToParameter("EventProcessType"));
+
+            StringBuilder sb = new StringBuilder();
+            var success = await SqlQuery.QueryJsonAsync(sb, sql, CommandType.Text, paramList.ToArray());
+            return (success, sb);
+        }
+        
     }
 }
 

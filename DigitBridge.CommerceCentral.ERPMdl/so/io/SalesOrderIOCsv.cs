@@ -33,6 +33,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public SalesOrderIOCsv(SalesOrderIOFormat format) : base(format)
         {
         }
+        public SalesOrderIOCsv(SalesOrderIOFormat format, IMessage serviceMessage) : base(format, serviceMessage)
+        {
+        }
 
         /// <summary>
         /// Create and Init CsvFormatMapper for each Dto Object
@@ -73,8 +76,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         csv.ReadHeader();
                         hasReadSummary = false;
                         headerFound = true;
-                        continue;
                     }
+                    // skip read this line.
+                    continue;
                 }
 
                 // if not define KeyName, read all line to same Dto object
@@ -92,30 +96,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     // get this line key values 
                     var keyValues = GetKeyField(csv);
-                    if (keyValues != null)
+                    if (keyValues == null)
                     {
-                        // if this line key values is not same as saved key values
-                        if (!keyValues.IsEqualTo(currentKeyValues))
-                        {
-                            // save current key values
-                            currentKeyValues = keyValues.Clone();
-                            // if already read summary data, need add current data to list and create new data object
-                            if (hasReadSummary)
-                            {
-                                data.Add(dto);
-                                dto = new SalesOrderDataDto().NewData();
-                                hasReadSummary = false;
-                            }
-                        }
-                        // Dto summary object will repeat in multiple csv lines, it only need read once
-                        if (!hasReadSummary)
-                        {
-                            await ReadSummaryRecordAsync(csv, dto);
-                            hasReadSummary = true;
-                        }
-                        // read each detail lines
-                        await ReadDetailRecordAsync(csv, dto);
+                        AddError($"Key not found. KeyName:{Format.KeyName}");
+                        continue;
                     }
+
+                    // if this line key values is not same as saved key values
+                    if (!keyValues.IsEqualTo(currentKeyValues))
+                    {
+                        // save current key values
+                        currentKeyValues = keyValues.Clone();
+                        // if already read summary data, need add current data to list and create new data object
+                        if (hasReadSummary)
+                        {
+                            data.Add(dto);
+                            dto = new SalesOrderDataDto().NewData();
+                            hasReadSummary = false;
+                        }
+                    }
+                    // Dto summary object will repeat in multiple csv lines, it only need read once
+                    if (!hasReadSummary)
+                    {
+                        await ReadSummaryRecordAsync(csv, dto);
+                        hasReadSummary = true;
+                    }
+                    // read each detail lines
+                    await ReadDetailRecordAsync(csv, dto);
 
                 }
             }
@@ -137,8 +144,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
+                AddError(e.Message);
                 return false;
-                //throw;
             }
         }
 
@@ -158,8 +165,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
+                AddError(e.Message);
                 return false;
-                //throw;
             }
         }
         #endregion import

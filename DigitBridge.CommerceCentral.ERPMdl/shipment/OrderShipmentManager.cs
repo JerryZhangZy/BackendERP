@@ -306,12 +306,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var resultList = new List<OrderShipmentCreateResultPayload>();
 
-            if (!ValidateAllWMSShipment(wmsShipments))
+            if (!ValidateAllWMSShipment(wmsShipments, resultList))
             {
-                resultList.Add(new OrderShipmentCreateResultPayload()
-                {
-                    Messages = this.Messages,
-                });
                 return resultList;
             }
 
@@ -348,7 +344,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="wmsShipments"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected bool ValidateAllWMSShipment(IList<InputOrderShipmentType> wmsShipments)
+        protected bool ValidateAllWMSShipment(IList<InputOrderShipmentType> wmsShipments, IList<OrderShipmentCreateResultPayload> validateResult)
         {
             if (wmsShipments is null || wmsShipments.Count == 0)
             {
@@ -359,9 +355,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var allSuccess = true;
             foreach (var wmsShipment in wmsShipments)
             {
+                this._messages = new List<MessageClass>();
                 var success = ValidateShipment(wmsShipment);
                 if (!success)
+                {
+                    validateResult.Add(new OrderShipmentCreateResultPayload()
+                    {
+                        ShipmentID = wmsShipment.ShipmentHeader.ShipmentID,
+                        Messages = this.Messages,
+                    });
                     allSuccess = false;
+                }
             }
             return allSuccess;
         }

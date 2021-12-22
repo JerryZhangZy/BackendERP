@@ -34,13 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         protected SalesOrderService _salesOrderService;
-        protected SalesOrderService Service 
-        { 
-            get => _salesOrderService; 
+        protected SalesOrderService Service
+        {
+            get => _salesOrderService;
         }
-        protected IDataBaseFactory dbFactory 
-        { 
-            get => Service.dbFactory; 
+        protected IDataBaseFactory dbFactory
+        {
+            get => Service.dbFactory;
         }
         #region message
         [XmlIgnore, JsonIgnore]
@@ -297,15 +297,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var profileNum = dto.SalesOrderHeader.ProfileNum.ToInt();
 
             // find product SKU for each item
-            var findSku = dto.SalesOrderItems.Select(x => new ProductFindClass() 
-                { 
-                    SKU = x.SKU,
-                    UPC = x.SKU,
-                }
+            var findSku = dto.SalesOrderItems.Select(x => new ProductFindClass()
+            {
+                SKU = x.SKU,
+                UPC = x.SKU,
+            }
             ).ToList();
             findSku = (await inventoryService.FindSkuByProductFindAsync(findSku, masterAccountNum, profileNum)).ToList();
             foreach (var item in dto.SalesOrderItems)
             {
+                if (item.WarehouseCode.IsZero()) item.WarehouseCode = string.Empty;//TODO set default warehousecode.
                 if (item == null) continue;
                 var sku = findSku.FindBySku(item.SKU);
                 if (sku == null || sku.FoundSKU.IsZero()) continue;

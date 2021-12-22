@@ -31,6 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string AckReceivePurchaseOrders = "/api/wms/purchaseOrders/AckReceive";
         internal const string AckProcessPurchaseOrders = "/api/wms/purchaseOrders/AckProcess";
         internal const string PoReceive = "/api/wms/purchaseOrders/receive";
+        internal const string WMSPoReceiveList = "/api/wms/purchaseOrders/receive/find";
+        
 
         internal const string InventorySync = "/api/wms/inventory";
 

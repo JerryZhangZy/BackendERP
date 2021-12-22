@@ -34,6 +34,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public <#= IOCsvHelperName #>(<#= IOFormatName #> format): base(format)
         {
         }
+        public <#= IOCsvHelperName #>(<#= IOFormatName #> format, IMessage serviceMessage): base(format, serviceMessage)
+        {
+        }
 
         /// <summary>
         /// Create and Init CsvFormatMapper for each Dto Object

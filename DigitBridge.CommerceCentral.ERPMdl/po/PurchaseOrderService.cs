@@ -521,16 +521,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasPurchaseOrder)
                 return false;
             #region delete
-            if (!string.IsNullOrWhiteSpace(payload.PurchaseOrder.PoHeader.PoUuid))
-            {
-                var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.PurchaseOrder.PoHeader.PoUuid);
-                if (rownum >= 0)
-                    await DeleteAsync(rownum);
-            }
+            //if (!string.IsNullOrWhiteSpace(payload.PurchaseOrder.PoHeader.PoUuid))
+            //{
+            //    var rownum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, payload.PurchaseOrder.PoHeader.PoUuid);
+            //    if (rownum >= 0)
+            //        await DeleteAsync(rownum);
+            //}
             #endregion
 
             #region add
-            return await this.AddAsync(payload);
+ 
+            // set Add mode and clear data
+            Add();
+            FromDto(payload.PurchaseOrder);
+            return await SaveDataAsync();
             #endregion
         }
 
