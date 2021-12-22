@@ -75,14 +75,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
-                LoadAll = true
+                LoadAll = false,
             };
 
             var listService = new InvoiceList(this.DataBaseFactory);
-            await listService.GetInvoiceListAsync(payload);
 
-            //make sure query is correct.
-            Assert.True(payload.Success, listService.Messages.ObjectToString());
+            try
+            {
+                using (var b = new Benchmark("GetSalesOrderDatasAsync_Test"))
+                {
+                    await listService.GetInvoiceListAsync(payload);
+                }
+
+                //make sure query is correct.
+                Assert.True(payload.Success, listService.Messages.ObjectToString());
+            }
+            catch (Exception ex)
+            {
+                //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
+                //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
+                //for this IP address or address range.  It may take up to five minutes for this change to take effect.
+                throw;
+            }
+
         } 
 
         [Fact()]

@@ -78,6 +78,7 @@ LEFT JOIN Setting_ChannelAccount {Helper.ChannelAccountAlias} ON
                 payload = new ChannelPayload();
 
             this.LoadRequestParameter(payload);
+            this.QueryObject.LoadAll = true;
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
@@ -103,6 +104,7 @@ LEFT JOIN Setting_ChannelAccount {Helper.ChannelAccountAlias} ON
                 payload = new ChannelPayload();
 
             this.LoadRequestParameter(payload);
+            this.QueryObject.LoadAll = true;
             StringBuilder sb = new StringBuilder();
             var result = false;
             try

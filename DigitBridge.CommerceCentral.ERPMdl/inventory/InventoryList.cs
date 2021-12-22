@@ -232,8 +232,8 @@ SUM(CASE WHEN COALESCE({InvHelper.TableAllies}.Instock, 0) < COALESCE({InvHelper
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {ExHelper.TableName} {ExHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {ExHelper.TableAllies}.ProductUuid)
-LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {InvHelper.TableAllies}.ProductUuid)
+INNER JOIN {ExHelper.TableName} {ExHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {ExHelper.TableAllies}.ProductUuid)
+INNER JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {InvHelper.TableAllies}.ProductUuid)
 ";
             return this.SQL_From;
         }
