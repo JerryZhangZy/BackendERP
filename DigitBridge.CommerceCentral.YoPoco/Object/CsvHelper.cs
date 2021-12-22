@@ -45,7 +45,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual CsvConfiguration GetConfiguration()
         {
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture);
+            var cultureInfo = (Format?.CultureName).IsZero() ? CultureInfo.InvariantCulture : CultureInfo.GetCultureInfo(Format.CultureName);
+            var config = new CsvConfiguration(cultureInfo);
             if (Format != null)
             {
                 config.Delimiter = Format.Delimiter;
@@ -62,9 +63,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return config;
         }
 
-        public virtual void RegisterMapper(CsvContext context) {
+        public virtual void RegisterMapper(CsvContext context)
+        {
             if (CsvMappers == null || CsvMappers.Count == 0) return;
-            foreach(var mapper in CsvMappers.Where(x => x != null && x.MemberMaps != null && x.MemberMaps.Count > 0)) 
+            foreach (var mapper in CsvMappers.Where(x => x != null && x.MemberMaps != null && x.MemberMaps.Count > 0))
                 context.RegisterClassMap(mapper);
         }
 
@@ -95,7 +97,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 }
                 return ms.ToArray();
             }
-        } 
+        }
 
         protected virtual void WriteCsv(T data, CsvWriter csv)
         {
@@ -260,7 +262,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             using (var reader = new StreamReader(stream))
             {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                
+
                 using (var csv = new CsvReader(reader, GetConfiguration()))
                 {
                     // skip lines
