@@ -72,7 +72,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                     }
                 }
 
-                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+                Assert.NotEmpty(data);
+                Assert.NotEmpty(data[0].Inventory);
             }
             catch (Exception e)
             {

@@ -82,6 +82,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dto == null || !dto.HasInventory)
                 return false;
 
+            foreach(var inventory in dto.Inventory)
+            {
+                inventory.SKU = dto.ProductBasic.SKU;
+                inventory.ProductUuid = dto.ProductBasic.ProductUuid;
+                inventory.Currency = dto.ProductExt.Currency;
+            }
+
             // Load customer info to Dto 
             //if (!await CheckCustomerAsync(dto))
             //{
