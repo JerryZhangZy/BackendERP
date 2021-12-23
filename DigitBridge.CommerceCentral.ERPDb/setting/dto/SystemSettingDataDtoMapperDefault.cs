@@ -58,7 +58,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasSystemSettingUuid) data.SystemSettingUuid = dto.SystemSettingUuid;
 			if (dto.HasDescription) data.Description = dto.Description;
-			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
+			if(dto.HasErpSetting)data.ErpSetting = dto.ErpSetting;
+			//if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -105,6 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.SystemSettingUuid = data.SystemSettingUuid;
 			dto.Description = data.Description;
+			dto.ErpSetting = data.ErpSetting;
 			dto.Fields = data.Fields.ToJson();
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.UpdateDateUtc = data.UpdateDateUtc;

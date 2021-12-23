@@ -38,13 +38,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public override SystemSetting ConvertDbFieldsToData()
 		{
 			base.ConvertDbFieldsToData();
+			ErpSetting = this.JsonFields.JsonToObject<ErpSettingClass>();
 			Fields.LoadFromValueString(JsonFields);
 			return this;
 		}
 		public override SystemSetting ConvertDataFieldsToDb()
 		{
 			base.ConvertDataFieldsToDb();
-			JsonFields = Fields.ToValueString();
+			
+			JsonFields = ErpSetting.ObjectToString(); 
 			UpdateDateUtc = DateTime.UtcNow;
 			return this;
 		} 
