@@ -941,15 +941,38 @@ AND OrderStatus !=@2
             if (dto is null)
                 return false;
             // set Add mode and clear data
-            Add(); 
+            Add();
 
             // load data from dto
-            FromDto(dto); 
+            FromDto(dto);
 
-            return await SaveDataAsync(); 
+            return await SaveDataAsync();
         }
 
         #endregion
+
+        public async Task<IList<SalesOrderData>> GetSalesOrderDatasAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
+
+            List();
+            var datas = new List<SalesOrderData>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get sales order by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(Data);
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
     }
 }
 

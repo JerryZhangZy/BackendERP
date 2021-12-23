@@ -199,6 +199,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await ExportAsync(lines, headers);
         }
 
+
+        public async Task<byte[]> ExportAsync(IEnumerable<SalesOrderData> datas)
+        {
+            //TODO 
+            // write data as format to dto.
+
+            return null;
+
+            //if (Format == null || datas == null || !datas.Any()) return null;
+
+            //// Export columns by index
+            //Format.SortByIndex();
+            //var dataList = datas.ToList();
+            //var lines = new List<IList<string>>();
+
+            //// build header line
+            //var headers = GetHeader(datas);
+
+            //// build each Dto object to value lines
+            //foreach (var data in dataList)
+            //{
+            //    if (data == null) continue;
+            //    var lns = GetDataLines(data);
+            //    if (lns == null || lns.Count == 0) continue;
+            //    lines = lines.Concat(lns).ToList();
+            //}
+            //// export header and value lines
+            //return await ExportAsync(lines, headers);
+        }
+
         /// <summary>
         /// Build header text list by Format define, this will combine multiple object to one line
         /// </summary>

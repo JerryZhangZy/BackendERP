@@ -108,15 +108,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return validate;
         }
 
-        protected async Task<bool> SaveFilesToBlobAsync(ImportExportFilesPayload payload)
+        public async Task<bool> SaveFilesToBlobAsync(ImportExportFilesPayload payload)
         {
-            if (payload.ImportFiles == null || payload.ImportFiles.Count == 0)
+            if (payload.ExportFiles == null || payload.ExportFiles.Count == 0)
             {
-                AddError($"Export file is required.");
+                AddError($"No export file to save to blob.");
                 return false;
             }
 
-            foreach (var item in payload.ImportFiles)
+            foreach (var item in payload.ExportFiles)
             {
                 if (item.Value == null) continue;
                 if (!item.Key.EndsWith("csv") && !item.Key.EndsWith("txt")) continue;
@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             return true;
         }
-        protected async Task<bool> LoadOptionsFromBlobAsync(ImportExportFilesPayload payload)
+        public async Task<bool> LoadOptionsFromBlobAsync(ImportExportFilesPayload payload)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var optionJson = await blobContainer.DownloadBlobToStringAsync(OPTIONS_NAME);
                 if (string.IsNullOrWhiteSpace(optionJson))
                 {
-                    AddError($"Export Options is required.");
+                    AddError($"Export Options is empty.");
                     return false;
                 }
                 payload.Options = optionJson.JsonToObject<ImportExportOptions>();
