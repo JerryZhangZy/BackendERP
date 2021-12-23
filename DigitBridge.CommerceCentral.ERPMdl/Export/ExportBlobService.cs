@@ -2,6 +2,7 @@
 using DigitBridge.CommerceCentral.AzureStorage;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class ExportBlobService
+    public class ExportBlobService : IMessage
     {
         public const string CONTAINER_NAME = "erp-export";
         public const string OPTIONS_NAME = "erp-export-options";
@@ -48,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region save to blob
-        
+
         public async Task<bool> SaveOptionsToBlobAsync(ImportExportFilesPayload payload)
         {
             if (!ValidateOptions(payload))
@@ -64,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
-                payload.ReturnError($"Export Options save error. {e.Message}");
+                AddError($"Export Options save error. {e.Message}");
                 return false;
             }
         }
@@ -73,60 +74,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!payload.HasOptions)
             {
-                payload.ReturnError($"Export Options is required.");
+                AddError($"Export Options is required.");
                 return false;
             }
 
             var validate = true;
             if (!payload.Options.HasFormatType)
             {
-                payload.ReturnError($"Export Options FormatType is required.");
+                AddError($"Export Options FormatType is required.");
                 validate = false;
             }
             if (!payload.Options.HasFormatNumber)
             {
-                payload.ReturnError($"Export Options FormatNumber is required.");
+                AddError($"Export Options FormatNumber is required.");
                 validate = false;
             }
             if (!payload.Options.HasMasterAccountNum)
             {
-                payload.ReturnError($"Export Options MasterAccountNum is required.");
+                AddError($"Export Options MasterAccountNum is required.");
                 validate = false;
             }
             if (!payload.Options.HasProfileNum)
             {
-                payload.ReturnError($"Export Options ProfileNum is required.");
+                AddError($"Export Options ProfileNum is required.");
                 validate = false;
             }
             if (!payload.Options.HasExportUuid)
             {
-                payload.ReturnError($"Export Options exportUuid is required.");
+                AddError($"Export Options exportUuid is required.");
                 validate = false;
             }
 
             return validate;
         }
 
-
-        //public async Task<bool> SaveToBlobAsync(ImportExportFilesPayload payload)
-        //{
-        //    var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
-
-        //    // save options Blob
-        //    if (!(await SaveOptionsToBlobAsync(payload)))
-        //        return false;
-
-        //    // save options Blob
-        //    if (!(await SaveFilesToBlobAsync(payload)))
-        //        return false;
-        //    return true;
-        //}
-
         protected async Task<bool> SaveFilesToBlobAsync(ImportExportFilesPayload payload)
         {
             if (payload.ImportFiles == null || payload.ImportFiles.Count == 0)
             {
-                payload.ReturnError($"Export file is required.");
+                AddError($"Export file is required.");
                 return false;
             }
 
@@ -141,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 catch (Exception e)
                 {
-                    payload.ReturnError($"Export file {item.Key} save error. {e.Message}");
+                    AddError($"Export file {item.Key} save error. {e.Message}");
                     return false;
                 }
             }
@@ -167,7 +153,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var optionJson = await blobContainer.DownloadBlobToStringAsync(OPTIONS_NAME);
                 if (string.IsNullOrWhiteSpace(optionJson))
                 {
-                    payload.ReturnError($"Export Options is required.");
+                    AddError($"Export Options is required.");
                     return false;
                 }
                 payload.Options = optionJson.JsonToObject<ImportExportOptions>();
@@ -175,7 +161,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
-                payload.ReturnError($"Export Options save error. {e.Message}");
+                AddError($"Export Options save error. {e.Message}");
                 return false;
             }
         }
@@ -185,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var fileList = blobContainer.GetBlobList();
             if (fileList == null || fileList.Count == 0)
             {
-                payload.ReturnError($"Export files not found.");
+                AddError($"Export files not found.");
                 return false;
             }
 
@@ -201,48 +187,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (payload.FileNames == null || payload.FileNames.Count == 0)
             {
-                payload.ReturnError($"Export files not found.");
+                AddError($"Export files not found.");
                 return false;
             }
             return true;
         }
 
-        public async Task<byte[]> LoadFileFromBlobAsync(string fileName, ImportExportFilesPayload payload)
+        public async Task<bool> LoadFilesFromBlobAsync(ImportExportFilesPayload payload)
         {
-            if (string.IsNullOrWhiteSpace(fileName))
-                return null;
-
-            try
+            if (!payload.HasExportUuid)
             {
-                var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
-                return await blobContainer.DownloadBlobAsync(fileName);
-            }
-            catch (Exception e)
-            {
-                payload.ReturnError($"Load file {fileName} error. {e.Message}");
-                return null;
-            }
-        }
-
-        public async Task<bool> LoadFileFromBlobAsync(string fileName, ImportExportFilesPayload payload, Stream stream)
-        {
-            if (string.IsNullOrWhiteSpace(fileName))
-                return false;
-
-            try
-            {
-                var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
-                await blobContainer.DownloadBlobAsync(fileName, stream);
-                stream.Position = 0;
-                return true;
-            }
-            catch (Exception e)
-            {
-                payload.ReturnError($"Load file {fileName} error. {e.Message}");
+                AddError($"ExportUuid cannot be empty.");
                 return false;
             }
+
+            var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
+            var fileList = blobContainer.GetBlobList();
+            if (fileList == null || fileList.Count == 0)
+            {
+                AddError($"Export files not found.");
+                return false;
+            }
+
+            payload.ExportFiles = new List<FileContentResult>();
+            foreach (var fileName in fileList)
+            {
+                if (string.IsNullOrWhiteSpace(fileName) ||
+                    fileName.EqualsIgnoreSpace(OPTIONS_NAME) ||
+                    fileName.EqualsIgnoreSpace(RESULT_NAME)
+                    ) continue;
+
+                try
+                {
+                    var exportData = await blobContainer.DownloadBlobAsync(fileName);
+                    var downfile = new FileContentResult(exportData, "text/csv");
+                    downfile.FileDownloadName = fileName;
+
+                    payload.ExportFiles.Add(downfile);
+                }
+                catch (Exception e)
+                {
+                    AddError($"Load file {fileName} error. {e.Message}");
+                }
+            }
+
+            return true;
         }
 
         #endregion load from blob 
+
+
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
     }
 }

@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -38,6 +39,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         public string ImportUuid { get; set; }
         public virtual bool HasImportUuid => !string.IsNullOrEmpty(ImportUuid);
+
+        /// <summary>
+        /// (Response Data) List result which load filter.
+        /// </summary>
+        public IList<FileContentResult> ExportFiles { get; set; }
+        [JsonIgnore] public virtual bool HasExportFiles => ExportFiles != null && ExportFiles.Count > 0;
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.

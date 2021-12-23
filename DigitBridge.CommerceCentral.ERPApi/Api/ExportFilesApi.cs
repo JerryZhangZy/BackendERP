@@ -48,25 +48,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
 
-        [FunctionName(nameof(GetExportSalesOrderFiles))]
+        [FunctionName(nameof(GetExportFiles))]
         #region swagger Doc
-        [OpenApiOperation(operationId: "GetExportSalesOrderFiles", tags: new[] { "ExportFiles" })]
+        [OpenApiOperation(operationId: "GetExportFiles", tags: new[] { "ExportFiles" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "processUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "processUuid", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         #endregion swagger Doc
-        public static async Task<JsonNetResponse<ImportExportFilesPayload>> GetExportSalesOrderFiles(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "ExportFiles/salesorder/result/{processUuid}")] HttpRequest req, string processUuid)
+        public static async Task<JsonNetResponse<ImportExportFilesPayload>> GetExportFiles(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "ExportFiles/result/{processUuid}")] HttpRequest req, string processUuid)
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
+            payload.ExportUuid = processUuid;
 
             var svc = new ExportBlobService();
-            payload.Success = await svc.LoadFileNamesFromBlobAsync(processUuid);
+            payload.Success = await svc.LoadFilesFromBlobAsync(payload);
+            payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
-        }
+        }  
     }
 }
 

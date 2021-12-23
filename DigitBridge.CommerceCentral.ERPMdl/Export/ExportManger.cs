@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!success)
             {
-                this.Messages.Add(payload.Messages);
+                this.Messages.Add(blobService.Messages);
                 return false;
             }
 
