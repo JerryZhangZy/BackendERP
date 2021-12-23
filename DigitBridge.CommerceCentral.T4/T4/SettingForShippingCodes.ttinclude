@@ -14,7 +14,7 @@
     var structureName = $"{processName}Data";
      
     var StructureClass =  new StructureInfo("ShippingCodesData",
-            new StructureTable() { Name = "ShippingCodes", AlliesName = "cdc", MainTable = true, OneToOne = true }
+            new StructureTable() { Name = "ShippingCodes", AlliesName = "spc", MainTable = true, OneToOne = true }
         );
 
 

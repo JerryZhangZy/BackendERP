@@ -85,7 +85,7 @@
 //SettingForPaidbyMap
 //SettingForShippingCodes
 #>
-<#@ include file="SettingForPaidbyMap.ttinclude" #>
+<#@ include file="SettingForShippingCodes.ttinclude" #>
 <#
     var dtoSuf = "";
     //var GenerateNewName = string.Empty;
