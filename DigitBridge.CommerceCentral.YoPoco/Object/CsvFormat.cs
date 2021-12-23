@@ -201,7 +201,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
     }
 
     public class CsvFormat
-    {
+    { 
+        public virtual string CultureName { get; set; }
         public virtual int FormatNum { get; set; }
         public virtual string FormatName { get; set; }
 
@@ -244,6 +245,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             SkipLines = fmt.SkipLines;
             KeyName = fmt.KeyName;
             DefaultKeyName = fmt.DefaultKeyName;
+            CultureName = fmt.CultureName;
         }
 
         public virtual void LoadParentObject(IList<CsvFormatParentObject> parents)

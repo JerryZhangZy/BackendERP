@@ -20,7 +20,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected int NameIndex = 0;
         public CsvFormatMapper(CsvFormat fmt)
         {
-            
+
             Format = fmt;
             //AutoMap(CultureInfo.InvariantCulture);
             var props = ObjectSchema.GetProperties<T>();
@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             // get object format for current class type
             var parentObject = Format.ParentObject.FindByType(typeof(T));
-            if (parentObject == null || !parentObject.IsEnable) 
+            if (parentObject == null || !parentObject.IsEnable)
                 return this;
 
             foreach (var item in properties)
@@ -50,7 +50,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     continue;
 
                 var map = this.MemberMaps.FirstOrDefault(x =>
-                        !string.IsNullOrEmpty(x.Data.Names.Names.Find(x => 
+                        !string.IsNullOrEmpty(x.Data.Names.Names.Find(x =>
                                 !string.IsNullOrEmpty(x) && x.EqualsIgnoreSpace(name))));
                 if (map == null)
                     MapProperty(col, formatColoumn);
@@ -93,6 +93,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             // set N/A means null
             map.TypeConverterOption.NullValues("N/A");
+
+
+            map.TypeConverterOption.NumberStyles(NumberStyles.AllowCurrencySymbol | NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands);
 
             // set default from format
             if (!fmt.DefaultValue.IsZero())
