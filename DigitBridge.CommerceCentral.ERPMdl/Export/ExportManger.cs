@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var queueService = new QueueService();
-            success = await queueService.InQueueAsync(payload, erpEventType);
+            success = await queueService.ExportInfoInQueueAsync(payload, erpEventType);
             if (!success)
             {
                 this.Messages.Add(queueService.Messages);

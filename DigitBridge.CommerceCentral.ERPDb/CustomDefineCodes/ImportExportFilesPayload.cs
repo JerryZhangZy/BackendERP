@@ -28,6 +28,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class ImportExportFilesPayload : PayloadBase
     {
         /// <summary>
+        /// (Response Data) Uuid for this Export, this will be Azure Blob name.
+        /// </summary>
+        public string ExportUuid { get; set; }
+        public virtual bool HasExportUuid => !string.IsNullOrEmpty(ExportUuid);
+
+        /// <summary>
         /// (Request Data) Uuid for this Import batch, this will be Azure Blob name.
         /// </summary>
         public string ImportUuid { get; set; }
@@ -102,8 +108,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             Options.MasterAccountNum = this.MasterAccountNum;
             Options.ProfileNum = this.ProfileNum;
             Options.Filter = this.Filter;
+            Options.IsImport = !Options.ImportUuid.IsZero();
 
             ImportUuid = Options.ImportUuid;
+            ExportUuid = Options.ExportUuid;
+
             AddFiles(req.Form.Files);
             return true;
         }
@@ -129,6 +138,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         public string ImportUuid { get; set; }
         public virtual bool HasImportUuid => !string.IsNullOrEmpty(ImportUuid);
+
+        /// <summary>
+        /// (Response Data) Uuid for this Export, this will be Azure Blob name.
+        /// </summary>
+        public string ExportUuid { get; set; }
+        public virtual bool HasExportUuid => !string.IsNullOrEmpty(ExportUuid);
 
         /// <summary>
         /// (Request Data) Import data type of this Import batch.

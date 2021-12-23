@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             {
                 MasterAccountNum = message.MasterAccountNum,
                 ProfileNum = message.ProfileNum,
-                ImportUuid = message.ProcessUuid,
+                ExportUuid = message.ProcessUuid,
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new SalesOrderIOManager(dbFactory);

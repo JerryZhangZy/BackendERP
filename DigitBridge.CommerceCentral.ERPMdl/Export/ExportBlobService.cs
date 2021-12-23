@@ -48,19 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region save to blob
-        //public async Task<bool> SaveToBlobAsync(ImportExportFilesPayload payload)
-        //{
-        //    var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
-
-        //    // save options Blob
-        //    if (!(await SaveOptionsToBlobAsync(payload)))
-        //        return false;
-
-        //    // save options Blob
-        //    if (!(await SaveFilesToBlobAsync(payload)))
-        //        return false;
-        //    return true;
-        //}
+        
         public async Task<bool> SaveOptionsToBlobAsync(ImportExportFilesPayload payload)
         {
             if (!ValidateOptions(payload))
@@ -70,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             try
             {
-                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+                var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                 await blobContainer.UploadBlobAsync(OPTIONS_NAME, payload.Options.ObjectToString());
                 return true;
             }
@@ -110,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.ReturnError($"Export Options ProfileNum is required.");
                 validate = false;
             }
-            if (!payload.Options.HasImportUuid)
+            if (!payload.Options.HasExportUuid)
             {
                 payload.ReturnError($"Export Options exportUuid is required.");
                 validate = false;
@@ -118,6 +106,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return validate;
         }
+
+
+        //public async Task<bool> SaveToBlobAsync(ImportExportFilesPayload payload)
+        //{
+        //    var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
+
+        //    // save options Blob
+        //    if (!(await SaveOptionsToBlobAsync(payload)))
+        //        return false;
+
+        //    // save options Blob
+        //    if (!(await SaveFilesToBlobAsync(payload)))
+        //        return false;
+        //    return true;
+        //}
 
         protected async Task<bool> SaveFilesToBlobAsync(ImportExportFilesPayload payload)
         {
@@ -133,7 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!item.Key.EndsWith("csv") && !item.Key.EndsWith("txt")) continue;
                 try
                 {
-                    var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+                    var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                     await blobContainer.UploadBlobAsync(item.Key, item.Value);
                 }
                 catch (Exception e)
@@ -160,7 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             try
             {
-                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+                var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                 var optionJson = await blobContainer.DownloadBlobToStringAsync(OPTIONS_NAME);
                 if (string.IsNullOrWhiteSpace(optionJson))
                 {
@@ -178,7 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         protected async Task<bool> LoadFileNamesFromBlobAsync(ImportExportFilesPayload payload)
         {
-            var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+            var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
             var fileList = blobContainer.GetBlobList();
             if (fileList == null || fileList.Count == 0)
             {
@@ -211,7 +214,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             try
             {
-                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+                var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                 return await blobContainer.DownloadBlobAsync(fileName);
             }
             catch (Exception e)
@@ -228,7 +231,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             try
             {
-                var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+                var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                 await blobContainer.DownloadBlobAsync(fileName, stream);
                 stream.Position = 0;
                 return true;
