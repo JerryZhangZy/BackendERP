@@ -100,6 +100,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             Options.DatabaseNum = this.DatabaseNum;
             Options.MasterAccountNum = this.MasterAccountNum;
             Options.ProfileNum = this.ProfileNum;
+            Options.Filter = this.Filter;
 
             ImportUuid = Options.ImportUuid;
             AddFiles(req.Form.Files);
@@ -139,6 +140,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         public int FormatNumber { get; set; }
         public virtual bool HasFormatNumber => FormatNumber > 0;
+
+        /// <summary>
+        /// Export filter
+        /// </summary>
+        public JObject Filter { get; set; }
+        public virtual bool HasFilter => Filter != null;
     }
 
     [Serializable()]

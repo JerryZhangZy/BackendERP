@@ -8,17 +8,17 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class ImportManger : IMessage
+    public class ExportManger : IMessage
     {
         /// <summary>
-        /// Import file to blob and send message to queue
+        /// Send export request to blob and queue 
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="erpEventType"></param>
         /// <returns></returns>
         public async Task<bool> SendToBlobAndQueue(ImportExportFilesPayload payload, ErpEventType erpEventType)
         {
-            payload.Options.IsImport = true;
+            payload.Options.IsImport = false;
             var blobService = new ImportBlobService();
             var success = await blobService.SaveToBlobAsync(payload);
 
