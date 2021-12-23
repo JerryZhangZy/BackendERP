@@ -36,14 +36,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            List<PaidbyMapDataDto> list = new List<PaidbyMapDataDto>();
-            for (int i = 0; i < 10; i++)
-            {
-                var d = GetFakerData();
-                var dd = mapper.WriteDto(d, null);
-                list.Add(dd);
-            }
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(list);
 
             srv.Add(dto);
 
