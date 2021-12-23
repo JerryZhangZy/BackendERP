@@ -33,9 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportSalesOrderFiles(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true); 
 
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportSalesOrder);

@@ -28,10 +28,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class ImportExportFilesPayload : PayloadBase
     {
+
+        private string exportUuid;
+        [JsonIgnore]
         /// <summary>
         /// (Response Data) Uuid for this Export, this will be Azure Blob name.
         /// </summary>
-        public string ExportUuid { get; set; }
+        public string ExportUuid
+        {
+            get
+            {
+                if (exportUuid.IsZero())
+                    return Options?.ExportUuid;
+                return exportUuid;
+            }
+            set
+            { exportUuid = value; }
+        }
         public virtual bool HasExportUuid => !string.IsNullOrEmpty(ExportUuid);
 
         /// <summary>
@@ -76,11 +89,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-
+        private ImportExportOptions options;
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public ImportExportOptions Options { get; set; }
+        public ImportExportOptions Options
+        {
+            get
+            {
+                if (options != null)
+                {
+                    options.DatabaseNum = this.DatabaseNum;
+                    options.MasterAccountNum = this.MasterAccountNum;
+                    options.ProfileNum = this.ProfileNum;
+                }
+                return options;
+            }
+            set { options = value; }
+        }
         [JsonIgnore] public virtual bool HasOptions => Options != null;
         public bool ShouldSerializeOptions() => HasOptions;
 
@@ -110,16 +136,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
             if (Options == null)
-                return false;
-            Options.DatabaseNum = this.DatabaseNum;
-            Options.MasterAccountNum = this.MasterAccountNum;
-            Options.ProfileNum = this.ProfileNum;
-            Options.Filter = this.Filter;
-            Options.IsImport = !Options.ImportUuid.IsZero();
+                return false; 
 
             ImportUuid = Options.ImportUuid;
-            ExportUuid = Options.ExportUuid;
-
             AddFiles(req.Form.Files);
             return true;
         }
