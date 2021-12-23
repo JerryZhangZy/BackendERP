@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -126,6 +127,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasFields => Fields != null;
 
 
+
+
+        /// <summary>
+		/// Code description,
+		/// </summary>
+		[OpenApiPropertyDescription("ErpSetting")]
+        [Required]
+        public ErpSettingClass ErpSetting { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasErpSetting => ErpSetting != null;
+
+ 
         #endregion Properties - Generated 
 
         #region Children - Generated 

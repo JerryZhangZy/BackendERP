@@ -17,6 +17,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class SystemSetting
     {
+		 
+		private ErpSettingClass _erpSetting;
+		/// <summary>
+		/// Code description,
+		/// </summary>
+		public virtual ErpSettingClass ErpSetting
+		{
+			get
+			{
+				return _erpSetting;
+			}
+			set
+			{
+				_erpSetting = value;
+				OnPropertyChanged("ErpSetting", value);
+			}
+		}
+
 		public override SystemSetting ConvertDbFieldsToData()
 		{
 			base.ConvertDbFieldsToData();
