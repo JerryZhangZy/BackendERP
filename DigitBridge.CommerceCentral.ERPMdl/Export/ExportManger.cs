@@ -19,8 +19,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<bool> SendToBlobAndQueue(ImportExportFilesPayload payload, ErpEventType erpEventType)
         {
             payload.Options.IsImport = false;
-            var blobService = new ImportBlobService();
-            var success = await blobService.SaveToBlobAsync(payload);
+            var blobService = new ExportBlobService();
+            var success = await blobService.SaveOptionsToBlobAsync(payload);
 
             if (!success)
             {

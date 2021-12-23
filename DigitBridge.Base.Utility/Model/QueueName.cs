@@ -33,5 +33,17 @@ namespace DigitBridge.Base.Utility
         public const string Erp_Import_PurchaseOrder = "erp-import-purchaseorder";
         public const string Erp_Import_PoReceive = "erp-import-poreceive";
 
+        public const string Erp_Export_Customer = "erp-export-customer";
+        public const string Erp_Export_Inventory = "erp-export-inventory";
+        public const string Erp_Export_InventoryUpdate = "erp-export-inventoryupdate";
+        public const string Erp_Export_WarehouseTransfer = "erp-export-warehousetransfer";
+        public const string Erp_Export_SalesOrder = "erp-export-salesorder";
+        public const string Erp_Export_Shipment = "erp-export-shipment";
+        public const string Erp_Export_Invoice = "erp-export-invoice";
+        public const string Erp_Export_InvoicePayment = "erp-export-invoicepayment";
+        public const string Erp_Export_Vendor = "erp-export-vendor";
+        public const string Erp_Export_PurchaseOrder = "erp-export-purchaseorder";
+        public const string Erp_Export_PoReceive = "erp-export-poreceive";
+
     }
 }

@@ -191,7 +191,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         this.Messages.Add(payload.Messages);
                         continue;
-                    } 
+                    }
 
                     var dtos = await ImportAsync(ms);
                     if (dtos == null || dtos.Count == 0) continue;
@@ -199,7 +199,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
 
-            SetAccount(payload, dtoList); 
+            SetAccount(payload, dtoList);
 
             // Verify Dto and save dto to database
             var manager = SalesOrderManager;
@@ -280,6 +280,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SalesOrderIOCsv.ExportAllColumnsAsync(dtos);
         }
 
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            //TODO Write file to payload
+            return true;
+        }
     }
 }
 

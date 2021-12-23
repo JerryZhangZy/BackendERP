@@ -48,20 +48,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region save to blob
-        public async Task<bool> SaveToBlobAsync(ImportExportFilesPayload payload)
-        {
-            var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
+        //public async Task<bool> SaveToBlobAsync(ImportExportFilesPayload payload)
+        //{
+        //    var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
 
-            // save options Blob
-            if (!(await SaveOptionsToBlobAsync(payload)))
-                return false;
+        //    // save options Blob
+        //    if (!(await SaveOptionsToBlobAsync(payload)))
+        //        return false;
 
-            // save options Blob
-            if (!(await SaveFilesToBlobAsync(payload)))
-                return false;
-            return true;
-        }
-        protected async Task<bool> SaveOptionsToBlobAsync(ImportExportFilesPayload payload)
+        //    // save options Blob
+        //    if (!(await SaveFilesToBlobAsync(payload)))
+        //        return false;
+        //    return true;
+        //}
+        public async Task<bool> SaveOptionsToBlobAsync(ImportExportFilesPayload payload)
         {
             if (!ValidateOptions(payload))
             {
@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
-                payload.ReturnError($"Import Options save error. {e.Message}");
+                payload.ReturnError($"Export Options save error. {e.Message}");
                 return false;
             }
         }
@@ -85,37 +85,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!payload.HasOptions)
             {
-                payload.ReturnError($"Import Options is required.");
+                payload.ReturnError($"Export Options is required.");
                 return false;
             }
 
             var validate = true;
             if (!payload.Options.HasFormatType)
             {
-                payload.ReturnError($"Import Options FormatType is required.");
+                payload.ReturnError($"Export Options FormatType is required.");
                 validate = false;
             }
             if (!payload.Options.HasFormatNumber)
             {
-                payload.ReturnError($"Import Options FormatNumber is required.");
+                payload.ReturnError($"Export Options FormatNumber is required.");
                 validate = false;
             }
             if (!payload.Options.HasMasterAccountNum)
             {
-                payload.ReturnError($"Import Options MasterAccountNum is required.");
+                payload.ReturnError($"Export Options MasterAccountNum is required.");
                 validate = false;
             }
             if (!payload.Options.HasProfileNum)
             {
-                payload.ReturnError($"Import Options ProfileNum is required.");
+                payload.ReturnError($"Export Options ProfileNum is required.");
                 validate = false;
             }
             if (!payload.Options.HasImportUuid)
             {
-                payload.ReturnError($"Import Options ImportUuid is required.");
+                payload.ReturnError($"Export Options exportUuid is required.");
                 validate = false;
             }
-            
+
             return validate;
         }
 
@@ -123,7 +123,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload.ImportFiles == null || payload.ImportFiles.Count == 0)
             {
-                payload.ReturnError($"Import file is required.");
+                payload.ReturnError($"Export file is required.");
                 return false;
             }
 
@@ -138,7 +138,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 catch (Exception e)
                 {
-                    payload.ReturnError($"Import file {item.Key} save error. {e.Message}");
+                    payload.ReturnError($"Export file {item.Key} save error. {e.Message}");
                     return false;
                 }
             }
@@ -151,13 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region load from blob
         public async Task<bool> LoadFromBlobAsync(ImportExportFilesPayload payload)
         {
-            var blobContainer = await GetBlobContainerAsync(payload.ImportUuid);
-
-            // save options Blob
-            if (!(await LoadOptionsFromBlobAsync(payload)))
-                return false;
-
-            // save options Blob
+            // load file names from blob
             if (!(await LoadFileNamesFromBlobAsync(payload)))
                 return false;
             return true;
@@ -170,7 +164,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var optionJson = await blobContainer.DownloadBlobToStringAsync(OPTIONS_NAME);
                 if (string.IsNullOrWhiteSpace(optionJson))
                 {
-                    payload.ReturnError($"Import Options is required.");
+                    payload.ReturnError($"Export Options is required.");
                     return false;
                 }
                 payload.Options = optionJson.JsonToObject<ImportExportOptions>();
@@ -178,7 +172,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             catch (Exception e)
             {
-                payload.ReturnError($"Import Options save error. {e.Message}");
+                payload.ReturnError($"Export Options save error. {e.Message}");
                 return false;
             }
         }
@@ -188,7 +182,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var fileList = blobContainer.GetBlobList();
             if (fileList == null || fileList.Count == 0)
             {
-                payload.ReturnError($"Import files not found.");
+                payload.ReturnError($"Export files not found.");
                 return false;
             }
 
@@ -204,7 +198,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (payload.FileNames == null || payload.FileNames.Count == 0)
             {
-                payload.ReturnError($"Import files not found.");
+                payload.ReturnError($"Export files not found.");
                 return false;
             }
             return true;

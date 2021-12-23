@@ -40,6 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasImportFiles => ImportFiles != null && ImportFiles.Count > 0;
         public virtual ImportExportFilesPayload AddFiles(IFormFileCollection files)
         {
+            if (files == null) return this;
             ImportFiles = new Dictionary<string, byte[]>();
             foreach (var file in files)
             {

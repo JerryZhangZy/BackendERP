@@ -11,7 +11,5 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// The uuid of user request exporting salesorder  
         /// </summary>
         public string ProcessUuid { get; set; }
-
-        public int 
     }
 }
