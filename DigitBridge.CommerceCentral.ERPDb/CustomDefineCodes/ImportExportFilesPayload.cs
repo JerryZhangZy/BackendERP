@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <summary>
         /// (Response Data) List result which load filter.
         /// </summary>
-        public IList<FileContentResult> ExportFiles { get; set; }
+        public IDictionary<string, byte[]> ExportFiles { get; set; }
         [JsonIgnore] public virtual bool HasExportFiles => ExportFiles != null && ExportFiles.Count > 0;
 
         /// <summary>

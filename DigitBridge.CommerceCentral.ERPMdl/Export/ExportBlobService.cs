@@ -209,7 +209,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            payload.ExportFiles = new List<FileContentResult>();
+            payload.ExportFiles = new Dictionary<string, byte[]>();
             foreach (var fileName in fileList)
             {
                 if (string.IsNullOrWhiteSpace(fileName) ||
@@ -220,10 +220,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 try
                 {
                     var exportData = await blobContainer.DownloadBlobAsync(fileName);
-                    var downfile = new FileContentResult(exportData, "text/csv");
-                    downfile.FileDownloadName = fileName;
+                    //var downfile = new FileContentResult(exportData, "text/csv");
+                    //downfile.FileDownloadName = fileName;
 
-                    payload.ExportFiles.Add(downfile);
+                    payload.ExportFiles.Add(fileName, exportData);
                 }
                 catch (Exception e)
                 {

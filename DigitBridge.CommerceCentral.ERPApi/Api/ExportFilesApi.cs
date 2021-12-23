@@ -1,19 +1,15 @@
+using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using DigitBridge.Base.Utility;
-using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -35,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         #endregion swagger Doc
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportSalesOrderFiles(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "ExportFiles/salesorder")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/salesorder")] HttpRequest req)
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -58,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         #endregion swagger Doc
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> GetExportFiles(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "ExportFiles/result/{processUuid}")] HttpRequest req, string processUuid)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "exportFiles/result/{processUuid}")] HttpRequest req, string processUuid)
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             payload.ExportUuid = processUuid;
