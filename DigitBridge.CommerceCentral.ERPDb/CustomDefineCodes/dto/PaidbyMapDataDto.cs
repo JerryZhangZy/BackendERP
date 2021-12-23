@@ -54,6 +54,46 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
             return true;
         }
+
+        public override bool Equals(object obj)
+        {
+            PaidbyMapDataDto other = obj as PaidbyMapDataDto;
+            if (other is null)
+                return false;
+
+            if (PaidbyMap.ChannelNum.ToInt() != other.PaidbyMap.ChannelNum)
+                return false;
+            if (PaidbyMap.ChannelAccountNum.ToInt() != other.PaidbyMap.ChannelAccountNum)
+                return false;
+            if (string.Compare(PaidbyMap.ChannelPaidBy, other.PaidbyMap.ChannelPaidBy, true) != 0)
+                return false;
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return Tuple.Create<int, int, string>(
+                PaidbyMap.ChannelNum.ToInt(), 
+                PaidbyMap.ChannelAccountNum.ToInt(), 
+                PaidbyMap.ChannelPaidBy).GetHashCode();
+        }
+
+        public static bool operator == (PaidbyMapDataDto left, PaidbyMapDataDto right)
+        {
+            if (left is null || right is null)
+                return false;
+
+            return left.Equals(right);
+        }
+
+        public static bool operator != (PaidbyMapDataDto left, PaidbyMapDataDto right)
+        {
+            if (left is null && right is null)
+                return true;
+
+            return !left.Equals(right);
+        }
     }
 }
 

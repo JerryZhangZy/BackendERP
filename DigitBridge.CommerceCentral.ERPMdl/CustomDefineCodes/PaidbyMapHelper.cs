@@ -53,29 +53,6 @@ AND ProfileNum = @profileNum
             return result;
         }
 
-        public static async Task<bool> DeleteObsoleteData(int masterAccountNum, int profileNum, DateTime recentUpdateTime)
-        {
-            var sql = $@"
-DELETE FROM PaidbyMap
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND UpdateDateUtc < @recentUpdateTime
-";
-            try
-            {
-                await SqlQuery.ExecuteNonQueryAsync(sql,
-                    masterAccountNum.ToSqlParameter("masterAccountNum"),
-                    profileNum.ToSqlParameter("profileNum"),
-                    recentUpdateTime.ToSqlParameter("recentUpdateTime")
-                );
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 /*

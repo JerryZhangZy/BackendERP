@@ -13,6 +13,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPApi.Api
 {
@@ -32,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<PaidbyMapPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new PaidbyMapService(dbFactory);
-            payload.Success = await svc.GetPaidbyMaps(payload);
+            payload.Success = svc.GetPaidbyMaps(payload);
             payload.Messages = svc.Messages;
             return new JsonNetResponse<PaidbyMapPayload>(payload);
         }
@@ -52,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<PaidbyMapPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new PaidbyMapService(dbFactory);
-            await svc.UpdatePaidbyMaps(payload);
+            svc.UpdatePaidbyMaps(payload);
 
             return new JsonNetResponse<PaidbyMapPayload>(payload);
         }

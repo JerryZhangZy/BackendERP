@@ -423,12 +423,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
-        public async Task<bool> GetPaidbyMaps(PaidbyMapPayload payload)
+        List<PaidbyMapDataDto> GetPaidbyMapsData(int masterAccountNum, int profileNum)
         {
-            var listSrv = new PaidbyMapList(dbFactory, new PaidbyMapQuery());
             try
             {
-                await listSrv.GetPaidbyMapListAsync(payload);
+                NewData();
+                var result = Data.GetPaidbyMaps(masterAccountNum, profileNum);
+                return result.Select(r => DtoMapper.WriteDto(new PaidbyMapData { PaidbyMap = r }, new PaidbyMapDataDto())).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool GetPaidbyMaps(PaidbyMapPayload payload)
+        {
+            int masterAccountNum = payload.MasterAccountNum;
+            int profileNum = payload.ProfileNum;
+            List();
+
+            try
+            {
+                var list = GetPaidbyMapsData(masterAccountNum, profileNum);
+                payload.PaidbyMaps = list;
+                payload.Success = true;
                 return true;
             }
             catch (Exception ex)
@@ -438,43 +457,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        public async Task<bool> UpdatePaidbyMaps(PaidbyMapPayload payload)
+        public bool UpdatePaidbyMaps(PaidbyMapPayload payload)
         {
-            DateTime recentUpdateTime = DateTime.Now;
-
             int masterAccountNum = payload.MasterAccountNum;
             int profileNum = payload.ProfileNum;
-            List<PaidbyMapDataDto> successData = new List<PaidbyMapDataDto>();
-            var keys = await PaidbyMapHelper.GetPaidbyMapKeys(masterAccountNum, profileNum);
+            var paidbyMaps = GetPaidbyMapsData(masterAccountNum, profileNum);
 
-            foreach (var item in payload.PaidbyMaps)
+            try
             {
-                var paidbyMap = item.PaidbyMap;
-                paidbyMap.MasterAccountNum = masterAccountNum;
-                paidbyMap.ProfileNum = profileNum;
-                bool exist = keys.Any(k => item.EqualKey(k));
-
-                NewData();
-
-                try
+                foreach (var item in paidbyMaps)
                 {
-                    if (exist)
-                        await UpdateAsync(item);
+                    if (payload.PaidbyMaps.Contains(item))
+                    {
+                        Update(item);
+                        payload.PaidbyMaps.Remove(item);
+                    }
                     else
-                        await AddAsync(item);
+                    {
+                        Delete(item.PaidbyMap.RowNum.ToInt());
+                    }
+                }
 
-                    successData.Add(ToDto());
-                    payload.Success &= true;
-                }
-                catch (Exception ex)
+                foreach (var item in payload.PaidbyMaps)
                 {
-                    string handingItem = JsonConvert.SerializeObject(paidbyMap);
-                    payload.ReturnError($"Occured error when saving {Environment.NewLine} {handingItem} {Environment.NewLine} {ex.Message}");
+                    item.PaidbyMap.MasterAccountNum = payload.MasterAccountNum;
+                    item.PaidbyMap.ProfileNum = payload.ProfileNum;
+                    Add(item);
                 }
+
+                payload.Success = true;
+                payload.PaidbyMaps = GetPaidbyMapsData(masterAccountNum, profileNum);
             }
-            payload.PaidbyMaps = successData;
-            //await PaidbyMapHelper.DeleteObsoleteData(masterAccountNum, profileNum, recentUpdateTime);
-            await DeleteObsoleteData(masterAccountNum, profileNum, recentUpdateTime);
+            catch (Exception ex)
+            {
+                payload.ReturnError(ex.Message);
+            }
 
             return payload.Success;
         }
