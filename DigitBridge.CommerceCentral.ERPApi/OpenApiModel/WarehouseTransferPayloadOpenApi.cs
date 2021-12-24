@@ -135,7 +135,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public class WarehouseTransferFilter
     {
         public string SKU { get; set; }
-        public string WarehouseCode { get; set; }
         public string WarehouseTransferType { get; set; }
         public string BatchNumberFrom { get; set; }
         public string BatchNumberTo { get; set; }
@@ -151,7 +150,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             #region faker data rules
             return new Faker<WarehouseTransferFilter>()
                 .RuleFor(u => u.SKU, f => "")
-                .RuleFor(u => u.WarehouseCode, f => "")
                 .RuleFor(u => u.WarehouseTransferType, f => "")
                 .RuleFor(u => u.BatchNumberFrom, f => "")
                 .RuleFor(u => u.BatchNumberTo, f => "")
