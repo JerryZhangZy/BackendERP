@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +39,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region Service Property
+
+        [XmlIgnore, JsonIgnore]
+        protected CustomerService _CustomerService;
+        [XmlIgnore, JsonIgnore]
+        public CustomerService CustomerService
+        {
+            get
+            {
+                if (_CustomerService is null)
+                    _CustomerService = new CustomerService(dbFactory);
+                return _CustomerService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected CustomerList _CustomerList;
+        [XmlIgnore, JsonIgnore]
+        public CustomerList CustomerList
+        {
+            get
+            {
+                if (_CustomerList is null)
+                    _CustomerList = new CustomerList(dbFactory);
+                return _CustomerList;
+            }
+        }
+
         [XmlIgnore, JsonIgnore]
         protected ImportBlobService _ImportBlobService;
         [XmlIgnore, JsonIgnore]
@@ -49,7 +78,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _ImportBlobService;
             }
         }
-
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
         [XmlIgnore, JsonIgnore]
         protected CustomIOFormatService _CustomIOFormatService;
         [XmlIgnore, JsonIgnore]
@@ -242,7 +282,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await CustomerIOCsv.ExportAsync(dtos);
         }
-
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<CustomerDataDto> soDatas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await CustomerIOCsv.ExportAsync(soDatas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options) , files);
+            return true;
+        }
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
         /// </summary>
@@ -251,6 +298,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dtos == null || dtos.Count == 0)
                 return null;
             return await CustomerIOCsv.ExportAllColumnsAsync(dtos);
+        }
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
+
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query salesorder list
+            var soDatas = await GetCustomerDatasAsync(payload);
+            if (soDatas == null)
+            {
+                AddError("Get sales order datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, soDatas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<CustomerDataDto>> GetCustomerDatasAsync(ImportExportFilesPayload payload)
+        {
+            var soPayload = new CustomerPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await CustomerList.GetCustomerListAsync(soPayload);
+            if (!soPayload.Success)
+            {
+                this.Messages.Add(CustomerList.Messages);
+                return null;
+            }
+
+            var json = soPayload.CustomerList.ToString();
+            if (json.IsZero()) return new List<CustomerDataDto>();
+
+            var queryResult = JArray.Parse(soPayload.CustomerList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await CustomerService.GetCustomerDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if ( int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMddhhmmss") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
         }
         #endregion export
 

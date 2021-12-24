@@ -21,20 +21,20 @@ namespace DigitBridge.CommerceCentral.ERPBroker
     [ApiFilter(typeof(ExportBroker))]
     public static class ExportBroker
     {
-        //[FunctionName("ExportCustomer")]
-        //public static async Task ExportCustomer([QueueTrigger(QueueName.Erp_Export_Customer)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new CustomerIOManager(dbFactory);
-        //    await service.ExportAsync(payload);
-        //}
+        [FunctionName("ExportCustomer")]
+        public static async Task ExportCustomer([QueueTrigger(QueueName.Erp_Export_Customer)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new CustomerIOManager(dbFactory);
+            await service.ExportAsync(payload);
+        }
         //[FunctionName("ExportVendor")]
         //public static async Task ExportVendor([QueueTrigger(QueueName.Erp_Export_Vendor)] string myQueueItem, ILogger log)
         //{
@@ -99,27 +99,27 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
 
 
-        /// <summary>
-        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to salesorder data.
-        /// </summary>
-        /// <param name="myQueueItem"></param>
-        /// <param name="log"></param>
-        /// <returns></returns>
-        [FunctionName("ExportSalesOrderFiles")]
-        public static async Task ExportSalesOrderFiles([QueueTrigger(QueueName.Erp_Export_SalesOrder)] string myQueueItem, ILogger log)
-        {
-            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-            var payload = new ImportExportFilesPayload()
-            {
-                MasterAccountNum = message.MasterAccountNum,
-                ProfileNum = message.ProfileNum,
-                ExportUuid = message.ProcessUuid,
-            };
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var service = new SalesOrderIOManager(dbFactory);
-            var success = await service.ExportAsync(payload);
-            // TODO if false write error to log.
-        }
+        ///// <summary>
+        ///// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to salesorder data.
+        ///// </summary>
+        ///// <param name="myQueueItem"></param>
+        ///// <param name="log"></param>
+        ///// <returns></returns>
+        //[FunctionName("ExportSalesOrderFiles")]
+        //public static async Task ExportSalesOrderFiles([QueueTrigger(QueueName.Erp_Export_SalesOrder)] string myQueueItem, ILogger log)
+        //{
+        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+        //    var payload = new ImportExportFilesPayload()
+        //    {
+        //        MasterAccountNum = message.MasterAccountNum,
+        //        ProfileNum = message.ProfileNum,
+        //        ExportUuid = message.ProcessUuid,
+        //    };
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var service = new SalesOrderIOManager(dbFactory);
+        //    var success = await service.ExportAsync(payload);
+        //    // TODO if false write error to log.
+        //}
 
         ///// <summary>
         ///// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to inventory data.
