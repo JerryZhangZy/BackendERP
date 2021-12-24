@@ -295,7 +295,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await SalesOrderIOCsv.ExportAsync(dtos);
         }
-        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<SalesOrderData> soDatas)
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<SalesOrderDataDto> soDatas)
         {
             payload.ExportFiles = new Dictionary<string, byte[]>();
             var files = await SalesOrderIOCsv.ExportAsync(soDatas);
@@ -351,7 +351,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await ExportBlobService.SaveFilesToBlobAsync(payload);
         }
 
-        protected async Task<IList<SalesOrderData>> GetSalesOrderDatasAsync(ImportExportFilesPayload payload)
+        protected async Task<IList<SalesOrderDataDto>> GetSalesOrderDatasAsync(ImportExportFilesPayload payload)
         {
             var soPayload = new SalesOrderPayload()
             {
@@ -371,12 +371,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var json = soPayload.SalesOrderList.ToString();
-            if (json.IsZero()) return new List<SalesOrderData>();
+            if (json.IsZero()) return new List<SalesOrderDataDto>();
 
             var queryResult = JArray.Parse(soPayload.SalesOrderList.ToString());
             var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
 
-            return await SalesOrderService.GetSalesOrderDatasAsync(rownums);
+            return await SalesOrderService.GetSalesOrderDtosAsync(rownums);
         }
     }
 }

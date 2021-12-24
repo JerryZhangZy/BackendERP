@@ -951,13 +951,13 @@ AND OrderStatus !=@2
 
         #endregion
 
-        public async Task<IList<SalesOrderData>> GetSalesOrderDatasAsync(IList<long> rownums)
+        public async Task<IList<SalesOrderDataDto>> GetSalesOrderDtosAsync(IList<long> rownums)
         {
             if (rownums == null)
                 return null;
 
             List();
-            var datas = new List<SalesOrderData>();
+            var datas = new List<SalesOrderDataDto>();
             foreach (var rownum in rownums)
             {
                 if (!await GetDataAsync(rownum))
@@ -966,7 +966,7 @@ AND OrderStatus !=@2
                 }
                 else
                 {
-                    datas.Add(Data);
+                    datas.Add(this.ToDto());
                     this.DetachData(this.Data);
                 }
             }
