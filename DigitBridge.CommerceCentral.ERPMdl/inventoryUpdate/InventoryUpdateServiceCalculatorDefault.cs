@@ -197,9 +197,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 int masterAccountNum = data.InventoryUpdateHeader.MasterAccountNum;
                 int profileNum = data.InventoryUpdateHeader.ProfileNum;
+                using var trx = new ScopedTransaction(dbFactory);
                 item.InventoryUuid = InventoryHelper.GetInventoryUKBySkuAndWarehouseCode(masterAccountNum, profileNum, item.SKU, item.WarehouseCode);
             }
-            var inv = GetInventory(data, item.ProductUuid, item.InventoryUuid);
+            var inv = inventoryService.GetInventoryByInventoryUuid(item.InventoryUuid);
             if (item.ItemDate.IsZero()) item.ItemDate = DateTime.UtcNow.Date;
             if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;
             item.LotNum = inv.LotNum;
