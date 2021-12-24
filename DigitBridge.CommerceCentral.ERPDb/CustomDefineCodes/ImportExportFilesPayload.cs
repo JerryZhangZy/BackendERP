@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <summary>
         /// (Response Data) List result which load filter.
         /// </summary>
-        public IDictionary<string, byte[]> ExportFiles { get; set; }
+        [JsonIgnore] public IDictionary<string, byte[]> ExportFiles { get; set; }
         [JsonIgnore] public virtual bool HasExportFiles => ExportFiles != null && ExportFiles.Count > 0;
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
             if (Options == null)
-                return false; 
+                return false;
 
             ImportUuid = Options.ImportUuid;
             AddFiles(req.Form.Files);
