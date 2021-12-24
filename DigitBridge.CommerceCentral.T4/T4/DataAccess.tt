@@ -84,8 +84,9 @@
 //SettingForEventProcessERP
 //SettingForPaidbyMap
 //SettingForShippingCodes
+//SettingForBusinessType
 #>
-<#@ include file="SettingForShippingCodes.ttinclude" #>
+<#@ include file="SettingForBusinessType.ttinclude" #>
 <#
     var dtoSuf = "";
     //var GenerateNewName = string.Empty;
