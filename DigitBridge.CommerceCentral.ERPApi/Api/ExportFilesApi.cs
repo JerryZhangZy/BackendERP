@@ -15,7 +15,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 {
 
     /// <summary>
-    /// Process salesorder
+    /// Export files
     /// </summary> 
     [ApiFilter(typeof(ExportFilesApi))]
     public static class ExportFilesApi
