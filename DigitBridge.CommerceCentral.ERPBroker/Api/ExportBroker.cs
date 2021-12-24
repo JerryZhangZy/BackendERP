@@ -21,35 +21,35 @@ namespace DigitBridge.CommerceCentral.ERPBroker
     [ApiFilter(typeof(ExportBroker))]
     public static class ExportBroker
     {
-        //[FunctionName("ExportCustomer")]
-        //public static async Task ExportCustomer([QueueTrigger(QueueName.Erp_Export_Customer)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new CustomerIOManager(dbFactory);
-        //    await service.ExportAsync(payload);
-        //}
+        [FunctionName("ExportCustomer")]
+        public static async Task ExportCustomer([QueueTrigger(QueueName.Erp_Export_Customer)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new CustomerIOManager(dbFactory);
+            await service.ExportAsync(payload);
+        }
 
-        //[FunctionName("ExportVendor")]
-        //public static async Task ExportVendor([QueueTrigger(QueueName.Erp_Export_Vendor)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new VendorIOManager(dbFactory);
-        //    await service.ExportAsync(payload);
-        //}
+        [FunctionName("ExportVendor")]
+        public static async Task ExportVendor([QueueTrigger(QueueName.Erp_Export_Vendor)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new VendorIOManager(dbFactory);
+            await service.ExportAsync(payload);
+        }
 
         [FunctionName("ExportWarehouseTransfer")]
         public static async Task ExportWarehouseTransfer([QueueTrigger(QueueName.Erp_Export_WarehouseTransfer)] string myQueueItem, ILogger log)
