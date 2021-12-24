@@ -30,6 +30,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 MasterAccountNum = 10001,
                 ProfileNum = 10001
             });
+
+            //TODO Load this from db.
+
             //payloadList.Add(new PayloadBase()
             //{
             //    MasterAccountNum = 10001,
