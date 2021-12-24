@@ -329,8 +329,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = databaseNum,
                 MasterAccountNum = masterAccountNum,
                 ProfileNum = profileNum,
-                SystemSettingUuid = Guid.NewGuid().ToString(),
-                Fields = new Newtonsoft.Json.Linq.JObject()
+                //SystemSettingUuid = Guid.NewGuid().ToString(),
+                //Fields = new Newtonsoft.Json.Linq.JObject()
             };
         }
 
