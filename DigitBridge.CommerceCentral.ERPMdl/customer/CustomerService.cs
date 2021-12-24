@@ -638,7 +638,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (!await GetDataAsync(rownum))
                 {
-                    AddError($"Get sales order by rownum error, rownum:{rownum}");
+                    AddError($"Get WarehouseTransfer by rownum error, rownum:{rownum}");
                 }
                 else
                 {

@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +39,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region Service Property
+
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
+
         [XmlIgnore, JsonIgnore]
         protected ImportBlobService _ImportBlobService;
         [XmlIgnore, JsonIgnore]
@@ -62,6 +78,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _CustomIOFormatService;
             }
         }
+
+        [XmlIgnore, JsonIgnore]
+        protected VendorList _VendorList;
+        [XmlIgnore, JsonIgnore]
+        public VendorList VendorList
+        {
+            get
+            {
+                if (_VendorList is null)
+                    _VendorList = new VendorList(dbFactory);
+                return _VendorList;
+            }
+        }
+       
 
         [XmlIgnore, JsonIgnore]
         protected VendorManager _VendorManager;
@@ -247,6 +277,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion import 
 
         #region export
+
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<VendorDataDto> datas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await VendorIOCsv.ExportAsync(datas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
+            return true;
+        }
+
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
@@ -266,8 +306,85 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await VendorIOCsv.ExportAllColumnsAsync(dtos);
         }
+
+
+
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
+
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query salesorder list
+            var soDatas = await GetVendorDatasAsync(payload);
+            if (soDatas == null)
+            {
+                AddError("Get vendor datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, soDatas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<VendorDataDto>> GetVendorDatasAsync(ImportExportFilesPayload payload)
+        {
+            var vendorPayload = new VendorPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await VendorList.GetVendorListAsync(vendorPayload);
+            if (!vendorPayload.Success)
+            {
+                this.Messages.Add(VendorList.Messages);
+                return null;
+            }
+
+            var json = vendorPayload.VendorList.ToString();
+            if (json.IsZero()) return new List<VendorDataDto>();
+
+            var queryResult = JArray.Parse(vendorPayload.VendorList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await VendorService.GetVendorDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
+        }
         #endregion export
-       
+
 
     }
 }
