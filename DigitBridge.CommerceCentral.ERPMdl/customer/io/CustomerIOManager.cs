@@ -369,7 +369,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if ( int.TryParse(importExportOptions.FormatType, out int formatType))
             {
                 ActivityLogType activityLogType = (ActivityLogType)formatType;
-                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMddhhmmss") + ".csv";
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
             }
             return importExportOptions.ExportUuid + ".csv";
         }
