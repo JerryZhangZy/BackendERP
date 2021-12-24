@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             if (summary == null)
             {
                 payload.Success = false;
-                payload.Messages.Add(new MessageClass("Summary is not initializatied"));
+                payload.Messages.Add(new MessageClass("Company Summary is not initializatied"));
 
                 //TODO:
             }
