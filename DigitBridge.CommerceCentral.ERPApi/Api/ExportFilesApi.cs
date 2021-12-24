@@ -3,6 +3,7 @@ using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -33,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportSalesOrderFiles(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>(true); 
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
 
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportSalesOrder);
@@ -41,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
+
 
         [FunctionName(nameof(GetExportFiles))]
         #region swagger Doc
@@ -51,18 +53,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "processUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "processUuid", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         #endregion swagger Doc
-        public static async Task<JsonNetResponse<ImportExportFilesPayload>> GetExportFiles(
+        public static async Task<FileContentResult> GetExportFiles(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "exportFiles/result/{processUuid}")] HttpRequest req, string processUuid)
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             payload.ExportUuid = processUuid;
 
             var svc = new ExportBlobService();
-            payload.Success = await svc.LoadFilesFromBlobAsync(payload);
-            payload.Messages = svc.Messages;
-
-            return new JsonNetResponse<ImportExportFilesPayload>(payload);
-        }  
+            return await svc.DownloadFileFromBlobAsync(payload);
+        }
     }
 }
 

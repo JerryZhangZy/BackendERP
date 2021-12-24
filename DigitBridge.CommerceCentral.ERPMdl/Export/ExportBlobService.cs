@@ -10,6 +10,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -138,13 +139,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         #region load from blob
-        public async Task<bool> LoadFromBlobAsync(ImportExportFilesPayload payload)
-        {
-            // load file names from blob
-            if (!(await LoadFileNamesFromBlobAsync(payload)))
-                return false;
-            return true;
-        }
+
         public async Task<bool> LoadOptionsFromBlobAsync(ImportExportFilesPayload payload)
         {
             try
@@ -165,35 +160,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
         }
-        protected async Task<bool> LoadFileNamesFromBlobAsync(ImportExportFilesPayload payload)
+
+        public async Task<FileContentResult> DownloadFileFromBlobAsync(ImportExportFilesPayload payload)
         {
-            var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
-            var fileList = blobContainer.GetBlobList();
-            if (fileList == null || fileList.Count == 0)
-            {
-                AddError($"Export files not found.");
-                return false;
-            }
+            if (!await LoadFilesFromBlobAsync(payload))
+                return null;
 
-            payload.FileNames = new List<string>();
-            foreach (var fileName in fileList)
-            {
-                if (string.IsNullOrWhiteSpace(fileName) ||
-                    fileName.EqualsIgnoreSpace(OPTIONS_NAME) ||
-                    fileName.EqualsIgnoreSpace(RESULT_NAME)
-                    ) continue;
-                payload.AddFileName(fileName);
-            }
+            if (!payload.HasExportFiles)
+                return null;
 
-            if (payload.FileNames == null || payload.FileNames.Count == 0)
-            {
-                AddError($"Export files not found.");
-                return false;
-            }
-            return true;
+            var exportFileInfo = payload.ExportFiles.FirstOrDefault();
+            var downfile = new FileContentResult(exportFileInfo.Value, "text/csv");
+            downfile.FileDownloadName = exportFileInfo.Key;
+            return downfile;
         }
 
-        public async Task<bool> LoadFilesFromBlobAsync(ImportExportFilesPayload payload)
+        protected async Task<bool> LoadFilesFromBlobAsync(ImportExportFilesPayload payload)
         {
             if (!payload.HasExportUuid)
             {
@@ -220,9 +202,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 try
                 {
                     var exportData = await blobContainer.DownloadBlobAsync(fileName);
-                    //var downfile = new FileContentResult(exportData, "text/csv");
-                    //downfile.FileDownloadName = fileName;
-
                     payload.ExportFiles.Add(fileName, exportData);
                 }
                 catch (Exception e)
