@@ -82,8 +82,10 @@
 //SettingForPoTransaction
 //SettingForApTransaction
 //SettingForEventProcessERP
+//SettingForPaidbyMap
+//SettingForShippingCodes
 #>
-<#@ include file="SettingForWarehouseTransfer.ttinclude" #>
+<#@ include file="SettingForShippingCodes.ttinclude" #>
 <#
     var dtoSuf = "";
     //var GenerateNewName = string.Empty;
