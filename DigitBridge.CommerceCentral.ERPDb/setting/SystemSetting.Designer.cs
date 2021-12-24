@@ -317,19 +317,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-		public override SystemSetting ConvertDbFieldsToData()
-		{
-			base.ConvertDbFieldsToData();
-			Fields.LoadFromValueString(JsonFields);
-			return this;
-		}
-		public override SystemSetting ConvertDataFieldsToDb()
-		{
-			base.ConvertDataFieldsToDb();
-			JsonFields = Fields.ToValueString();
-			UpdateDateUtc =DateTime.UtcNow;
-			return this;
-		}
+	
 
         #endregion Methods - Generated 
     }

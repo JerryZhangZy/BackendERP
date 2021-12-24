@@ -350,7 +350,7 @@ AND NOT EXISTS (SELECT * FROM Inventory i WHERE i.ProductUuid = prd.ProductUuid)
                 var prepare = new InventoryDtoPrepareDefault(inventoryService);
                 if (!(await prepare.PrepareDtoAsync(dto))) continue;
 
-                if (!await inventoryService.AddAsync(dto))
+                if (!await inventoryService.AddWithoutValidateAsync(dto))
                 {
                     success = false;
                     AddError($"Add inventory failed, product sku {dto.ProductBasic.SKU}");

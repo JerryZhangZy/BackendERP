@@ -94,16 +94,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (maxNumber.ToLong() <= 0)
                 return true;
 
-            string sql = "Update   InitNumbers Set MaxNumber=@0 where MasterAccountNum=@1 and ProfileNum=@2 and Type=@3 and MaxNumber<@0";
-               
-            
-                return (await dbFactory.Db.ExecuteAsync(sql,
-                      maxNumber.ToLong().ToSqlParameter("@0"),
-                  masterAccountNum.ToSqlParameter("@1"),
-                  profileNum.ToSqlParameter("@2"),
-                     ((int)activityLogType).ToString().ToSqlParameter("@3")
-                  )) == 1;
+            var find = new InitNumbersFindClass()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                Type= ((int)activityLogType).ToString()
+            };
+
+            if (!await GetInitNumberByInitNumberFindAsync(find))
+            {
+                AddError("Not found InitNumber Setting");
+                return false;
+            }
+
+            if (maxNumber.Length == this._data.InitNumbers.Number.ToString().Length&&maxNumber.ToLong()> this._data.InitNumbers.MaxNumber.ToLong())
+            {
+ 
+                this._data.InitNumbers.MaxNumber = maxNumber.ToLong();
+               return await SaveDataAsync();
+
+            }
+
+            return true;
+
         }
+
+
+
         public   bool UpdateMaxNumber(int masterAccountNum, int profileNum, ActivityLogType activityLogType, string maxNumber)
         {
             if (maxNumber.ToLong() <= 0)
@@ -119,12 +136,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                  ((int)activityLogType).ToString().ToSqlParameter("@3")
               )) == 1;
         }
+        /// <summary>
+        /// Get CustomerData by CustomerFindClass
+        /// </summary>
+        public async Task<bool> GetInitNumberByInitNumberFindAsync(InitNumbersFindClass find)
+        {
+            if (find == null)
+                return false;
+
+            Edit();
+            var rowNum = await GetRowNumByInitNumberFindAsync(find);
+            if (rowNum == 0)
+                return false;
+            return await GetDataAsync(rowNum);
+        }
+        public virtual async Task<long> GetRowNumByInitNumberFindAsync(InitNumbersFindClass find)
+        {
+            if (find == null)
+                return 0;
+
+            var sql = $@"
+                SELECT  
+                COALESCE(
+                    (SELECT TOP 1 RowNum FROM InitNumbers WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Type=@2 AND Type!=''),
+                    0
+                )
+            ";
+            return (await dbFactory.GetValueAsync<InitNumbers, long?>(
+                    sql,
+                    find.MasterAccountNum,      //0
+                    find.ProfileNum,            //1
+                    find.Type
+                )).ToLong();
+        }
 
         #endregion
 
 
-      
- 
+
+
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, string currentNumber)
         {
           
