@@ -335,6 +335,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result;
         }
 
+        public async Task<bool> AddWithoutValidateAsync(InventoryDataDto dto)
+        {
+            if (dto is null)
+                return false;
+            // set Add mode and clear data
+            Add();
+
+            // load data from dto
+            FromDto(dto);
+
+            return await SaveDataAsync();
+        }
+
         /// <summary>
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.

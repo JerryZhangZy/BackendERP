@@ -58,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ImportCsvAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_2.csv";
+            var fileName = "c:\\temp\\inventoryUpdate.csv";
             var service = new InventoryUpdateIOManager(DataBaseFactory);
             IList<InventoryUpdateDataDto> data;
 
@@ -145,16 +145,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExportAllColumnsAsync_Test()
         {
-            var fileName = "c:\\temp\\Dto_3.csv";
+            var fileName = "c:\\temp\\inventoryUpdate.csv";
             var service = new InventoryUpdateIOManager(DataBaseFactory);
             IList<InventoryUpdateDataDto> dtos = new List<InventoryUpdateDataDto>();
             var InventoryUpdateService = new InventoryUpdateService(DataBaseFactory);
-            if (InventoryUpdateService.List("9027ebbd-a022-434e-965d-adb20cc27dac"))
+            if (InventoryUpdateService.List("7e83efa6-f3d3-4d83-a3bc-75e6c65e08fa"))
                 dtos.Add(InventoryUpdateService.ToDto());
-            if (InventoryUpdateService.List("117227d4-43cc-476c-9257-29695d08fdd1"))
+            if (InventoryUpdateService.List("2995871a-62b2-44c1-94a8-d2eb34134558"))
                 dtos.Add(InventoryUpdateService.ToDto());
-            if (InventoryUpdateService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
-                dtos.Add(InventoryUpdateService.ToDto());
+            //if (InventoryUpdateService.List("22da3dbb-6d02-4852-a2b8-04c380b36dd6"))
+            //    dtos.Add(InventoryUpdateService.ToDto());
 
             try
             {
