@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -50,7 +52,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _ImportBlobService;
             }
         }
-
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
         [XmlIgnore, JsonIgnore]
         protected SalesOrderService _SalesOrderService;
         [XmlIgnore, JsonIgnore]
@@ -61,6 +74,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (_SalesOrderService is null)
                     _SalesOrderService = new SalesOrderService(dbFactory);
                 return _SalesOrderService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected SalesOrderList _SalesOrderList;
+        [XmlIgnore, JsonIgnore]
+        public SalesOrderList SalesOrderList
+        {
+            get
+            {
+                if (_SalesOrderList is null)
+                    _SalesOrderList = new SalesOrderList(dbFactory);
+                return _SalesOrderList;
             }
         }
 
@@ -191,7 +217,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         this.Messages.Add(payload.Messages);
                         continue;
-                    } 
+                    }
 
                     var dtos = await ImportAsync(ms);
                     if (dtos == null || dtos.Count == 0) continue;
@@ -199,7 +225,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
 
-            SetAccount(payload, dtoList); 
+            SetAccount(payload, dtoList);
 
             // Verify Dto and save dto to database
             var manager = SalesOrderManager;
@@ -269,6 +295,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await SalesOrderIOCsv.ExportAsync(dtos);
         }
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<SalesOrderDataDto> soDatas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await SalesOrderIOCsv.ExportAsync(soDatas);
+            payload.ExportFiles.Add(payload.ExportUuid + ".cvs", files);
+            return true;
+        }
 
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
@@ -280,6 +313,71 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SalesOrderIOCsv.ExportAllColumnsAsync(dtos);
         }
 
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ImportUuid))
+                return false;
+
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query salesorder list
+            var soDatas = await GetSalesOrderDatasAsync(payload);
+            if (soDatas == null)
+            {
+                AddError("Get sales order datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, soDatas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+
+        protected async Task<IList<SalesOrderDataDto>> GetSalesOrderDatasAsync(ImportExportFilesPayload payload)
+        {
+            var soPayload = new SalesOrderPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await SalesOrderList.GetSalesOrderListAsync(soPayload);
+            if (!soPayload.Success)
+            {
+                this.Messages.Add(SalesOrderList.Messages);
+                return null;
+            }
+
+            var json = soPayload.SalesOrderList.ToString();
+            if (json.IsZero()) return new List<SalesOrderDataDto>();
+
+            var queryResult = JArray.Parse(soPayload.SalesOrderList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await SalesOrderService.GetSalesOrderDtosAsync(rownums);
+        }
     }
 }
 

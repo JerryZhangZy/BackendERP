@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get => MySingletonAppSetting.AzureWebJobsStorage;
         }
 
-        public async Task<bool> InQueueAsync(ImportExportFilesPayload payload, ErpEventType erpEventType)
+        public async Task<bool> ImportInfoInQueueAsync(ImportExportFilesPayload payload, ErpEventType erpEventType)
         {
             try
             {
@@ -27,6 +27,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     ProfileNum = payload.ProfileNum,
                     DatabaseNum = payload.DatabaseNum,
                     ProcessUuid = payload.ImportUuid,
+                    ERPEventType = erpEventType,
+                };
+                var queueName = message.ERPEventType.GetErpEventQueueName();
+                await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, ConnectionString, message);
+                return true;
+            }
+            catch (Exception e)
+            {
+                AddError(e.ObjectToString());
+                return false;
+            }
+        }
+        public async Task<bool> ExportInfoInQueueAsync(ImportExportFilesPayload payload, ErpEventType erpEventType)
+        {
+            try
+            {
+                var message = new ERPQueueMessage()
+                {
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    DatabaseNum = payload.DatabaseNum,
+                    ProcessUuid = payload.ExportUuid,
                     ERPEventType = erpEventType,
                 };
                 var queueName = message.ERPEventType.GetErpEventQueueName();

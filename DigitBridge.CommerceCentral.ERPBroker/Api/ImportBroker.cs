@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPBroker
 {
-    [ApiFilter(typeof(ShipmentBroker))]
+    [ApiFilter(typeof(ImportBroker))]
     public static class ImportBroker
     {
         [FunctionName("ImportCustomer")]

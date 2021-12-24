@@ -198,7 +198,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // export header and value lines
             return await ExportAsync(lines, headers);
         }
-
+        
         /// <summary>
         /// Build header text list by Format define, this will combine multiple object to one line
         /// </summary>
