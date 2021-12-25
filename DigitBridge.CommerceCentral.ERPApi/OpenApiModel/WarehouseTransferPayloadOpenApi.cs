@@ -134,6 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     }
     public class WarehouseTransferFilter
     {
+        public string SKU { get; set; }
         public string BatchNumberFrom { get; set; }
         public string BatchNumberTo { get; set; }
         public DateTime TransferDateFrom { get; set; }
