@@ -27,3 +27,13 @@ CREATE NONCLUSTERED INDEX [IX_Inventory_ProductUuid] ON [dbo].[Inventory]
 	[ProductUuid] ASC
 ) 
 GO
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_MANPN_SKU')
+CREATE NONCLUSTERED INDEX [IX_Inventory_MANPN_SKU] ON [dbo].[Inventory]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SKU] ASC
+) 
+GO
