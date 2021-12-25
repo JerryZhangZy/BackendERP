@@ -534,11 +534,27 @@ where inv.InventoryUuid=il.InventoryUuid
             var add_minus = "+";
             if (isAdd < 0) add_minus = "-";
             var sql = $@"
-update Inventory 
-set Instock=inv.Instock {add_minus} il.Qty 
-from Inventory inv ,
-(select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid=@0 group by InventoryUuid) il 
-where inv.InventoryUuid=il.InventoryUuid
+--update Inventory 
+--set Instock=inv.Instock {add_minus} il.Qty 
+--from Inventory inv ,
+--(select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid=@0 group by InventoryUuid) il 
+--where inv.InventoryUuid=il.InventoryUuid
+
+
+--declare @0 varchar(50)='fbdfa48d-587c-4be0-a52f-2026e4cd0d50';
+select InventoryUuid,sum(coalesce(LogQty,0)) as Qty 
+into #tmp
+from InventoryLog 
+where LogUuid=@0 
+group by InventoryUuid   
+
+--if tmp data is large ,can add index to this table
+--CREATE INDEX IX_#tmp ON #tmp(InventoryUuid)
+
+update inv 
+set Instock=inv.Instock {add_minus} tmp.Qty 
+from Inventory inv   
+join #tmp tmp on tmp.InventoryUuid=inv.InventoryUuid 
 ";
             await dbFactory.Db.ExecuteAsync(sql, logUuid.ToSqlParameter("LogUuid"));
         }
