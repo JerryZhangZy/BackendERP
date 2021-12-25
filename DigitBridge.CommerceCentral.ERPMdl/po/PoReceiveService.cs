@@ -680,7 +680,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await this.AddAsync(payload);
             #endregion
         }
+        public async Task<IList<PoTransactionDataDto>> GetPoReceiveDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
 
+            List();
+            var datas = new List<PoTransactionDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get PoReceive by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
 
         public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string transUuid)
         {

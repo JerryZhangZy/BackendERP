@@ -319,7 +319,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var soDatas = await GetCustomerDatasAsync(payload);
             if (soDatas == null)
             {
-                AddError("Get sales order datas error");
+                AddError("Get Customer datas error");
                 return false;
             }
 
