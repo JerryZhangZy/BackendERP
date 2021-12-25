@@ -720,7 +720,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
         }
 
+        public async Task<IList<WarehouseTransferDataDto>> GetWarehouseTransferDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
 
+            List();
+            var datas = new List<WarehouseTransferDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get WarehouseTransfer by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
         public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string warehouseTransferUuid)
         {
             return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM WarehouseTransferHeader WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND WarehouseTransferUuid=@2 "

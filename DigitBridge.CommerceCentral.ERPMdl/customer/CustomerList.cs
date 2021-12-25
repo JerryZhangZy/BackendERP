@@ -37,6 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
+{Helper.RowNum()},
 {Helper.CustomerUuid()}, 
 {Helper.CustomerCode()}, 
 {Helper.CustomerName()}, 
