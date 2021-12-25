@@ -52,21 +52,21 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         //    return new JsonNetResponse<OrderShipmentPayload>(payload);
         //}
 
-        //[FunctionName("CreateShipmentByWMS")]
-        //public static async Task CreateShipmentByWMS([QueueTrigger(QueueName.Erp_Create_Shipment_By_WMS)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new OrderShipmentPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //    };
+        [FunctionName("CreateShipmentByWMS")]
+        public static async Task CreateShipmentByWMS([QueueTrigger(QueueName.Erp_Create_Shipment_By_WMS)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+            };
 
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-        //    var service = new OrderShipmentManager(dbFactory);
-        //    await service.CreateShipmentAsync(payload, message.ProcessUuid);
-        //}
+            var service = new OrderShipmentManager(dbFactory);
+            await service.CreateShipmentAsync(payload, message.ProcessUuid);
+        }
 
     }
 }
