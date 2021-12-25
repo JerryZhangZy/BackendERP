@@ -221,10 +221,13 @@ AND ProfileNum = @profileNum";
             if (inventoryUuids == null || inventoryUuids.Count == 0)
                 return new List<(string, string)>();
             var sql = $@"
-SELECT InventoryUuid,ProductUuid FROM Inventory tbl
+SELECT InventoryUuid,ProductUuid 
+FROM Inventory tbl
+join @InventoryUuid _InventoryUuid on _InventoryUuid.item = tbl.InventoryUuid
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @InventoryUuid _InventoryUuid WHERE _InventoryUuid.item = COALESCE([InventoryUuid],'')))";
+--AND (EXISTS (SELECT * FROM @InventoryUuid _InventoryUuid WHERE _InventoryUuid.item = COALESCE([InventoryUuid],'')))
+";
 
             return SqlQuery.Execute(
                 sql,
