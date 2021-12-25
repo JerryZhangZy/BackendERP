@@ -318,6 +318,7 @@
     <None Include="CustomDefineCodes\ShippingCodes.sql" />
     <None Include="CustomDefineCodes\PaidbyMap.sql" />
     <None Include="CustomDefineCodes\BusinessType.sql" />
+    <None Include="inventory\InventoryLog_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />
