@@ -160,6 +160,9 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForBusinessType.ttinclude">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForShippingCodes.ttinclude">
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>

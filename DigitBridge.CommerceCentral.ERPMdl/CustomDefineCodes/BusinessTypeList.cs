@@ -15,17 +15,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.InventoryUpdateHeaderHelper;
-using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.InventoryUpdateItemsHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.BusinessTypeHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InventoryUpdateList : SqlQueryBuilder<InventoryUpdateQuery>
+    public class BusinessTypeList : SqlQueryBuilder<BusinessTypeQuery>
     {
-        public InventoryUpdateList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public BusinessTypeList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public InventoryUpdateList(IDataBaseFactory dbFactory, InventoryUpdateQuery queryObject)
+        public BusinessTypeList(IDataBaseFactory dbFactory, BusinessTypeQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -36,23 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.BatchNumber()},
-{Helper.InventoryUpdateUuid()},
-{Helper.InventoryUpdateType()},
-COALESCE(iut.text, '') inventoryUpdateTypeText, 
-{ItemsHelper.InventoryUpdateItemsUuid()},
-{ItemsHelper.Seq()},
-{ItemsHelper.ItemDate()},
-{ItemsHelper.ItemTime()},
-{Helper.Processor()},
-{ItemsHelper.SKU()},
-{ItemsHelper.ProductUuid()},
-{ItemsHelper.WarehouseCode()},
-{ItemsHelper.WarehouseUuid()},
-{ItemsHelper.LotNum()},
-{ItemsHelper.BeforeInstockQty()},
-{ItemsHelper.CountPack()},
-{ItemsHelper.UpdateQty()}
+{Helper.TableAllies}.*
 ";
             return this.SQL_Select;
         }
@@ -61,8 +44,6 @@ COALESCE(iut.text, '') inventoryUpdateTypeText,
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
- LEFT JOIN {ItemsHelper.TableName} {ItemsHelper.TableAllies} ON ({ItemsHelper.TableAllies}.InventoryUpdateUuid = {Helper.TableAllies}.InventoryUpdateUuid)
- LEFT JOIN @UpdateType iut ON ({Helper.TableAllies}.InventoryUpdateType = iut.num)
 ";
             return this.SQL_From;
         }
@@ -70,69 +51,69 @@ COALESCE(iut.text, '') inventoryUpdateTypeText,
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-
+                        
             //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            paramList.Add("@UpdateType".ToEnumParameter<InventoryUpdateType>());
+            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         }
         
         #endregion override methods
         
-        public virtual InventoryUpdatePayload GetInventoryUpdateList(InventoryUpdatePayload payload)
+        public virtual BusinessTypePayload GetBusinessTypeList(BusinessTypePayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new BusinessTypePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryUpdateListCount = Count();
+                payload.BusinessTypeListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.InventoryUpdateList = sb;
+                    payload.BusinessTypeList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryUpdateListCount = 0;
-                payload.InventoryUpdateList = null;
+                payload.BusinessTypeListCount = 0;
+                payload.BusinessTypeList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<InventoryUpdatePayload> GetInventoryUpdateListAsync(InventoryUpdatePayload payload)
+        public virtual async Task<BusinessTypePayload> GetBusinessTypeListAsync(BusinessTypePayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new BusinessTypePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryUpdateListCount = await CountAsync();
+                payload.BusinessTypeListCount = await CountAsync();
                 result = await ExcuteJsonAsync(sb);
                 if (result)
-                    payload.InventoryUpdateList = sb;
+                    payload.BusinessTypeList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryUpdateListCount = 0;
-                payload.InventoryUpdateList = null;
+                payload.BusinessTypeListCount = 0;
+                payload.BusinessTypeList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<IList<long>> GetRowNumListAsync(InventoryUpdatePayload payload)
+        public virtual async Task<IList<long>> GetRowNumListAsync(BusinessTypePayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new BusinessTypePayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
@@ -162,10 +143,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             return rowNumList;
         }
 
-        public virtual IList<long> GetRowNumList(InventoryUpdatePayload payload)
+        public virtual IList<long> GetRowNumList(BusinessTypePayload payload)
         {
             if (payload == null)
-                payload = new InventoryUpdatePayload();
+                payload = new BusinessTypePayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
