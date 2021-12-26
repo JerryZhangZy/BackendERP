@@ -199,10 +199,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 			// build WarehouseTransferHeader header
 			var (header1, values1) = Format.GetHeaderAndData<WarehouseTransferHeaderDto>(dataList[0].WarehouseTransferHeader);
 			if (header1 != null) headers.AddRange(header1);
-			
-			// build WarehouseTransferItems header
-			var (header2, values2) = Format.GetHeaderAndData<WarehouseTransferItemsDto>(dataList[0].WarehouseTransferItems[0]);
-			if (header2 != null) headers.AddRange(header2);
+
+            // build WarehouseTransferItems header
+            if (dataList[0].WarehouseTransferItems.Count != 0)
+            {
+                var (header2, values2) = Format.GetHeaderAndData<WarehouseTransferItemsDto>(dataList[0].WarehouseTransferItems[0]);
+                if (header2 != null) headers.AddRange(header2);
+            }
 			
             return headers;
         }

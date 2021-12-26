@@ -211,10 +211,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 			// build PoHeaderAttributes header
 			var (header3, values3) = Format.GetHeaderAndData<PoHeaderAttributesDto>(dataList[0].PoHeaderAttributes);
 			if (header3 != null) headers.AddRange(header3);
-			
-			// build PoItems header
-			var (header4, values4) = Format.GetHeaderAndData<PoItemsDto>(dataList[0].PoItems[0]);
-			if (header4 != null) headers.AddRange(header4);
+
+            // build PoItems header
+            if (dataList[0].PoItems.Count != 0)
+            {
+                var (header4, values4) = Format.GetHeaderAndData<PoItemsDto>(dataList[0].PoItems[0]);
+                if (header4 != null) headers.AddRange(header4);
+            }
 			
             return headers;
         }

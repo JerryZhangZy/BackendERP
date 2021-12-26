@@ -67,6 +67,39 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         }
 
 
+
+        [FunctionName("ExportPurchaseOrder")]
+        public static async Task ExportPurchaseOrder([QueueTrigger(QueueName.Erp_Export_PurchaseOrder)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new PurchaseOrderIOManager(dbFactory);
+            await service.ExportAsync(payload);
+        }
+
+
+        [FunctionName("ExportPoReceive")]
+        public static async Task ExportPoReceive([QueueTrigger(QueueName.Erp_Export_PoReceive)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new PoReceiveIOManager(dbFactory);
+            await service.ExportAsync(payload);
+        }
+
+
         //[FunctionName("ExportPurchaseOrder")]
         //public static async Task ExportPurchaseOrder([QueueTrigger(QueueName.Erp_Export_PurchaseOrder)] string myQueueItem, ILogger log)
         //{
