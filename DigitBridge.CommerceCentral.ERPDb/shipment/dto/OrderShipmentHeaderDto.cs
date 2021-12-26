@@ -211,6 +211,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShippingCost => ShippingCost != null;
 
 		/// <summary>
+		/// Total handling fee. <br> Title: Total handling fee, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Total handling fee. <br> Title: Total handling fee, Display: true, Editable: true")]
+        public decimal? TotalHandlingFee { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTotalHandlingFee => TotalHandlingFee != null;
+
+		/// <summary>
 		/// Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true")]
@@ -392,8 +401,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+
+	CONSTRAINT
 		/// </summary>
-		[OpenApiPropertyDescription("Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+
+	CONSTRAINT")]
         [StringLength(50, ErrorMessage = "The OrderNumber value cannot exceed 50 characters. ")]
         public string OrderNumber { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

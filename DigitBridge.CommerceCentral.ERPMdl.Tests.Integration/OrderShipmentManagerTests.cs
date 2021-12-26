@@ -155,7 +155,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             //To get  processuuid from event process which eventprocesstype is shipmentfromwms.
             //var shipmentID = "400-10000000099";
-            var shipmentID = "113-10000041033";
+            var shipmentID = "113-10000028931";
             var payload = new OrderShipmentPayload()
             {
                 MasterAccountNum = 10002,

@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             header.MainReturnTrackingNumber = inputShipmentHeader.MainReturnTrackingNumber;
             header.BillOfLadingID = inputShipmentHeader.BillOfLadingID;
             header.TotalPackages = inputShipmentHeader.TotalPackages;
-            //header.TotalHandlingFee = inputShipmentHeader.TotalHandlingFee;//TODO this col not exist in table
+            header.TotalHandlingFee = inputShipmentHeader.TotalHandlingFee;
             header.TotalShippedQty = inputShipmentHeader.TotalShippedQty;
             header.TotalCanceledQty = inputShipmentHeader.TotalCanceledQty;
             header.TotalWeight = inputShipmentHeader.TotalWeight;

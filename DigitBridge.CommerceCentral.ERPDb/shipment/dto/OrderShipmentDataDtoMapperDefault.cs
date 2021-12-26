@@ -134,6 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
             if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
             if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
+            if (dto.HasTotalHandlingFee) data.TotalHandlingFee = dto.TotalHandlingFee.ToDecimal();
 
             #endregion read properties
 
@@ -427,7 +428,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.InvoiceUuid = data.InvoiceUuid;
             dto.SalesOrderUuid = data.SalesOrderUuid;
             dto.OrderNumber = data.OrderNumber;
-
+            dto.TotalHandlingFee = data.TotalHandlingFee;
             #endregion read properties
 
             return;

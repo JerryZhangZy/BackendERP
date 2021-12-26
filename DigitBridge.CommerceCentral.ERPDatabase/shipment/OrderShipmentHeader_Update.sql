@@ -85,3 +85,11 @@ CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentDateUtc] ON [dbo].[Ord
 	[ShipmentDateUtc] ASC
 ) 
 GO
+
+
+-- 12/26/20201 By cuijunxian 
+IF COL_LENGTH('OrderShipmentHeader', 'TotalHandlingFee') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [TotalHandlingFee] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END
+
