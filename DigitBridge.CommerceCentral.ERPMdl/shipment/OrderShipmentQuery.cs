@@ -91,6 +91,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_WarehouseCode);
             AddFilter(_InvoiceNumber);
             AddFilter(_OrderNumber);
+
+            AddFilter(_ShipDateFrom);
+            AddFilter(_ShipDateTo);
         }
 
         protected override void SetAvailableOrderByList()

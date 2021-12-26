@@ -200,7 +200,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<WarehouseTransferFilter>()
-                .RuleFor(u => u.SKU, f => "")
+                //.RuleFor(u => u.SKU, f => "")// Comment out by junxian due to bulid failed
                 .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(30))
                 .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(1))
                 .RuleFor(u => u.ReceiveDateFrom, f => f.Date.Recent(30))
