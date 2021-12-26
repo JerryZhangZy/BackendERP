@@ -307,7 +307,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             shipHeader.InvoiceUuid = string.Empty;
             shipHeader.SalesOrderUuid = soHeader.SalesOrderUuid;
             shipHeader.OrderNumber = soHeader.OrderNumber;
-
+            shipHeader.TotalHandlingFee = soHeader.MiscAmount;
             return;
         }
 
