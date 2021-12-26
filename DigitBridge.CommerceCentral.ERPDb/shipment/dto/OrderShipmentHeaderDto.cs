@@ -401,12 +401,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
-
-	CONSTRAINT
-		/// </summary>
-		[OpenApiPropertyDescription("Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
-
-	CONSTRAINT")]
+        /// </summary>
+		[OpenApiPropertyDescription("Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The OrderNumber value cannot exceed 50 characters. ")]
         public string OrderNumber { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
