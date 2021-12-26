@@ -394,7 +394,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 foreach (var shippedItem in package.OrderShipmentShippedItem)
                 {
-                    var foundItem = lines.FirstOrDefault(i => i.DBChannelOrderLineRowID == shippedItem.DBChannelOrderLineRowID);
+                    var foundItem = lines.Where(i => i.DBChannelOrderLineRowID == shippedItem.DBChannelOrderLineRowID).FirstOrDefault();
 
                     shippedItem.CentralOrderNum = foundItem?.CentralOrderNum;
                     shippedItem.CentralOrderLineNum = foundItem?.CentralOrderLineNum;
