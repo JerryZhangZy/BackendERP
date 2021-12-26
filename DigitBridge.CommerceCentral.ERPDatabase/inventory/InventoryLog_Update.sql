@@ -11,6 +11,6 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_BatchNum')
 CREATE NONCLUSTERED INDEX [IX_InventoryLog_BatchNum] ON [dbo].[InventoryLog]
 (
-	[BatchNum] ASC
+	[BatchNum] DESC
 ) 
 GO
