@@ -159,6 +159,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
 
+        [FunctionName(nameof(ExportInventoryFiles))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "ExportInventoryFiles", tags: new[] { "ExportFiles" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(ImportExportFilesPayload), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportInventoryFiles(
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/inventory")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ImportExportFilesPayload>();
+            payload.LoadRequest(req);
+            var svc = new ExportManger();
+            payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportInventory);
+            payload.Messages = svc.Messages;
+
+            return new JsonNetResponse<ImportExportFilesPayload>(payload);
+        }
 
 
 
