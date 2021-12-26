@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             PurchaseOrderData.PoHeader = PoHeaderTests.GetFakerData().Generate();
             PurchaseOrderData.PoHeader.MasterAccountNum = masterAccountNum;
             PurchaseOrderData.PoHeader.ProfileNum = profileNum;
-            PurchaseOrderData.PoHeader.PoNum = $"{DateTime.Now.ToString("yyyyMMDDHHMMSS")}_PoWithItemCount_{itemCount}";
+            PurchaseOrderData.PoHeader.PoNum = $"{DateTime.Now.ToString("yyyyMMddHHMMss")}_PoWithItemCount_{itemCount}";
             PurchaseOrderData.PoHeader.VendorCode = vendorData.Vendor.VendorCode;
             PurchaseOrderData.PoHeader.VendorName = vendorData.Vendor.VendorName;
             PurchaseOrderData.PoHeader.VendorUuid = vendorData.Vendor.VendorUuid;
