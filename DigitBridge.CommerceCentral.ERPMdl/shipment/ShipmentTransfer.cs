@@ -275,7 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //shipHeader.OrderDCAssignmentNum = soHeader.OrderSourceCode.IsZero() ? 0 : soHeader.OrderSourceCode.Replace(Consts.SalesOrderSourceCode_Prefix, "").ToInt();
             shipHeader.OrderDCAssignmentNum = soInfo.OrderDCAssignmentNum;
             shipHeader.DistributionCenterNum = soInfo.DistributionCenterNum;
-            //shipHeader.CentralOrderNum = soInfo.CentralOrderNum;
+            shipHeader.CentralOrderNum = soInfo.CentralOrderNum;
             //shipHeader.ChannelOrderID = soInfo.ChannelOrderID;
             //shipHeader.ShipmentID = string.Empty;
             shipHeader.WarehouseCode = soInfo.WarehouseCode;
@@ -348,6 +348,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //package.HasChildPackage = false;
                 package.OrderShipmentUuid = shipHeader.OrderShipmentUuid;
                 package.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+                package.CentralOrderNum = soInfo.CentralOrderNum;
 
                 foreach (var item in package.OrderShipmentShippedItem)
                 {
@@ -373,6 +374,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     item.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
                     item.RowNum = 0;
                     //item.SalesOrderItemsUuid = item.SalesOrderItemsUuid;
+                    item.CentralOrderNum = soInfo.CentralOrderNum;
+                    //item.CentralOrderLineNum =  
+                    //item.CentralProductNum =  
+                    //item.DistributionProductNum=
                 }
             }
         }
@@ -382,5 +387,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return;
         }
 
+        #region Load data from OrderDCAssignmentLine
+        public bool LoadOthersDataFromDCAssignmentLine(IEnumerable<OrderDCAssignmentLine> lines, OrderShipmentDataDto shipmentData)
+        {
+            foreach (var package in shipmentData.OrderShipmentPackage)
+            {
+                foreach (var shippedItem in package.OrderShipmentShippedItem)
+                {
+                    var foundItem = lines.FirstOrDefault(i => i.DBChannelOrderLineRowID == shippedItem.DBChannelOrderLineRowID);
+
+                    shippedItem.CentralOrderNum = foundItem?.CentralOrderNum;
+                    shippedItem.CentralOrderLineNum = foundItem?.CentralOrderLineNum;
+                    shippedItem.CentralProductNum = foundItem?.CentralProductNum;
+                    shippedItem.DistributionProductNum = foundItem?.DistributionProductNum;
+                }
+            }
+            return true;
+        }
+
+        #endregion
     }
 }
