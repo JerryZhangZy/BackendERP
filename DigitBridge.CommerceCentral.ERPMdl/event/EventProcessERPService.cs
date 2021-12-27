@@ -368,6 +368,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         this.Data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
                         return await SaveDataAsync();
                     }
+                    else if (this.Data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Failed)
+                    {
+                        //when process result is failed. can update process data.
+                        this.Data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
+                        this.Data.EventProcessERP.ProcessData = data.EventProcessERP.ProcessData;
+                        return await SaveDataAsync();
+                    }
                 }
                 // rownum >0 means data exist.
                 return true;
