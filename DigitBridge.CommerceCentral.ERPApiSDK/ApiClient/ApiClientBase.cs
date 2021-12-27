@@ -113,9 +113,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 {
                     ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
                 }
-                catch
+                catch (Exception e)
                 {
-                    // no need handle.
+                    AddError(e.Message);
                 }
                 finally
                 {
@@ -156,9 +156,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 {
                     ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
                 }
-                catch
+                catch (Exception e)
                 {
-                    // no need handle.
+                    AddError(e.Message);
                 }
                 finally
                 {
@@ -192,9 +192,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 {
                     ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
                 }
-                catch
+                catch (Exception e)
                 {
-                    // no need handle.
+                    AddError(e.Message);
                 }
                 finally
                 {
