@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Linq;
+using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -125,6 +126,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                     await blobContainer.UploadBlobAsync(item.Key, item.Value);
+                    await SqlQuery.ExecuteNonQueryAsync(
+@$"INSERT INTO ExportFiles(DatabaseNum,MasterAccountNum,ProfileNum,Category,ContainerReference,BlobReference) VALUES
+({payload.DatabaseNum},{payload.MasterAccountNum},{payload.ProfileNum},'','{ContainerName(payload.ExportUuid)}','{item.Key.ToSqlSafeString()}')");
                 }
                 catch (Exception e)
                 {
