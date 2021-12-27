@@ -152,19 +152,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Success = await srv.AddListAsync(payload);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<PoReceivePayload>(payload);
-
-            //var payload = await req.GetParameters<PoReceivePayload>(true);
-            //var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            //var srv = new PoReceiveService(dataBaseFactory);
-            ////await srv.AddAsync(payload);
-            //if (await srv.AddAsync(payload))
-            //{
-            //    payload.Success = true;
-            //    payload.PoTransaction = srv.ToDto();
-            //}
-            //payload.Messages = srv.Messages;
-
-            //return new JsonNetResponse<PoReceivePayload>(payload);
         }
 
 
