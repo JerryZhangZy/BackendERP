@@ -53,6 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ShippingCarrier, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.ShippingClass, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.ShippingCost, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TotalHandlingFee, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.MainTrackingNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.MainReturnTrackingNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.BillOfLadingID, f => f.Random.Guid().ToString())

@@ -80,6 +80,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _channelOrderID;
 
+        [Column("CentralOrderNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralOrderNum;
+
+        [Column("CentralOrderLineNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralOrderLineNum;
+
+        [Column("CentralProductNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralProductNum;
+
+        [Column("DistributionProductNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _distributionProductNum;
+
         [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _orderDCAssignmentLineNum;
 
@@ -239,6 +251,90 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_channelOrderID = value.TruncateTo(130); 
 				OnPropertyChanged("ChannelOrderID", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? CentralOrderNum
+        {
+            get
+            {
+				if (!AllowNull && _centralOrderNum is null) 
+					_centralOrderNum = default(long); 
+				return _centralOrderNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_centralOrderNum = value; 
+					OnPropertyChanged("CentralOrderNum", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralOrderLine. <br> Title: CentralOrderLine Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? CentralOrderLineNum
+        {
+            get
+            {
+				if (!AllowNull && _centralOrderLineNum is null) 
+					_centralOrderLineNum = default(long); 
+				return _centralOrderLineNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_centralOrderLineNum = value; 
+					OnPropertyChanged("CentralOrderLineNum", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralProduct. <br> Title: CentralProduct Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? CentralProductNum
+        {
+            get
+            {
+				if (!AllowNull && _centralProductNum is null) 
+					_centralProductNum = default(long); 
+				return _centralProductNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_centralProductNum = value; 
+					OnPropertyChanged("CentralProductNum", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of DistributionProduct. <br> Title: DistributionProduct Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? DistributionProductNum
+        {
+            get
+            {
+				if (!AllowNull && _distributionProductNum is null) 
+					_distributionProductNum = default(long); 
+				return _distributionProductNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_distributionProductNum = value; 
+					OnPropertyChanged("DistributionProductNum", value);
+				}
             }
         }
 
@@ -408,6 +504,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_orderShipmentNum = default(long); 
 			_orderShipmentPackageNum = default(long); 
 			_channelOrderID = String.Empty; 
+			_centralOrderNum = AllowNull ? (long?)null : default(long); 
+			_centralOrderLineNum = AllowNull ? (long?)null : default(long); 
+			_centralProductNum = AllowNull ? (long?)null : default(long); 
+			_distributionProductNum = AllowNull ? (long?)null : default(long); 
 			_orderDCAssignmentLineNum = default(long); 
 			_sku = String.Empty; 
 			_shippedQty = default(decimal); 

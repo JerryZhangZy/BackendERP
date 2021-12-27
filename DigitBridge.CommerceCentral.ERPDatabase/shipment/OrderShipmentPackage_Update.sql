@@ -35,3 +35,9 @@ END
     FROM OrderShipmentPackage spp
     INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spp.OrderShipmentNum);
 */
+
+-- 12/26/20201 By cuijunxian 
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralOrderNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralOrderNum] [bigint] NULL DEFAULT 0
+END

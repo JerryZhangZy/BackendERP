@@ -113,6 +113,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("HasChildPackage",SqlDbType.Bit,NotNull=true,IsDefault=true)]
         private bool _hasChildPackage;
 
+        [Column("CentralOrderNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralOrderNum;
+
         [Column("OrderShipmentUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderShipmentUuid;
 
@@ -434,6 +437,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? CentralOrderNum
+        {
+            get
+            {
+				if (!AllowNull && _centralOrderNum is null) 
+					_centralOrderNum = default(long); 
+				return _centralOrderNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_centralOrderNum = value; 
+					OnPropertyChanged("CentralOrderNum", value);
+				}
+            }
+        }
+
+		/// <summary>
 		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string OrderShipmentUuid
@@ -619,6 +643,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_packageQty = default(decimal); 
 			_parentPackageNum = default(long); 
 			_hasChildPackage = false; 
+			_centralOrderNum = AllowNull ? (long?)null : default(long); 
 			_orderShipmentUuid = String.Empty; 
 			_orderShipmentPackageUuid = String.Empty; 
             ClearChildren();
