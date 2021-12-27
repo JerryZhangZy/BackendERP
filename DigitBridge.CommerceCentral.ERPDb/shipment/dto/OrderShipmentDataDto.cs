@@ -147,6 +147,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 }
             }
         }
+
+        public OrderShipmentDataDto NewData()
+        {
+            OrderShipmentHeader = new OrderShipmentHeaderDto();
+            OrderShipmentCanceledItem = new List<OrderShipmentCanceledItemDto>();
+            OrderShipmentPackage = new List<OrderShipmentPackageDto>();
+            orderShipmentShippedItem= new List<OrderShipmentShippedItemDto>();
+            return this;
+        }
     }
 }
 
