@@ -564,7 +564,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //    return true;
         //}
+        public async Task<IList<PurchaseOrderDataDto>> GetPurchaseOrderDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
 
+            List();
+            var datas = new List<PurchaseOrderDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get PurchaseOrder by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
         public virtual bool UpdateByPoReceive(PoTransactionData data)
         {
             if (data == null || data.PoTransaction == null)

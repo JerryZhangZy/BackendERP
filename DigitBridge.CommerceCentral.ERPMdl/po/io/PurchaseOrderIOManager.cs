@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -38,6 +40,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Service Property
 
+
+        
+
+        [XmlIgnore, JsonIgnore]
+        protected PurchaseOrderList _PurchaseOrderList;
+        [XmlIgnore, JsonIgnore]
+        public PurchaseOrderList PurchaseOrderList
+        {
+            get
+            {
+                if (_PurchaseOrderList is null)
+                    _PurchaseOrderList = new PurchaseOrderList(dbFactory);
+                return _PurchaseOrderList;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
 
         [XmlIgnore, JsonIgnore]
         protected ImportBlobService _ImportBlobService;
@@ -249,6 +279,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion import 
 
         #region export
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<PurchaseOrderDataDto> datas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await PurchaseOrderIOCsv.ExportAsync(datas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
+            return true;
+        }
+
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
@@ -268,6 +307,92 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await PurchaseOrderIOCsv.ExportAllColumnsAsync(dtos);
         }
+
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
+
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query   list
+            var datas = await GetPurchaseOrderDatasAsync(payload);
+            if (datas == null)
+            {
+                AddError("Get PurchaseOrder datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, datas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<PurchaseOrderDataDto>> GetPurchaseOrderDatasAsync(ImportExportFilesPayload payload)
+        {
+            var purchaseOrderPayload = new PurchaseOrderPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await PurchaseOrderList.GetPurchaseOrderListAsync(purchaseOrderPayload);
+            if (!purchaseOrderPayload.Success)
+            {
+                this.Messages.Add(PurchaseOrderList.Messages);
+                return null;
+            }
+
+            var json = purchaseOrderPayload.PurchaseOrderList.ToString();
+            if (json.IsZero()) return new List<PurchaseOrderDataDto>();
+
+            var queryResult = JArray.Parse(purchaseOrderPayload.PurchaseOrderList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await PurchaseOrderService.GetPurchaseOrderDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
+        }
+
+
+
+
+
+
+
+
+
+
+
         #endregion export
 
     }

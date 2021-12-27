@@ -199,10 +199,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 			// build PoTransaction header
 			var (header1, values1) = Format.GetHeaderAndData<PoTransactionDto>(dataList[0].PoTransaction);
 			if (header1 != null) headers.AddRange(header1);
-			
-			// build PoTransactionItems header
-			var (header2, values2) = Format.GetHeaderAndData<PoTransactionItemsDto>(dataList[0].PoTransactionItems[0]);
-			if (header2 != null) headers.AddRange(header2);
+
+            // build PoTransactionItems header
+            if (dataList[0].PoTransactionItems.Count != 0)
+            {
+                var (header2, values2) = Format.GetHeaderAndData<PoTransactionItemsDto>(dataList[0].PoTransactionItems[0]);
+                if (header2 != null) headers.AddRange(header2);
+            }
 			
             return headers;
         }
