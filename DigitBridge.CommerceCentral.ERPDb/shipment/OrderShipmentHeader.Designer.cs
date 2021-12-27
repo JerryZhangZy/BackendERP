@@ -107,6 +107,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ShippingCost",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _shippingCost;
 
+        [Column("TotalHandlingFee",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _totalHandlingFee;
+
         [Column("MainTrackingNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _mainTrackingNumber;
 
@@ -446,6 +449,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_shippingCost = value; 
 				OnPropertyChanged("ShippingCost", value);
+            }
+        }
+
+		/// <summary>
+		/// Total handling fee. <br> Title: Total handling fee, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal TotalHandlingFee
+        {
+            get
+            {
+				return _totalHandlingFee; 
+            }
+            set
+            {
+				_totalHandlingFee = value; 
+				OnPropertyChanged("TotalHandlingFee", value);
             }
         }
 
@@ -816,6 +835,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_shippingCarrier = String.Empty; 
 			_shippingClass = String.Empty; 
 			_shippingCost = default(decimal); 
+			_totalHandlingFee = default(decimal); 
 			_mainTrackingNumber = String.Empty; 
 			_mainReturnTrackingNumber = String.Empty; 
 			_billOfLadingID = String.Empty; 

@@ -70,6 +70,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         [XmlIgnore, JsonIgnore]
+        protected DCAssignmentService _DCAssignmentService;
+        [XmlIgnore, JsonIgnore]
+        public DCAssignmentService DCAssignmentService
+        {
+            get
+            {
+                if (_DCAssignmentService is null)
+                    _DCAssignmentService = new DCAssignmentService(dbFactory);
+                return _DCAssignmentService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
         protected OrderShipmentService _orderShipmentService;
         [XmlIgnore, JsonIgnore]
         public OrderShipmentService orderShipmentService
@@ -678,12 +691,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             salesOrderService.DetachData(null);
 
+
+
             // create mapper, and transfer shipment payload ro ero shipment Dto
             var mapper = new ShipmentTransfer(this, dbFactory, "");
             await mapper.LoadOthersDataFromSalesOrder(salesOrderData, erpShipment);
+
+            var dcAssignmentLines = await DCAssignmentService.GetItemsWithPartialColumnsAsync(result.MasterAccountNum, result.ProfileNum, salesOrderData.SalesOrderHeaderInfo.CentralOrderNum);
+            mapper.LoadOthersDataFromDCAssignmentLine(dcAssignmentLines, erpShipment);
+
             return true;
         }
-
 
         /// <summary>
         /// After save one shipment, create invoice from this shipment and set processStatus to 0 (allow send to marketplace)

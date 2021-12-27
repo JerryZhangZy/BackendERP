@@ -46,5 +46,26 @@ END
 IF COL_LENGTH('OrderShipmentShippedItem', 'SalesOrderItemsUuid') IS NULL					
 BEGIN					
     ALTER TABLE OrderShipmentShippedItem ADD [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT ''
-END					
+END	
 
+
+-- 12/26/20201 By cuijunxian 
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralOrderNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralOrderNum] [bigint] NULL DEFAULT 0
+END
+
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralOrderLineNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralOrderLineNum] [bigint] NULL DEFAULT 0
+END
+
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralProductNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralProductNum] [bigint] NULL DEFAULT 0
+END
+
+IF COL_LENGTH('OrderShipmentShippedItem', 'DistributionProductNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [DistributionProductNum] [bigint] NULL DEFAULT 0
+END
