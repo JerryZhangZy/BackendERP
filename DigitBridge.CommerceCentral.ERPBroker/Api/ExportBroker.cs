@@ -128,8 +128,8 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 ExportUuid = message.ProcessUuid,
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-           // var service = new ShipmentIOManager(dbFactory);
-            await service.ExportAsync(payload);
+            //var service = new ShipmentIOManager(dbFactory);
+            //await service.ExportAsync(payload);
         }
 
         //
