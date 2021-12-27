@@ -30,21 +30,41 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task AddLargeData_Test()
         {
-            var inventories = InventoryDataTests.GetInventories(DataBaseFactory, 10002, 10003);
-            for (int i = 1; i < 1000; i++)
+            int vendorCount = 10;
+            int poCountEachVendor = 10;
+            int masterAccountNum = 10002;
+            int profileNum = 10003;
+            var inventories = InventoryDataTests.GetInventories(DataBaseFactory, masterAccountNum, profileNum);
+            var vendors = await VendorTests.AddAsync(DataBaseFactory, masterAccountNum, profileNum, vendorCount);
+
+            for (int v = 0; v < vendorCount; v++)
             {
-                var data = await GetFakerDataAsync(10002, 10003, i * 10, inventories);
-                if (data == null) break;
+                for (int i = 1; i <= poCountEachVendor; i++)
+                {
+                    try
+                    {
 
-                data.SetDataBaseFactory(DataBaseFactory);
-                var success = await data.SaveAsync();
-                Assert.True(success, "Save po error");
+                        int poItemCount = (v + 1) * i * 100;
+                        var data = await GetFakerDataAsync(masterAccountNum, profileNum, poItemCount, inventories, vendors[v]);
+                        if (data == null) break;
+
+                        data.SetDataBaseFactory(DataBaseFactory);
+                        DataBaseFactory.Begin();
+                        var success = await data.SaveAsync();
+                        DataBaseFactory.Commit();
+                        //Assert.True(success, "Save po error");
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                }
+
             }
-
         }
 
 
-        public async Task<PurchaseOrderData> GetFakerDataAsync(int masterAccountNum, int profileNum, int itemCount, Inventory[] inventories)
+        public async Task<PurchaseOrderData> GetFakerDataAsync(int masterAccountNum, int profileNum, int itemCount, Inventory[] inventories, Vendor vendor)
         {
 
             if (itemCount > inventories.Length)
@@ -54,16 +74,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             itemsCounts.Add(itemCount);
 
-            var vendorData = await VendorDataTests.AddAsync(DataBaseFactory, masterAccountNum, profileNum);
-
             var PurchaseOrderData = new PurchaseOrderData();
             PurchaseOrderData.PoHeader = PoHeaderTests.GetFakerData().Generate();
             PurchaseOrderData.PoHeader.MasterAccountNum = masterAccountNum;
             PurchaseOrderData.PoHeader.ProfileNum = profileNum;
             PurchaseOrderData.PoHeader.PoNum = $"{DateTime.Now.ToString("yyyyMMddHHMMss")}_PoWithItemCount_{itemCount}";
-            PurchaseOrderData.PoHeader.VendorCode = vendorData.Vendor.VendorCode;
-            PurchaseOrderData.PoHeader.VendorName = vendorData.Vendor.VendorName;
-            PurchaseOrderData.PoHeader.VendorUuid = vendorData.Vendor.VendorUuid;
+            PurchaseOrderData.PoHeader.VendorCode = vendor.VendorCode;
+            PurchaseOrderData.PoHeader.VendorName = vendor.VendorName;
+            PurchaseOrderData.PoHeader.VendorUuid = vendor.VendorUuid;
 
             PurchaseOrderData.PoHeaderInfo = PoHeaderInfoTests.GetFakerData().Generate();
             PurchaseOrderData.PoHeaderAttributes = PoHeaderAttributesTests.GetFakerData().Generate();

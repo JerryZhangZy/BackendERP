@@ -53,16 +53,17 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var payload = new CommerceCentralInvoiceRequestPayload()
             {
-                //LoadAll = true,
+                
             };
 
             //Add your filter here.
             payload.Filter = new InvoiceUnprocessPayloadFilter()
             {
-                ChannelAccountNum = 10001,
+                ChannelNum=30001,
+                ChannelAccountNum = 10364,
             };
 
-            var success = await client.GetUnprocessedInvoicesAsync(MasterAccountNum, ProfileNum, payload);
+            var success = await client.GetUnprocessedInvoicesAsync(10004, 10008, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
             Assert.True(client.Data != null);
