@@ -28,13 +28,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT 
 COALESCE(ins.InvoiceUuid,'') as 'InvoiceHeader.InvoiceUuid',
-COALESCE(insi.RefNum,'') as 'InvoiceHeader.OrderInvoiceNum',
+COALESCE(ins.RowNum,'') as 'InvoiceHeader.OrderInvoiceNum',--TODO check this column mapping.
 COALESCE(ins.DatabaseNum,0) as 'InvoiceHeader.DatabaseNum',
 COALESCE(ins.MasterAccountNum,0) as 'InvoiceHeader.MasterAccountNum',
 COALESCE(ins.ProfileNum,0) as 'InvoiceHeader.ProfileNum',
 COALESCE(insi.ChannelNum,0) as 'InvoiceHeader.ChannelNum',
-COALESCE(insi.ChannelAccountNum,0) as 'InvoiceHeader.ChannelAccountNum',
-COALESCE(ins.InvoiceNumber,'') as 'InvoiceHeader.InvoiceNumber',
+COALESCE(insi.ChannelAccountNum,0) as 'InvoiceHeader.ChannelAccountNum', 
+--COALESCE(insi.RefNum,ins.InvoiceNumber,'') as 'InvoiceHeader.InvoiceNumber',
+case when insi.RefNum !='' then insi.RefNum else COALESCE(ins.InvoiceNumber,'') end as 'InvoiceHeader.InvoiceNumber',
 ins.InvoiceDate as 'InvoiceHeader.InvoiceDateUtc',
 COALESCE(insi.CentralOrderNum,0) as 'InvoiceHeader.CentralOrderNum',
 COALESCE(insi.ChannelOrderID,'') as 'InvoiceHeader.ChannelOrderID',
