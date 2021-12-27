@@ -671,6 +671,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             
         }
 
+        public async Task<IList<VendorDataDto>> GetVendorDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
+
+            List();
+            var datas = new List<VendorDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get WarehouseTransfer by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
+
         public VendorAddressDataDto ToVendorAddressDto()
         {
 

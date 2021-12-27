@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -28,6 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class SystemSettingDto
     {
+        [JsonIgnore, XmlIgnore]
         public long? RowNum { get; set; }
         [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
@@ -68,50 +70,55 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
-		/// <summary>
-		/// Global Unique Guid for Code
-		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for Code")]
+        /// <summary>
+        /// Global Unique Guid for Code
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("Global Unique Guid for Code")]
         [StringLength(50, ErrorMessage = "The SystemSettingUuid value cannot exceed 50 characters. ")]
         public string SystemSettingUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSystemSettingUuid => SystemSettingUuid != null;
 
-		/// <summary>
-		/// Code description,
-		/// </summary>
-		[OpenApiPropertyDescription("Code description,")]
+        /// <summary>
+        /// Code description,
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("Code description,")]
         [StringLength(100, ErrorMessage = "The Description value cannot exceed 100 characters. ")]
         public string Description { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDescription => Description != null;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[OpenApiPropertyDescription("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("")]
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateDateUtc => UpdateDateUtc != null;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[OpenApiPropertyDescription("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("")]
         [StringLength(100, ErrorMessage = "The EnterBy value cannot exceed 100 characters. ")]
         public string EnterBy { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasEnterBy => EnterBy != null;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[OpenApiPropertyDescription("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("")]
         [StringLength(100, ErrorMessage = "The UpdateBy value cannot exceed 100 characters. ")]
         public string UpdateBy { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -119,13 +126,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasUpdateBy => UpdateBy != null;
 
 
-        [IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public JObject Fields { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasFields => Fields != null;
 
 
+
+
+        /// <summary>
+		/// Code description,
+		/// </summary>
+		[OpenApiPropertyDescription("ErpSetting")]
+        [Required]
+        public ErpSettingClass ErpSetting { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasErpSetting => ErpSetting != null;
+
+ 
         #endregion Properties - Generated 
 
         #region Children - Generated 

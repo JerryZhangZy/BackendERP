@@ -20,6 +20,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.CommerceCentral.ERPMdl.po;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -38,6 +41,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Service Property
 
+        [XmlIgnore, JsonIgnore]
+        protected PoReceiveList _PoReceiveList;
+        [XmlIgnore, JsonIgnore]
+        public PoReceiveList PoReceiveList
+        {
+            get
+            {
+                if (_PoReceiveList is null)
+                    _PoReceiveList = new PoReceiveList(dbFactory);
+                return _PoReceiveList;
+            }
+        }
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
         [XmlIgnore, JsonIgnore]
         protected ImportBlobService _ImportBlobService;
         [XmlIgnore, JsonIgnore]
@@ -77,6 +104,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        //
+
+        [XmlIgnore, JsonIgnore]
+        protected PoReceiveService _PoReceiveService;
+        [XmlIgnore, JsonIgnore]
+        public PoReceiveService PoReceiveService
+        {
+            get
+            {
+                if (_PoReceiveService is null)
+                    _PoReceiveService = new PoReceiveService(dbFactory);
+                return _PoReceiveService;
+            }
+        }
 
         [XmlIgnore, JsonIgnore]
         protected PoTransactionService _PoTransactionService;
@@ -257,7 +298,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await PoTransactionIOCsv.ExportAsync(dtos);
         }
-
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<PoTransactionDataDto> datas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await PoTransactionIOCsv.ExportAsync(datas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
+            return true;
+        }
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
         /// </summary>
@@ -267,6 +315,81 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await PoTransactionIOCsv.ExportAllColumnsAsync(dtos);
         }
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
+
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query   list
+            var datas = await GetPoReceiveDatasAsync(payload);
+            if (datas == null)
+            {
+                AddError("Get PoReceive datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, datas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<PoTransactionDataDto>> GetPoReceiveDatasAsync(ImportExportFilesPayload payload)
+        {
+            var poReceivePayload = new PoReceivePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await PoReceiveList.GetPoReceiveListAsync(poReceivePayload);
+            if (!poReceivePayload.Success)
+            {
+                this.Messages.Add(PoReceiveList.Messages);
+                return null;
+            }
+
+            var json = poReceivePayload.PoTransactionList.ToString();
+            if (json.IsZero()) return new List<PoTransactionDataDto>();
+
+            var queryResult = JArray.Parse(poReceivePayload.PoTransactionList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await PoReceiveService.GetPoReceiveDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
+        }
+
         #endregion export
 
     }

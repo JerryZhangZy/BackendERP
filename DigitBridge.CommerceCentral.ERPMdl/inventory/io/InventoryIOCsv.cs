@@ -149,7 +149,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
 				var ln = csv.GetRecord<InventoryDto>();
-				if (ln == null || !ln.HasSKU)
+				if (ln == null)
 					return false;
 				dto.Inventory.Add(ln);
                 return true;

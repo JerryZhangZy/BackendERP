@@ -18,6 +18,7 @@
 	[ShippingCarrier] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 	[ShippingClass] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 	[ShippingCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Shipping fee. <br> Title: Shipping Fee, Display: true, Editable: true
+	[TotalHandlingFee] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total handling fee. <br> Title: Total handling fee, Display: true, Editable: true
 	[MainTrackingNumber] VARCHAR(50) NOT NULL DEFAULT '', --Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
 	[MainReturnTrackingNumber] VARCHAR(50) NOT NULL DEFAULT '', --Master Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true
 	[BillOfLadingID] NVARCHAR(50) NOT NULL DEFAULT '', --Bill Of Lading ID. <br> Title: BOL Id, Display: true, Editable: true

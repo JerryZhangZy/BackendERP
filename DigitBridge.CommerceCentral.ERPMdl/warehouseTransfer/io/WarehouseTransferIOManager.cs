@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +39,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region Service Property
+
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
+
 
         [XmlIgnore, JsonIgnore]
         protected ImportBlobService _ImportBlobService;
@@ -63,6 +79,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _CustomIOFormatService;
             }
         }
+        [XmlIgnore, JsonIgnore]
+        protected WarehouseTransferList _WarehouseTransferList;
+        [XmlIgnore, JsonIgnore]
+        public WarehouseTransferList WarehouseTransferList
+        {
+            get
+            {
+                if (_WarehouseTransferList is null)
+                    _WarehouseTransferList = new WarehouseTransferList(dbFactory);
+                return _WarehouseTransferList;
+            }
+        }
+        
 
         [XmlIgnore, JsonIgnore]
         protected WarehouseTransferManager _WarehouseTransferManager;
@@ -250,6 +279,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion import 
 
         #region export
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<WarehouseTransferDataDto> datas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await WarehouseTransferIOCsv.ExportAsync(datas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
+            return true;
+        }
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
@@ -268,6 +305,81 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dtos == null || dtos.Count == 0)
                 return null;
             return await WarehouseTransferIOCsv.ExportAllColumnsAsync(dtos);
+        }
+
+
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
+
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query salesorder list
+            var datas = await GetWarehouseTransferDatasAsync(payload);
+            if (datas == null)
+            {
+                AddError("Get WarehouseTransfer datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, datas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<WarehouseTransferDataDto>> GetWarehouseTransferDatasAsync(ImportExportFilesPayload payload)
+        {
+            var warehouseTransferPayload = new WarehouseTransferPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await WarehouseTransferList.GetWarehouseTransferListAsync(warehouseTransferPayload);
+            if (!warehouseTransferPayload.Success)
+            {
+                this.Messages.Add(WarehouseTransferList.Messages);
+                return null;
+            }
+
+            var json = warehouseTransferPayload.WarehouseTransferList.ToString();
+            if (json.IsZero()) return new List<WarehouseTransferDataDto>();
+
+            var queryResult = JArray.Parse(warehouseTransferPayload.WarehouseTransferList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await WarehouseTransferService.GetWarehouseTransferDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
         }
         #endregion export
 

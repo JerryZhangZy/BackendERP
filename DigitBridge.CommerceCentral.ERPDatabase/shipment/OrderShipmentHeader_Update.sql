@@ -71,9 +71,25 @@ CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShi
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_SalesOrderUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_SalesOrderUuid')
 CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_SalesOrderUuid] ON [dbo].[OrderShipmentHeader]
 (
 	[SalesOrderUuid] ASC
 ) 
 GO
+
+-- Add by junxian 12/24/2021
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_ShipmentDateUtc')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentDateUtc] ON [dbo].[OrderShipmentHeader]
+(
+	[ShipmentDateUtc] ASC
+) 
+GO
+
+
+-- 12/26/20201 By cuijunxian 
+IF COL_LENGTH('OrderShipmentHeader', 'TotalHandlingFee') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [TotalHandlingFee] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END
+

@@ -160,6 +160,15 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForBusinessType.ttinclude">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForShippingCodes.ttinclude">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForPaidbyMap.ttinclude">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForCustomIOFormat.ttinclude">
       <LastGenOutput>SettingForCustomIOFormat.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -395,6 +404,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="T4\DataAccess.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateIOCsv - Copy.cs">
       <DependentUpon>GenerateIOCsv.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>

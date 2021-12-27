@@ -71,6 +71,29 @@ namespace DigitBridge.Base.Common
         ErpImportPurchaseOrder = 29,
         [Description("Import poreceive file to erp")]
         ErpImportPoReceive = 30,
+
+        [Description("Export customer file to erp")]
+        ErpExportCustomer = 120,
+        [Description("Export inventory file to erp")]
+        ErpExportInventory = 121,
+        [Description("Export inventoryupdate file to erp")]
+        ErpExportInventoryUpdate = 122,
+        [Description("Export warehousetransfer file to erp")]
+        ErpExportWarehouseTransfer = 123,
+        [Description("Export salesorder file to erp")]
+        ErpExportSalesOrder = 124,
+        [Description("Export shipment file to erp")]
+        ErpExportShipment = 125,
+        [Description("Export invoice file to erp")]
+        ErpExportInvoice = 126,
+        [Description("Export invoicepayment file to erp")]
+        ErpExportInvoicePayment = 127,
+        [Description("Export vendor file to erp")]
+        ErpExportVendor = 128,
+        [Description("Export purchaseorder file to erp")]
+        ErpExportPurchaseOrder = 129,
+        [Description("Export poreceive file to erp")]
+        ErpExportPoReceive = 130,
     }
 
     public static class ErpEventQueueName
@@ -125,6 +148,29 @@ namespace DigitBridge.Base.Common
                     return ERPQueueSetting.ErpImportPurchaseOrderQueue;
                 case ErpEventType.ErpImportPoReceive:
                     return ERPQueueSetting.ErpImportPoReceiveQueue;
+
+                case ErpEventType.ErpExportCustomer:
+                    return ERPQueueSetting.ErpExportCustomerQueue;
+                case ErpEventType.ErpExportInventory:
+                    return ERPQueueSetting.ErpExportInventoryQueue;
+                case ErpEventType.ErpExportInventoryUpdate:
+                    return ERPQueueSetting.ErpExportInventoryUpdateQueue;
+                case ErpEventType.ErpExportWarehouseTransfer:
+                    return ERPQueueSetting.ErpExportWarehouseTransferQueue;
+                case ErpEventType.ErpExportSalesOrder:
+                    return ERPQueueSetting.ErpExportSalesOrderQueue;
+                case ErpEventType.ErpExportShipment:
+                    return ERPQueueSetting.ErpExportShipmentQueue;
+                case ErpEventType.ErpExportInvoice:
+                    return ERPQueueSetting.ErpExportInvoiceQueue;
+                case ErpEventType.ErpExportInvoicePayment:
+                    return ERPQueueSetting.ErpExportInvoicePaymentQueue;
+                case ErpEventType.ErpExportVendor:
+                    return ERPQueueSetting.ErpExportVendorQueue;
+                case ErpEventType.ErpExportPurchaseOrder:
+                    return ERPQueueSetting.ErpExportPurchaseOrderQueue;
+                case ErpEventType.ErpExportPoReceive:
+                    return ERPQueueSetting.ErpExportPoReceiveQueue;
 
                 default:
                     return DefaultQueue;

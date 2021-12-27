@@ -124,6 +124,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChannelOrderID => ChannelOrderID != null;
 
 		/// <summary>
+		/// (Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false")]
+        public long? CentralOrderNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralOrderNum => CentralOrderNum != null;
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralOrderLine. <br> Title: CentralOrderLine Number: Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) The unique number of CentralOrderLine. <br> Title: CentralOrderLine Number: Display: true, Editable: false")]
+        public long? CentralOrderLineNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralOrderLineNum => CentralOrderLineNum != null;
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralProduct. <br> Title: CentralProduct Number: Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) The unique number of CentralProduct. <br> Title: CentralProduct Number: Display: true, Editable: false")]
+        public long? CentralProductNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralProductNum => CentralProductNum != null;
+
+		/// <summary>
+		/// (Readonly) The unique number of DistributionProduct. <br> Title: DistributionProduct Number: Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) The unique number of DistributionProduct. <br> Title: DistributionProduct Number: Display: true, Editable: false")]
+        public long? DistributionProductNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDistributionProductNum => DistributionProductNum != null;
+
+		/// <summary>
 		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false")]

@@ -9,6 +9,12 @@
 	[OrderShipmentNum] [bigint] NOT NULL DEFAULT 0, --(Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 	[OrderShipmentPackageNum] [bigint] NOT NULL DEFAULT 0, --(Readonly) Shipment Package Unique Number. Required, <br> Title: Package Number, Display: true, Editable: false.
 	[ChannelOrderID] [varchar](130) NOT NULL DEFAULT '', --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
+	
+	[CentralOrderNum] [bigint] NULL DEFAULT 0,--(Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false
+	[CentralOrderLineNum] [bigint] NULL DEFAULT 0,--(Readonly) The unique number of CentralOrderLine. <br> Title: CentralOrderLine Number: Display: true, Editable: false
+	[CentralProductNum] [bigint] NULL DEFAULT 0,--(Readonly) The unique number of CentralProduct. <br> Title: CentralProduct Number: Display: true, Editable: false
+	[DistributionProductNum] [bigint] NULL DEFAULT 0,--(Readonly) The unique number of DistributionProduct. <br> Title: DistributionProduct Number: Display: true, Editable: false
+
 	[OrderDCAssignmentLineNum] [bigint] NOT NULL DEFAULT 0, --(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 	[SKU] [varchar](100) NOT NULL DEFAULT '', --Product SKU. <br> Title: Sku, Display: true, Editable: false
 	[ShippedQty] [decimal](24, 6) NOT NULL DEFAULT 0, --Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true

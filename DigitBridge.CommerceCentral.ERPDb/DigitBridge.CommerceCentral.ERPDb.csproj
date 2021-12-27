@@ -35,6 +35,7 @@
     <Folder Include="Attribute\" />
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="CustomDefineCodes\dto\" />
+    <Folder Include="CustomDefineCodes\io\" />
     <Folder Include="DTO\" />
     <Folder Include="eventProcess\" />
     <Folder Include="vendor\dto\" />

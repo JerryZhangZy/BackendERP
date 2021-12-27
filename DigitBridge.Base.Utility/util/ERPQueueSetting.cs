@@ -42,6 +42,18 @@ namespace DigitBridge.Base.Common
         public static string ErpImportVendorQueue = "erp-import-vendor";
         public static string ErpImportPurchaseOrderQueue = "erp-import-purchaseorder";
         public static string ErpImportPoReceiveQueue = "erp-import-poreceive";
+
+        public static string ErpExportCustomerQueue = "erp-export-customer";
+        public static string ErpExportInventoryQueue = "erp-export-inventory";
+        public static string ErpExportInventoryUpdateQueue = "erp-export-inventoryupdate";
+        public static string ErpExportWarehouseTransferQueue = "erp-export-warehousetransfer";
+        public static string ErpExportSalesOrderQueue = "erp-export-salesorder";
+        public static string ErpExportShipmentQueue = "erp-export-shipment";
+        public static string ErpExportInvoiceQueue = "erp-export-invoice";
+        public static string ErpExportInvoicePaymentQueue = "erp-export-invoicepayment";
+        public static string ErpExportVendorQueue = "erp-export-vendor";
+        public static string ErpExportPurchaseOrderQueue = "erp-export-purchaseorder";
+        public static string ErpExportPoReceiveQueue = "erp-export-poreceive";
 #else
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
 
@@ -71,6 +83,18 @@ namespace DigitBridge.Base.Common
         public static string ErpImportVendorQueue = GetValueByName("ErpImportVendorQueueName");
         public static string ErpImportPurchaseOrderQueue = GetValueByName("ErpImportPurchaseOrderQueueName");
         public static string ErpImportPoReceiveQueue = GetValueByName("ErpImportPoReceiveQueueName");
+
+        public static string ErpExportCustomerQueue = GetValueByName("ErpExportCustomerQueueName");
+        public static string ErpExportInventoryQueue = GetValueByName("ErpExportInventoryQueueName");
+        public static string ErpExportInventoryUpdateQueue = GetValueByName("ErpExportInventoryUpdateQueueName");
+        public static string ErpExportWarehouseTransferQueue = GetValueByName("ErpExportWarehouseTransferQueue");
+        public static string ErpExportSalesOrderQueue = GetValueByName("ErpExportSalesOrderQueueName");
+        public static string ErpExportShipmentQueue = GetValueByName("ErpExportShipmentQueueName");
+        public static string ErpExportInvoiceQueue = GetValueByName("ErpExportInvoiceQueueName");
+        public static string ErpExportInvoicePaymentQueue = GetValueByName("ErpExportInvoicePaymentQueueName");
+        public static string ErpExportVendorQueue = GetValueByName("ErpExportVendorQueueName");
+        public static string ErpExportPurchaseOrderQueue = GetValueByName("ErpExportPurchaseOrderQueueName");
+        public static string ErpExportPoReceiveQueue = GetValueByName("ErpExportPoReceiveQueueName");
 #endif
 
         public static string GetValueByName(string name)

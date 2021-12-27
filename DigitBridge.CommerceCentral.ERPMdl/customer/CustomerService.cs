@@ -627,7 +627,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
+        public async Task<IList<CustomerDataDto>> GetCustomerDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
 
+            List();
+            var datas = new List<CustomerDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get Customer by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
         public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum)
         {
             return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, Base.Common.ActivityLogType.Customer);

@@ -135,8 +135,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public class WarehouseTransferFilter
     {
         public string SKU { get; set; }
-        public string WarehouseCode { get; set; }
-        public string WarehouseTransferType { get; set; }
         public string BatchNumberFrom { get; set; }
         public string BatchNumberTo { get; set; }
         public DateTime TransferDateFrom { get; set; }
@@ -150,9 +148,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<WarehouseTransferFilter>()
-                .RuleFor(u => u.SKU, f => "")
-                .RuleFor(u => u.WarehouseCode, f => "")
-                .RuleFor(u => u.WarehouseTransferType, f => "")
                 .RuleFor(u => u.BatchNumberFrom, f => "")
                 .RuleFor(u => u.BatchNumberTo, f => "")
                 .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(30))
@@ -206,7 +201,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<WarehouseTransferFilter>()
-                .RuleFor(u => u.SKU, f => "")
+                //.RuleFor(u => u.SKU, f => "")// Comment out by junxian due to bulid failed
                 .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(30))
                 .RuleFor(u => u.TransferDateFrom, f => f.Date.Recent(1))
                 .RuleFor(u => u.ReceiveDateFrom, f => f.Date.Recent(30))

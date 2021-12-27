@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -27,11 +28,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class ImportExportFilesPayload : PayloadBase
     {
+
+        private string exportUuid;
+        [JsonIgnore]
+        /// <summary>
+        /// (Response Data) Uuid for this Export, this will be Azure Blob name.
+        /// </summary>
+        public string ExportUuid
+        {
+            get
+            {
+                if (exportUuid.IsZero())
+                    return Options?.ExportUuid;
+                return exportUuid;
+            }
+            set
+            { exportUuid = value; }
+        }
+        public virtual bool HasExportUuid => !string.IsNullOrEmpty(ExportUuid);
+
         /// <summary>
         /// (Request Data) Uuid for this Import batch, this will be Azure Blob name.
         /// </summary>
         public string ImportUuid { get; set; }
         public virtual bool HasImportUuid => !string.IsNullOrEmpty(ImportUuid);
+
+        /// <summary>
+        /// (Response Data) List result which load filter.
+        /// </summary>
+        [JsonIgnore] public IDictionary<string, byte[]> ExportFiles { get; set; }
+        [JsonIgnore] public virtual bool HasExportFiles => ExportFiles != null && ExportFiles.Count > 0;
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
@@ -40,6 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasImportFiles => ImportFiles != null && ImportFiles.Count > 0;
         public virtual ImportExportFilesPayload AddFiles(IFormFileCollection files)
         {
+            if (files == null) return this;
             ImportFiles = new Dictionary<string, byte[]>();
             foreach (var file in files)
             {
@@ -62,11 +89,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-
+        private ImportExportOptions options;
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public ImportExportOptions Options { get; set; }
+        public ImportExportOptions Options
+        {
+            get
+            {
+                if (options != null)
+                {
+                    options.DatabaseNum = this.DatabaseNum;
+                    options.MasterAccountNum = this.MasterAccountNum;
+                    options.ProfileNum = this.ProfileNum;
+                }
+                return options;
+            }
+            set { options = value; }
+        }
         [JsonIgnore] public virtual bool HasOptions => Options != null;
         public bool ShouldSerializeOptions() => HasOptions;
 
@@ -97,9 +137,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             Options = req.Form["options"].ToString().JsonToObject<ImportExportOptions>();
             if (Options == null)
                 return false;
-            Options.DatabaseNum = this.DatabaseNum;
-            Options.MasterAccountNum = this.MasterAccountNum;
-            Options.ProfileNum = this.ProfileNum;
 
             ImportUuid = Options.ImportUuid;
             AddFiles(req.Form.Files);
@@ -129,6 +166,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual bool HasImportUuid => !string.IsNullOrEmpty(ImportUuid);
 
         /// <summary>
+        /// (Response Data) Uuid for this Export, this will be Azure Blob name.
+        /// </summary>
+        public string ExportUuid { get; set; }
+        public virtual bool HasExportUuid => !string.IsNullOrEmpty(ExportUuid);
+
+        /// <summary>
         /// (Request Data) Import data type of this Import batch.
         /// </summary>
         public string FormatType { get; set; }
@@ -139,6 +182,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         public int FormatNumber { get; set; }
         public virtual bool HasFormatNumber => FormatNumber > 0;
+
+        /// <summary>
+        /// Export filter
+        /// </summary>
+        public JObject Filter { get; set; }
+        public virtual bool HasFilter => Filter != null;
     }
 
     [Serializable()]

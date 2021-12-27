@@ -63,25 +63,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<SystemSettingPayload>(payload);
         }
 
-        /// <summary>
-        /// Load systemSetting list
-        /// </summary>
-        [FunctionName(nameof(SystemSettingList))]
-        [OpenApiOperation(operationId: "SystemSettingList", tags: new[] { "SystemSetting" }, Summary = "Load systemSetting list data")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind))]
-        public static async Task<JsonNetResponse<SystemSettingPayload>> SystemSettingList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "systemSettings/find")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<SystemSettingPayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new SystemSettingList(dataBaseFactory, new SystemSettingQuery());
-            await srv.GetSystemSettingListAsync(payload);
-            return new JsonNetResponse<SystemSettingPayload>(payload);
-        }
+        ///// <summary>
+        ///// Load systemSetting list
+        ///// </summary>
+        //[FunctionName(nameof(SystemSettingList))]
+        //[OpenApiOperation(operationId: "SystemSettingList", tags: new[] { "SystemSetting" }, Summary = "Load systemSetting list data")]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind))]
+        //public static async Task<JsonNetResponse<SystemSettingPayload>> SystemSettingList(
+        //    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "systemSettings/find")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<SystemSettingPayload>(true);
+        //    var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var srv = new SystemSettingList(dataBaseFactory, new SystemSettingQuery());
+        //    await srv.GetSystemSettingListAsync(payload);
+        //    return new JsonNetResponse<SystemSettingPayload>(payload);
+        //}
 
         /// <summary>
         /// find systemSetting

@@ -58,9 +58,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			obj.Columns = new List<CsvFormatColumn>()
 			{
 				new CsvFormatColumn("CentralProductNum", "", idx++, null, false),
-				new CsvFormatColumn("DatabaseNum", "", idx++, null, false),
-				new CsvFormatColumn("MasterAccountNum", "", idx++, null, false),
-				new CsvFormatColumn("ProfileNum", "", idx++, null, false),
 				new CsvFormatColumn("SKU", "", idx++, null, false),
 				new CsvFormatColumn("FNSku", "", idx++, null, false),
 				new CsvFormatColumn("Condition", "", idx++, null, false),
