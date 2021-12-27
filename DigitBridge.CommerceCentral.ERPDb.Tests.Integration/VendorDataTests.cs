@@ -24,18 +24,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     public partial class VendorDataTests
     {
-        public static async Task<VendorData> AddAsync(IDataBaseFactory dbFactory, int masterAccountNum, int profileNum)
-        {
-            var data = GetFakerData();
-            data.Vendor.MasterAccountNum = masterAccountNum;
-            data.Vendor.ProfileNum = profileNum;
-            data.SetDataBaseFactory(dbFactory);
-            var success = await data.SaveAsync();
-            Assert.True(success, "Save vendor error.");
-
-            return data;
-        }
-
 
     }
 }

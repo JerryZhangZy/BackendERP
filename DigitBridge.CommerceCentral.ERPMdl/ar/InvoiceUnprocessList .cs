@@ -54,7 +54,7 @@ COALESCE(ins.TotalAmount,0) as 'InvoiceHeader.TotalAmount',
 COALESCE(ins.Terms,'') as 'InvoiceHeader.InvoiceTermsType',
 --ins.Terms as 'InvoiceHeader.InvoiceTermsDescrption',
 COALESCE(ins.TermsDays,0) as 'InvoiceHeader.InvoiceTermsDays',
-COALESCE(insi.DBChannelOrderHeaderRowID,0) as 'InvoiceHeader.DBChannelOrderHeaderRowID',
+COALESCE(insi.DBChannelOrderHeaderRowID,'') as 'InvoiceHeader.DBChannelOrderHeaderRowID',
 ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc', 
 ( 
     SELECT 

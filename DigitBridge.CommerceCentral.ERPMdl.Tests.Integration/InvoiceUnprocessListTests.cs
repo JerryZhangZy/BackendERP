@@ -74,8 +74,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var payload = new InvoicePayload()
             {
-                MasterAccountNum = MasterAccountNum,
-                ProfileNum = ProfileNum,
+                MasterAccountNum = 10004,
+                ProfileNum = 10008,
                 LoadAll = true
             };
 
