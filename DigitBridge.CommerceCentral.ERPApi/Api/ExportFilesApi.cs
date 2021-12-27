@@ -192,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         #endregion swagger Doc
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportShipmentFiles(
-[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/customer")] HttpRequest req)
+[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/shipment")] HttpRequest req)
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             payload.LoadRequest(req);

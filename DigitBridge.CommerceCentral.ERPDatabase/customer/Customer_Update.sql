@@ -142,3 +142,16 @@ CREATE NONCLUSTERED INDEX [IX_Customer_SalesRep1234] ON [dbo].[Customer]
 	[SalesRep4] ASC
 ) 
 GO
+
+
+-- 12/27/2021 By Jerry
+IF COL_LENGTH('Customer', 'OrderMiscAmount') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [OrderMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('Customer', 'ItemMiscAmount') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [ItemMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+

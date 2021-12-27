@@ -59,6 +59,9 @@
 	[CommissionRate3] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 	[CommissionRate4] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 
+	[OrderMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+	[ItemMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
