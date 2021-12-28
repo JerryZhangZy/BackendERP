@@ -30,6 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
+{Helper.RowNum()}, 
 {Helper.SalesOrderUuid()}, 
 {Helper.OrderNumber()}, 
 {Helper.OrderType()}, 
