@@ -14,6 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public int CentralOrderLineNum { get; set; }
         public long CentralProductNum { get; set; }
         public string ChannelItemID { get; set; }
+        public string MerchantSKU { get; set; }
         [Required]
         public string SKU { get; set; }
         public string UPC { get; set; }
