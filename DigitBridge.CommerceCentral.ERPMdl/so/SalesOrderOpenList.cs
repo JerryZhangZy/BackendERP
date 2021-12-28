@@ -63,7 +63,8 @@ ord.EtaArrivalDate as 'DeliverByDate',
 ord.SignatureFlag as 'SignatureFlag', 
 
 ordi.ShippingCarrier as 'RequestShippingCarrier',
-ordi.ShippingClass as 'RequestShippingService',
+case when isnull(ordi.ShippingCarrier,'')='' then ShippingClass
+else ordi.ShippingCarrier + ' ' + ordi.ShippingClass end as 'RequestShippingService',
 ordi.ShipToName as 'ShipToName',
 ordi.ShipToFirstName as 'ShipToFirstName',
 ordi.ShipToLastName as 'ShipToLastName',
