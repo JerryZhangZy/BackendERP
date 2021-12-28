@@ -138,7 +138,8 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     chol.LineGiftMsg as 'LineGiftMsg',
     chol.LineGiftNotes as 'LineGiftNotes',
     chol.LinePromotionCodes as 'LinePromotionCodes',
-    chol.LinePromotionTaxAmount as 'LinePromotionTaxAmount' 
+    chol.LinePromotionTaxAmount as 'LinePromotionTaxAmount',
+    olm.MerchantSKU as 'MerchantSKU'
 
     FROM SalesOrderItems ordl
     LEFT JOIN ProductBasic prd
