@@ -86,7 +86,7 @@
 //SettingForShippingCodes
 //SettingForBusinessType
 #>
-<#@ include file="SettingForShipment.ttinclude" #>
+<#@ include file="SettingForCustomer.ttinclude" #>
 <#
     var dtoSuf = "";
     //var GenerateNewName = string.Empty;
