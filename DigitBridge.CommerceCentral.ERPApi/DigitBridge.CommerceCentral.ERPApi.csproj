@@ -16,6 +16,7 @@
     <None Remove="appsettings.json" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DigitBridge.DataSource" Version="1.0.1.5" />
     <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
