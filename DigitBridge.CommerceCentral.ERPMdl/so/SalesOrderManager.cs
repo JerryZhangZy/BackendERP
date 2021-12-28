@@ -445,16 +445,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 data.SalesOrderHeader.CommissionRate4 = customerService.Data.Customer.CommissionRate4;
             }
 
-            if (data.SalesOrderHeader.MiscAmount.IsZero())
+            if (!customerService.Data.Customer.ItemMiscAmount.IsZero())
             {
-                if (!customerService.Data.Customer.ItemMiscAmount.IsZero())
-                {
-                    data.SalesOrderHeader.MiscAmount = data.SalesOrderItems.Sum(i => i.OrderQty) * customerService.Data.Customer.ItemMiscAmount;
-                }
-                else
-                {
-                    data.SalesOrderHeader.MiscAmount = customerService.Data.Customer.OrderMiscAmount;
-                }
+                data.SalesOrderHeader.MiscAmount = data.SalesOrderItems.Sum(i => i.OrderQty) * customerService.Data.Customer.ItemMiscAmount;
+            }
+            else if (!customerService.Data.Customer.OrderMiscAmount.IsZero())
+            {
+                data.SalesOrderHeader.MiscAmount = customerService.Data.Customer.OrderMiscAmount;
             }
 
             return true;

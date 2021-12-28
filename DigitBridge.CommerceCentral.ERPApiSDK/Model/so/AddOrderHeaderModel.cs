@@ -25,6 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         [Required]
         public string ChannelOrderId { get; set; }
         public string SecondaryChannelOrderId { get; set; }
+        public string ERPSalesOrderNumber { get; set; }
         public string SellerOrderId { get; set; }
         public string Currency { get; set; }
         public DateTime OriginalOrderDate { get; set; }
