@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var slf = new SelectListFactory(dataBaseFactory);
             var result = await slf.GetSelectListAsync(payload);
-            return new JsonNetResponse<SelectListPayload>(payload, result ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.BadRequest);
+            return new JsonNetResponse<SelectListPayload>(payload, System.Net.HttpStatusCode.OK);
         }
     }
 }
