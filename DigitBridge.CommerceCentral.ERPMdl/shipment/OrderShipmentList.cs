@@ -28,6 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
+{OrderShipmentHeaderHelper.RowNum()}, 
 {OrderShipmentHeaderHelper.OrderShipmentNum()}, 
 {OrderShipmentHeaderHelper.OrderShipmentUuid()},  
 {OrderShipmentHeaderHelper.DatabaseNum()}, 

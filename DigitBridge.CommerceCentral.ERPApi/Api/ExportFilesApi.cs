@@ -55,8 +55,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportCustomerFiles(
       [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/customer")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
+            //payload.LoadRequest(req);
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportCustomer);
             payload.Messages = svc.Messages;
@@ -78,8 +78,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportVendorFiles(
         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/vendor")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
+            //payload.LoadRequest(req);
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportVendor);
             payload.Messages = svc.Messages;
@@ -100,8 +100,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportWarehouseTransferFiles(
 [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/warehouseTransfer")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
+            //payload.LoadRequest(req);
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportWarehouseTransfer);
             payload.Messages = svc.Messages;
@@ -123,8 +123,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportPurchaseOrderFiles(
 [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/purchaseOrder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
+            //payload.LoadRequest(req);
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportPurchaseOrder);
             payload.Messages = svc.Messages;
@@ -149,8 +149,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportPoReceiveFiles(
     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/poReceive")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
+            //payload.LoadRequest(req);
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportPoReceive);
             payload.Messages = svc.Messages;
@@ -194,8 +194,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> ExportShipmentFiles(
 [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/shipment")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            payload.LoadRequest(req);
+            var payload = await req.GetParameters<ImportExportFilesPayload>(true);
+            //payload.LoadRequest(req);
             var svc = new ExportManger();
             payload.Success = await svc.SendToBlobAndQueue(payload, ErpEventType.ErpExportShipment);
             payload.Messages = svc.Messages;

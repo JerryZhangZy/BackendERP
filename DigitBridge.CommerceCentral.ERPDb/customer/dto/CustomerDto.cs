@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,11 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class CustomerDto
     {
         public long? RowNum { get; set; }
-        [JsonIgnore]
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
-
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -43,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -52,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -61,6 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -206,9 +208,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChannelNum => ChannelNum != null;
 
 		/// <summary>
-		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
+		/// (Readonly) The unique number of this profileâ€™s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of this profileâ€™s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
         public int? ChannelAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -533,6 +535,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCommissionRate4 => CommissionRate4 != null;
+
+		/// <summary>
+		/// Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Handlling fee by order, Title: Order Handling, Display: true, Editable: true")]
+        public decimal? OrderMiscAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderMiscAmount => OrderMiscAmount != null;
+
+		/// <summary>
+		/// Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true")]
+        public decimal? ItemMiscAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasItemMiscAmount => ItemMiscAmount != null;
 
 		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false

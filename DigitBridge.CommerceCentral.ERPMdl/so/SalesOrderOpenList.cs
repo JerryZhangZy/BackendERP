@@ -37,7 +37,8 @@ ordi.ChannelAccountNum as 'ChannelAccountNum',
 channelAccount.ChannelAccountName as 'ChannelAccountName',
 ordi.ChannelOrderId as 'ChannelOrderId',
 ordi.SecondaryChannelOrderId as 'SecondaryChannelOrderId',
-ord.OrderNumber as 'SellerOrderId',
+ord.OrderNumber as 'ERPSalesOrderNumber',
+cho.SellerOrderId as 'SellerOrderId',
 ord.Currency as 'Currency',
 (cast(ord.OrderDate as varchar)+' ' +cast(ord.OrderTime as varchar)) as 'OriginalOrderDate',
 cho.SellerPublicNote as 'SellerPublicNotes',
@@ -63,7 +64,8 @@ ord.EtaArrivalDate as 'DeliverByDate',
 ord.SignatureFlag as 'SignatureFlag', 
 
 ordi.ShippingCarrier as 'RequestShippingCarrier',
-ordi.ShippingClass as 'RequestShippingService',
+case when isnull(ordi.ShippingCarrier,'')='' then ShippingClass
+else ordi.ShippingCarrier + ' ' + ordi.ShippingClass end as 'RequestShippingService',
 ordi.ShipToName as 'ShipToName',
 ordi.ShipToFirstName as 'ShipToFirstName',
 ordi.ShipToLastName as 'ShipToLastName',
@@ -136,7 +138,8 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     chol.LineGiftMsg as 'LineGiftMsg',
     chol.LineGiftNotes as 'LineGiftNotes',
     chol.LinePromotionCodes as 'LinePromotionCodes',
-    chol.LinePromotionTaxAmount as 'LinePromotionTaxAmount' 
+    chol.LinePromotionTaxAmount as 'LinePromotionTaxAmount',
+    olm.MerchantSKU as 'MerchantSKU'
 
     FROM SalesOrderItems ordl
     LEFT JOIN ProductBasic prd
@@ -147,6 +150,8 @@ ordi.BillToNightPhone as 'BillToNightPhone',
 
     LEFT JOIN OrderLine chol
          ON ( chol.CentralOrderLineUuid=ordl.CentralOrderLineUuid)
+
+    LEFT JOIN OrderLineMerchantExt olm ON (olm.CentralOrderLineUuid= ordl.CentralOrderLineUuid)
 
     WHERE ordl.SalesOrderUuid = ord.SalesOrderUuid 
     FOR JSON PATH

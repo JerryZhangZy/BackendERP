@@ -22,6 +22,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -295,11 +296,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await SalesOrderIOCsv.ExportAsync(dtos);
         }
-        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<SalesOrderDataDto> soDatas)
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<SalesOrderDataDto> dataDtos)
         {
             payload.ExportFiles = new Dictionary<string, byte[]>();
-            var files = await SalesOrderIOCsv.ExportAsync(soDatas);
-            payload.ExportFiles.Add(payload.ExportUuid + ".cvs", files);
+            var files = await SalesOrderIOCsv.ExportAsync(dataDtos);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
             return true;
         }
 
@@ -312,14 +314,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await SalesOrderIOCsv.ExportAllColumnsAsync(dtos);
         }
-
-
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>
         public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
         {
-            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ImportUuid))
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
                 return false;
 
             // load export options from Blob
@@ -333,7 +333,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var soDatas = await GetSalesOrderDatasAsync(payload);
             if (soDatas == null)
             {
-                AddError("Get sales order datas error");
+                AddError("Get SalesOrder datas error");
                 return false;
             }
 
@@ -350,7 +350,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //save export file to blob
             return await ExportBlobService.SaveFilesToBlobAsync(payload);
         }
-
         protected async Task<IList<SalesOrderDataDto>> GetSalesOrderDatasAsync(ImportExportFilesPayload payload)
         {
             var soPayload = new SalesOrderPayload()
@@ -358,7 +357,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
                 DatabaseNum = payload.DatabaseNum,
-                Filter = payload.Filter,
+                Filter = payload.Options.Filter,
                 LoadAll = true,
                 IsQueryTotalCount = false,
             };
@@ -377,6 +376,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
 
             return await SalesOrderService.GetSalesOrderDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
         }
     }
 }
