@@ -220,6 +220,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.SalesOrderHeader.SalesRep4 = customer.SalesRep4;
                 dto.SalesOrderHeader.CommissionRate4 = customer.CommissionRate4;
             }
+
+            if (dto.SalesOrderHeader.MiscAmount.IsZero())
+            {
+                if (!customer.ItemMiscAmount.IsZero())
+                {
+                    dto.SalesOrderHeader.MiscAmount = dto.SalesOrderItems.Sum(i => i.OrderQty) * customer.ItemMiscAmount;
+                }
+                else
+                {
+                    dto.SalesOrderHeader.MiscAmount = customer.OrderMiscAmount;
+                }
+            }
+
             return true;
         }
 
