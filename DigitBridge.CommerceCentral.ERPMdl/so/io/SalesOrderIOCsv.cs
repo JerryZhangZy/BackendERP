@@ -222,8 +222,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (header3 != null) headers.AddRange(header3);
 
             // build SalesOrderItems header
-            var (header4, values4) = Format.GetHeaderAndData<SalesOrderItemsDto>(dataList[0].SalesOrderItems[0]);
-            if (header4 != null) headers.AddRange(header4);
+            if (dataList[0].SalesOrderItems.Count != 0)
+            {
+                var (header4, values4) = Format.GetHeaderAndData<SalesOrderItemsDto>(dataList[0].SalesOrderItems[0]);
+                if (header4 != null) headers.AddRange(header4);
+            }
 
             return headers;
         }
