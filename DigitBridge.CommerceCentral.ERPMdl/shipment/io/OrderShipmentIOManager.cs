@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +39,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region Service Property
+        [XmlIgnore, JsonIgnore]
+        protected CustomIOFormatService _CustomIOFormatService;
+        [XmlIgnore, JsonIgnore]
+        public CustomIOFormatService CustomIOFormatService
+        {
+            get
+            {
+                if (_CustomIOFormatService is null)
+                    _CustomIOFormatService = new CustomIOFormatService(dbFactory);
+                return _CustomIOFormatService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected ImportBlobService _ImportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ImportBlobService ImportBlobService
+        {
+            get
+            {
+                if (_ImportBlobService is null)
+                    _ImportBlobService = new ImportBlobService();
+                return _ImportBlobService;
+            }
+        }
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected OrderShipmentList _OrderShipmentList;
+        [XmlIgnore, JsonIgnore]
+        public OrderShipmentList OrderShipmentList
+        {
+            get
+            {
+                if (_OrderShipmentList is null)
+                    _OrderShipmentList = new OrderShipmentList(dbFactory);
+                return _OrderShipmentList;
+            }
+        }
+
         [XmlIgnore, JsonIgnore]
         protected OrderShipmentService _OrderShipmentService;
         [XmlIgnore, JsonIgnore]
@@ -115,7 +168,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _OrderShipmentIOCsv;
             }
         }
-
+        public async Task<bool> LoadFormatAsync(ImportExportFilesPayload payload)
+        {
+            if (!(await CustomIOFormatService.GetByNumberAsync(
+                payload.MasterAccountNum,
+                payload.ProfileNum,
+                payload.Options.FormatType,
+                payload.Options.FormatNumber
+                )))
+            {
+                payload.ReturnError($"Import format not found.");
+                return false;
+            }
+            Format = new OrderShipmentIOFormat();
+            Format.LoadFormat(CustomIOFormatService.Data.CustomIOFormat.GetFormatObject());
+            return true;
+        }
         /// <summary>
         /// Import csv file stream to IList of Dto, depend on format setting
         /// </summary>
@@ -145,7 +213,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await OrderShipmentIOCsv.ExportAsync(dtos);
         }
-
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<OrderShipmentDataDto> datas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await OrderShipmentIOCsv.ExportAsync(datas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
+            return true;
+        }
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
         /// </summary>
@@ -155,7 +230,79 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await OrderShipmentIOCsv.ExportAllColumnsAsync(dtos);
         }
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
 
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query OrderShipment list
+            var soDatas = await GetOrderShipmentDatasAsync(payload);
+            if (soDatas == null)
+            {
+                AddError("Get OrderShipment datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, soDatas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<OrderShipmentDataDto>> GetOrderShipmentDatasAsync(ImportExportFilesPayload payload)
+        {
+            var soPayload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await OrderShipmentList.GetOrderShipmentListAsync(soPayload);
+            if (!soPayload.Success)
+            {
+                this.Messages.Add(OrderShipmentList.Messages);
+                return null;
+            }
+
+            var json = soPayload.OrderShipmentList.ToString();
+            if (json.IsZero()) return new List<OrderShipmentDataDto>();
+
+            var queryResult = JArray.Parse(soPayload.OrderShipmentList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await OrderShipmentService.GetOrderShipmentDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
+        }
     }
 }
 

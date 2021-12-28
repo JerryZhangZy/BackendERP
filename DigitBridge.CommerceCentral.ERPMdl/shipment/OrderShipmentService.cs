@@ -602,7 +602,28 @@ WHERE spc.OrderShipmentUuid=@0
                 return await OrderShipmentHelper.GetShipmentUuidAndInvoiceUuidAsync(shipmentID, masterAccountNum, profileNum);
             }
         }
+        public async Task<IList<OrderShipmentDataDto>> GetOrderShipmentDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
 
+            List();
+            var datas = new List<OrderShipmentDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get OrderShipment by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
+
+            return datas;
+        }
     }
 }
 
