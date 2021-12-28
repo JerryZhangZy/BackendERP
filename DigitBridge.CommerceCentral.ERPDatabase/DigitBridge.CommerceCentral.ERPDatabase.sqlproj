@@ -310,7 +310,7 @@
     <None Include="CustomDefineCodes\CustomIOFormat.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="channelOrder\OrderLineMiscExt.sql" />
+    <None Include="channelOrder\OrderLineMiscExt.sql" />
     <None Include="channelOrder\OrderLineMiscExt_Update.sql" />
     <None Include="ar\InvoiceItems_Update.sql" />
     <None Include="setting\Setting_ShippingCarrier.sql" />
@@ -319,6 +319,8 @@
     <None Include="CustomDefineCodes\PaidbyMap.sql" />
     <None Include="CustomDefineCodes\BusinessType.sql" />
     <None Include="inventory\InventoryLog_Update.sql" />
+    <None Include="channelOrder\OrderLineMerchantExt.sql" />
+    <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />

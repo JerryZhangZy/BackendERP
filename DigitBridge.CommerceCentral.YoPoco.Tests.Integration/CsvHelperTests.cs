@@ -21,6 +21,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -59,6 +60,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             try
             {
                 csvHelper.Export(data, "c:\\temp\\SalesOrderHeader.csv");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async void ImportExcel_Test()
+        {
+            var data = DataBaseFactory.Find<SalesOrderHeader>();
+
+            DataSet result;
+            var csvHelper = new CsvHelper<SalesOrderHeader>();
+            try
+            {
+                result = csvHelper.ImportExcel("c:\\temp\\inv_01.xlsx");
             }
             catch (Exception ex)
             {

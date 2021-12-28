@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -31,6 +32,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         Task<IEnumerable<T>> ImportAsync(string fileName);
         Task<IEnumerable<T>> ImportAsync(Stream stream);
         Task ReadEntitiesAsync(CsvReader reader, IList<T> data);
+
+        DataSet ImportExcel(string fileName);
+
+        DataSet ImportExcel(Stream stream);
 
     }
 }
