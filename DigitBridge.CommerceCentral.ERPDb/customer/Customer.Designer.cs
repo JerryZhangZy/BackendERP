@@ -195,6 +195,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CommissionRate4",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _commissionRate4;
 
+        [Column("OrderMiscAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _orderMiscAmount;
+
+        [Column("ItemMiscAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _itemMiscAmount;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -1051,6 +1057,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal OrderMiscAmount
+        {
+            get
+            {
+				return _orderMiscAmount; 
+            }
+            set
+            {
+				_orderMiscAmount = value; 
+				OnPropertyChanged("OrderMiscAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal ItemMiscAmount
+        {
+            get
+            {
+				return _itemMiscAmount; 
+            }
+            set
+            {
+				_itemMiscAmount = value; 
+				OnPropertyChanged("ItemMiscAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1182,6 +1220,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_commissionRate2 = default(decimal); 
 			_commissionRate3 = default(decimal); 
 			_commissionRate4 = default(decimal); 
+			_orderMiscAmount = default(decimal); 
+			_itemMiscAmount = default(decimal); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

@@ -64,12 +64,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (data is null || dto is null)
 				return;
 
-            #region read all not null properties
+			#region read all not null properties
 
-            if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-            if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-            if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
-            if (dto.HasDigit_seller_id) data.Digit_seller_id = dto.Digit_seller_id;
+			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			if (dto.HasDigit_seller_id) data.Digit_seller_id = dto.Digit_seller_id;
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
 			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
 			if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
@@ -117,6 +117,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCommissionRate2) data.CommissionRate2 = dto.CommissionRate2.ToDecimal();
 			if (dto.HasCommissionRate3) data.CommissionRate3 = dto.CommissionRate3.ToDecimal();
 			if (dto.HasCommissionRate4) data.CommissionRate4 = dto.CommissionRate4.ToDecimal();
+			if (dto.HasOrderMiscAmount) data.OrderMiscAmount = dto.OrderMiscAmount.ToDecimal();
+			if (dto.HasItemMiscAmount) data.ItemMiscAmount = dto.ItemMiscAmount.ToDecimal();
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -305,6 +307,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.CommissionRate2 = data.CommissionRate2;
 			dto.CommissionRate3 = data.CommissionRate3;
 			dto.CommissionRate4 = data.CommissionRate4;
+			dto.OrderMiscAmount = data.OrderMiscAmount;
+			dto.ItemMiscAmount = data.ItemMiscAmount;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
