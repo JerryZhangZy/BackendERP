@@ -56,4 +56,13 @@ END
 IF COL_LENGTH('SalesOrderItems', 'CommissionAmount') IS NULL					
 BEGIN					
     ALTER TABLE SalesOrderItems ADD [CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
-END					
+END			
+
+
+--12/28/2021 By junxian
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'IX_SalesOrderItems_CentralOrderLineUuid')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderItems_CentralOrderLineUuid] ON [dbo].[SalesOrderItems]
+(
+	[CentralOrderLineUuid] ASC
+)  
+GO
