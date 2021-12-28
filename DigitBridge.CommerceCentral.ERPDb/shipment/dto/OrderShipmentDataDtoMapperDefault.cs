@@ -134,6 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
             if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
             if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
+            if (dto.HasTotalHandlingFee) data.TotalHandlingFee = dto.TotalHandlingFee.ToDecimal();
 
             #endregion read properties
 
@@ -227,6 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasHasChildPackage) data.HasChildPackage = dto.HasChildPackage.ToBool();
             if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
             if (dto.HasOrderShipmentPackageUuid) data.OrderShipmentPackageUuid = dto.OrderShipmentPackageUuid;
+            if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
 
             #endregion read properties
 
@@ -296,6 +298,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasOrderShipmentPackageNum) data.OrderShipmentPackageNum = dto.OrderShipmentPackageNum.ToLong();
             if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
             if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum.ToLong();
+            if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum;
+            if (dto.HasCentralOrderLineNum) data.CentralOrderLineNum = dto.CentralOrderLineNum.ToLong();
+            if (dto.HasCentralProductNum) data.CentralProductNum = dto.CentralProductNum.ToLong();
+            if (dto.HasDistributionProductNum) data.DistributionProductNum = dto.DistributionProductNum.ToLong();
             if (dto.HasSKU) data.SKU = dto.SKU;
             if (dto.HasShippedQty) data.ShippedQty = dto.ShippedQty.ToDecimal();
             if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
@@ -422,7 +428,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.InvoiceUuid = data.InvoiceUuid;
             dto.SalesOrderUuid = data.SalesOrderUuid;
             dto.OrderNumber = data.OrderNumber;
-
+            dto.TotalHandlingFee = data.TotalHandlingFee;
             #endregion read properties
 
             return;
@@ -514,6 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.OrderShipmentPackageUuid = data.OrderShipmentPackageUuid;
             dto.RowNum = data.RowNum;
             dto.DigitBridgeGuid = data.DigitBridgeGuid;
+            dto.CentralOrderNum = data.CentralOrderNum;
 
             #endregion read properties
 
@@ -568,6 +575,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.OrderShipmentPackageNum = data.OrderShipmentPackageNum;
             dto.ChannelOrderID = data.ChannelOrderID;
             dto.OrderDCAssignmentLineNum = data.OrderDCAssignmentLineNum;
+            dto.CentralOrderNum = data.CentralOrderNum;
+            dto.CentralOrderLineNum = data.CentralOrderLineNum;
+            dto.CentralProductNum = data.CentralProductNum;
+            dto.DistributionProductNum = data.DistributionProductNum;
             dto.SKU = data.SKU;
             dto.ShippedQty = data.ShippedQty;
             dto.DBChannelOrderLineRowID = data.DBChannelOrderLineRowID;

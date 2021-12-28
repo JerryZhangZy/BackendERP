@@ -18,6 +18,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.CommerceCentral.AzureStorage;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -285,6 +287,36 @@ AND NOT EXISTS (SELECT * FROM Inventory i WHERE i.ProductUuid = prd.ProductUuid)
 
             return true;
         }
+
+        /// <summary>
+        /// Check Sku exist in ProductBasic but not exist in ERP ProductExet and Inventory by ProductBasic SKU,
+        /// Add add sku to ERP tables
+        /// </summary>
+        public async Task<bool> SyncFromProductBasic(int masterAccountNum, int profileNum)
+        {
+            var uuids = dbFactory.Db.Query<string>(
+@$"SELECT 
+pb.ProductUuid 
+FROM ProductBasic pb 
+LEFT JOIN ProductExt pe ON pb.ProductUuid=pe.ProductUuid
+WHERE pb.MasterAccountNum=@0 AND 
+pb.ProfileNum=@1 AND 
+pe.ProductUuid IS NULL",
+masterAccountNum,
+profileNum
+);
+
+            foreach (var uuid in uuids)
+                await QueueUniversal<ERPQueueMessage>.SendMessageAsync(ERPQueueSetting.ERPSyncProductQueue, MySingletonAppSetting.AzureWebJobsStorage, new ERPQueueMessage()
+                {
+                    //DatabaseNum = payload.DatabaseNum,
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    ProcessUuid = uuid,
+                });
+            return true;
+        }
+
 
         #region DataBase
         [XmlIgnore, JsonIgnore]

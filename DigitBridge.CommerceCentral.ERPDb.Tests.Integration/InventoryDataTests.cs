@@ -48,7 +48,7 @@ where tmp.rid=1
 ";
             var inventories = dbFactory.Find<Inventory>(sql).ToArray();
             var success = inventories != null && inventories.Length >= count;
-            Assert.True(success, "Inventory is not enough"); 
+            Assert.True(success, "Inventory is not enough");
 
             var randomIndexs = GetRandomIndex(inventories.Length - 1, count);
             var result = new List<Inventory>();
@@ -60,7 +60,7 @@ where tmp.rid=1
         }
 
         private static List<int> GetRandomIndex(int max, int count = 10)
-        { 
+        {
             var result = new List<int>();
             while (result.Count < count)
             {
@@ -72,6 +72,30 @@ where tmp.rid=1
             }
             return result;
         }
+
+        /// <summary>
+        /// get specified count Inventorys
+        /// </summary>
+        /// <param name="dbFactory"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static Inventory[] GetInventories(IDataBaseFactory dbFactory, int masterAccountNum, int profileNum)
+        {
+            var sql = $@" 
+select WarehouseCode,SKU,ProductUuid,InventoryUuid,WarehouseUuid 
+from 
+(
+    SELECT  WarehouseCode,SKU,ProductUuid,InventoryUuid,WarehouseUuid
+    ,ROW_NUMBER() over(partition by SKU order by rownum desc) as rid
+    FROM [dbo].[Inventory]
+    where MasterAccountNum = {masterAccountNum} and ProfileNum = {profileNum}
+) tmp 
+where tmp.rid=1
+";
+            var inventories = dbFactory.Find<Inventory>(sql).ToArray();
+            return inventories;
+        }
+
     }
 }
 

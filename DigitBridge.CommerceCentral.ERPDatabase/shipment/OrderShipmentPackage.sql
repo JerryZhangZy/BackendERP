@@ -22,6 +22,8 @@
 	[HasChildPackage] [bit] NOT NULL DEFAULT 0, --Has Child Package. <br> Title: Has Child, Display: true, Editable: true
 	[EnterDateUtc] [datetime] NOT NULL DEFAULT (getutcdate()), --(Ignore) 
 
+	[CentralOrderNum] [bigint] NULL DEFAULT 0,--(Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false
+
     [OrderShipmentUuid] VARCHAR(50) NOT NULL DEFAULT '', --Shipment uuid. <br> Display: false, Editable: false.
     [OrderShipmentPackageUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Shipment Pachage uuid. <br> Display: false, Editable: false.
     [RowNum] BIGINT NOT NULL DEFAULT 0, --(Ignore)

@@ -62,4 +62,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         }
 
     }
+
+    //Example:
+    //var erpApi = new ErpProductSyncClient();
+    //await erpApi.SyncFromProductBasicAsync(masterAccountNum, profileNum);
+
 }

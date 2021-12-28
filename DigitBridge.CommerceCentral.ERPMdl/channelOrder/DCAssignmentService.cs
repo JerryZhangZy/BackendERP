@@ -294,7 +294,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result;
         }
 
+        public async Task<IEnumerable<OrderDCAssignmentLine>> GetItemsWithPartialColumnsAsync(int masterAccountNum, int profileNum, long centralOrderNum)
+        {
+            var sql_Item = $@" 
+select line.CentralOrderNum
+,line.CentralOrderLineNum
+,line.CentralProductNum
+,line.DBChannelOrderLineRowID  
+,line.DistributionProductNum
+,line.DBChannelOrderLineRowID  
+from OrderDCAssignmentLine line 
+where line.CentralOrderNum=@0
+AND line.MasterAccountNum=@1
+AND line.ProfileNum=@2 
+;
+";
+            var items = await dbFactory.FindAsync<OrderDCAssignmentLine>(sql_Item
+                      , centralOrderNum.ToSqlParameter("centralOrderNum")
+                      , masterAccountNum.ToSqlParameter("masterAccountNum")
+                      , profileNum.ToSqlParameter("profileNum")
+                  );
 
+            return items;
+
+        }
     }
 }
 
