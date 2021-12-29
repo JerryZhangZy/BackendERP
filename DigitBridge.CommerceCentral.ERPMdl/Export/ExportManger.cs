@@ -1,7 +1,9 @@
 ﻿using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.YoPoco;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -64,5 +66,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+        public async Task<bool> FindExportProcessUuidsAsync(IDataBaseFactory dataBaseFactory, ImportExportFilesPayload payload)
+        {
+            try
+            {
+                payload.ExportUuids = await dataBaseFactory.Db.FetchAsync<string>(
+                    $"SELECT ProcessUuid FROM ExportFiles WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND Status=0");
+                return true;
+            }
+            catch(Exception ex)
+            {
+                AddError(ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> UpdateExportStatus(IDataBaseFactory dataBaseFactory, ImportExportFilesPayload payload)
+        {
+            try
+            {
+                return await dataBaseFactory.Db.ExecuteAsync(
+                    $"UPDATE ExportFiles SET Status=1, UpdateDateUtc=GETUTCDATE() WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND ProcessUuid='{payload.ExportUuid}' AND Status=0") == 1;
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.Message);
+                return false;
+            }
+        }
     }
 }

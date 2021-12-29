@@ -127,8 +127,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
                     await blobContainer.UploadBlobAsync(item.Key, item.Value);
                     await SqlQuery.ExecuteNonQueryAsync(
-@$"INSERT INTO ExportFiles(DatabaseNum,MasterAccountNum,ProfileNum,Category,ContainerReference,BlobReference) VALUES
-({payload.DatabaseNum},{payload.MasterAccountNum},{payload.ProfileNum},'','{ContainerName(payload.ExportUuid)}','{item.Key.ToSqlSafeString()}')");
+@$"INSERT INTO ExportFiles(DatabaseNum,MasterAccountNum,ProfileNum,ProcessUuid) VALUES
+({payload.DatabaseNum},{payload.MasterAccountNum},{payload.ProfileNum},'{payload.ExportUuid}')");
                 }
                 catch (Exception e)
                 {

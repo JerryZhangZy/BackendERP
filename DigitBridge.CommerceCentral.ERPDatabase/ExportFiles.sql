@@ -4,9 +4,7 @@
 	[MasterAccountNum] [int] NOT NULL,
 	[ProfileNum] [int] NOT NULL,
 	[Status] [tinyint] NOT NULL DEFAULT 0,
-	[Category] [varchar](50) NOT NULL,
-	[ContainerReference] [varchar](255) NOT NULL,
-	[BlobReference] [varchar](255) NOT NULL,
+	[ProcessUuid] [varchar](50) NOT NULL,
 	[UpdateDateUtc] [datetime] NULL,
 	[EnterDateUtc] [datetime] NOT NULL DEFAULT (getutcdate()),
  CONSTRAINT [PK_ExportFiles] PRIMARY KEY CLUSTERED 
@@ -17,10 +15,11 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ExportFiles]') AND name = N'IX_ExportFiles_AuthStatus')
-CREATE NONCLUSTERED INDEX [IX_ExportFiles_AuthStatus] ON [dbo].[ExportFiles]
+CREATE NONCLUSTERED INDEX [IX_ExportFiles_AuthStatusUuid] ON [dbo].[ExportFiles]
 (
 	[MasterAccountNum] ASC,
 	[ProfileNum] ASC,
-	[Status] ASC
+	[Status] ASC,
+	[ProcessUuid] ASC
 ) 
 GO

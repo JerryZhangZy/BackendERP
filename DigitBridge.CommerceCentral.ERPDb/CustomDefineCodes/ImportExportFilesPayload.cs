@@ -48,6 +48,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual bool HasExportUuid => !string.IsNullOrEmpty(ExportUuid);
 
         /// <summary>
+        /// (Response Data) Uuid for this Export, this will be Azure Blob name.
+        /// </summary>
+        public List<string> ExportUuids { get; set; }
+        public virtual bool HasExportUuids => ExportUuids != null && ExportUuids.Count > 0;
+
+        /// <summary>
         /// (Request Data) Uuid for this Import batch, this will be Azure Blob name.
         /// </summary>
         public string ImportUuid { get; set; }
