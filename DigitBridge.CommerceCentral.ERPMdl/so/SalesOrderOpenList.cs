@@ -27,6 +27,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
+ --declare  @MasterAccountNum int=10001
+ --declare  @ProfileNum int=10001
+ --declare  @EventProcessActionStatus int=0
+ --declare @OrderStatus_Cancelled int=255
+ --declare @OrderStatus_hold int=16
+ --declare @ERPEventProcessType int=2
+
             SELECT 
 ord.SalesOrderUuid as 'SalesOrderUuid',
 ordi.WarehouseCode as 'WarehouseCode',
