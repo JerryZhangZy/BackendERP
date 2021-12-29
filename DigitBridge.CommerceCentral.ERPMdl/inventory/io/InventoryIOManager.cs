@@ -356,12 +356,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (json.IsZero()) return new List<InventoryDataDto>();
 
             var queryResult = JArray.Parse(inventoryPayload.InventoryList.ToString());
-            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+            var skus = queryResult.Select(i => i.Value<string>("sKU")).ToList();
 
             var list = new List<InventoryDataDto>();
-            foreach (var rownum in rownums)
+            foreach (var sku in skus)
             {
-                if (await InventoryService.GetDataAsync(rownum))
+                if (await InventoryService.GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum))
                     list.Add(InventoryService.ToDto());
             }
             return list;

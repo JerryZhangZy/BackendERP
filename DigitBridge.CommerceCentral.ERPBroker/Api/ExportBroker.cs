@@ -184,8 +184,8 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         /// <param name="myQueueItem"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        [FunctionName("ExportInventoryFiles")]
-        public static async Task ExportInventoryFiles([QueueTrigger(QueueName.Erp_Export_Inventory)] string myQueueItem, ILogger log)
+        [FunctionName("ExportInventory")]
+        public static async Task ExportInventory([QueueTrigger(QueueName.Erp_Export_Inventory)] string myQueueItem, ILogger log)
         {
             var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
             var payload = new ImportExportFilesPayload()
@@ -196,7 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new InventoryIOManager(dbFactory);
-            var success = await service.ExportAsync(payload);
+            await service.ExportAsync(payload);
             // TODO if false write error to log.
         }
 
