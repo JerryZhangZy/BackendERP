@@ -17,6 +17,8 @@ BEGIN
 	--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_OrderNumber')
 	CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_OrderNumber] ON [dbo].[InvoiceHeader]
 	(
+		[MasterAccountNum] ASC, 
+		[ProfileNum] ASC,
 		[OrderNumber] ASC
 	) 
 END	
@@ -28,6 +30,8 @@ BEGIN
 	--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_ShipDate')
 	CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_ShipDate] ON [dbo].[InvoiceHeader]
 	(
+		[MasterAccountNum] ASC, 
+		[ProfileNum] ASC,
 		[ShipDate] ASC
 	) 
 END	 
@@ -51,24 +55,32 @@ END
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_InvoiceDate')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_InvoiceDate] ON [dbo].[InvoiceHeader]
 (
+	[MasterAccountNum] ASC, 
+	[ProfileNum] ASC,
 	[InvoiceDate] ASC
 ) 
 GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_DueDate')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_DueDate] ON [dbo].[InvoiceHeader]
 (
+	[MasterAccountNum] ASC, 
+	[ProfileNum] ASC,
 	[DueDate] ASC
 ) 
 GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerCode')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerCode] ON [dbo].[InvoiceHeader]
 (
+	[MasterAccountNum] ASC, 
+	[ProfileNum] ASC,
 	[CustomerCode] ASC
 ) 
 GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerName')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerName] ON [dbo].[InvoiceHeader]
 (
+	[MasterAccountNum] ASC, 
+	[ProfileNum] ASC,
 	[CustomerName] ASC
 ) 
 GO
@@ -154,6 +166,8 @@ END
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_SalesRep1234')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_SalesRep1234] ON [dbo].[InvoiceHeader]
 (
+	[MasterAccountNum] ASC, 
+	[ProfileNum] ASC,
 	[SalesRep] ASC,
 	[SalesRep2] ASC,
 	[SalesRep3] ASC,
