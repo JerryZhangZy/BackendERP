@@ -79,21 +79,21 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'UK_SalesOrderHeaderInfo_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'UK_SalesOrderHeaderInfo_SalesOrderUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeaderInfo_SalesOrderUuid] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[SalesOrderUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[CentralOrderNum] ASC
 )  
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_OrderSourceCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_DistributionCenterNum_CentralOrderNum')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_DistributionCenterNum_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[DistributionCenterNum] ASC,
@@ -101,12 +101,14 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_DistributionCenterNum_Central
 )  
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_ShippingCarrier')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShippingCarrier] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[ShippingCarrier] ASC
 )  
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_ChannelOrderID')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_ChannelOrderID] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[ChannelNum] ASC,
@@ -115,6 +117,7 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_WarehouseCode_RefNum_CustomerPoNum')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_WarehouseCode_RefNum_CustomerPoNum] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[WarehouseCode] ASC,
@@ -123,6 +126,7 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_WarehouseCode_RefNum_Customer
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipToPostalCode')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipToPostalCode] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[ShipToName] ASC,
@@ -131,11 +135,3 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipTo
 ) 
 GO
 
-CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_SalesRep1234] ON [dbo].[SalesOrderHeaderInfo]
-(
-	[SalesRep] ASC,
-	[SalesRep2] ASC,
-	[SalesRep3] ASC,
-	[SalesRep4] ASC
-) 
-GO

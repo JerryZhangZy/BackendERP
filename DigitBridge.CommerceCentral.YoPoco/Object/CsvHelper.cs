@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
@@ -11,6 +12,7 @@ using System.Xml.Serialization;
 using CsvHelper;
 using CsvHelper.Configuration;
 using DigitBridge.Base.Utility;
+using DigitBridge.DataSource;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -331,6 +333,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         #endregion import 
+
+        #region excel import 
+        public virtual DataSet ImportExcel(string fileName)
+        {
+            using (var reader = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                return ImportExcel(reader);
+        }
+
+        public virtual DataSet ImportExcel(Stream stream)
+        {
+            var ds = DataTableOperator.TranslateExcelToDataSet(stream);
+            return ds;
+        }
+        #endregion excel import 
 
         #region message
         [XmlIgnore, JsonIgnore]

@@ -207,14 +207,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 			// build OrderShipmentHeader header
 			var (header1, values1) = Format.GetHeaderAndData<OrderShipmentHeaderDto>(dataList[0].OrderShipmentHeader);
 			if (header1 != null) headers.AddRange(header1);
-			
-			// build OrderShipmentCanceledItem header
-			var (header2, values2) = Format.GetHeaderAndData<OrderShipmentCanceledItemDto>(dataList[0].OrderShipmentCanceledItem[0]);
-			if (header2 != null) headers.AddRange(header2);
-			
-			// build OrderShipmentPackage header
-			var (header3, values3) = Format.GetHeaderAndData<OrderShipmentPackageDto>(dataList[0].OrderShipmentPackage[0]);
-			if (header3 != null) headers.AddRange(header3);
+
+            // build OrderShipmentCanceledItem header
+            if (dataList[0].OrderShipmentCanceledItem.Count != 0)
+            {
+                var (header2, values2) = Format.GetHeaderAndData<OrderShipmentCanceledItemDto>(dataList[0].OrderShipmentCanceledItem[0]);
+                if (header2 != null) headers.AddRange(header2);
+            }
+            // build OrderShipmentPackage header
+            if (dataList[0].OrderShipmentPackage.Count != 0)
+            {
+                var (header3, values3) = Format.GetHeaderAndData<OrderShipmentPackageDto>(dataList[0].OrderShipmentPackage[0]);
+                if (header3 != null) headers.AddRange(header3);
+            }
 			
             return headers;
         }

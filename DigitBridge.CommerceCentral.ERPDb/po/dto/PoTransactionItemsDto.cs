@@ -486,6 +486,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <summary>
         /// po item po Qty
         /// </summary>
+        
         public virtual decimal PoQty { get; set; }
 
         /// <summary>

@@ -128,57 +128,31 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 ExportUuid = message.ProcessUuid,
             };
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            //var service = new ShipmentIOManager(dbFactory);
-            //await service.ExportAsync(payload);
+            var service = new OrderShipmentIOManager(dbFactory);
+            await service.ExportAsync(payload);
         }
 
-        //
-        //[FunctionName("ExportPurchaseOrder")]
-        //public static async Task ExportPurchaseOrder([QueueTrigger(QueueName.Erp_Export_PurchaseOrder)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new PurchaseOrderIOManager(dbFactory);
-        //    await service.ExportAsync(payload);
-        //}
+
+        [FunctionName("ExportSalesOrder")]
+        public static async Task ExportSalesOrder([QueueTrigger(QueueName.Erp_Export_SalesOrder)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new SalesOrderIOManager(dbFactory);
+            await service.ExportAsync(payload);
+        }
+     
 
 
-        //[FunctionName("ExportPoReceive")]
-        //public static async Task ExportPoReceive([QueueTrigger(QueueName.Erp_Export_PoReceive)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new PoReceiveIOManager(dbFactory);
-        //    await service.ExportAsync(payload);
-        //}
+       
 
-
-        //[FunctionName("ExportWarehouseTransfer")]
-        //public static async Task ExportWarehouseTransfer([QueueTrigger(QueueName.Erp_Export_WarehouseTransfer)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new WarehouseTransferIOManager(dbFactory);
-        //    await service.ExportAsync(payload);
-        //}
+ 
 
 
 
