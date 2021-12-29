@@ -27,6 +27,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
+ --declare  @MasterAccountNum int=10001
+ --declare  @ProfileNum int=10001
+ --declare  @EventProcessActionStatus int=0
+ --declare @OrderStatus_Cancelled int=255
+ --declare @OrderStatus_hold int=16
+ --declare @ERPEventProcessType int=2
+
             SELECT 
 ord.SalesOrderUuid as 'SalesOrderUuid',
 ordi.WarehouseCode as 'WarehouseCode',
@@ -139,7 +146,17 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     chol.LineGiftNotes as 'LineGiftNotes',
     chol.LinePromotionCodes as 'LinePromotionCodes',
     chol.LinePromotionTaxAmount as 'LinePromotionTaxAmount',
-    olm.MerchantSKU as 'MerchantSKU'
+    olm.MerchantSKU as 'MerchantSKU',
+--TODO mapping following columns
+    olm.MerchantColorCode as 'MerchantColorCode',
+    olm.MerchantSizeCode as 'MerchantSizeCode',
+    chol.UPC as 'LineUPC',
+    chol.EAN as 'LineEAN',
+    '' as 'ReferenceLine1',
+    '' as 'ReferenceLine2',
+    '' as 'ReferenceLine3',
+    0 as 'Length'
+--TODO mapping above columns
 
     FROM SalesOrderItems ordl
     LEFT JOIN ProductBasic prd

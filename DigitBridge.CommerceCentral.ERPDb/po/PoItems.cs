@@ -23,6 +23,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 "CancelledQty"
             };
 
+        /// <summary>
+        /// PoNum of the item.
+        /// </summary>
+        public string PoNum { get; set; }
     }
 }
 

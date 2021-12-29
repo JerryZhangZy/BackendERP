@@ -174,3 +174,9 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_SalesRep1234] ON [dbo].[InvoiceHeade
 	[SalesRep4] ASC
 ) 
 GO
+
+--12/29/2021 added by junxian cui
+IF COL_LENGTH('InvoiceHeader', 'ShippingCost') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceHeader ADD [ShippingCost] DECIMAL(24, 6) NOT NULL DEFAULT 0 
+END					

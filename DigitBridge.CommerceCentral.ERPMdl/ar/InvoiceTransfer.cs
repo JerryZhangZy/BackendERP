@@ -120,7 +120,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TaxAmount
             invoiceHeader.DiscountRate = soHeader.DiscountRate;
             invoiceHeader.DiscountAmount = soHeader.DiscountAmount;
-            invoiceHeader.ShippingAmount = osHeader.ShippingCost;
+            invoiceHeader.ShippingAmount = soHeader.ShippingAmount;//user pay shipping amount
+            invoiceHeader.ShippingCost = osHeader.ShippingCost;//in theory,customer pay shipping carrier amount.
             //ShippingTaxAmount
             invoiceHeader.MiscAmount = soHeader.MiscAmount;
             //MiscTaxAmount

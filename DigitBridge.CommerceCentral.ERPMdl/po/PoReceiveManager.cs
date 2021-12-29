@@ -258,7 +258,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="payload"></param>
         /// <returns></returns>
-        protected async Task<bool> AddPoTransAsync(PoReceivePayload payload)
+        public async Task<bool> AddPoTransAsync(PoReceivePayload payload)
         {
             var results = new List<WMSPoReceivePayload>();
             if (!ValidateReceiveItem(payload))
@@ -303,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             //get poitems 
             var poItemUuids = payload.WMSPoReceiveItems.Select(i => i.PoItemUuid).Distinct().ToList();
-            var poItems = await purchaseOrderService.GetItems(payload.MasterAccountNum, payload.ProfileNum, poItemUuids);
+            var poItems = await purchaseOrderService.GetItemWithPartialFields(payload.MasterAccountNum, payload.ProfileNum, poItemUuids);
 
             var poTransItems = new List<PoTransactionItems>();
             foreach (var wmsPoReceiveItem in payload.WMSPoReceiveItems)
@@ -333,6 +333,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 poTransItem.Costable = poItem.Costable;
                 poTransItem.IsAp = poItem.IsAp;
                 poTransItem.Taxable = poItem.Taxable;
+                poTransItem.PoNum = poItem.PoNum;
             }
             return poTransItem;
         }
@@ -372,7 +373,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             foreach (var dto in dtos)
             {
-                 
+
                 vendorPayload.PoTransaction = dto;
                 await _poReceiveService.ImportAsync(vendorPayload);
                 vendorPayload.PoTransaction = null;

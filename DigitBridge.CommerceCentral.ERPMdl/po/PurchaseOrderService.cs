@@ -530,7 +530,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region add
- 
+
             // set Add mode and clear data
             Add();
             FromDto(payload.PurchaseOrder);
@@ -663,25 +663,47 @@ where poi.PoUuid=@0;
 
         #region Get merged po data list by po item uuid list 
 
-        public async Task<IEnumerable<PoItems>> GetItems(int masterAccountNum, int profileNum, List<string> poItemUuids)
+        public async Task<IList<PoItems>> GetItemWithPartialFields(int masterAccountNum, int profileNum, List<string> poItemUuids)
         {
             var sql_Item = $@" 
-select poi.* 
+select 
+poh.PoNum
+,poi.PoItemUuid
+,poh.PoUuid
+,poi.Price
+,poi.Currency
+,poi.Costable
+,poi.IsAp
+,poi.Taxable
+
 from PoHeader poh 
 JOIN PoItems  poi on poh.PoUuid=poi.PoUuid
-JOIN @0 poItemUuid on poItemUuid.item=poi.PoItemUuid
-where poh.MasterAccountNum=@1
-AND poh.ProfileNum=@2 
+JOIN @poItemUuids poItemUuid on poItemUuid.item=poi.PoItemUuid
+where poh.MasterAccountNum=@masterAccountNum
+AND poh.ProfileNum=@profileNum 
 ;
 ";
-            var poItems = await dbFactory.FindAsync<PoItems>(sql_Item
-                      , poItemUuids.ToParameter<string>("poItemUuids")
-                      , masterAccountNum.ToSqlParameter("masterAccountNum")
-                      , profileNum.ToSqlParameter("profileNum")
-                  );
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                var poItems = await SqlQuery.ExecuteAsync(sql_Item
+               , (string poNum, string poItemUuid, string poUuid, decimal price, string currency, bool costable, bool isAp, bool taxable) => new PoItems()
+               {
+                   PoNum = poNum,
+                   PoItemUuid = poItemUuid,
+                   PoUuid = poUuid,
+                   Price = price,
+                   Currency = currency,
+                   Costable = costable,
+                   IsAp = isAp,
+                   Taxable = taxable,
+               }
+               , poItemUuids.ToParameter<string>("poItemUuids")
+                     , masterAccountNum.ToSqlParameter("masterAccountNum")
+                     , profileNum.ToSqlParameter("profileNum")
+                 );
 
-            return poItems;
-
+                return poItems;
+            }
         }
         public async Task<IEnumerable<PoHeader>> GetHeaders(int masterAccountNum, int profileNum, List<string> poUuids)
         {

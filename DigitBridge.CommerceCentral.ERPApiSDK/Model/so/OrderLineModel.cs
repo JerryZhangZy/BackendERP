@@ -39,5 +39,14 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public short BundleType { get; set; }
         public long BundleItemFulfilmentLineNum { get; set; }
         public DateTime EnterDate { get; set; }
+
+        public string MerchantColorCode { get; set; }
+        public string MerchantSizeCode { get; set; }
+        public string LineUPC { get; set; }
+        public string LineEAN { get; set; }
+        public string ReferenceLine1 { get; set; }
+        public string ReferenceLine2 { get; set; }
+        public string ReferenceLine3 { get; set; }
+        public decimal? Length { get; set; }
     }
 }
