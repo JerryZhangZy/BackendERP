@@ -22,27 +22,37 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'UI_InitNumbersId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'UI_InitNumbersId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InitNumbersUuid] ON [dbo].[InitNumbers]
 (
 	[InitNumbersUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'FK_CustomerUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'FK_CustomerUuid')
 CREATE INDEX [FK_CustomerUuid] ON [dbo].[InitNumbers]
 (
 	[CustomerUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'UI_CustomerUuid_Type')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomerUuid_Type] ON [dbo].[InitNumbers]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'UI_CustomerUuid_Type')
+CREATE NONCLUSTERED INDEX [IX_CustomerUuid_Type] ON [dbo].[InitNumbers]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerUuid] ASC,
 	[Type] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InitNumbers]') AND name = N'IX_InitNumbers_Type')
+CREATE NONCLUSTERED INDEX [IX_InitNumbers_Type] ON [dbo].[InitNumbers]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[Type] ASC
+) ON [PRIMARY]
+GO
 
 
