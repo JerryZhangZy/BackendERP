@@ -201,6 +201,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
+        }
 
         [FunctionName(nameof(ExportInventoryFiles))]
         #region swagger Doc
@@ -221,8 +222,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
-        }
-
         }
 
 
