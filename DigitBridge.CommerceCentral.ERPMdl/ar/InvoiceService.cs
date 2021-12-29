@@ -707,7 +707,28 @@ AND ProfileNum=@3
 
         #endregion
 
+        public async Task<IList<InvoiceDataDto>> GetInvoiceDtosAsync(IList<long> rownums)
+        {
+            if (rownums == null)
+                return null;
+            
+            List();
+            var datas = new List<InvoiceDataDto>();
+            foreach (var rownum in rownums)
+            {
+                if (!await GetDataAsync(rownum))
+                {
+                    AddError($"Get Invoice by rownum error, rownum:{rownum}");
+                }
+                else
+                {
+                    datas.Add(this.ToDto());
+                    this.DetachData(this.Data);
+                }
+            }
 
+            return datas;
+        }
         public async Task<bool> UpdateStatusAsync(long rowNum, InvoiceStatusEnum status)
         {
             if (rowNum == 0) return false;

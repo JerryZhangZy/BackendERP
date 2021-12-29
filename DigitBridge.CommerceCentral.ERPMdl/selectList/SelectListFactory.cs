@@ -82,7 +82,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload.Name.EqualsIgnoreSpace("system_Model")) return new system_Model(dbFactory);
             if (payload.Name.EqualsIgnoreSpace("system_UOM")) return new system_UOM(dbFactory);
             if (payload.Name.EqualsIgnoreSpace("system_Terms")) return new system_Terms(dbFactory);
-            if (payload.Name.EqualsIgnoreSpace("system_BusinessType")) return new system_BusinessType(dbFactory);
+            //if (payload.Name.EqualsIgnoreSpace("system_BusinessType")) return new system_BusinessType(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("system_warehouseCode")) return new system_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_shippingCode")) return new system_shippingCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_shippingCarrier")) return new system_shippingCarrier(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_shippingClass")) return new system_shippingClass(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_businessType")) return new system_businessType(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_channel")) return new system_channel(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("system_channelAccount")) return new system_channelAccount(dbFactory);
+            
             //if (obj.listFor.EqualsIgnoreSpace("oms_ar_term"))
             //    return new DemList_oms_ar_term(obj);
             //if (obj.listFor.EqualsIgnoreSpace("oms_src_file"))

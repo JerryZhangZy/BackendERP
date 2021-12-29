@@ -65,12 +65,14 @@
 );
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'UK_ProductExt_ProductUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ProductExt_ProductUuid] ON [dbo].[ProductExt]
 (
 	[ProductUuid] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'UI_ProductExt_MasterAccountNum_ProfileNum_SKU')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_MasterAccountNum_ProfileNum_SKU] ON [dbo].[ProductExt]
 (
     [MasterAccountNum] ASC, 
@@ -79,15 +81,46 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_MasterAccountNum_ProfileNum_SKU]
 );
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'UI_ProductExt_CentralProductNum')
 CREATE NONCLUSTERED INDEX [UI_ProductExt_CentralProductNum] ON [dbo].[ProductExt]
 (
 	[CentralProductNum] ASC
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_ProductExt_C_S_D_D_O_A_R_M_C_G_S')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_Status')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_Status] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [ProductStatus] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_StyleCode')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_StyleCode] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [StyleCode] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_StyleCode_C_S_W_L')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_StyleCode_C_S_W_L] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [StyleCode] ASC, 
+	[ColorPatternCode] ASC, 
+	[SizeCode] ASC, 
+	[WidthCode] ASC, 
+	[LengthCode] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_S_C_S_W_L_W_L_L')
 CREATE NONCLUSTERED INDEX [IX_IProductExt_S_C_S_W_L_W_L_L] ON [dbo].[ProductExt]
 (
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
 	[ClassCode] ASC, 
 	[SubClassCode] ASC,
 	[DepartmentCode] ASC,
@@ -102,17 +135,3 @@ CREATE NONCLUSTERED INDEX [IX_IProductExt_S_C_S_W_L_W_L_L] ON [dbo].[ProductExt]
 ) 
 GO
 
-CREATE NONCLUSTERED INDEX [IX_IProductExt_Status] ON [dbo].[ProductExt]
-(
-    [MasterAccountNum] ASC, 
-    [ProfileNum] ASC, 
-    [ProductStatus] ASC
-) 
-
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_StyleCode')
-CREATE NONCLUSTERED INDEX [IX_IProductExt_StyleCode] ON [dbo].[ProductExt]
-(
-    [MasterAccountNum] ASC, 
-    [ProfileNum] ASC, 
-    [StyleCode] ASC
-) 

@@ -60,9 +60,11 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_InventoryLog_InventoryLogUuid] ON [dbo].[In
 ) 
 GO 
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'BLK_InventoryLog_SKU_WarehouseCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'BLK_InventoryLog_SKU_WarehouseCode')
 CREATE NONCLUSTERED INDEX [BLK_InventoryLog_SKU_WarehouseCode] ON [dbo].[InventoryLog]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[SKU] ASC,
 	[WarehouseCode] ASC
 )
@@ -71,6 +73,8 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_Inventory_S_C_S_W_L_W')
 CREATE NONCLUSTERED INDEX [IX_Inventory_S_C_S_W_L_W] ON [dbo].[InventoryLog]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[SKU] ASC, 
 	[ColorPatternCode] ASC,
 	[SizeCode] ASC,
@@ -83,19 +87,49 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_S_W_L_L')
 CREATE NONCLUSTERED INDEX [IX_InventoryLog_S_W_L_L] ON [dbo].[InventoryLog]
 (
-	[SKU],
-	[WarehouseCode],
-	[LotNum],
-	[LpnNum]
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SKU] ASC,
+	[WarehouseCode] ASC,
+	[LotNum] ASC,
+	[LpnNum] ASC
 ) 
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_LpnNum')
 CREATE NONCLUSTERED INDEX [IX_InventoryLog_LpnNum] ON [dbo].[InventoryLog]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[LpnNum] ASC
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_LogType')
+CREATE NONCLUSTERED INDEX [IX_InventoryLog_LogType] ON [dbo].[InventoryLog]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[LogType] ASC
+)
+GO
 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_LogDate')
+CREATE NONCLUSTERED INDEX [IX_InventoryLog_LogDate] ON [dbo].[InventoryLog]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[LogDate] ASC
+)
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_LogNumber')
+CREATE NONCLUSTERED INDEX [IX_InventoryLog_LogNumber] ON [dbo].[InventoryLog]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[LogNumber] ASC
+)
+GO
 

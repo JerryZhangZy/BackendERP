@@ -24,11 +24,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return (await dbFactory.FindAsync<PoTransactionItems>(sql)).ToList();
         }
 
+        public virtual  decimal GetPoQty(string poItemUuid)
+        {
+            var sql = $"SELECT PoQty FROM PoItems where PoItemUuid =@0";
+            return  dbFactory.Db.ExecuteScalar<decimal>(sql,poItemUuid.ToSqlParameter("@0"));
+        }
 
         /// <summary>
         /// po item po Qty
         /// </summary>
-        public virtual decimal PoQty => (this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.PoQty).ToQty();
+        public virtual decimal PoQty => ( GetPoQty(this.PoItemUuid)).ToQty();
 
         /// <summary>
         /// Same po same PoItemUuid total returned qty

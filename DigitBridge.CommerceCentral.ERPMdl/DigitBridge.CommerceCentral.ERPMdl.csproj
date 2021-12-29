@@ -38,6 +38,7 @@
     <Folder Include="channel\" />
     <Folder Include="po\io\" />
     <Folder Include="shipmentInquiry\" />
+    <Folder Include="shipment\io\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
     <Folder Include="companySummary\" />
@@ -52,6 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DigitBridge.DataSource" Version="1.0.1.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.18" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.18" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

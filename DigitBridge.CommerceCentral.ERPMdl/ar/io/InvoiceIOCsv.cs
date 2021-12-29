@@ -215,9 +215,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (header3 != null) headers.AddRange(header3);
 
             // build InvoiceItems header
-            var (header4, values4) = Format.GetHeaderAndData<InvoiceItemsDto>(dataList[0].InvoiceItems[0]);
-            if (header4 != null) headers.AddRange(header4);
-
+            if (dataList[0].InvoiceItems.Count != 0)
+            {
+                var (header4, values4) = Format.GetHeaderAndData<InvoiceItemsDto>(dataList[0].InvoiceItems[0]);
+                if (header4 != null) headers.AddRange(header4);
+            }
             return headers;
         }
 

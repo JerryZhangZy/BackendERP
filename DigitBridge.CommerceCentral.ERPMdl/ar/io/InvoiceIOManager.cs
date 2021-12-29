@@ -20,6 +20,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,6 +39,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region Service Property
+
+
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceList _InvoiceList;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceList InvoiceList
+        {
+            get
+            {
+                if (_InvoiceList is null)
+                    _InvoiceList = new InvoiceList(dbFactory);
+                return _InvoiceList;
+            }
+        }
+
+
         [XmlIgnore, JsonIgnore]
         protected InvoiceService _InvoiceService;
         [XmlIgnore, JsonIgnore]
@@ -47,6 +65,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (_InvoiceService is null)
                     _InvoiceService = new InvoiceService(dbFactory);
                 return _InvoiceService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected ExportBlobService _ExportBlobService;
+        [XmlIgnore, JsonIgnore]
+        public ExportBlobService ExportBlobService
+        {
+            get
+            {
+                if (_ExportBlobService is null)
+                    _ExportBlobService = new ExportBlobService();
+                return _ExportBlobService;
             }
         }
 
@@ -229,6 +260,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<byte[]> ExportAsync(IList<InvoiceDataDto> dtos)
+        {
+            if (dtos == null || dtos.Count == 0)
+                return null;
+            return await InvoiceIOCsv.ExportAsync(dtos);
+        }
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload, IList<InvoiceDataDto> datas)
+        {
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            var files = await InvoiceIOCsv.ExportAsync(datas);
+            //payload.ExportFiles.Add(payload.ExportUuid + ".csv", files);
+            payload.ExportFiles.Add(GetFielName(payload.Options), files);
+            return true;
+        }
+        /// <summary>
         /// Import csv file stream to IList of Dto, depend on format setting
         /// </summary>
         public async Task<IList<InvoiceDataDto>> ImportAsync(Stream stream)
@@ -248,15 +296,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result.ToList();
         }
 
-        /// <summary>
-        /// Export Dto list to csv file stream, depend on format setting
-        /// </summary>
-        public async Task<byte[]> ExportAsync(IList<InvoiceDataDto> dtos)
-        {
-            if (dtos == null || dtos.Count == 0)
-                return null;
-            return await InvoiceIOCsv.ExportAsync(dtos);
-        }
+       
 
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns
@@ -267,7 +307,79 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             return await InvoiceIOCsv.ExportAllColumnsAsync(dtos);
         }
+        /// <summary>
+        /// Export Dto list to csv file stream, depend on format setting
+        /// </summary>
+        public async Task<bool> ExportAsync(ImportExportFilesPayload payload)
+        {
+            if (payload == null || payload.MasterAccountNum <= 0 || payload.ProfileNum <= 0 || string.IsNullOrWhiteSpace(payload.ExportUuid))
+                return false;
 
+            // load export options from Blob
+            if (!(await ExportBlobService.LoadOptionsFromBlobAsync(payload)))
+            {
+                this.Messages.Add(ExportBlobService.Messages);
+                return false;
+            }
+
+            // query salesorder list
+            var soDatas = await GetInvoiceDatasAsync(payload);
+            if (soDatas == null)
+            {
+                AddError("Get Invoice datas error");
+                return false;
+            }
+
+            // load format object
+            if (!(await LoadFormatAsync(payload)))
+            {
+                this.Messages.Add(payload.Messages);
+                return false;
+            }
+
+            // export file as format
+            await ExportAsync(payload, soDatas);
+
+            //save export file to blob
+            return await ExportBlobService.SaveFilesToBlobAsync(payload);
+        }
+        protected async Task<IList<InvoiceDataDto>> GetInvoiceDatasAsync(ImportExportFilesPayload payload)
+        {
+            var invoicePayload = new InvoicePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                Filter = payload.Options.Filter,
+                LoadAll = true,
+                IsQueryTotalCount = false,
+            };
+
+            await InvoiceList.GetInvoiceListAsync(invoicePayload);
+            if (!invoicePayload.Success)
+            {
+                this.Messages.Add(InvoiceList.Messages);
+                return null;
+            }
+
+            var json = invoicePayload.InvoiceList.ToString();
+            if (json.IsZero()) return new List<InvoiceDataDto>();
+
+            var queryResult = JArray.Parse(invoicePayload.InvoiceList.ToString());
+            var rownums = queryResult.Select(i => i.Value<long>("rowNum")).ToList();
+
+            return await InvoiceService.GetInvoiceDtosAsync(rownums);
+        }
+
+        private string GetFielName(ImportExportOptions importExportOptions)
+        {
+            if (int.TryParse(importExportOptions.FormatType, out int formatType))
+            {
+                ActivityLogType activityLogType = (ActivityLogType)formatType;
+                return activityLogType.ToString() + DateTime.UtcNow.ToString("yyyyMMdd") + ".csv";
+            }
+            return importExportOptions.ExportUuid + ".csv";
+        }
     }
 }
 

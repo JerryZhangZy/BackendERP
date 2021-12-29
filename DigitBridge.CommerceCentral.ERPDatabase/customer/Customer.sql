@@ -59,6 +59,9 @@
 	[CommissionRate3] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 	[CommissionRate4] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
 
+	[OrderMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+	[ItemMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
@@ -97,6 +100,8 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_C_C_C_P_E_W')
 CREATE NONCLUSTERED INDEX [IX_Customer_C_C_C_P_E_W] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerCode] ASC, 
 	[CustomerName] ASC,
 	[Contact] ASC,
@@ -109,6 +114,8 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_C_C_B_F_P')
 CREATE NONCLUSTERED INDEX [IX_Customer_C_C_B_F_P] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerType] ASC, 
 	[CustomerStatus] ASC,
 	[BusinessType] ASC,
@@ -120,6 +127,8 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_A_R_D_Z')
 CREATE NONCLUSTERED INDEX [IX_Customer_A_R_D_Z] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[Area] ASC, 
 	[Region] ASC,
 	[Districtn] ASC,
@@ -127,8 +136,10 @@ CREATE NONCLUSTERED INDEX [IX_Customer_A_R_D_Z] ON [dbo].[Customer]
 ) 
 GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_C_D_D_S')
-CREATE NONCLUSTERED INDEX [IX_Customer_A_R_D_Z] ON [dbo].[Customer]
+CREATE NONCLUSTERED INDEX [IX_Customer_C_D_D_S] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[ClassCode] ASC, 
 	[DepartmentCode] ASC,
 	[DivisionCode] ASC,
@@ -157,6 +168,8 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_SalesRep1234')
 CREATE NONCLUSTERED INDEX [IX_Customer_SalesRep1234] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[SalesRep] ASC,
 	[SalesRep2] ASC,
 	[SalesRep3] ASC,

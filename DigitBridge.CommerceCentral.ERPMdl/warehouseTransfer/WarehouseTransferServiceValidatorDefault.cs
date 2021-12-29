@@ -408,12 +408,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseUuid))
                 {
                     isValid = false;
-                    AddError($"FromWarehouseCode&FromWarehouseUuid at lease one");
+                    AddError($"From Warehouse is required.");
                 }
                 if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseUuid))
                 {
                     isValid = false;
-                    AddError($"ToWarehouseCode&ToWarehouseUuid at lease one");
+                    AddError($"To Warehouse is required.");
                 }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
@@ -496,12 +496,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseUuid))
                 {
                     isValid = false;
-                    AddError($"FromWarehouseCode&FromWarehouseUuid at lease one");
+                    AddError($"From Warehouse is required.");
                 }
                 if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseUuid))
                 {
                     isValid = false;
-                    AddError($"ToWarehouseCode&ToWarehouseUuid at lease one");
+                    AddError($"To Warehouse is required.");
                 }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {

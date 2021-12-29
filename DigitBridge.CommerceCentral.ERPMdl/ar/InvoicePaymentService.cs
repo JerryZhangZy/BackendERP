@@ -821,7 +821,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     TransDate = DateTime.UtcNow.Date,
                     TransTime = DateTime.UtcNow,
                     Description = applyInvoice.Description,
-                    Notes = applyInvoice.Notes,
+                    Notes = templateTransaction.Notes,
 
                     CustomerCode = invoiceHeader.CustomerCode,
                     PaidBy = templateTransaction.PaidBy,
