@@ -128,7 +128,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             shipHeader.ShipmentDateUtc = _dtNowUtc;
             shipHeader.ShippingCarrier = soInfo.ShippingCarrier;
             shipHeader.ShippingClass = soInfo.ShippingClass;
-            shipHeader.ShippingCost = soHeader.ShippingAmount;
+            //shipHeader.ShippingCost = soHeader.ShippingAmount;ShippingCost should from erpshipment.
             shipHeader.MainTrackingNumber = string.Empty;
             shipHeader.MainReturnTrackingNumber = string.Empty;
             shipHeader.BillOfLadingID = string.Empty;

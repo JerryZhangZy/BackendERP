@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             header.ShipmentDateUtc = inputShipmentHeader.ShipmentDateUtc;
             header.ShippingCarrier = inputShipmentHeader.ShippingCarrier;
             header.ShippingClass = inputShipmentHeader.ShippingClass;
-            header.ShippingCost = inputShipmentHeader.ShippingCost;//= 0; 
+            header.ShippingCost = inputShipmentHeader.ShippingCost; 
             header.MainTrackingNumber = inputShipmentHeader.MainTrackingNumber;
             header.MainReturnTrackingNumber = inputShipmentHeader.MainReturnTrackingNumber;
             header.BillOfLadingID = inputShipmentHeader.BillOfLadingID;
