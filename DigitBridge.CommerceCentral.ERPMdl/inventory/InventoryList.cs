@@ -148,7 +148,7 @@ FROM Inventory i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON P
         protected override void AddDefaultOrderBy()
         {
             if (!QueryObject.HasOrderBy)
-                QueryObject.AddOrderBy("sku");
+                QueryObject.AddOrderBy("prd.MasterAccountNum, prd.ProfileNum, prd.sku");
         }
 
         protected override string GetSQL_select()
@@ -233,7 +233,7 @@ SUM(CASE WHEN COALESCE({InvHelper.TableAllies}.Instock, 0) < COALESCE({InvHelper
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
 LEFT JOIN {ExHelper.TableName} {ExHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {ExHelper.TableAllies}.ProductUuid)
-LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {InvHelper.TableAllies}.ProductUuid)
+LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {InvHelper.TableAllies}.ProductUuid AND {Helper.TableAllies}.MasterAccountNum = {InvHelper.TableAllies}.MasterAccountNum AND {Helper.TableAllies}.ProfileNum = {InvHelper.TableAllies}.ProfileNum)
 ";
             return this.SQL_From;
         }
