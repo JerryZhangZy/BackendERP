@@ -108,6 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount.ToDecimal();
             if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
             if (dto.HasChannelAmount) data.ChannelAmount = dto.ChannelAmount.ToDecimal();
+            if (dto.HasShippingCost) data.ShippingCost = dto.ShippingCost.ToDecimal();
             if (dto.HasPaidAmount) data.PaidAmount = dto.PaidAmount.ToDecimal();
             if (dto.HasCreditAmount) data.CreditAmount = dto.CreditAmount.ToDecimal();
             if (dto.HasBalance) data.Balance = dto.Balance.ToDecimal();
@@ -453,6 +454,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.TaxRate = data.TaxRate;
             dto.TaxAmount = data.TaxAmount;
             dto.DiscountRate = data.DiscountRate;
+            dto.ShippingCost = data.ShippingCost;
             dto.DiscountAmount = data.DiscountAmount;
             dto.ShippingAmount = data.ShippingAmount;
             dto.ShippingTaxAmount = data.ShippingTaxAmount;
