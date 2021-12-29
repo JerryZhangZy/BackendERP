@@ -234,7 +234,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (string.IsNullOrEmpty(propName)) return string.Empty;
             StringBuilder sb = new StringBuilder();
-            sb.Append("COALESCE(");
+            //sb.Append("COALESCE(");
 
             if (propName.IndexOf(".") > 0)
             {
@@ -252,15 +252,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 sb.Append(propName.TrimEnd());
                 sb.Append("]");
             }
-            sb.Append(",");
-            if (typeof(T) == typeof(String))
-                sb.Append("''");
-            else if (typeof(T) == typeof(DateTime))
-                sb.Append($"CAST('{SqlQuery._SqlMinDateTime.ToShortDateString()}' AS datetime)");
-            else
-                sb.Append("0");
+            //sb.Append(",");
+            //if (typeof(T) == typeof(String))
+            //    sb.Append("''");
+            //else if (typeof(T) == typeof(DateTime))
+            //    sb.Append($"CAST('{SqlQuery._SqlMinDateTime.ToShortDateString()}' AS datetime)");
+            //else
+            //    sb.Append("0");
 
-            sb.Append(")");
+            //sb.Append(")");
             return sb.ToString();
         }
 
