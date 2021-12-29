@@ -148,7 +148,7 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     '' as 'ReferenceLine1',
     '' as 'ReferenceLine2',
     '' as 'ReferenceLine3',
-    '' as 'Length'
+    0 as 'Length'
 --TODO mapping above columns
 
     FROM SalesOrderItems ordl
