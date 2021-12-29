@@ -80,21 +80,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadDelete))]
         public static async Task<JsonNetResponse<InventoryPayload>> DeleteProductExt(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "productExts/{SKU}")] HttpRequest req,
-            string SKU)
+            string sku)
         {
             var payload = await req.GetParameters<InventoryPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var spilterIndex = SKU.IndexOf("-");
-            var sku = SKU;
-            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
-            {
-                sku = sku.Substring(spilterIndex + 1);
-            }
             var svc = new InventoryService(dbFactory);
             if (await svc.DeleteBySkuAsync(payload, sku))
             {
                 payload.Inventory = null;
-                payload.Skus.Add(sku);
+                payload.Skus.Add((string)sku);
             }
             else
             {
