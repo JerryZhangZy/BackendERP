@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.VendorName, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.VendorName LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
         COUNT(1) AS [count] FROM
       [dbo].[PoHeader] tbl
    
-    WHERE COALESCE(tbl.VendorName,'') != '' 
+    WHERE tbl.VendorName != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.VendorName
 ORDER BY tbl.VendorName 

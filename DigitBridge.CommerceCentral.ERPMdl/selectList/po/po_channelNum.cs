@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
         COUNT(1) AS [count] FROM
       [dbo].[PoHeaderInfo] poh
    INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
-    WHERE COALESCE(poh.ChannelNum,'') != '' 
+    WHERE poh.ChannelNum != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY poh.ChannelNum
 ORDER BY poh.ChannelNum 

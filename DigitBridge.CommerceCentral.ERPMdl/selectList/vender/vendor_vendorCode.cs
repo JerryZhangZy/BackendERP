@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.VendorCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.VendorCode LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
         COUNT(1) AS [count] FROM
       [dbo].[Vendor] tbl
    
-    WHERE COALESCE(tbl.VendorCode,'') != '' 
+    WHERE tbl.VendorCode != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.VendorCode 
 ORDER BY tbl.VendorCode 

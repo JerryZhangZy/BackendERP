@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.SystemCodeName, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.SystemCodeName LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
       1 AS [count] FROM
       [dbo].[SystemCodes] tbl
    
-    WHERE COALESCE(tbl.SystemCodeName,'') != '' 
+    WHERE tbl.SystemCodeName != '' 
         AND {this.QueryObject.GetSQL()}
 ORDER BY tbl.SystemCodeName 
 ";
