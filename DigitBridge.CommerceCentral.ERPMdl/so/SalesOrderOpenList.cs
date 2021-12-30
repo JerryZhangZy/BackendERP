@@ -166,7 +166,7 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     LEFT JOIN OrderLine(nolock) chol
          ON ( chol.CentralOrderLineUuid=ordl.CentralOrderLineUuid)
 
-    LEFT JOIN OrderLineMerchantExt olm ON (olm.CentralOrderLineUuid= ordl.CentralOrderLineUuid)
+    LEFT JOIN OrderLineMerchantExt(nolock) olm ON (olm.CentralOrderLineUuid= ordl.CentralOrderLineUuid)
 
     WHERE ordl.SalesOrderUuid = ord.SalesOrderUuid 
     FOR JSON PATH
