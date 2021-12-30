@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(poh.ChannelNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"poh.ChannelNum LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);

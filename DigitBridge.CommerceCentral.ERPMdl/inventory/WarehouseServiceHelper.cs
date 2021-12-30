@@ -213,7 +213,7 @@ AND ProfileNum = @profileNum";
 SELECT DistributionCenterNum FROM DistributionCenter tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.item = COALESCE([DistributionCenterCode],'')))";
+AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.item =  [DistributionCenterCode]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -231,7 +231,7 @@ AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.it
 SELECT DistributionCenterNum FROM DistributionCenter tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.item = COALESCE([DistributionCenterCode],'')))";
+AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.item = [DistributionCenterCode]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
