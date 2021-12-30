@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -135,7 +136,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class ActivityLogFilter
     {
-        //public string City { get; set; }
+        public DateTime LogDateFrom { get; set; }
+        public DateTime LogDateTo { get; set; }
+        public ActivityLogType Type { get; set; }
+        public ActivityLogAction Action { get; set; }
 
         public static Faker<ActivityLogFilter> GetFaker()
         {

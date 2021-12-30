@@ -178,27 +178,27 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         //    // TODO if false write error to log.
         //}
 
-        ///// <summary>
-        ///// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to inventory data.
-        ///// </summary>
-        ///// <param name="myQueueItem"></param>
-        ///// <param name="log"></param>
-        ///// <returns></returns>
-        //[FunctionName("ExportInventoryFiles")]
-        //public static async Task ExportInventoryFiles([QueueTrigger(QueueName.Erp_Export_Inventory)] string myQueueItem, ILogger log)
-        //{
-        //    var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-        //    var payload = new ImportExportFilesPayload()
-        //    {
-        //        MasterAccountNum = message.MasterAccountNum,
-        //        ProfileNum = message.ProfileNum,
-        //        ExportUuid = message.ProcessUuid,
-        //    };
-        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var service = new InventoryIOManager(dbFactory);
-        //    var success = await service.ExportAsync(payload);
-        //    // TODO if false write error to log.
-        //}
+        /// <summary>
+        /// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to inventory data.
+        /// </summary>
+        /// <param name="myQueueItem"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        [FunctionName("ExportInventory")]
+        public static async Task ExportInventory([QueueTrigger(QueueName.Erp_Export_Inventory)] string myQueueItem, ILogger log)
+        {
+            var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+            var payload = new ImportExportFilesPayload()
+            {
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                ExportUuid = message.ProcessUuid,
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var service = new InventoryIOManager(dbFactory);
+            await service.ExportAsync(payload);
+            // TODO if false write error to log.
+        }
 
         ///// <summary>
         ///// Receive message from queue, then download files from blob by processuuid of message, finally transfer the files to inventoryupdate data.
