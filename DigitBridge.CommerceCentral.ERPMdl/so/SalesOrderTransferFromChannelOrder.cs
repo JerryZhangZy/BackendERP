@@ -140,6 +140,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.UpdateDateUtc = _dtNowUtc;
             soHeader.EnterBy = _userId;
             soHeader.SignatureFlag = !string.IsNullOrEmpty(coHeader.SignatureFlag);
+            soHeader.LatestShipDate = coData.OrderHeaderMerchantExt.CancelAfterDateUtc;
+            soHeader.EarliestShipDate = coData.OrderHeaderMerchantExt.RequiredShipDateUtc;
             //UpdateBy
             //EnterDateUtc
             //DigitBridgeGuid
@@ -186,7 +188,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(coHeader.SellerPrivateNote))
                 sb.AppendLine(coHeader.SellerPrivateNote);
             soHeaderInfo.Notes = sb.ToString();
-            
+
             soHeaderInfo.UpdateDateUtc = _dtNowUtc;
 
             return soHeaderInfo;
@@ -284,6 +286,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 //soItemList.Add(soItem);
 
+                var coMerchantEx = coData.OrderLineMerchantExt.FirstOrDefault(p => p.CentralOrderLineUuid == dcLine.CentralOrderLineUuid);
+                soItem.EarliestShipDate = coMerchantEx?.RequiredShipDateUtc;
+                //soItem.LatestShipDate = coMerchantEx?.CancelAfterDateUtc;
             }
 
             return soItemList.ToList();
