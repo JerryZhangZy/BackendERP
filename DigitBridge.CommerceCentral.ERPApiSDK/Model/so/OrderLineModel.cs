@@ -42,11 +42,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         public string MerchantColorCode { get; set; }
         public string MerchantSizeCode { get; set; }
-        public string LineUPC { get; set; }
-        public string LineEAN { get; set; }
-        public string ReferenceLine1 { get; set; }
-        public string ReferenceLine2 { get; set; }
-        public string ReferenceLine3 { get; set; }
+        public string LineItemUPC { get; set; }
+        public string LineItemEAN { get; set; }
+        public string LineReferenceNumber01 { get; set; }
+        public string LineReferenceNumber02 { get; set; }
+        public string LineReferenceNumber03 { get; set; }
         public decimal? Length { get; set; }
     }
 }
