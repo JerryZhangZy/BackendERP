@@ -319,6 +319,7 @@
     <None Include="CustomDefineCodes\PaidbyMap.sql" />
     <None Include="CustomDefineCodes\BusinessType.sql" />
     <None Include="inventory\InventoryLog_Update.sql" />
+    <Build Include="ExportFiles.sql" />
     <None Include="channelOrder\OrderLineMerchantExt.sql" />
     <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
   </ItemGroup>

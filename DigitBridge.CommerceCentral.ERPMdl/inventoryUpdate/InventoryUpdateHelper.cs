@@ -184,7 +184,7 @@ AND BatchNumber = @number
             SELECT RowNum FROM InventoryUpdateHeader tbl
             WHERE MasterAccountNum = @masterAccountNum
             AND ProfileNum = @profileNum
-            AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'')))";
+            AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = [BatchNumber]))";
                         return SqlQuery.Execute(
                             sql,
                             (long rowNum) => rowNum,
@@ -199,7 +199,7 @@ AND BatchNumber = @number
 SELECT RowNum FROM InventoryUpdateHeader 
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE(BatchNumber,'')))";
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = BatchNumber))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,

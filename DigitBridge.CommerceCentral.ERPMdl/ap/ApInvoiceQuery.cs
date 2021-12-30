@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        protected QueryFilter<long> _ApInvoiceType = new QueryFilter<long>("ApInvoiceType", "ApInvoiceType", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<long> _ApInvoiceType = new QueryFilter<long>("ApInvoiceType", "ApInvoiceType", PREFIX, FilterBy.eq, -1);
         public QueryFilter<long> ApInvoiceType => _ApInvoiceType;
 
 

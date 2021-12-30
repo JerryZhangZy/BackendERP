@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(poh.CustomerPoNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"poh.CustomerPoNum LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
         COUNT(1) AS [count] FROM
       [dbo].[PoHeaderInfo] poh
    INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
-    WHERE COALESCE(poh.CustomerPoNum,'') != '' 
+    WHERE poh.CustomerPoNum != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY poh.CustomerPoNum
 ORDER BY poh.CustomerPoNum 
