@@ -23,6 +23,74 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(VendorApi))]
     public static class VendorApi
     {
+
+        [FunctionName(nameof(ExportVendor))]
+        [OpenApiOperation(operationId: "ExportVendor", tags: new[] { "Vendors" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "VendorUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "VendorUuid", Description = "VendorUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VendorPayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportVendor(
+   [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "vendors/export/{VendorUuid}")] HttpRequest req, string VendorUuid = null)
+        {
+            var payload = await req.GetParameters<CustomerPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var vendorIOManager = new VendorIOManager(dbFactory);
+            var vendorService = new VendorService(dbFactory);
+
+            if (!await vendorService.GetVendorByVendorUuidAsync(payload, VendorUuid))
+            {
+                vendorService.AddError("Get Customer datas error");
+                return null;
+            }
+            var vendorDtos = new List<VendorDataDto>();
+            vendorDtos.Add(vendorService.ToDto());
+            var fileBytes = await vendorIOManager.ExportAllColumnsAsync(vendorDtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-vendor.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportVendor))]
+        [OpenApiOperation(operationId: "ImportVendor", tags: new[] { "Vendors" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VendorPayload))]
+        public static async Task<VendorPayload> ImportVendor(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "vendors/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<VendorPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new VendorManager(dbFactory);
+            var vendorIOManager = new VendorIOManager(dbFactory);
+            var vendorDtos = await vendorIOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            payload.Vendor = vendorDtos[0];
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [FunctionName(nameof(GetVendor))]
         [OpenApiOperation(operationId: "GetVendor", tags: new[] { "Vendors" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -248,46 +316,46 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<VendorPayloadFind>(VendorPayloadFind.GetSampleData());
         }
 
-        [FunctionName(nameof(ExportVendor))]
-        [OpenApiOperation(operationId: "ExportVendor", tags: new[] { "Vendors" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VendorPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
-        public static async Task<FileContentResult> ExportVendor(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "vendors/export")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<VendorPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new VendorManager(dbFactory);
+        //[FunctionName(nameof(ExportVendor))]
+        //[OpenApiOperation(operationId: "ExportVendor", tags: new[] { "Vendors" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VendorPayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        //public static async Task<FileContentResult> ExportVendor(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "vendors/export")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<VendorPayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new VendorManager(dbFactory);
 
-            var exportData = await svc.ExportAsync(payload);
-            var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-vendor.csv";
-            return downfile;
-        }
+        //    var exportData = await svc.ExportAsync(payload);
+        //    var downfile = new FileContentResult(exportData, "text/csv");
+        //    downfile.FileDownloadName = "export-vendor.csv";
+        //    return downfile;
+        //}
 
-        [FunctionName(nameof(ImportVendor))]
-        [OpenApiOperation(operationId: "ImportVendor", tags: new[] { "Vendors" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VendorPayload))]
-        public static async Task<VendorPayload> ImportVendor(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "vendors/import")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<VendorPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var files = req.Form.Files;
-            var svc = new VendorManager(dbFactory);
+        //[FunctionName(nameof(ImportVendor))]
+        //[OpenApiOperation(operationId: "ImportVendor", tags: new[] { "Vendors" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VendorPayload))]
+        //public static async Task<VendorPayload> ImportVendor(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "vendors/import")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<VendorPayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var files = req.Form.Files;
+        //    var svc = new VendorManager(dbFactory);
 
-            await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
-            return payload;
-        }
+        //    await svc.ImportAsync(payload, files);
+        //    payload.Success = true;
+        //    payload.Messages = svc.Messages;
+        //    return payload;
+        //}
 
 
         /// <summary>

@@ -22,6 +22,62 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(SalesOrderApi))]
     public static class SalesOrderApi
     {
+
+
+        [FunctionName(nameof(ExportSalesOrder))]
+        [OpenApiOperation(operationId: "ExportSalesOrder", tags: new[] { "SalesOrders" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "SalesOrderUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SalesOrderUuid", Description = "SalesOrderUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportSalesOrder(
+[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/export/{SalesOrderUuid}")] HttpRequest req, string SalesOrderUuid = null)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var iOManager = new SalesOrderIOManager(dbFactory);
+            var service = new SalesOrderService(dbFactory);
+
+            if (!await service.GetSalesOrderUuidAsync(payload, SalesOrderUuid))
+            {
+                service.AddError("Get SalesOrder datas error");
+                return null;
+            }
+            var dtos = new List<SalesOrderDataDto>();
+            dtos.Add(service.ToDto());
+            var fileBytes = await iOManager.ExportAllColumnsAsync(dtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-salesOrder.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportSalesOrder))]
+        [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        public static async Task<SalesOrderPayload> ImportSalesOrder(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new SalesOrderManager(dbFactory);
+            var iOManager = new SalesOrderIOManager(dbFactory);
+            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            payload.SalesOrder = dtos[0];
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
+
+
         /// <summary>
         /// exam an sales order number whether been used
         /// </summary>
@@ -278,50 +334,50 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<SalesOrderPayloadFind>(SalesOrderPayloadFind.GetSampleData());
         }
 
-        [FunctionName(nameof(ExportSalesOrder))]
-        #region swagger Doc
-        [OpenApiOperation(operationId: "ExportSalesOrder", tags: new[] { "SalesOrders" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
-        #endregion swagger Doc
-        public static async Task<FileContentResult> ExportSalesOrder(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/export")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<SalesOrderPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new SalesOrderManager(dbFactory);
+        //[FunctionName(nameof(ExportSalesOrder))]
+        //#region swagger Doc
+        //[OpenApiOperation(operationId: "ExportSalesOrder", tags: new[] { "SalesOrders" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        //#endregion swagger Doc
+        //public static async Task<FileContentResult> ExportSalesOrder(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/export")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<SalesOrderPayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new SalesOrderManager(dbFactory);
 
-            var exportData = await svc.ExportAsync(payload);
-            var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-salesorders.csv";
-            return downfile;
-        }
+        //    var exportData = await svc.ExportAsync(payload);
+        //    var downfile = new FileContentResult(exportData, "text/csv");
+        //    downfile.FileDownloadName = "export-salesorders.csv";
+        //    return downfile;
+        //}
 
-        [FunctionName(nameof(ImportSalesOrder))]
-        #region swagger Doc
-        [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
-        #endregion swagger Doc
-        public static async Task<SalesOrderPayload> ImportSalesOrder(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/import")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<SalesOrderPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var files = req.Form.Files;
-            var svc = new SalesOrderManager(dbFactory);
+        //[FunctionName(nameof(ImportSalesOrder))]
+        //#region swagger Doc
+        //[OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        //#endregion swagger Doc
+        //public static async Task<SalesOrderPayload> ImportSalesOrder(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/import")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<SalesOrderPayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var files = req.Form.Files;
+        //    var svc = new SalesOrderManager(dbFactory);
 
-            await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
-            return payload;
-        }
+        //    await svc.ImportAsync(payload, files);
+        //    payload.Success = true;
+        //    payload.Messages = svc.Messages;
+        //    return payload;
+        //}
 
         /// <summary>
         /// Create SalesOrder by CentralOrderUuid

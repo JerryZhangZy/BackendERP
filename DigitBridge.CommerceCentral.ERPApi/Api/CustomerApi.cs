@@ -23,6 +23,63 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(CustomerApi))]
     public static class CustomerApi
     {
+ 
+
+        [FunctionName(nameof(ExportCustomer))]
+        [OpenApiOperation(operationId: "ExportCustomer", tags: new[] { "Customers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "CustomerUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "CustomerUuid", Description = "CustomerUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportCustomer(
+           [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/export/{CustomerUuid}")] HttpRequest req,string CustomerUuid = null)
+        {
+            var payload = await req.GetParameters<CustomerPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var customerIOManager = new CustomerIOManager(dbFactory);
+            var customerService = new CustomerService(dbFactory);
+
+            if (!await customerService.GetCustomerByCustomerUuidAsync(payload, CustomerUuid))
+            {
+                customerService.AddError("Get Customer datas error");
+                return null;
+            }
+            var customerDtos = new List<CustomerDataDto>();
+            customerDtos.Add(customerService.ToDto());
+            var fileBytes = await customerIOManager.ExportAllColumnsAsync(customerDtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-customer.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportCustomer))]
+        [OpenApiOperation(operationId: "ImportCustomer", tags: new[] { "Customers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
+        public static async Task<CustomerPayload> ImportCustomer(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomerPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new CustomerManager(dbFactory);
+            var customerIOManager = new CustomerIOManager(dbFactory);
+            var customerDtos= await customerIOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            payload.Customer = customerDtos[0];
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
+ 
+
+
 
 
         /// <summary>
@@ -257,46 +314,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<CustomerPayloadFind>(CustomerPayloadFind.GetSampleData());
         }
 
-        [FunctionName(nameof(ExportCustomer))]
-        [OpenApiOperation(operationId: "ExportCustomer", tags: new[] { "Customers" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
-        public static async Task<FileContentResult> ExportCustomer(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/export")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<CustomerPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new CustomerManager(dbFactory);
+       
 
-            var exportData = await svc.ExportAsync(payload);
-            var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-customer.csv";
-            return downfile;
-        }
-
-        [FunctionName(nameof(ImportCustomer))]
-        [OpenApiOperation(operationId: "ImportCustomer", tags: new[] { "Customers" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
-        public static async Task<CustomerPayload> ImportCustomer(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/import")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<CustomerPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var files = req.Form.Files;
-            var svc = new CustomerManager(dbFactory);
-
-            await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
-            return payload;
-        }
+ 
 
         /// <summary>
         /// Get sales order summary by search criteria

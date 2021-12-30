@@ -660,7 +660,17 @@ where poi.PoUuid=@0;
         {
             return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, ActivityLogType.PurchaseOrder);
         }
+        public async Task<bool> GetPurchaseOrderByUuidAsync(PurchaseOrderPayload payload, string purchaseOrderUuid)
+        {
+            if (string.IsNullOrEmpty(purchaseOrderUuid))
+                return false;
+            List();
 
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, purchaseOrderUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
         #region Get merged po data list by po item uuid list 
 
         public async Task<IList<PoItems>> GetItemWithPartialFields(int masterAccountNum, int profileNum, List<string> poItemUuids)

@@ -26,6 +26,62 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(InvoiceApi))]
     public static class InvoiceApi
     {
+
+        [FunctionName(nameof(ExportInvoice))]
+        [OpenApiOperation(operationId: "ExportInvoice", tags: new[] { "Invoices" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "InvoiceUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "InvoiceUuid", Description = "InvoiceUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportInvoice(
+[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export/{InvoiceUuid}")] HttpRequest req, string InvoiceUuid = null)
+        {
+            var payload = await req.GetParameters<InvoicePayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var iOManager = new InvoiceIOManager(dbFactory);
+            var service = new InvoiceService(dbFactory);
+
+            if (!await service.GetInvoiceByUuidAsync(payload, InvoiceUuid))
+            {
+                service.AddError("Get Invoice datas error");
+                return null;
+            }
+            var dtos = new List<InvoiceDataDto>();
+            dtos.Add(service.ToDto());
+            var fileBytes = await iOManager.ExportAllColumnsAsync(dtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-invoice.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportInvoice))]
+        [OpenApiOperation(operationId: "ImportInvoice", tags: new[] { "Invoices" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayload))]
+        public static async Task<InvoicePayload> ImportInvoice(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoicePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new InvoiceManager(dbFactory);
+            var iOManager = new InvoiceIOManager(dbFactory);
+            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            payload.Invoice = dtos[0];
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
+
+
+
         [FunctionName(nameof(CheckInvoiceNumberExist))]
         [OpenApiOperation(operationId: "CheckInvoiceNumberExist", tags: new[] { "Invoices" }, Summary = "exam an invoice number whether been used")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -229,46 +285,46 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<InvoicePayloadFind>(InvoicePayloadFind.GetSampleData());
         }
 
-        [FunctionName(nameof(ExportInvoices))]
-        [OpenApiOperation(operationId: "ExportInvoices", tags: new[] { "Invoices" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
-        public static async Task<FileContentResult> ExportInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export")] Microsoft.AspNetCore.Http.HttpRequest req)
-        {
-            var payload = await req.GetParameters<InvoicePayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new InvoiceManager(dbFactory);
+        //[FunctionName(nameof(ExportInvoices))]
+        //[OpenApiOperation(operationId: "ExportInvoices", tags: new[] { "Invoices" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        //public static async Task<FileContentResult> ExportInvoices(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export")] Microsoft.AspNetCore.Http.HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<InvoicePayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new InvoiceManager(dbFactory);
 
-            var exportData = await svc.ExportAsync(payload);
-            var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-invoices.csv";
-            return downfile;
-        }
+        //    var exportData = await svc.ExportAsync(payload);
+        //    var downfile = new FileContentResult(exportData, "text/csv");
+        //    downfile.FileDownloadName = "export-invoices.csv";
+        //    return downfile;
+        //}
 
-        [FunctionName(nameof(ImportInvoices))]
-        [OpenApiOperation(operationId: "ImportInvoices", tags: new[] { "Invoices" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayload))]
-        public static async Task<InvoicePayload> ImportInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/import")] Microsoft.AspNetCore.Http.HttpRequest req)
-        {
-            var payload = await req.GetParameters<InvoicePayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var files = req.Form.Files;
-            var svc = new InvoiceManager(dbFactory);
+        //[FunctionName(nameof(ImportInvoices))]
+        //[OpenApiOperation(operationId: "ImportInvoices", tags: new[] { "Invoices" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayload))]
+        //public static async Task<InvoicePayload> ImportInvoices(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/import")] Microsoft.AspNetCore.Http.HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<InvoicePayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var files = req.Form.Files;
+        //    var svc = new InvoiceManager(dbFactory);
 
-            await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
-            return payload;
-        }
+        //    await svc.ImportAsync(payload, files);
+        //    payload.Success = true;
+        //    payload.Messages = svc.Messages;
+        //    return payload;
+        //}
 
         /// <summary>
         /// Create Invoice by OrderShipmentUuid

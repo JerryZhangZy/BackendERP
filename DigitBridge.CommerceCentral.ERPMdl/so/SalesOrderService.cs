@@ -973,6 +973,33 @@ AND OrderStatus !=@2
 
             return datas;
         }
+
+
+        public async Task<bool> GetSalesOrderUuidAsync(SalesOrderPayload payload, string salesOrderUuid)
+        {
+            if (string.IsNullOrEmpty(salesOrderUuid))
+                return false;
+            List();
+
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, salesOrderUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
+
+
+
+
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string salesOrderUuid)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM SalesOrderHeader WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND SalesOrderUuid=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                salesOrderUuid.ToSqlParameter("2")
+                );
+        }
+
     }
 }
 

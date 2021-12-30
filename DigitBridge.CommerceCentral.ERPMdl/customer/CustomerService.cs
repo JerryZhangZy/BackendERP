@@ -438,6 +438,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
         }
 
+        public async Task<bool> GetCustomerByCustomerUuidAsync(CustomerPayload payload, string customerUuid)
+        {
+            if (string.IsNullOrEmpty(customerUuid))
+                return false;
+            List();
+           
+            long rowNum =await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum,customerUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+ 
+        }
+
         public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
             return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND CustomerUuid=@2 "

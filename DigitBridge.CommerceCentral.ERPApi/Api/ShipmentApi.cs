@@ -23,6 +23,61 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(ShipmentApi))]
     public static class ShipmentApi
     {
+
+
+        [FunctionName(nameof(ExportShipment))]
+        [OpenApiOperation(operationId: "ExportShipment", tags: new[] { "Shipments" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "ShipmentID", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ShipmentID", Description = "ShipmentID", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportShipment(
+[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/export/{ShipmentID}")] HttpRequest req, string ShipmentID = null)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var iOManager = new OrderShipmentIOManager(dbFactory);
+            var service = new OrderShipmentService(dbFactory);
+
+            if (!await service.GetOrderShipmentByUuidAsync(payload, ShipmentID))
+            {
+                service.AddError("Get Shipment datas error");
+                return null;
+            }
+            var dtos = new List<OrderShipmentDataDto>();
+            dtos.Add(service.ToDto());
+            var fileBytes = await iOManager.ExportAllColumnsAsync(dtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-orderShipment.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportShipment))]
+        [OpenApiOperation(operationId: "ImportShipment", tags: new[] { "Shipments" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayload))]
+        public static async Task<OrderShipmentPayload> ImportShipment(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new OrderShipmentManager(dbFactory);
+            var iOManager = new OrderShipmentIOManager(dbFactory);
+            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            payload.OrderShipment = dtos[0];
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
+
         /// <summary>
         /// Get order shipment
         /// </summary>
@@ -209,50 +264,50 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<OrderShipmentPayloadFind>(OrderShipmentPayloadFind.GetSampleData());
         }
 
-        [FunctionName(nameof(ExportShipments))]
-        #region swagger Doc
-        [OpenApiOperation(operationId: "ExportShipments", tags: new[] { "Shipments" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
-        #endregion swagger Doc
-        public static async Task<FileContentResult> ExportShipments(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/export")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<OrderShipmentPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new OrderShipmentManager(dbFactory);
+        //[FunctionName(nameof(ExportShipments))]
+        //#region swagger Doc
+        //[OpenApiOperation(operationId: "ExportShipments", tags: new[] { "Shipments" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        //#endregion swagger Doc
+        //public static async Task<FileContentResult> ExportShipments(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/export")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<OrderShipmentPayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new OrderShipmentManager(dbFactory);
 
-            var exportData = await svc.ExportAsync(payload);
-            var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-shipments.csv";
-            return downfile;
-        }
+        //    var exportData = await svc.ExportAsync(payload);
+        //    var downfile = new FileContentResult(exportData, "text/csv");
+        //    downfile.FileDownloadName = "export-shipments.csv";
+        //    return downfile;
+        //}
 
-        [FunctionName(nameof(ImportShipments))]
-        #region swagger Doc
-        [OpenApiOperation(operationId: "ImportShipments", tags: new[] { "Shipments" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayload))]
-        #endregion swagger Doc
-        public static async Task<OrderShipmentPayload> ImportShipments(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/import")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<OrderShipmentPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var files = req.Form.Files;
-            var svc = new OrderShipmentManager(dbFactory);
+        //[FunctionName(nameof(ImportShipments))]
+        //#region swagger Doc
+        //[OpenApiOperation(operationId: "ImportShipments", tags: new[] { "Shipments" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayload))]
+        //#endregion swagger Doc
+        //public static async Task<OrderShipmentPayload> ImportShipments(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/import")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<OrderShipmentPayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var files = req.Form.Files;
+        //    var svc = new OrderShipmentManager(dbFactory);
 
-            await svc.ImportAsync(payload, files);
-            payload.Success = true;
-            payload.Messages = svc.Messages;
-            return payload;
-        }
+        //    await svc.ImportAsync(payload, files);
+        //    payload.Success = true;
+        //    payload.Messages = svc.Messages;
+        //    return payload;
+        //}
 
         /// <summary>
         /// Get shippment summary by search criteria

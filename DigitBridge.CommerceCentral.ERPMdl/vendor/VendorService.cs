@@ -767,6 +767,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     find.VendorCode
                 )).ToLong();
         }
+
+        public async Task<bool> GetVendorByVendorUuidAsync(CustomerPayload payload, string vendorUuid)
+        {
+            if (string.IsNullOrEmpty(vendorUuid))
+                return false;
+            List();
+
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, vendorUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
     }
 }
 
