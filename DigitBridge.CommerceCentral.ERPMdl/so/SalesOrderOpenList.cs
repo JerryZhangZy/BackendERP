@@ -156,14 +156,14 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     '' as 'LineReferenceNumber03',
     0 as 'Length'
 
-    FROM SalesOrderItems ordl
-    LEFT JOIN ProductBasic prd
+    FROM SalesOrderItems(nolock) ordl
+    LEFT JOIN ProductBasic(nolock) prd
          ON ( prd.MasterAccountNum=ord.MasterAccountNum
           AND prd.ProfileNum=ord.ProfileNum
           AND prd.SKU=ordl.SKU
           )
 
-    LEFT JOIN OrderLine chol
+    LEFT JOIN OrderLine(nolock) chol
          ON ( chol.CentralOrderLineUuid=ordl.CentralOrderLineUuid)
 
     LEFT JOIN OrderLineMerchantExt olm ON (olm.CentralOrderLineUuid= ordl.CentralOrderLineUuid)
@@ -172,22 +172,22 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     FOR JSON PATH
 ) AS OrderLineList,
 
-(
-     --TODO select columns where wms need.
-     select CentralOrderNum 
-     from OrderHeader headerExt
-     where headerExt.CentralOrderNum=cho.CentralOrderNum
-     for json path
-    --, WITHOUT_ARRAY_WRAPPER
-) as OrderHeaderJson,
+--(
+--     --TODO select columns where wms need.
+--     select CentralOrderNum 
+--     from OrderHeader headerExt
+--     where headerExt.CentralOrderNum=cho.CentralOrderNum
+--     for json path
+--    --, WITHOUT_ARRAY_WRAPPER
+--) as OrderHeaderJson,
 
-(
-     --TODO select columns where wms need.
-     select CentralOrderNum 
-     from OrderLine lineExt
-     where lineExt.CentralOrderNum=cho.CentralOrderNum
-     for json path
-) as OrderLineJson 
+--(
+--     --TODO select columns where wms need.
+--     select CentralOrderNum 
+--     from OrderLine lineExt
+--     where lineExt.CentralOrderNum=cho.CentralOrderNum
+--     for json path
+--) as OrderLineJson 
             ";
 
             return this.SQL_Select;
@@ -196,15 +196,15 @@ ordi.BillToNightPhone as 'BillToNightPhone',
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM EventProcessERP epe
- INNER JOIN SalesOrderHeader ord  
+ FROM EventProcessERP(nolock) epe
+ INNER JOIN SalesOrderHeader(nolock) ord  
         on  ord.MasterAccountNum=epe.MasterAccountNum
         and ord.ProfileNum=epe.ProfileNum
         and ord.SalesOrderUuid=epe.ProcessUuid
- LEFT JOIN SalesOrderHeaderInfo ordi ON (ordi.SalesOrderUuid = ord.SalesOrderUuid)
- LEFT JOIN OrderHeader cho ON (cho.CentralOrderNum = ordi.CentralOrderNum)
- LEFT JOIN Setting_Channel chanel ON(ord.MasterAccountNum = chanel.MasterAccountNum AND ord.ProfileNum = chanel.ProfileNum AND ordi.ChannelNum = chanel.ChannelNum)
- LEFT JOIN Setting_ChannelAccount channelAccount ON(ord.MasterAccountNum = chanel.MasterAccountNum AND ord.ProfileNum = chanel.ProfileNum AND ordi.ChannelNum = chanel.ChannelNum AND ordi.ChannelAccountNum = channelAccount.ChannelAccountNum)
+ LEFT JOIN SalesOrderHeaderInfo(nolock) ordi ON (ordi.SalesOrderUuid = ord.SalesOrderUuid)
+ LEFT JOIN OrderHeader (nolock)cho ON (cho.CentralOrderNum = ordi.CentralOrderNum)
+ LEFT JOIN Setting_Channel(nolock) chanel ON(epe.MasterAccountNum = chanel.MasterAccountNum AND epe.ProfileNum = chanel.ProfileNum AND epe.ChannelNum = chanel.ChannelNum)
+ LEFT JOIN Setting_ChannelAccount(nolock) channelAccount ON(epe.MasterAccountNum = chanel.MasterAccountNum AND epe.ProfileNum = chanel.ProfileNum AND epe.ChannelNum = chanel.ChannelNum AND epe.ChannelAccountNum = channelAccount.ChannelAccountNum)
 ";
             return this.SQL_From;
         }
