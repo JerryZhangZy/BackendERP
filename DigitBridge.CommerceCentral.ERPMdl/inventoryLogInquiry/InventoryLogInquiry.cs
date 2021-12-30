@@ -24,8 +24,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT  
 COUNT(1) as [Count],
-SUM() as TotalInQty,
-SUM() as TotalOutQty,
+SUM(
+    CASE WHEN RTRIM(COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0)) > 0 THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as TotalInQty,
+SUM(
+    CASE WHEN RTRIM(COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0)) < 0 THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as TotalOutQty,
 SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Invoice') THEN 1 ELSE 0 END
 ) as InvoiceCount,
@@ -120,7 +124,7 @@ SUM(
                 if (result != null && result.HasData)
                 {
                     payload.Summary.InventoryLogCount = result.GetData("Count").ToInt();
-                    payload.Summary.TotalInQty = result.GetData("TotalInQty").ToString().ToInt();
+                    payload.Summary.TotalInQty = result.GetData("TotalInQty").ToInt();
                     payload.Summary.TotalOutQty = result.GetData("TotalOutQty").ToInt();
                     payload.Summary.InventoryLogCountOfInvoice = result.GetData("InvoiceCount").ToString().ToInt();
                     payload.Summary.InventoryLogCountOfInvoiceReturn = result.GetData("InvoiceReturnCount").ToInt();
