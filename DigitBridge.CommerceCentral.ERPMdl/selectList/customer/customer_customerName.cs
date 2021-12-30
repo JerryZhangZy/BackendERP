@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.CustomerName, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.CustomerName LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
         COUNT(1) AS [count] FROM
       [dbo].[Customer] tbl
    
-    WHERE COALESCE(tbl.CustomerName,'') != '' 
+    WHERE tbl.CustomerName != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.CustomerName
 ORDER BY tbl.CustomerName 

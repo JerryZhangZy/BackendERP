@@ -184,7 +184,7 @@ AND BatchNumber = @number
 SELECT RowNum FROM WarehouseTransferHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'')))";
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = [BatchNumber]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -200,7 +200,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'
 SELECT RowNum FROM WarehouseTransferHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'')))";
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = [BatchNumber]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,

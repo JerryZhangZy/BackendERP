@@ -226,7 +226,7 @@ FROM Inventory tbl
 join @InventoryUuid _InventoryUuid on _InventoryUuid.item = tbl.InventoryUuid
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
---AND (EXISTS (SELECT * FROM @InventoryUuid _InventoryUuid WHERE _InventoryUuid.item = COALESCE([InventoryUuid],'')))
+--AND (EXISTS (SELECT * FROM @InventoryUuid _InventoryUuid WHERE _InventoryUuid.item = [InventoryUuid]))
 ";
 
             return SqlQuery.Execute(
@@ -252,7 +252,7 @@ AND ProfileNum=@pofileNum
 SELECT CentralProductNum,ProductUuid,SKU FROM ProductBasic tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = [SKU]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -270,7 +270,7 @@ AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
 SELECT CentralProductNum,ProductUuid,SKU FROM ProductBasic tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = [SKU]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
@@ -288,7 +288,7 @@ AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
 SELECT CentralProductNum FROM ProductBasic tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = [SKU]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -306,7 +306,7 @@ AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
 SELECT CentralProductNum FROM ProductBasic tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = [SKU]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
