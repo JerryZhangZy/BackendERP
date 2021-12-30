@@ -147,16 +147,14 @@ ordi.BillToNightPhone as 'BillToNightPhone',
     chol.LinePromotionCodes as 'LinePromotionCodes',
     chol.LinePromotionTaxAmount as 'LinePromotionTaxAmount',
     olm.MerchantSKU as 'MerchantSKU',
---TODO mapping following columns
     olm.MerchantColorCode as 'MerchantColorCode',
     olm.MerchantSizeCode as 'MerchantSizeCode',
-    chol.UPC as 'LineUPC',
-    chol.EAN as 'LineEAN',
-    '' as 'ReferenceLine1',
-    '' as 'ReferenceLine2',
-    '' as 'ReferenceLine3',
+    chol.UPC as 'LineItemUPC',
+    chol.EAN as 'LineItemEAN',
+    olm.PackingSlipLineMessage as 'LineReferenceNumber01',
+    '' as 'LineReferenceNumber02',
+    '' as 'LineReferenceNumber03',
     0 as 'Length'
---TODO mapping above columns
 
     FROM SalesOrderItems ordl
     LEFT JOIN ProductBasic prd
