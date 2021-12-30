@@ -694,7 +694,7 @@ where inv.InventoryUuid=il.InventoryUuid
                 {
                     if (item.StockQty > 0)
                     {
-                        var inv = InventoryService.GetInventoryBySku(item.SKU, item.WarehouseCode);
+                        var inv = InventoryService.GetInventoryBySku(item.SKU, item.WarehouseCode, header.MasterAccountNum, header.ProfileNum);
                         var line = new InventoryLog
                         {
                             DatabaseNum = header.DatabaseNum,
@@ -737,7 +737,7 @@ where inv.InventoryUuid=il.InventoryUuid
                     }
                     if (item.NonStockQty>0)
                     {
-                        var inv = InventoryService.GetInventoryBySku(item.SKU, item.DamageWarehouseCode);
+                        var inv = InventoryService.GetInventoryBySku(item.SKU, item.DamageWarehouseCode, header.MasterAccountNum, header.ProfileNum);
                         var line = new InventoryLog
                         {
                             DatabaseNum = header.DatabaseNum,
@@ -989,10 +989,12 @@ where inv.InventoryUuid=il.InventoryUuid
             foreach (var package in packages)
             {
                 var skus = package.OrderShipmentShippedItem.Select(r => r.SKU).Distinct().ToList();
-                var invList = InventoryService.GetInventoriesBySkus(skus, header.WarehouseCode);
+                // Change use sigle select for each Sku + warehouse
+                //var invList = InventoryService.GetInventoriesBySkus(skus, header.WarehouseCode);
                 foreach (var item in package.OrderShipmentShippedItem) 
                 {
-                    var inv = invList.FirstOrDefault(r => r.SKU == item.SKU);
+                    //var inv = invList.FirstOrDefault(r => r.SKU == item.SKU);
+                    var inv = InventoryService.GetInventoryBySku(item.SKU, header.WarehouseCode, header.MasterAccountNum, header.ProfileNum);
                     var line = new InventoryLog
                     {
                         DatabaseNum = header.DatabaseNum,
