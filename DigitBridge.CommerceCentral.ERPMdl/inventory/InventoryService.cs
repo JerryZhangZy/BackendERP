@@ -401,25 +401,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAccountAsync(payload, sku)))
                 return false;
 
-            long rowNum = 0;
-            Data.AddIgnoreDelete(InventoryData.ProductBasicTable);
-
-            using (var tx = new ScopedTransaction(dbFactory))
+            var rowNum = await this.GetRowNumByProductFindAsync(new ProductFindClass()
             {
-                rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
-            }
-
-            var success = await GetDataAsync(rowNum);
-
-            if (!(await ValidateAsync()))
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                SKU = sku,
+            });
+            if (rowNum.IsZero() || !(await GetDataAsync(rowNum)))
+            {
+                AddError($"Sku {sku} not found.");
                 return false;
-            if (success)
-            {
-                var result = await DeleteDataAsync();
-                return result;
             }
-            return false;
 
+            if (!(await CheckSkuAllowDeleteAsync(this.Data)))
+                return false;
+
+            return await DeleteDataAsync();
         }
 
         public InventoryPayload GetInventoryBySkuArray(InventoryPayload payload)
@@ -476,7 +473,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public List<Inventory> GetInventoriesBySkus(IList<string> skus, string warehouseCode)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = COALESCE([SKU],'')))",
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = [SKU]))",
                 warehouseCode.ToSqlParameter("WarehouseCode"), skus.ToParameter<string>("SKU")).ToList();
         }
         public Inventory GetInventoryBySku(string sku, string warehouseCode)
@@ -1125,7 +1122,59 @@ pba.ProductUuid=@2
             );
         }
 
-    
+        public virtual async Task<bool> CheckSkuAllowDeleteAsync(InventoryData data)
+        {
+            if (InventoryHasQuantity(data))
+            {
+                AddError($"Sku {data.ProductBasic.SKU} has stock quantity, cannot delete.");
+                return false;
+            }
+            if (await HasPIMDataAsync(data.ProductBasic.MasterAccountNum, data.ProductBasic.ProfileNum, data.ProductBasic.CentralProductNum))
+            {
+                AddError($"Sku {data.ProductBasic.SKU} has PIM data, cannot delete.");
+                return false;
+            }
+            return true;
+        }
+
+        public virtual bool InventoryHasQuantity(InventoryData data)
+        {
+            if (data == null || data.Inventory == null || data.Inventory.Count == 0)
+                return false;
+            foreach (var item in data.Inventory)
+            {
+                if (item == null || item.IsEmpty) continue;
+                if (
+                    Math.Abs(item.Instock) > 0.0001m ||
+                    Math.Abs(item.OpenSoQty) > 0.0001m ||
+                    Math.Abs(item.OpenPoQty) > 0.0001m ||
+                    Math.Abs(item.OpenWipQty) > 0.0001m
+                )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public virtual async Task<bool> HasPIMDataAsync(int masterAccountNum, int profileNum, long centralPproductNum)
+        {
+
+            var sql = $@"
+SELECT COALESCE(
+(SELECT 1 WHERE EXISTS (SELECT * FROM ProductAttributeRelationship WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND CentralProductNum = @2)),
+(SELECT 1 WHERE EXISTS (SELECT * FROM ProductChannelControlFlagRelationShip WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND CentralProductNum = @2)),
+(SELECT 1 WHERE EXISTS (SELECT * FROM ProductMediaRelationship WHERE MasterAccountNum = @0 AND ProfileNum = @1 AND CentralProductNum = @2)),
+0)
+";
+            var result = await dbFactory.Db.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("@0"),
+                profileNum.ToSqlParameter("@1"),
+                centralPproductNum.ToSqlParameter("@2")
+            );
+            return result > 0;
+        }
+
     }
 }
 

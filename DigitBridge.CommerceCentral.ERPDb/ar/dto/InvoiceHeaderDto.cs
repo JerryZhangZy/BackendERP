@@ -381,6 +381,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChannelAmount => ChannelAmount != null;
 
 		/// <summary>
+		/// (Readonly) wms shipment shipping cost. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) wms shipment shipping cost. <br> Display: false, Editable: false")]
+        public decimal? ShippingCost { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasShippingCost => ShippingCost != null;
+
+		/// <summary>
 		/// Total Paid amount. <br> Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("Total Paid amount. <br> Display: true, Editable: false")]

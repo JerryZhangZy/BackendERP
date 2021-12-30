@@ -55,8 +55,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             ProfileNum = 10003;
             var payload = new WMSSalesOrderRequestPayload()
             {
-                LoadAll = true,
-                //Top = 10,
+                LoadAll = false,
+                Top = 10,
                 //Filter = new SalesOrderOpenListFilter()
                 //{
                 //    //UpdateDateUtc = DateTime.UtcNow.Date.AddDays(-1),

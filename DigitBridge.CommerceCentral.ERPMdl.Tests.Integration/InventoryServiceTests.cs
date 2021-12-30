@@ -231,6 +231,35 @@ WHERE itm.cnt > 0
             }
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteBySkuAsync_Test()
+        {
+            var payload = new InventoryPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                DatabaseNum = 1,
+            };
+            //var sku = "FT9801501-GINGER-L-STD";
+            var sku = "JERRY-TEST-DELETE";
+            
+            var srv = new InventoryService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("DeleteBySkuAsync_Test"))
+                {
+                    await srv.DeleteBySkuAsync(payload, sku);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
 
         //[Fact()]
         //public void RandomRepeatReadInventoryWithCache_Test()

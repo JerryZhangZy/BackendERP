@@ -32,6 +32,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region override methods
+        protected override void AddDefaultOrderBy()
+        {
+            if (!QueryObject.HasOrderBy)
+                QueryObject.AddOrderBy("cus.MasterAccountNum, cus.ProfileNum, cus.CustomerCode");
+        }
+
 
         protected override string GetSQL_select()
         {
