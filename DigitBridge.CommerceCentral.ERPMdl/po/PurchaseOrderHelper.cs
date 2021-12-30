@@ -173,7 +173,7 @@ AND PoNum = @poNum
 SELECT RowNum FROM PoHeader tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = COALESCE([PoNum],'')))";
+AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = [PoNum]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -191,7 +191,7 @@ AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = COALESCE([PoNum],''
 SELECT RowNum FROM PoHeader tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = COALESCE([PoNum],'')))";
+AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = [PoNum]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,

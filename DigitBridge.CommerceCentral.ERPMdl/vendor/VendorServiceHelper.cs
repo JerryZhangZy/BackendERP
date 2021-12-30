@@ -226,7 +226,7 @@ AND VendorCode = @vendorCode
 SELECT RowNum FROM Vendor tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COALESCE([VendorCode],'')))";
+AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = [VendorCode]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -244,7 +244,7 @@ AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COAL
 SELECT RowNum FROM Vendor tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COALESCE([VendorCode],'')))";
+AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item =[VendorCode]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
@@ -269,7 +269,7 @@ AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COAL
 SELECT RowNum,VendorUuid,VendorCode FROM Vendor tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COALESCE([VendorCode],'')))";
+AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = [VendorCode]))";
 
             return SqlQuery.Execute(
                 sql,
@@ -287,7 +287,7 @@ AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COAL
 SELECT RowNum,VendorUuid,VendorCode FROM Vendor tbl
 WHERE MasterAccountNum=@masterAccountNum
 AND ProfileNum=@pofileNum
-AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = COALESCE([VendorCode],'')))";
+AND (EXISTS (SELECT * FROM @VendorCode _VendorCode WHERE _VendorCode.item = [VendorCode]))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,

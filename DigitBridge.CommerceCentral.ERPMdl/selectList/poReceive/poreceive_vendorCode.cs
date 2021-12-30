@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poReceive
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.vendorCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.vendorCode LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poReceive
         COUNT(1) AS [count] FROM
       [dbo].[PoTransaction] tbl
    
-    WHERE COALESCE(tbl.vendorCode,'') != '' 
+    WHERE tbl.vendorCode != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.vendorCode 
 ORDER BY tbl.vendorCode 

@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poReceive
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.transType, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.transType LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poReceive
         COUNT(1) AS [count] FROM
       [dbo].[PoTransaction] tbl
    
-    WHERE COALESCE(tbl.transType,'') != '' 
+    WHERE tbl.transType != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.transType 
 ORDER BY tbl.transType 

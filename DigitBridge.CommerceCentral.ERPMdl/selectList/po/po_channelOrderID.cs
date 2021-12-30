@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(poh.ChannelOrderID, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"poh.ChannelOrderID LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
         COUNT(1) AS [count] FROM
       [dbo].[PoHeaderInfo] poh
    INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
-    WHERE COALESCE(poh.ChannelOrderID,'') != '' 
+    WHERE poh.ChannelOrderID != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY poh.ChannelOrderID
 ORDER BY poh.ChannelOrderID ";

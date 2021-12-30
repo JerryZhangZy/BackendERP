@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.customerCode LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -42,7 +42,7 @@ FROM (
         tbl.CustomerCode AS [value], 
         COUNT(1) AS [count]
     FROM SalesOrderHeader tbl
-    WHERE COALESCE(tbl.CustomerCode,'') != '' 
+    WHERE tbl.CustomerCode != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.CustomerCode, tbl.CustomerUuid
 ) i 
