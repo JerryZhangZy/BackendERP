@@ -712,5 +712,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 transUuid.ToSqlParameter("2")
                 );
         }
+
+        public async Task<bool> GetPoReceiveByUuidAsync(PoReceivePayload payload, string transUuid)
+        {
+            if (string.IsNullOrEmpty(transUuid))
+                return false;
+            List();
+
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, transUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
     }
 }

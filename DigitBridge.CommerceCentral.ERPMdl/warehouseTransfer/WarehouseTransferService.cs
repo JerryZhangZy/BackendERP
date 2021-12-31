@@ -751,6 +751,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 warehouseTransferUuid.ToSqlParameter("2")
                 );
         }
+
+        public async Task<bool> GetWarehouseTransferByUuidAsync(WarehouseTransferPayload payload, string warehouseTransferUuid)
+        {
+            if (string.IsNullOrEmpty(warehouseTransferUuid))
+                return false;
+            List();
+
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, warehouseTransferUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
     }
 }
 

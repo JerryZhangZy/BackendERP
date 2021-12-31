@@ -24,29 +24,58 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(PoReceiveApi))]
     public static class PoReceiveApi
     {
-        ///// <summary>
-        ///// Get po Receives by po num
-        ///// </summary>
-        ///// <param name="req"></param>
-        ///// <param name="poNum"></param>
-        ///// <returns></returns>
-        //[FunctionName(nameof(GetPoReceives))]
-        //[OpenApiOperation(operationId: "GetPoReceives", tags: new[] { "Po Receives" }, Summary = "Get po Receives by po number")]
-        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "Po number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
-        //public static async Task<JsonNetResponse<PoReceivePayload>> GetPoReceives(
-        //    [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{poNum}")] HttpRequest req,
-        //    string poNum)
-        //{
-        //    var payload = await req.GetParameters<PoReceivePayload>();
-        //    var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-        //    var srv = new PoReceiveService(dataBaseFactory);
-        //    await srv.GetPaymentWithPoHeaderAsync(payload, poNum);
-        //    return new JsonNetResponse<PoReceivePayload>(payload);
-        //}
+        [FunctionName(nameof(ExportPoReceive))]
+        [OpenApiOperation(operationId: "ExportPoReceive", tags: new[] { "Po Receives" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "TransUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "TransUuid", Description = "TransUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportPoReceive(
+[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/export/{TransUuid}")] HttpRequest req, string TransUuid = null)
+        {
+            var payload = await req.GetParameters<PoReceivePayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var iOManager = new PoReceiveIOManager(dbFactory);
+            var service = new PoReceiveService(dbFactory);
+
+            if (!await service.GetPoReceiveByUuidAsync(payload, TransUuid))
+            {
+                service.AddError("Get PoReceive datas error");
+                return null;
+            }
+            var dtos = new List<PoTransactionDataDto>();
+            dtos.Add(service.ToDto());
+            var fileBytes = await iOManager.ExportAllColumnsAsync(dtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-poReceives.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportPoReceive))]
+        [OpenApiOperation(operationId: "ImportPoReceive", tags: new[] { "Po Receives" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayload))]
+        public static async Task<PoReceivePayload> ImportPoReceive(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<PoReceivePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new PoReceiveManager(dbFactory);
+            var iOManager = new PoReceiveIOManager(dbFactory);
+            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            payload.PoTransaction = dtos[0];
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
 
         /// <summary>
         /// Get po receive by po num

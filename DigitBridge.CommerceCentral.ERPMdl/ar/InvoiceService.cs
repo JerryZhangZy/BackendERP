@@ -836,6 +836,27 @@ WHERE ins.InvoiceStatus != @4 AND ins.InvoiceStatus != @5
         {
             return  initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.Invoice);
         }
+
+        public async Task<bool> GetInvoiceByUuidAsync(InvoicePayload payload, string invoiceUuid)
+        {
+            if (string.IsNullOrEmpty(invoiceUuid))
+                return false;
+            List();
+
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceUuid);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string invoiceUuid)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM InvoiceHeader WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND CustomerUuid=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                invoiceUuid.ToSqlParameter("2")
+                );
+        }
     }
 }
 
