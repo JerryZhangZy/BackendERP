@@ -72,6 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerManager(dbFactory);
             var customerIOManager = new CustomerIOManager(dbFactory);
             var customerDtos= await customerIOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
+            
             payload.Customer = customerDtos[0];
             payload.Success = true;
             payload.Messages = svc.Messages;
