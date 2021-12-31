@@ -381,6 +381,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
+        /// <summary>
+        /// Load all columns of parent object to one list 
+        /// </summary>
+        public virtual CsvFormatParentObject GetParentObject(Type type)
+        {
+            if (!HasParentObject()) return null;
+            return ParentObject.FindByType(type);
+        }
+
     }
 
     public static class CsvFormatParentObjectExtension

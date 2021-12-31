@@ -488,6 +488,37 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return;
         }
 
+        public object GetPropertieValues(object A, string name)
+        {
+            if (A == null || string.IsNullOrWhiteSpace(name)) return null;
+            try
+            {
+                var col = Properties[name];
+                if (col == null || !col.CanGet) return null;
+                return col.GetValue(A);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public void SetPropertieValues(object A, string name, object value)
+        {
+            if (A == null || string.IsNullOrWhiteSpace(name)) return;
+            try
+            {
+                var col = Properties[name];
+                if (col == null || !col.CanSet) return;
+                col.SetValue(A, value);
+                return;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
     }
 
     public static class ObjectSchemaExtension
@@ -643,6 +674,25 @@ namespace DigitBridge.CommerceCentral.YoPoco
             foreach (var item in source)
                 result.Add(new KeyValuePair<string, object>(item.Key, null));
             return result;
+        }
+
+        public static object GetByPropertyName(this object obj, string name)
+        {
+            if (obj == null || string.IsNullOrWhiteSpace(name))
+                return null;
+
+            // get obj Schema
+            var schema = ObjectSchema.ForType(obj.GetType());
+            return schema.GetByPropertyName(name);
+        }
+        public static object SetByPropertyName(this object obj, string name, object value)
+        {
+            if (obj == null || string.IsNullOrWhiteSpace(name))
+                return null;
+
+            // get obj Schema
+            var schema = ObjectSchema.ForType(obj.GetType());
+            return schema.SetByPropertyName(name, value);
         }
 
     }
