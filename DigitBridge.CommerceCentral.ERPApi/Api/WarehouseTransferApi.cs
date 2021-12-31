@@ -31,10 +31,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "WarehouseTransferUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "WarehouseTransferUuid", Description = "WarehouseTransferUuid", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadGetSingle), Description = "Request Body in json format")]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadGetSingle), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
         public static async Task<FileContentResult> ExportWarehouseTransfer(
-   [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouseTransfers/export/{WarehouseTransferUuid}")] HttpRequest req, string WarehouseTransferUuid = null)
+   [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "warehouseTransfers/export/{WarehouseTransferUuid}")] HttpRequest req, string WarehouseTransferUuid = null)
         {
             var payload = await req.GetParameters<WarehouseTransferPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
