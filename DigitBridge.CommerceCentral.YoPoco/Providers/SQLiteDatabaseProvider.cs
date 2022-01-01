@@ -30,21 +30,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return -1;
         }
 
-#if ASYNC
-
         public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd, string primaryKeyName)
         {
             if (primaryKeyName != null)
             {
                 cmd.CommandText += ";\nSELECT last_insert_rowid();";
-                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd);
             }
 
-            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
             return -1;
         }
-
-#endif
 
         public override string GetExistsSql()
             => "SELECT EXISTS (SELECT 1 FROM {0} WHERE {1})";

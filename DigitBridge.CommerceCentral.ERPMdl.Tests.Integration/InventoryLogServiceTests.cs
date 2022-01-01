@@ -62,11 +62,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             });
             var mapper = new InventoryLogDataDtoMapperDefault();
             var dtolist = mapper.WriteInventoryLogDtoList(datalist, null);
+            var payload = new InventoryLogPayload() { InventoryLogs = dtolist };
             var svc = new InventoryLogService(DataBaseFactory);
-            var addresult = svc.AddList(dtolist);
-            Assert.True(addresult>0);
-            var list = svc.GetListByUuid(logUUid);
-            Assert.True(list.Count > 0);
+            payload = svc.AddList(payload);
+            Assert.True(payload.HasInventoryLogs);
+            payload.InventoryLogs.Clear();
+            payload.LogUuids.Add(logUUid);
+            payload = svc.GetListByUuid(payload);
+            Assert.True(payload.HasInventoryLogs);
         }
 
         [Fact]
@@ -81,19 +84,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             });
             var mapper = new InventoryLogDataDtoMapperDefault();
             var dtolist = mapper.WriteInventoryLogDtoList(datalist, null);
+            var payload = new InventoryLogPayload() { InventoryLogs = dtolist };
             var svc = new InventoryLogService(DataBaseFactory);
-            var addresult = svc.AddList(dtolist);
-            Assert.True(addresult>0);
-            var list = svc.GetListByUuid(logUUid);
-            Assert.True(list.Count > 0);
+            var addresult = svc.AddList(payload);
+            Assert.True(payload.HasInventoryLogs);
+            payload.InventoryLogs.Clear();
+            payload.LogUuids.Add(logUUid);
+            payload = svc.GetListByUuid(payload);
+            Assert.True(payload.HasInventoryLogs);
             var newtag = Guid.NewGuid().ToString();
-            list.ForEach(x =>
+            foreach(var item in payload.InventoryLogs)
             {
-                x.SKU = newtag;
-            });
-            var updateresult = svc.UpdateInventoryLogList(list);
-            Assert.True(updateresult>0);
-            var count = svc.GetListByUuid(logUUid).Where(x => x.SKU == newtag).Count();
+                item.SKU = newtag;
+            }
+            payload = svc.UpdateInventoryLogList(payload);
+            Assert.True(payload.HasInventoryLogs);
+            var count = svc.GetListByUuid(payload).InventoryLogs.Count();
             Assert.True(count == 20);
         }
         [Fact]
@@ -108,15 +114,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             });
             var mapper = new InventoryLogDataDtoMapperDefault();
             var dtolist = mapper.WriteInventoryLogDtoList(datalist, null);
+            var payload = new InventoryLogPayload() { InventoryLogs = dtolist };
             var svc = new InventoryLogService(DataBaseFactory);
-            var addresult = svc.AddList(dtolist);
-            Assert.True(addresult>0);
-            var list = svc.GetListByUuid(logUUid);
-            Assert.True(list.Count > 0);
-            var deleteresult = svc.DeleteByLogUuid(logUUid);
-            Assert.True(deleteresult>0);
-            list = svc.GetListByUuid(logUUid);
-            Assert.True(list.Count == 0);
+            var addresult = svc.AddList(payload);
+            Assert.True(payload.HasInventoryLogs);
+            payload.InventoryLogs.Clear();
+            payload.LogUuids.Add(logUUid);
+            payload = svc.DeleteByLogUuid(payload);
+            Assert.True(payload.HasInventoryLogs);
         }
 
 

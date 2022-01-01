@@ -1,10 +1,8 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-#if ASYNC
 using System.Threading;
 using System.Threading.Tasks;
-#endif
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -41,18 +39,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
             ExecuteNonQueryHelper(db, cmd);
             return -1;
         }
-#if ASYNC
         public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd, string primaryKeyName)
         {
             if (primaryKeyName != null)
             {
                 cmd.CommandText += $"returning {EscapeSqlIdentifier(primaryKeyName)} as NewID";
-                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd);
             }
 
-            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
             return -1;
         }
-#endif
     }
 }

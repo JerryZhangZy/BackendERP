@@ -41,6 +41,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 					data.OrderHeader = data.NewOrderHeader();
 				ReadOrderHeader(data.OrderHeader, dto.OrderHeader);
 			}
+			if (dto.OrderHeaderMerchantExt != null)
+			{
+				if (data.OrderHeaderMerchantExt is null)
+					data.OrderHeaderMerchantExt = data.NewOrderHeaderMerchantExt();
+				ReadOrderHeaderMerchantExt(data.OrderHeaderMerchantExt, dto.OrderHeaderMerchantExt);
+			}
 			if (dto.OrderLine != null)
 			{
 				if (data.OrderLine is null)
@@ -155,9 +161,146 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDCAssignmentStatus) data.DCAssignmentStatus = dto.DCAssignmentStatus;
 			if (dto.HasDCAssignmentDateUtc) data.DCAssignmentDateUtc = dto.DCAssignmentDateUtc;
 			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
+			if (dto.HasTotalDueSellerAmount) data.TotalDueSellerAmount = dto.TotalDueSellerAmount.ToDecimal();
 
 			#endregion read properties
 
+			data.CheckIntegrity();
+			return;
+		}
+
+
+		protected virtual void ReadOrderHeaderMerchantExt(OrderHeaderMerchantExt data, OrderHeaderMerchantExtDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region read all not null properties
+
+			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
+			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
+			if (dto.HasPoType) data.PoType = dto.PoType;
+			if (dto.HasHubOrderID) data.HubOrderID = dto.HubOrderID;
+			if (dto.HasMerchantID) data.MerchantID = dto.MerchantID;
+			if (dto.HasMerchantVendorID) data.MerchantVendorID = dto.MerchantVendorID;
+			if (dto.HasMerchantOrderDateUtc) data.MerchantOrderDateUtc = dto.MerchantOrderDateUtc;
+			if (dto.HasPackingSlipMessage) data.PackingSlipMessage = dto.PackingSlipMessage;
+			if (dto.HasVendorNotes) data.VendorNotes = dto.VendorNotes;
+			if (dto.HasVendorWarehouseID) data.VendorWarehouseID = dto.VendorWarehouseID;
+			if (dto.HasVendorCommitmentID) data.VendorCommitmentID = dto.VendorCommitmentID;
+			if (dto.HasSalesDivision) data.SalesDivision = dto.SalesDivision;
+			if (dto.HasMerchantPhone1) data.MerchantPhone1 = dto.MerchantPhone1;
+			if (dto.HasMerchantPhone2) data.MerchantPhone2 = dto.MerchantPhone2;
+			if (dto.HasMerchantPhone3) data.MerchantPhone3 = dto.MerchantPhone3;
+			if (dto.HasMerchantCustomerID) data.MerchantCustomerID = dto.MerchantCustomerID;
+			if (dto.HasMerchantCustomerOrderID) data.MerchantCustomerOrderID = dto.MerchantCustomerOrderID;
+			if (dto.HasMerchantCustomerOrderDateUtc) data.MerchantCustomerOrderDateUtc = dto.MerchantCustomerOrderDateUtc;
+			if (dto.HasMerchantCustomerPaymentMethod) data.MerchantCustomerPaymentMethod = dto.MerchantCustomerPaymentMethod;
+			if (dto.HasCancelAfterDateUtc) data.CancelAfterDateUtc = dto.CancelAfterDateUtc;
+			if (dto.HasRequiredShipDateUtc) data.RequiredShipDateUtc = dto.RequiredShipDateUtc;
+			if (dto.HasPromoID) data.PromoID = dto.PromoID;
+			if (dto.HasPromoStartDateUtc) data.PromoStartDateUtc = dto.PromoStartDateUtc;
+			if (dto.HasMerchandiseTypeCode) data.MerchandiseTypeCode = dto.MerchandiseTypeCode;
+			if (dto.HasAuthorizationForExpenseNumber) data.AuthorizationForExpenseNumber = dto.AuthorizationForExpenseNumber;
+			if (dto.HasShipToAccountNO) data.ShipToAccountNO = dto.ShipToAccountNO;
+			if (dto.HasShipToGender) data.ShipToGender = dto.ShipToGender;
+			if (dto.HasShipToReceipt) data.ShipToReceipt = dto.ShipToReceipt;
+			if (dto.HasShipToVcdID) data.ShipToVcdID = dto.ShipToVcdID;
+			if (dto.HasShipToDEANumber) data.ShipToDEANumber = dto.ShipToDEANumber;
+			if (dto.HasMerchantBillToAddressType) data.MerchantBillToAddressType = dto.MerchantBillToAddressType;
+			if (dto.HasSoldToAddressType) data.SoldToAddressType = dto.SoldToAddressType;
+			if (dto.HasSoldToAttention) data.SoldToAttention = dto.SoldToAttention;
+			if (dto.HasSoldToCompanyname) data.SoldToCompanyname = dto.SoldToCompanyname;
+			if (dto.HasSoldToName) data.SoldToName = dto.SoldToName;
+			if (dto.HasSoldToFirstName) data.SoldToFirstName = dto.SoldToFirstName;
+			if (dto.HasSoldToLastName) data.SoldToLastName = dto.SoldToLastName;
+			if (dto.HasSoldToAddressLine1) data.SoldToAddressLine1 = dto.SoldToAddressLine1;
+			if (dto.HasSoldToAddressLine2) data.SoldToAddressLine2 = dto.SoldToAddressLine2;
+			if (dto.HasSoldToAddressLine3) data.SoldToAddressLine3 = dto.SoldToAddressLine3;
+			if (dto.HasSoldToCity) data.SoldToCity = dto.SoldToCity;
+			if (dto.HasSoldToState) data.SoldToState = dto.SoldToState;
+			if (dto.HasSoldToPostalCode) data.SoldToPostalCode = dto.SoldToPostalCode;
+			if (dto.HasSoldToPostalCodeExt) data.SoldToPostalCodeExt = dto.SoldToPostalCodeExt;
+			if (dto.HasSoldToCountry) data.SoldToCountry = dto.SoldToCountry;
+			if (dto.HasSoldToEmail) data.SoldToEmail = dto.SoldToEmail;
+			if (dto.HasSoldToDayPhone) data.SoldToDayPhone = dto.SoldToDayPhone;
+			if (dto.HasSoldToNightPhone) data.SoldToNightPhone = dto.SoldToNightPhone;
+			if (dto.HasSoldToTaxExemptNO) data.SoldToTaxExemptNO = dto.SoldToTaxExemptNO;
+			if (dto.HasSoldToAccountNO) data.SoldToAccountNO = dto.SoldToAccountNO;
+			if (dto.HasSoldToGender) data.SoldToGender = dto.SoldToGender;
+			if (dto.HasCustomerGiftMessage) data.CustomerGiftMessage = dto.CustomerGiftMessage;
+			if (dto.HasReturnAddressee) data.ReturnAddressee = dto.ReturnAddressee;
+			if (dto.HasReturnAddressLine1) data.ReturnAddressLine1 = dto.ReturnAddressLine1;
+			if (dto.HasReturnAddressLine2) data.ReturnAddressLine2 = dto.ReturnAddressLine2;
+			if (dto.HasReturnAddrelssLine3) data.ReturnAddrelssLine3 = dto.ReturnAddrelssLine3;
+			if (dto.HasReturnCity) data.ReturnCity = dto.ReturnCity;
+			if (dto.HasReturnState) data.ReturnState = dto.ReturnState;
+			if (dto.HasReturnPostalCode) data.ReturnPostalCode = dto.ReturnPostalCode;
+			if (dto.HasReturnPostalCodeExt) data.ReturnPostalCodeExt = dto.ReturnPostalCodeExt;
+			if (dto.HasReturnCountry) data.ReturnCountry = dto.ReturnCountry;
+			if (dto.HasReturnEmail) data.ReturnEmail = dto.ReturnEmail;
+			if (dto.HasReturnDayPhone) data.ReturnDayPhone = dto.ReturnDayPhone;
+			if (dto.HasReturnNightPhone) data.ReturnNightPhone = dto.ReturnNightPhone;
+			if (dto.HasReturnLocationID) data.ReturnLocationID = dto.ReturnLocationID;
+			if (dto.HasInvoiceToAddressType) data.InvoiceToAddressType = dto.InvoiceToAddressType;
+			if (dto.HasInvoiceToAttention) data.InvoiceToAttention = dto.InvoiceToAttention;
+			if (dto.HasInvoiceToCompany) data.InvoiceToCompany = dto.InvoiceToCompany;
+			if (dto.HasInoviceToName) data.InoviceToName = dto.InoviceToName;
+			if (dto.HasInvoiceToFirstName) data.InvoiceToFirstName = dto.InvoiceToFirstName;
+			if (dto.HasInvoiceToLastName) data.InvoiceToLastName = dto.InvoiceToLastName;
+			if (dto.HasInvoiceToAddressLine1) data.InvoiceToAddressLine1 = dto.InvoiceToAddressLine1;
+			if (dto.HasInvoiceToAddressLine2) data.InvoiceToAddressLine2 = dto.InvoiceToAddressLine2;
+			if (dto.HasInvoiceToAddressLine3) data.InvoiceToAddressLine3 = dto.InvoiceToAddressLine3;
+			if (dto.HasInvoiceToCity) data.InvoiceToCity = dto.InvoiceToCity;
+			if (dto.HasInvoiceToState) data.InvoiceToState = dto.InvoiceToState;
+			if (dto.HasInvoiceToPostalCode) data.InvoiceToPostalCode = dto.InvoiceToPostalCode;
+			if (dto.HasInvoiceToPostalCodeExt) data.InvoiceToPostalCodeExt = dto.InvoiceToPostalCodeExt;
+			if (dto.HasInvoiceToCountry) data.InvoiceToCountry = dto.InvoiceToCountry;
+			if (dto.HasInvoiceToDayPhone) data.InvoiceToDayPhone = dto.InvoiceToDayPhone;
+			if (dto.HasInvoviceToNightPhone) data.InvoviceToNightPhone = dto.InvoviceToNightPhone;
+			if (dto.HasInvoiceToEmail) data.InvoiceToEmail = dto.InvoiceToEmail;
+			if (dto.HasInvoiceToAccountNO) data.InvoiceToAccountNO = dto.InvoiceToAccountNO;
+			if (dto.HasInvoiceToTaxExemptNO) data.InvoiceToTaxExemptNO = dto.InvoiceToTaxExemptNO;
+			if (dto.HasInvoiceToGender) data.InvoiceToGender = dto.InvoiceToGender;
+			if (dto.HasBuyingContract) data.BuyingContract = dto.BuyingContract;
+			if (dto.HasCcParty) data.CcParty = dto.CcParty;
+			if (dto.HasAPVendor) data.APVendor = dto.APVendor;
+			if (dto.HasRMEmail) data.RMEmail = dto.RMEmail;
+			if (dto.HasMarketingInserts) data.MarketingInserts = dto.MarketingInserts;
+			if (dto.HasBusinessRuleCode) data.BusinessRuleCode = dto.BusinessRuleCode;
+			if (dto.HasReleaseNumber) data.ReleaseNumber = dto.ReleaseNumber;
+			if (dto.HasMerchantBuyerName) data.MerchantBuyerName = dto.MerchantBuyerName;
+			if (dto.HasSalesCurrency) data.SalesCurrency = dto.SalesCurrency;
+			if (dto.HasFreightCollectAccount) data.FreightCollectAccount = dto.FreightCollectAccount;
+			if (dto.HasFreightPaymentTerms) data.FreightPaymentTerms = dto.FreightPaymentTerms;
+			if (dto.HasMerchantSalesAgent) data.MerchantSalesAgent = dto.MerchantSalesAgent;
+			if (dto.HasPaymentMethodDescription) data.PaymentMethodDescription = dto.PaymentMethodDescription;
+			if (dto.HasOrderFulfillmentFee) data.OrderFulfillmentFee = dto.OrderFulfillmentFee.ToDecimal();
+			if (dto.HasPackingSlipTemplateIndicator) data.PackingSlipTemplateIndicator = dto.PackingSlipTemplateIndicator;
+			if (dto.HasSalesTax) data.SalesTax = dto.SalesTax.ToDecimal();
+			if (dto.HasResponsibilityRole) data.ResponsibilityRole = dto.ResponsibilityRole;
+			if (dto.HasExpectedProcessingPriority) data.ExpectedProcessingPriority = dto.ExpectedProcessingPriority;
+			if (dto.HasPreassignedWaybillNumber) data.PreassignedWaybillNumber = dto.PreassignedWaybillNumber;
+			if (dto.HasURL) data.URL = dto.URL;
+			if (dto.HasShipperID) data.ShipperID = dto.ShipperID;
+			if (dto.HasFileIdentifier) data.FileIdentifier = dto.FileIdentifier;
+			if (dto.HasERPCustomerOrderNumber) data.ERPCustomerOrderNumber = dto.ERPCustomerOrderNumber;
+			if (dto.HasCustomerOrderPOIndex) data.CustomerOrderPOIndex = dto.CustomerOrderPOIndex;
+			if (dto.HasMultiSource) data.MultiSource = dto.MultiSource;
+			if (dto.HasNetDaysDue) data.NetDaysDue = dto.NetDaysDue.ToInt();
+			if (dto.HasTotalOrderCost) data.TotalOrderCost = dto.TotalOrderCost.ToDecimal();
+			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
+			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
+			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
+			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
+			if (dto.HasCentralOrderHeaderMerchantExtUuid) data.CentralOrderHeaderMerchantExtUuid = dto.CentralOrderHeaderMerchantExtUuid;
+
+			#endregion read properties
+
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -203,9 +346,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
 			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
 			if (dto.HasCentralOrderLineUuid) data.CentralOrderLineUuid = dto.CentralOrderLineUuid;
+			if (dto.HasUnitDueSellerAmount) data.UnitDueSellerAmount = dto.UnitDueSellerAmount.ToDecimal();
 
 			#endregion read properties
 
+			#region read all grand children object
+
+			if (dto.OrderLineMerchantExt != null)
+			{
+				if (data.OrderLineMerchantExt is null)
+					data.OrderLineMerchantExt = new OrderLineMerchantExt();
+				ReadOrderLineMerchantExt(data.OrderLineMerchantExt, dto.OrderLineMerchantExt);
+			}
+
+			#endregion read all grand children object
+
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -235,6 +391,89 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return lstOrig;
 		}
 
+		protected virtual void ReadOrderLineMerchantExt(OrderLineMerchantExt data, OrderLineMerchantExtDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region read all not null properties
+
+			if (dto.HasCentralOrderLineNum) data.CentralOrderLineNum = dto.CentralOrderLineNum.ToLong();
+			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
+			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
+			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
+			if (dto.HasChannelOrderLineNum) data.ChannelOrderLineNum = dto.ChannelOrderLineNum.ToInt();
+			if (dto.HasMerchantLineNumber) data.MerchantLineNumber = dto.MerchantLineNumber.ToInt();
+			if (dto.HasCustomerOrderLineNumber) data.CustomerOrderLineNumber = dto.CustomerOrderLineNumber.ToInt();
+			if (dto.HasHubLineID) data.HubLineID = dto.HubLineID;
+			if (dto.HasMerchantNRProductID) data.MerchantNRProductID = dto.MerchantNRProductID;
+			if (dto.HasMerchantSKU) data.MerchantSKU = dto.MerchantSKU;
+			if (dto.HasVendorSKU) data.VendorSKU = dto.VendorSKU;
+			if (dto.HasManufacturerSKU) data.ManufacturerSKU = dto.ManufacturerSKU;
+			if (dto.HasShoppingCartSKU) data.ShoppingCartSKU = dto.ShoppingCartSKU;
+			if (dto.HasVendorDescription) data.VendorDescription = dto.VendorDescription;
+			if (dto.HasVendorStyleNumber) data.VendorStyleNumber = dto.VendorStyleNumber;
+			if (dto.HasVendorColorDescription) data.VendorColorDescription = dto.VendorColorDescription;
+			if (dto.HasVendorSizeDescription) data.VendorSizeDescription = dto.VendorSizeDescription;
+			if (dto.HasMerchantColorCode) data.MerchantColorCode = dto.MerchantColorCode;
+			if (dto.HasMerchantSizeCode) data.MerchantSizeCode = dto.MerchantSizeCode;
+			if (dto.HasMerchantSetCode) data.MerchantSetCode = dto.MerchantSetCode;
+			if (dto.HasMerchantDescription) data.MerchantDescription = dto.MerchantDescription;
+			if (dto.HasMerchantDescription2) data.MerchantDescription2 = dto.MerchantDescription2;
+			if (dto.HasMerchantDescription3) data.MerchantDescription3 = dto.MerchantDescription3;
+			if (dto.HasMerchantColorSizeDescription) data.MerchantColorSizeDescription = dto.MerchantColorSizeDescription;
+			if (dto.HasFullRetailPrice) data.FullRetailPrice = dto.FullRetailPrice.ToDecimal();
+			if (dto.HasEncodedPrice) data.EncodedPrice = dto.EncodedPrice;
+			if (dto.HasUnitShippingWeight) data.UnitShippingWeight = dto.UnitShippingWeight.ToDecimal();
+			if (dto.HasWeightUnit) data.WeightUnit = dto.WeightUnit;
+			if (dto.HasCustomerUnitPrice) data.CustomerUnitPrice = dto.CustomerUnitPrice.ToDecimal();
+			if (dto.HasUnitCostToMerchant) data.UnitCostToMerchant = dto.UnitCostToMerchant.ToDecimal();
+			if (dto.HasLineMerchandiseCost) data.LineMerchandiseCost = dto.LineMerchandiseCost.ToDecimal();
+			if (dto.HasCustomerMerchandiseAmount) data.CustomerMerchandiseAmount = dto.CustomerMerchandiseAmount.ToDecimal();
+			if (dto.HasCustomerLineShippingAmount) data.CustomerLineShippingAmount = dto.CustomerLineShippingAmount.ToDecimal();
+			if (dto.HasCustomerLineHandlingAmount) data.CustomerLineHandlingAmount = dto.CustomerLineHandlingAmount.ToDecimal();
+			if (dto.HasCustomerLineSubTotalAmount) data.CustomerLineSubTotalAmount = dto.CustomerLineSubTotalAmount.ToDecimal();
+			if (dto.HasCustomerLineTaxAmount) data.CustomerLineTaxAmount = dto.CustomerLineTaxAmount.ToDecimal();
+			if (dto.HasCustomerLineTotalAmount) data.CustomerLineTotalAmount = dto.CustomerLineTotalAmount.ToDecimal();
+			if (dto.HasCustomerLineCredits) data.CustomerLineCredits = dto.CustomerLineCredits.ToDecimal();
+			if (dto.HasCustomerLineBalanceDue) data.CustomerLineBalanceDue = dto.CustomerLineBalanceDue.ToDecimal();
+			if (dto.HasLineDiscountAmount) data.LineDiscountAmount = dto.LineDiscountAmount.ToDecimal();
+			if (dto.HasVendorWareshoueID) data.VendorWareshoueID = dto.VendorWareshoueID;
+			if (dto.HasExpectedShipDateUtc) data.ExpectedShipDateUtc = dto.ExpectedShipDateUtc;
+			if (dto.HasPackingSlipLineMessage) data.PackingSlipLineMessage = dto.PackingSlipLineMessage;
+			if (dto.HasVendorLineNotes) data.VendorLineNotes = dto.VendorLineNotes;
+			if (dto.HasStoreName) data.StoreName = dto.StoreName;
+			if (dto.HasPersonalizationData) data.PersonalizationData = dto.PersonalizationData;
+			if (dto.HasFacgtoryOrderNum) data.FacgtoryOrderNum = dto.FacgtoryOrderNum;
+			if (dto.HasSubUnitQty) data.SubUnitQty = dto.SubUnitQty.ToDecimal();
+			if (dto.HasGiftWrapIndicator) data.GiftWrapIndicator = dto.GiftWrapIndicator;
+			if (dto.HasHoldUntilDateUtc) data.HoldUntilDateUtc = dto.HoldUntilDateUtc;
+			if (dto.HasRequiredShipDateUtc) data.RequiredShipDateUtc = dto.RequiredShipDateUtc;
+			if (dto.HasRequiredDeliveryDateUtc) data.RequiredDeliveryDateUtc = dto.RequiredDeliveryDateUtc;
+			if (dto.HasCustomerRequestedArrivalDateUtc) data.CustomerRequestedArrivalDateUtc = dto.CustomerRequestedArrivalDateUtc;
+			if (dto.HasShipperHubCode) data.ShipperHubCode = dto.ShipperHubCode;
+			if (dto.HasShippingHub) data.ShippingHub = dto.ShippingHub;
+			if (dto.HasSerializedProduct) data.SerializedProduct = dto.SerializedProduct;
+			if (dto.HasCustomerSKU) data.CustomerSKU = dto.CustomerSKU;
+			if (dto.HasVendorQuoteNumber) data.VendorQuoteNumber = dto.VendorQuoteNumber;
+			if (dto.HasGiftRegistryID) data.GiftRegistryID = dto.GiftRegistryID;
+			if (dto.HasMerchantDepartment) data.MerchantDepartment = dto.MerchantDepartment;
+			if (dto.HasNdcNumber) data.NdcNumber = dto.NdcNumber;
+			if (dto.HasVendorPatternCode) data.VendorPatternCode = dto.VendorPatternCode;
+			if (dto.HasVendorFinishCode) data.VendorFinishCode = dto.VendorFinishCode;
+			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
+			if (dto.HasCentralOrderLineUuid) data.CentralOrderLineUuid = dto.CentralOrderLineUuid;
+			if (dto.HasCentralOrderLineMerchantExtUuid) data.CentralOrderLineMerchantExtUuid = dto.CentralOrderLineMerchantExtUuid;
+
+			#endregion read properties
+
+			data.CheckIntegrity();
+			return;
+		}
 
 
         #endregion read from dto to data
@@ -254,6 +493,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				dto.OrderHeader = new OrderHeaderDto();
 				WriteOrderHeader(data.OrderHeader, dto.OrderHeader);
+			}
+			if (data.OrderHeaderMerchantExt != null)
+			{
+				dto.OrderHeaderMerchantExt = new OrderHeaderMerchantExtDto();
+				WriteOrderHeaderMerchantExt(data.OrderHeaderMerchantExt, dto.OrderHeaderMerchantExt);
 			}
 			if (data.OrderLine != null)
 			{
@@ -367,8 +611,145 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.DBChannelOrderHeaderRowID = data.DBChannelOrderHeaderRowID;
 			dto.DCAssignmentStatus = data.DCAssignmentStatus;
 			dto.DCAssignmentDateUtc = data.DCAssignmentDateUtc;
-			dto.RowNum = data.RowNum;
 			dto.CentralOrderUuid = data.CentralOrderUuid;
+			dto.RowNum = data.RowNum;
+			dto.TotalDueSellerAmount = data.TotalDueSellerAmount;
+
+			#endregion read properties
+
+			return;
+		}
+
+		protected virtual void WriteOrderHeaderMerchantExt(OrderHeaderMerchantExt data, OrderHeaderMerchantExtDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region write all properties with null
+
+			dto.RowNum = data.RowNum;
+			dto.CentralOrderNum = data.CentralOrderNum;
+			dto.MasterAccountNum = data.MasterAccountNum;
+			dto.ProfileNum = data.ProfileNum;
+			dto.ChannelNum = data.ChannelNum;
+			dto.ChannelAccountNum = data.ChannelAccountNum;
+			dto.PoType = data.PoType;
+			dto.HubOrderID = data.HubOrderID;
+			dto.MerchantID = data.MerchantID;
+			dto.MerchantVendorID = data.MerchantVendorID;
+			dto.MerchantOrderDateUtc = data.MerchantOrderDateUtc;
+			dto.PackingSlipMessage = data.PackingSlipMessage;
+			dto.VendorNotes = data.VendorNotes;
+			dto.VendorWarehouseID = data.VendorWarehouseID;
+			dto.VendorCommitmentID = data.VendorCommitmentID;
+			dto.SalesDivision = data.SalesDivision;
+			dto.MerchantPhone1 = data.MerchantPhone1;
+			dto.MerchantPhone2 = data.MerchantPhone2;
+			dto.MerchantPhone3 = data.MerchantPhone3;
+			dto.MerchantCustomerID = data.MerchantCustomerID;
+			dto.MerchantCustomerOrderID = data.MerchantCustomerOrderID;
+			dto.MerchantCustomerOrderDateUtc = data.MerchantCustomerOrderDateUtc;
+			dto.MerchantCustomerPaymentMethod = data.MerchantCustomerPaymentMethod;
+			dto.CancelAfterDateUtc = data.CancelAfterDateUtc;
+			dto.RequiredShipDateUtc = data.RequiredShipDateUtc;
+			dto.PromoID = data.PromoID;
+			dto.PromoStartDateUtc = data.PromoStartDateUtc;
+			dto.MerchandiseTypeCode = data.MerchandiseTypeCode;
+			dto.AuthorizationForExpenseNumber = data.AuthorizationForExpenseNumber;
+			dto.ShipToAccountNO = data.ShipToAccountNO;
+			dto.ShipToGender = data.ShipToGender;
+			dto.ShipToReceipt = data.ShipToReceipt;
+			dto.ShipToVcdID = data.ShipToVcdID;
+			dto.ShipToDEANumber = data.ShipToDEANumber;
+			dto.MerchantBillToAddressType = data.MerchantBillToAddressType;
+			dto.SoldToAddressType = data.SoldToAddressType;
+			dto.SoldToAttention = data.SoldToAttention;
+			dto.SoldToCompanyname = data.SoldToCompanyname;
+			dto.SoldToName = data.SoldToName;
+			dto.SoldToFirstName = data.SoldToFirstName;
+			dto.SoldToLastName = data.SoldToLastName;
+			dto.SoldToAddressLine1 = data.SoldToAddressLine1;
+			dto.SoldToAddressLine2 = data.SoldToAddressLine2;
+			dto.SoldToAddressLine3 = data.SoldToAddressLine3;
+			dto.SoldToCity = data.SoldToCity;
+			dto.SoldToState = data.SoldToState;
+			dto.SoldToPostalCode = data.SoldToPostalCode;
+			dto.SoldToPostalCodeExt = data.SoldToPostalCodeExt;
+			dto.SoldToCountry = data.SoldToCountry;
+			dto.SoldToEmail = data.SoldToEmail;
+			dto.SoldToDayPhone = data.SoldToDayPhone;
+			dto.SoldToNightPhone = data.SoldToNightPhone;
+			dto.SoldToTaxExemptNO = data.SoldToTaxExemptNO;
+			dto.SoldToAccountNO = data.SoldToAccountNO;
+			dto.SoldToGender = data.SoldToGender;
+			dto.CustomerGiftMessage = data.CustomerGiftMessage;
+			dto.ReturnAddressee = data.ReturnAddressee;
+			dto.ReturnAddressLine1 = data.ReturnAddressLine1;
+			dto.ReturnAddressLine2 = data.ReturnAddressLine2;
+			dto.ReturnAddrelssLine3 = data.ReturnAddrelssLine3;
+			dto.ReturnCity = data.ReturnCity;
+			dto.ReturnState = data.ReturnState;
+			dto.ReturnPostalCode = data.ReturnPostalCode;
+			dto.ReturnPostalCodeExt = data.ReturnPostalCodeExt;
+			dto.ReturnCountry = data.ReturnCountry;
+			dto.ReturnEmail = data.ReturnEmail;
+			dto.ReturnDayPhone = data.ReturnDayPhone;
+			dto.ReturnNightPhone = data.ReturnNightPhone;
+			dto.ReturnLocationID = data.ReturnLocationID;
+			dto.InvoiceToAddressType = data.InvoiceToAddressType;
+			dto.InvoiceToAttention = data.InvoiceToAttention;
+			dto.InvoiceToCompany = data.InvoiceToCompany;
+			dto.InoviceToName = data.InoviceToName;
+			dto.InvoiceToFirstName = data.InvoiceToFirstName;
+			dto.InvoiceToLastName = data.InvoiceToLastName;
+			dto.InvoiceToAddressLine1 = data.InvoiceToAddressLine1;
+			dto.InvoiceToAddressLine2 = data.InvoiceToAddressLine2;
+			dto.InvoiceToAddressLine3 = data.InvoiceToAddressLine3;
+			dto.InvoiceToCity = data.InvoiceToCity;
+			dto.InvoiceToState = data.InvoiceToState;
+			dto.InvoiceToPostalCode = data.InvoiceToPostalCode;
+			dto.InvoiceToPostalCodeExt = data.InvoiceToPostalCodeExt;
+			dto.InvoiceToCountry = data.InvoiceToCountry;
+			dto.InvoiceToDayPhone = data.InvoiceToDayPhone;
+			dto.InvoviceToNightPhone = data.InvoviceToNightPhone;
+			dto.InvoiceToEmail = data.InvoiceToEmail;
+			dto.InvoiceToAccountNO = data.InvoiceToAccountNO;
+			dto.InvoiceToTaxExemptNO = data.InvoiceToTaxExemptNO;
+			dto.InvoiceToGender = data.InvoiceToGender;
+			dto.BuyingContract = data.BuyingContract;
+			dto.CcParty = data.CcParty;
+			dto.APVendor = data.APVendor;
+			dto.RMEmail = data.RMEmail;
+			dto.MarketingInserts = data.MarketingInserts;
+			dto.BusinessRuleCode = data.BusinessRuleCode;
+			dto.ReleaseNumber = data.ReleaseNumber;
+			dto.MerchantBuyerName = data.MerchantBuyerName;
+			dto.SalesCurrency = data.SalesCurrency;
+			dto.FreightCollectAccount = data.FreightCollectAccount;
+			dto.FreightPaymentTerms = data.FreightPaymentTerms;
+			dto.MerchantSalesAgent = data.MerchantSalesAgent;
+			dto.PaymentMethodDescription = data.PaymentMethodDescription;
+			dto.OrderFulfillmentFee = data.OrderFulfillmentFee;
+			dto.PackingSlipTemplateIndicator = data.PackingSlipTemplateIndicator;
+			dto.SalesTax = data.SalesTax;
+			dto.ResponsibilityRole = data.ResponsibilityRole;
+			dto.ExpectedProcessingPriority = data.ExpectedProcessingPriority;
+			dto.PreassignedWaybillNumber = data.PreassignedWaybillNumber;
+			dto.URL = data.URL;
+			dto.ShipperID = data.ShipperID;
+			dto.FileIdentifier = data.FileIdentifier;
+			dto.ERPCustomerOrderNumber = data.ERPCustomerOrderNumber;
+			dto.CustomerOrderPOIndex = data.CustomerOrderPOIndex;
+			dto.MultiSource = data.MultiSource;
+			dto.NetDaysDue = data.NetDaysDue;
+			dto.TotalOrderCost = data.TotalOrderCost;
+			dto.UpdateDateUtc = data.UpdateDateUtc;
+			dto.EnterBy = data.EnterBy;
+			dto.UpdateBy = data.UpdateBy;
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.CentralOrderUuid = data.CentralOrderUuid;
+			dto.CentralOrderHeaderMerchantExtUuid = data.CentralOrderHeaderMerchantExtUuid;
 
 			#endregion read properties
 
@@ -417,11 +798,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 			dto.DBChannelOrderLineRowID = data.DBChannelOrderLineRowID;
-			dto.RowNum = data.RowNum;
 			dto.CentralOrderUuid = data.CentralOrderUuid;
 			dto.CentralOrderLineUuid = data.CentralOrderLineUuid;
+			dto.RowNum = data.RowNum;
+			dto.UnitDueSellerAmount = data.UnitDueSellerAmount;
 
 			#endregion read properties
+
+			#region write all grand children object
+
+			if (data.OrderLineMerchantExt != null)
+			{
+				dto.OrderLineMerchantExt = new OrderLineMerchantExtDto();
+				WriteOrderLineMerchantExt(data.OrderLineMerchantExt, dto.OrderLineMerchantExt);
+			}
+
+			#endregion write all grand children object
 
 			return;
 		}
@@ -447,6 +839,91 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
 
 
+		protected virtual void WriteOrderLineMerchantExt(OrderLineMerchantExt data, OrderLineMerchantExtDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region write all properties with null
+
+			dto.RowNum = data.RowNum;
+			dto.CentralOrderLineNum = data.CentralOrderLineNum;
+			dto.DatabaseNum = data.DatabaseNum;
+			dto.CentralOrderNum = data.CentralOrderNum;
+			dto.MasterAccountNum = data.MasterAccountNum;
+			dto.ProfileNum = data.ProfileNum;
+			dto.ChannelNum = data.ChannelNum;
+			dto.ChannelAccountNum = data.ChannelAccountNum;
+			dto.ChannelOrderID = data.ChannelOrderID;
+			dto.ChannelOrderLineNum = data.ChannelOrderLineNum;
+			dto.MerchantLineNumber = data.MerchantLineNumber;
+			dto.CustomerOrderLineNumber = data.CustomerOrderLineNumber;
+			dto.HubLineID = data.HubLineID;
+			dto.MerchantNRProductID = data.MerchantNRProductID;
+			dto.MerchantSKU = data.MerchantSKU;
+			dto.VendorSKU = data.VendorSKU;
+			dto.ManufacturerSKU = data.ManufacturerSKU;
+			dto.ShoppingCartSKU = data.ShoppingCartSKU;
+			dto.VendorDescription = data.VendorDescription;
+			dto.VendorStyleNumber = data.VendorStyleNumber;
+			dto.VendorColorDescription = data.VendorColorDescription;
+			dto.VendorSizeDescription = data.VendorSizeDescription;
+			dto.MerchantColorCode = data.MerchantColorCode;
+			dto.MerchantSizeCode = data.MerchantSizeCode;
+			dto.MerchantSetCode = data.MerchantSetCode;
+			dto.MerchantDescription = data.MerchantDescription;
+			dto.MerchantDescription2 = data.MerchantDescription2;
+			dto.MerchantDescription3 = data.MerchantDescription3;
+			dto.MerchantColorSizeDescription = data.MerchantColorSizeDescription;
+			dto.FullRetailPrice = data.FullRetailPrice;
+			dto.EncodedPrice = data.EncodedPrice;
+			dto.UnitShippingWeight = data.UnitShippingWeight;
+			dto.WeightUnit = data.WeightUnit;
+			dto.CustomerUnitPrice = data.CustomerUnitPrice;
+			dto.UnitCostToMerchant = data.UnitCostToMerchant;
+			dto.LineMerchandiseCost = data.LineMerchandiseCost;
+			dto.CustomerMerchandiseAmount = data.CustomerMerchandiseAmount;
+			dto.CustomerLineShippingAmount = data.CustomerLineShippingAmount;
+			dto.CustomerLineHandlingAmount = data.CustomerLineHandlingAmount;
+			dto.CustomerLineSubTotalAmount = data.CustomerLineSubTotalAmount;
+			dto.CustomerLineTaxAmount = data.CustomerLineTaxAmount;
+			dto.CustomerLineTotalAmount = data.CustomerLineTotalAmount;
+			dto.CustomerLineCredits = data.CustomerLineCredits;
+			dto.CustomerLineBalanceDue = data.CustomerLineBalanceDue;
+			dto.LineDiscountAmount = data.LineDiscountAmount;
+			dto.VendorWareshoueID = data.VendorWareshoueID;
+			dto.ExpectedShipDateUtc = data.ExpectedShipDateUtc;
+			dto.PackingSlipLineMessage = data.PackingSlipLineMessage;
+			dto.VendorLineNotes = data.VendorLineNotes;
+			dto.StoreName = data.StoreName;
+			dto.PersonalizationData = data.PersonalizationData;
+			dto.FacgtoryOrderNum = data.FacgtoryOrderNum;
+			dto.SubUnitQty = data.SubUnitQty;
+			dto.GiftWrapIndicator = data.GiftWrapIndicator;
+			dto.HoldUntilDateUtc = data.HoldUntilDateUtc;
+			dto.RequiredShipDateUtc = data.RequiredShipDateUtc;
+			dto.RequiredDeliveryDateUtc = data.RequiredDeliveryDateUtc;
+			dto.CustomerRequestedArrivalDateUtc = data.CustomerRequestedArrivalDateUtc;
+			dto.ShipperHubCode = data.ShipperHubCode;
+			dto.ShippingHub = data.ShippingHub;
+			dto.SerializedProduct = data.SerializedProduct;
+			dto.CustomerSKU = data.CustomerSKU;
+			dto.VendorQuoteNumber = data.VendorQuoteNumber;
+			dto.GiftRegistryID = data.GiftRegistryID;
+			dto.MerchantDepartment = data.MerchantDepartment;
+			dto.NdcNumber = data.NdcNumber;
+			dto.VendorPatternCode = data.VendorPatternCode;
+			dto.VendorFinishCode = data.VendorFinishCode;
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.CentralOrderUuid = data.CentralOrderUuid;
+			dto.CentralOrderLineUuid = data.CentralOrderLineUuid;
+			dto.CentralOrderLineMerchantExtUuid = data.CentralOrderLineMerchantExtUuid;
+
+			#endregion read properties
+
+			return;
+		}
 
         #endregion write to dto from data
 

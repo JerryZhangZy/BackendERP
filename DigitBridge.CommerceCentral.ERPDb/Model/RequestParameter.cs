@@ -19,8 +19,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// <summary>
     /// Request paging information
     /// </summary>
-    public class RequestPaging
+    public class RequestParameter
     {
+        /// <summary>
+        /// User MasterAccountNum
+        /// Required, from header
+        /// </summary>
+        [JsonIgnore]
+        public int MasterAccountNum { get; set; }
+
+        /// <summary>
+        /// User ProfileNum
+        /// Required, from header
+        /// </summary>
+        [JsonIgnore]
+        public int ProfileNum { get; set; }
+
+        /// <summary>
+        /// More parameter from both Header and Query string
+        /// Optional,
+        /// </summary>
+        [JsonIgnore]
+        public IDictionary<string, object> Paramters { get; set; } = new Dictionary<string, object>();
+
         /// <summary>
         /// Page size to load.
         /// Optional,
@@ -40,6 +61,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [DataMember(Name = "$skip", EmitDefaultValue = false)]
         public int Skip { get; set; }
+
+        /// <summary>
+        /// Return total count of records or current requested count of data
+        /// Optional,
+        /// Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.
+        /// Default value: true.
+        /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+        /// </summary>
+        [DataMember(Name = "$count", EmitDefaultValue = false)]
+        public bool TotalCount { get; set; } = true;
 
         /// <summary>
         /// Sort by fields (comma delimited).

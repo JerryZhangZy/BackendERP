@@ -26,16 +26,136 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default CustomerService Validator class.
     /// </summary>
-    public partial class CustomerServiceValidatorDefault : IValidator<CustomerData>
+    public partial class CustomerServiceValidatorDefault : IValidator<CustomerData,CustomerDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public virtual IList<string> Messages { get; set; }
+        public CustomerServiceValidatorDefault() { }
+        public CustomerServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) 
+        { 
+            this.ServiceMessage = serviceMessage; 
+            this.dbFactory = dbFactory;
+        }
+
+        protected IDataBaseFactory dbFactory { get; set; }
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages 
+        { 
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
         public virtual void Clear()
         {
             IsValid = true;
-            Messages = new List<string>();
+            Messages = new List<MessageClass>();
         }
+
+        public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as CustomerPayload;
+            var dto = pl.Customer;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.Customer.MasterAccountNum = pl.MasterAccountNum;
+                dto.Customer.ProfileNum = pl.ProfileNum;
+                dto.Customer.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (number == null)
+                    {
+                        if (!dto.Customer.RowNum.IsZero())
+                            isValid = CustomerServiceHelper.ExistRowNum(dto.Customer.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
+                        else if (dto.Customer.HasCustomerUuid)
+                            isValid = CustomerServiceHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        else
+                            isValid = false;
+                    }
+                    else
+                        isValid = CustomerServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as CustomerPayload;
+            var dto = pl.Customer;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.Customer.MasterAccountNum = pl.MasterAccountNum;
+                dto.Customer.ProfileNum = pl.ProfileNum;
+                dto.Customer.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (number == null)
+                    {
+                        if (!dto.Customer.RowNum.IsZero())
+                            isValid = await CustomerServiceHelper.ExistRowNumAsync(dto.Customer.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
+                        else if (dto.Customer.HasCustomerUuid)
+                            isValid = await CustomerServiceHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        else
+                            isValid = false;
+                    }
+                    else
+                        isValid = await CustomerServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        #region validate data
+
         public virtual bool Validate(CustomerData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
@@ -59,13 +179,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -78,11 +198,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.Customer.RowNum != 0 && dbFactory.Exists<Customer>(data.Customer.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} is duplicate.");
-                return IsValid;
+                AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
             }
-            return true;
+            if (data.Customer.MasterAccountNum == 0 || data.Customer.ProfileNum == 0)
+            {
+                IsValid = false;
+                AddError($"MasterAccountNum and ProfileNum are required.");
+            }
+            ValidateAddData(data);
+            return IsValid;
 
+        }
+        protected virtual bool ValidateAddData(CustomerData data)
+        {
+            var dbFactory = data.dbFactory;
+            //#region Valid Customer
+            //if (string.IsNullOrEmpty(data.Customer.CustomerCode) ||
+            //    dbFactory.Db.ExecuteScalar<int>(
+            //        $"SELECT COUNT(1) FROM Customer WHERE CustomerCode=@0 AND MasterAccountNum = @1 AND ProfileNum = @2",
+            //        data.Customer.CustomerCode,
+            //        data.Customer.MasterAccountNum,
+            //        data.Customer.ProfileNum) > 0
+            //)
+            //{
+            //    IsValid = false;
+            //    AddError($"CustomerCode required and must be unique.");
+            //}
+            //#endregion
+
+            #region Valid CustomerAddress
+            #endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateEdit(CustomerData data)
@@ -91,15 +237,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.Customer.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.Customer.RowNum != 0 && !dbFactory.Exists<Customer>(data.Customer.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
+            }
+            if (data.Customer.MasterAccountNum == 0 || data.Customer.ProfileNum == 0)
+            {
+                IsValid = false;
+                AddError($"MasterAccountNum and ProfileNum are required.");
             }
             return true;
         }
@@ -110,36 +261,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.Customer.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.Customer.RowNum != 0 && !dbFactory.Exists<Customer>(data.Customer.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
+        #endregion
 
-        #region Async Methods
+        #region Async validate data
 
         public virtual async Task<bool> ValidateAsync(CustomerData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
+            if (!(await ValidateAllModeAsync(data)))
                 return false;
 
             return processingMode switch
             {
-                ProcessingMode.Add => await ValidateAddAsync(data).ConfigureAwait(false),
-                ProcessingMode.Edit => await ValidateEditAsync(data).ConfigureAwait(false),
+                ProcessingMode.Add => await ValidateAddAsync(data),
+                ProcessingMode.Edit => await ValidateEditAsync(data),
                 ProcessingMode.List => false,
-                ProcessingMode.Delete => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Void => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Cancel => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                ProcessingMode.Delete => await ValidateDeleteAsync(data),
+                ProcessingMode.Void => await ValidateDeleteAsync(data),
+                ProcessingMode.Cancel => await ValidateDeleteAsync(data),
                 _ => false,
             };
         }
@@ -147,16 +299,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAllModeAsync(CustomerData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
-            {
-                IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
-                return IsValid;
-            }
+            //if (string.IsNullOrEmpty(data.Customer.CustomerCode))
+            //{
+            //    IsValid = false;
+            //    AddError($"Customer Code cannot be empty.");
+            //    return IsValid;
+            //}
             //if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -169,10 +321,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.Customer.RowNum != 0 && (await dbFactory.ExistsAsync<Customer>(data.Customer.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} is duplicate.");
-                return IsValid;
+                AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
+                //return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
         }
 
@@ -182,14 +335,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.Customer.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.Customer.RowNum != 0 && !(await dbFactory.ExistsAsync<Customer>(data.Customer.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -201,20 +354,128 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.Customer.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.Customer.RowNum != 0 && !(await dbFactory.ExistsAsync<Customer>(data.Customer.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.Customer.RowNum} not found.");
+                AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        #endregion Async Methods
+        #endregion Async validate data
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(CustomerDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.Customer.CustomerUuid = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                        addr.AddressUuid = null;
+                }
+  
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                if (dto.Customer.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("Customer.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.Customer.MasterAccountNum = null;
+                dto.Customer.ProfileNum = null;
+                dto.Customer.DatabaseNum = null;
+                dto.Customer.CustomerUuid = null;
+                dto.Customer.CustomerCode = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                    {
+                        addr.AddressUuid = null;
+                        addr.AddressCode = null;
+                    }
+                }
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region async Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(CustomerDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.Customer.CustomerUuid = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                        addr.AddressUuid = null;
+                }
+
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                if (dto.Customer.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("Customer.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.Customer.MasterAccountNum = null;
+                dto.Customer.ProfileNum = null;
+                dto.Customer.DatabaseNum = null;
+                dto.Customer.CustomerUuid = null;
+                dto.Customer.CustomerCode = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                    {
+                        addr.AddressUuid = null;
+                        addr.AddressCode = null;
+                    }
+                }
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 

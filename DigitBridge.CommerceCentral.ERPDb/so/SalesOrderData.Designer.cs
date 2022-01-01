@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -28,6 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a SalesOrderData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class SalesOrderData : StructureRepository<SalesOrderData>
     {
         public SalesOrderData() : base() {}
@@ -38,7 +37,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => SalesOrderHeader.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string SalesOrderHeaderTable ="SalesOrderHeader ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string SalesOrderHeaderInfoTable ="SalesOrderHeaderInfo ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string SalesOrderHeaderAttributesTable ="SalesOrderHeaderAttributes ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string SalesOrderItemsTable ="SalesOrderItems ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string SalesOrderItemsAttributesTable ="SalesOrderItemsAttributes ";
+		
         #region CRUD Methods
 
         public override bool Equals(SalesOrderData other)
@@ -74,14 +88,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         // Check Children table Integrity
-        public virtual SalesOrderData CheckIntegrity()
+        public override SalesOrderData CheckIntegrity()
         {
 			if (SalesOrderHeader is null) return this; 
-			SalesOrderHeader.CheckUniqueId(); 
+			SalesOrderHeader.CheckIntegrity(); 
 			CheckIntegritySalesOrderHeaderInfo(); 
 			CheckIntegritySalesOrderHeaderAttributes(); 
 			CheckIntegritySalesOrderItems(); 
 			CheckIntegritySalesOrderItemsAttributes(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -176,26 +191,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			SalesOrderHeader.SetDataBaseFactory(dbFactory);
-			if (!SalesOrderHeader.Save()) return false;
 
-			if (SalesOrderHeaderInfo != null) 
-				SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory)?.Save();
+			 if (NeedSave(SalesOrderHeaderTable))
+			{
+				SalesOrderHeader.SetDataBaseFactory(dbFactory);
+				if (!SalesOrderHeader.Save()) return false;
+			}
 
-			if (SalesOrderHeaderAttributes != null) 
-				SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			 if (NeedSave(SalesOrderHeaderInfoTable))
+			{
+				if (SalesOrderHeaderInfo != null) 
+					SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory)?.Save();
+			}
 
-			if (SalesOrderItems != null) 
-				SalesOrderItems.SetDataBaseFactory(dbFactory)?.Save();
-			var delSalesOrderItems = _SalesOrderItemsDeleted;
-			if (delSalesOrderItems != null)
-				delSalesOrderItems.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(SalesOrderHeaderAttributesTable))
+			{
+				if (SalesOrderHeaderAttributes != null) 
+					SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			}
 
-			if (SalesOrderItemsAttributes != null) 
-				SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory)?.Save();
-			var delChildrenSalesOrderItemsAttributes = SalesOrderItemsAttributesDeleted;
-			if (delChildrenSalesOrderItemsAttributes != null)
-				delChildrenSalesOrderItemsAttributes.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(SalesOrderItemsTable))
+			{
+				if (SalesOrderItems != null) 
+					SalesOrderItems.SetDataBaseFactory(dbFactory)?.Save();
+				var delSalesOrderItems = _SalesOrderItemsDeleted;
+				if (delSalesOrderItems != null)
+					delSalesOrderItems.SetDataBaseFactory(dbFactory)?.Delete();
+			}
+
+			 if (NeedSave(SalesOrderItemsAttributesTable))
+			{
+				if (SalesOrderItemsAttributes != null) 
+					SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory)?.Save();
+				var delChildrenSalesOrderItemsAttributes = SalesOrderItemsAttributesDeleted;
+				if (delChildrenSalesOrderItemsAttributes != null)
+					delChildrenSalesOrderItemsAttributes.SetDataBaseFactory(dbFactory)?.Delete();
+			}
 
 			if (_OnSave != null)
 			{
@@ -217,16 +248,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			SalesOrderHeader.SetDataBaseFactory(dbFactory); 
-			if (SalesOrderHeader.Delete() <= 0) return false; 
-			if (SalesOrderHeaderInfo != null) 
-				SalesOrderHeaderInfo?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (SalesOrderHeaderAttributes != null) 
-				SalesOrderHeaderAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (SalesOrderItems != null) 
-				SalesOrderItems?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (SalesOrderItemsAttributes != null) 
-				SalesOrderItemsAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+
+			 if (NeedDelete(SalesOrderHeaderTable))
+			{
+				SalesOrderHeader.SetDataBaseFactory(dbFactory); 
+				if (SalesOrderHeader.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(SalesOrderHeaderInfoTable))
+			{
+				if (SalesOrderHeaderInfo != null) 
+					SalesOrderHeaderInfo?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(SalesOrderHeaderAttributesTable))
+			{
+				if (SalesOrderHeaderAttributes != null) 
+					SalesOrderHeaderAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(SalesOrderItemsTable))
+			{
+				if (SalesOrderItems != null) 
+					SalesOrderItems?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(SalesOrderItemsAttributesTable))
+			{
+				if (SalesOrderItemsAttributes != null) 
+					SalesOrderItemsAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -281,25 +328,41 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			SalesOrderHeader.SetDataBaseFactory(dbFactory); 
-			if (!(await SalesOrderHeader.SaveAsync().ConfigureAwait(false))) return false; 
-			if (SalesOrderHeaderInfo != null) 
-				await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
 
-			if (SalesOrderHeaderAttributes != null) 
-				await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			 if (NeedSave(SalesOrderHeaderTable))
+			{
+				SalesOrderHeader.SetDataBaseFactory(dbFactory); 
+				if (!(await SalesOrderHeader.SaveAsync())) return false; 
+			}
+			 if (NeedSave(SalesOrderHeaderInfoTable))
+			{
+				if (SalesOrderHeaderInfo != null) 
+					await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			}
 
-			if (SalesOrderItems != null) 
-				await SalesOrderItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delSalesOrderItems = _SalesOrderItemsDeleted;
-			if (delSalesOrderItems != null)
-				await delSalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			 if (NeedSave(SalesOrderHeaderAttributesTable))
+			{
+				if (SalesOrderHeaderAttributes != null) 
+					await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			}
 
-			if (SalesOrderItemsAttributes != null) 
-				await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delSalesOrderItemsAttributes = SalesOrderItemsAttributesDeleted;
-			if (delSalesOrderItemsAttributes != null)
-				await delSalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			 if (NeedSave(SalesOrderItemsTable))
+			{
+				if (SalesOrderItems != null) 
+					await SalesOrderItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delSalesOrderItems = _SalesOrderItemsDeleted;
+				if (delSalesOrderItems != null)
+					await delSalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
+
+			 if (NeedSave(SalesOrderItemsAttributesTable))
+			{
+				if (SalesOrderItemsAttributes != null) 
+					await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delSalesOrderItemsAttributes = SalesOrderItemsAttributesDeleted;
+				if (delSalesOrderItemsAttributes != null)
+					await delSalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
 
 			if (_OnSave != null)
 			{
@@ -321,16 +384,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(SalesOrderHeaderTable))
+			{
 			SalesOrderHeader.SetDataBaseFactory(dbFactory); 
-			if ((await SalesOrderHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
-			if (SalesOrderHeaderInfo != null) 
-				await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (SalesOrderHeaderAttributes != null) 
-				await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (SalesOrderItems != null) 
-				await SalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (SalesOrderItemsAttributes != null) 
-				await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if ((await SalesOrderHeader.DeleteAsync()) <= 0) return false; 
+			}
+			 if (NeedDelete(SalesOrderHeaderInfoTable))
+			{
+				if (SalesOrderHeaderInfo != null) 
+					await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(SalesOrderHeaderAttributesTable))
+			{
+				if (SalesOrderHeaderAttributes != null) 
+					await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(SalesOrderItemsTable))
+			{
+				if (SalesOrderItems != null) 
+					await SalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(SalesOrderItemsAttributesTable))
+			{
+				if (SalesOrderItemsAttributes != null) 
+					await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -442,6 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             SalesOrderHeaderInfo.SetParent(this);
             if (SalesOrderHeaderInfo.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
                 SalesOrderHeaderInfo.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
+            SalesOrderHeaderInfo.CheckIntegrity();
             return SalesOrderHeaderInfo;
         }
 
@@ -497,6 +576,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             SalesOrderHeaderAttributes.SetParent(this);
             if (SalesOrderHeaderAttributes.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
                 SalesOrderHeaderAttributes.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
+            SalesOrderHeaderAttributes.CheckIntegrity();
             return SalesOrderHeaderAttributes;
         }
 
@@ -610,6 +690,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
                 seq += 1;
                 child.Seq = seq;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -622,7 +703,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<SalesOrderItemsAttributes> _SalesOrderItemsAttributes;
 
-        protected IList<SalesOrderItemsAttributes> SalesOrderItemsAttributes 
+        public IList<SalesOrderItemsAttributes> SalesOrderItemsAttributes 
         { 
             get 
             {
@@ -697,6 +778,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
                     child.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
+                child.CheckIntegrity();
             }
             return children;
         }

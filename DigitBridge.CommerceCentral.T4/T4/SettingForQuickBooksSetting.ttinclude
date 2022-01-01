@@ -1,0 +1,81 @@
+﻿<#
+	// Database table define file path
+    var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\qbo";
+    // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
+    var Files = "QuickBooksSettingInfo";
+
+    // current solution path
+	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
+    var project = Path.Combine(path,DatabaseProjectName);
+    var processName = "QuickBooksSettingInfo";
+    var processForlderName = "Db";
+
+    // Tables relatonship
+    var structureName = $"{processName}Data";
+    var StructureClass = new StructureInfo(structureName,
+            new StructureTable() { Name = "QuickBooksSettingInfo", AlliesName = "qbsi", MainTable = true, OneToOne = true}
+        );
+
+
+    // Set generate file Namespace and forlder
+    var Namespace = "DigitBridge.QuickBooks.Integration";
+    var ModelFolder = $"DigitBridge.QuickBooks.Integration\\{processForlderName}";
+    var DtoFolder = $"DigitBridge.QuickBooks.Integration\\{processForlderName}\\dto";
+
+    var NamespaceTest = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
+    var TesterFolder = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
+
+    var NamespaceStructure = "DigitBridge.QuickBooks.Integration";
+    var StructureFolder = $"DigitBridge.QuickBooks.Integration\\{processForlderName}";
+    var NamespaceStructureDto = "DigitBridge.QuickBooks.Integration";
+    var StructureDtoFolder = $"DigitBridge.QuickBooks.Integration\\{processForlderName}\\dto";
+
+    var NamespaceService = "DigitBridge.QuickBooks.Integration";
+    var ServiceFolder = $"DigitBridge.QuickBooks.Integration\\Mdl";
+
+    var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
+    var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
+
+    var JsModelFolder = $"DigitBridge.CommerceCentral.ERPApi\\JsType\\{processForlderName}";
+    var PayloadName = $"{processName}Payload";
+
+    var OpenApiPayloadFolder = $"DigitBridge.CommerceCentral.ERPApi\\OpenApiModel";
+    var OpenApiPayloadName = $"{PayloadName}OpenApi";
+
+    // generate repository class for each table
+    var generateModel = true;
+    var generateDto = true;
+    var generateModelHelper = true;
+
+    // generate tester class for each table repository
+    var generateTester = true;
+
+    // generate structure repository class contain multiple table
+    var generateStructureRepository = true;
+    var generateStructureTester = true;
+
+    // generate structure Dto class
+    var generateStructureDto = true;
+    var generateStructureDtoCsv = true;
+    var generateStructureDtoTester = true;
+    var StructureDtoName = $"{structureName}Dto";
+
+    // generate service class
+    var generateService = true;
+    var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
+    
+    var generateStructureFindList=true;
+    var generateServiceTester = true;
+
+    var indent = 2;
+    var dir = string.Empty;
+
+    // Read schema
+
+    //var manager = new Manager(Host, GenerationEnvironment, true) { OutputPath = path};
+    var parser = new SQLFileParser(project, Files, StructureClass);
+
+    parser.Parse();
+    var tables = parser.Tables;
+#>

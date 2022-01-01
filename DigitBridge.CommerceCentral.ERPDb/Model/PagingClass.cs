@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -68,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary>
         [DataMember(Name = "errors", EmitDefaultValue = false)]
-        public IList<ErrorClass> Errors { get; set; }
+        public IList<MessageClass> Errors { get; set; }
 
         public PagingClass() { }
 

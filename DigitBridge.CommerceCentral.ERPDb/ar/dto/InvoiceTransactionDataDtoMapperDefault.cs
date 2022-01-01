@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return data;
         }
 
-		protected virtual void ReadInvoiceTransaction(InvoiceTransaction data, InvoiceTransactionDto dto)
+        public virtual void ReadInvoiceTransaction(InvoiceTransaction data, InvoiceTransactionDto dto)
 		{
 			if (data is null || dto is null)
 				return;
@@ -67,6 +67,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasTransNum) data.TransNum = dto.TransNum.ToInt();
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
+			if (dto.HasPaymentUuid) data.PaymentUuid = dto.PaymentUuid;
+			if (dto.HasPaymentNumber) data.PaymentNumber = dto.PaymentNumber.ToLong();
 			if (dto.HasTransType) data.TransType = dto.TransType.ToInt();
 			if (dto.HasTransStatus) data.TransStatus = dto.TransStatus.ToInt();
 			if (dto.HasTransDate) data.TransDate = dto.TransDate.ToDateTime();
@@ -101,8 +103,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
+            if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
+
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -153,6 +158,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDamageWarehouseUuid) data.DamageWarehouseUuid = dto.DamageWarehouseUuid;
 			if (dto.HasDamageWarehouseCode) data.DamageWarehouseCode = dto.DamageWarehouseCode;
 			if (dto.HasInvoiceDiscountPrice) data.InvoiceDiscountPrice = dto.InvoiceDiscountPrice.ToDecimal();
+			if (dto.HasInvoiceDiscountAmount) data.InvoiceDiscountAmount = dto.InvoiceDiscountAmount.ToDecimal();
+			if (dto.HasReturnDiscountAmount) data.ReturnDiscountAmount = dto.ReturnDiscountAmount.ToDecimal();
 			if (dto.HasPrice) data.Price = dto.Price.ToDecimal();
 			if (dto.HasExtAmount) data.ExtAmount = dto.ExtAmount.ToDecimal();
 			if (dto.HasTaxableAmount) data.TaxableAmount = dto.TaxableAmount.ToDecimal();
@@ -173,6 +180,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -227,10 +235,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				dto.InvoiceReturnItems = new List<InvoiceReturnItemsDto>();
 				WriteInvoiceReturnItems(data.InvoiceReturnItems, dto.InvoiceReturnItems);
 			}
+
+            dto.InvoiceDataDto = WriteInvoiceDto(data.InvoiceData);
+
             return dto;
         }
 
-		protected virtual void WriteInvoiceTransaction(InvoiceTransaction data, InvoiceTransactionDto dto)
+        public virtual void WriteInvoiceTransaction(InvoiceTransaction data, InvoiceTransactionDto dto)
 		{
 			if (data is null || dto is null)
 				return;
@@ -245,6 +256,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.TransNum = data.TransNum;
 			dto.InvoiceUuid = data.InvoiceUuid;
 			dto.InvoiceNumber = data.InvoiceNumber;
+			dto.PaymentUuid = data.PaymentUuid;
+			dto.PaymentNumber = data.PaymentNumber;
 			dto.TransType = data.TransType;
 			dto.TransStatus = data.TransStatus;
 			dto.TransDate = data.TransDate;
@@ -281,6 +294,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
+            dto.CustomerCode = data.CustomerCode;
+
 			#endregion read properties
 
 			return;
@@ -303,7 +318,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ReturnItemStatus = data.ReturnItemStatus;
 			dto.ReturnDate = data.ReturnDate;
 			dto.ReturnTime = data.ReturnTime.ToDateTime();
+            if (!data.ReceiveDate.IsZero())
 			dto.ReceiveDate = data.ReceiveDate;
+            if (!data.StockDate.IsZero())
 			dto.StockDate = data.StockDate;
 			dto.SKU = data.SKU;
 			dto.ProductUuid = data.ProductUuid;
@@ -333,6 +350,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.DamageWarehouseUuid = data.DamageWarehouseUuid;
 			dto.DamageWarehouseCode = data.DamageWarehouseCode;
 			dto.InvoiceDiscountPrice = data.InvoiceDiscountPrice;
+			dto.InvoiceDiscountAmount = data.InvoiceDiscountAmount;
+			dto.ReturnDiscountAmount = data.ReturnDiscountAmount;
 			dto.Price = data.Price;
 			dto.ExtAmount = data.ExtAmount;
 			dto.TaxableAmount = data.TaxableAmount;
@@ -352,6 +371,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UpdateBy = data.UpdateBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+
+            dto.ShipQty = data.ShipQty;
+            dto.ReturnedQty = data.ReturnedQty;
+            dto.OpenQty = data.OpenQty;
 
 			#endregion read properties
 
@@ -382,6 +405,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #endregion write to dto from data
 
+        #region write invoice data to invoice data dto  
+        public virtual InvoiceDataDto WriteInvoiceDto(InvoiceData data)
+        {
+            if (data is null)
+                return null;
+            return new InvoiceDataDtoMapperDefault().WriteDto(data, null);
+        }
+        #endregion
     }
 }
 

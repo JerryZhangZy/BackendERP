@@ -1,7 +1,7 @@
 ﻿        // grand children
         protected IList<<#= child.Table.Name #>> _<#= child.Table.Name #>;
 
-        protected IList<<#= child.Table.Name #>> <#= child.Table.Name #> 
+        public IList<<#= child.Table.Name #>> <#= child.Table.Name #> 
         { 
             get 
             {
@@ -87,6 +87,7 @@
                 seq += 1;
                 child.Seq = seq;
 <#  } #>
+                child.CheckIntegrity();
             }
             return children;
         }

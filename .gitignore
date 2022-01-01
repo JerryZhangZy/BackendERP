@@ -13,6 +13,9 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# global json
+global.json
+
 # Mono auto generated files
 mono_crash.*
 
@@ -32,6 +35,9 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
+
+# JetBrains Rider cache/options directory
+.idea/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -126,6 +132,10 @@ $tf/
 
 # Guidance Automation Toolkit
 *.gpState
+
+# Mac temp Folders
+*/C:/*
+*/c:/*
 
 # ReSharper is a .NET coding add-in
 _ReSharper*/
@@ -366,6 +376,23 @@ FodyWeavers.xsd
 # Setting - json setting
 appsettings.test.json
 local.settings.json
+settings.json
+launchSettings.json
 
+/DigitBridge.CommerceCentral.ERPApi/Properties/launchSettings.json
+/DigitBridge.Base.Utility/Extension/FunctionAttributeExtensions.cs
+/DigitBridge.Base.Utility/Extension/AssemblyExtensions.cs
+/DigitBridge.Base.Utility/Extension/GenericExtensions.cs
 /centralerp/DigitBridge.CommerceCentral.ERPDb/DigitBridge.CommerceCentral.ERPDb.xml
 /centralerp/DigitBridge.CommerceCentral.ERPApi/DigitBridge.CommerceCentral.ERPApi.xml
+/centralerp/DigitBridge.CommerceCentral.ERPApi/local.settings.json
+/DigitBridge.CommerceCentral.ERPApi/local.settings.json
+/DigitBridge.CommerceCentral.ERPBroker/Properties/ServiceDependencies/DigitBridge-ERP-Broker-Func-Dev - Zip Deploy/profile.arm.json
+/DigitBridge.CommerceCentral.ERP.Integration.Api/Properties/launchSettings.json
+/DigitBridge.CommerceCentral.ERPEventApi/Properties/launchSettings.json
+/DigitBridge.CommerceCentral.ERPBroker/Properties/launchSettings.json
+/DigitBridge.CommerceCentral.ERPApi/local.settings.json
+/DigitBridge.CommerceCentral.ERP.Integration.Api/local.settings.json
+/DigitBridge.CommerceCentral.ERPBroker/local.settings.json
+/DigitBridge.CommerceCentral.ERPEventApi/local.settings.json
+/DigitBridge.CommerceCentral.XUnit.Common/appsettings.test.json

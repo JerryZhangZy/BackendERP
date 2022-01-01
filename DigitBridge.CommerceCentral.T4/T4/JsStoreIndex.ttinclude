@@ -1,0 +1,9 @@
+﻿export type { 
+    <#= structureName #>Model,
+    <#= structurePropertyName #>Init,
+ } from "./<#= structurePropertyName #>.model";
+
+export { 
+    getStore, 
+    useCurrentStore as use<#= structureName #>Store, 
+} from "./<#= structurePropertyName #>.store";

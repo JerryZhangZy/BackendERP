@@ -19,6 +19,8 @@
 	[Phone4] VARCHAR(50) NOT NULL DEFAULT '', --Customer phone 4. <br> Title: Fax, Display: true, Editable: true
 	[Email] VARCHAR(200) NOT NULL DEFAULT '', --Customer email. <br> Title: Email, Display: true, Editable: true
 	[WebSite] VARCHAR(200) NOT NULL DEFAULT '', --Customer WebSite. <br> Title: WebSite, Display: true, Editable: true
+	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
+	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 
     [CustomerType] INT NULL DEFAULT 0, --Customer type. <br> Title: Type, Display: true, Editable: true
     [CustomerStatus] INT NULL DEFAULT 0, --Customer status. <br> Title: Status, Display: true, Editable: true
@@ -48,6 +50,18 @@
 	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms. <br> Title: Terms, Display: true, Editable: true
 	[TermsDays] INT NOT NULL DEFAULT 0, --Payment terms days. <br> Title: Days, Display: true, Editable: true
 
+    [SalesRep] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+    [SalesRep2] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+    [SalesRep3] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+    [SalesRep4] Varchar(100) NOT NULL DEFAULT '', --Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate2] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate3] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionRate4] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+
+	[OrderMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+	[ItemMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
@@ -57,24 +71,109 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_Customer_CustomerId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UK_Customer_CustomerUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_Customer_CustomerUuid] ON [dbo].[Customer]
 (
 	[CustomerUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_Customer_CustomerCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_Customer_CustomerCode')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_Customer_CustomerCode] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerCode] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_CustomerID')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_CustomerName')
 CREATE NONCLUSTERED INDEX [IX_Customer_CustomerName] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerName] ASC
+) 
+GO
+
+ 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_C_C_C_P_E_W')
+CREATE NONCLUSTERED INDEX [IX_Customer_C_C_C_P_E_W] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[CustomerCode] ASC, 
+	[CustomerName] ASC,
+	[Contact] ASC,
+	[Phone1] ASC,
+	[Email] ASC,
+	[WebSite] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_C_C_B_F_P')
+CREATE NONCLUSTERED INDEX [IX_Customer_C_C_B_F_P] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[CustomerType] ASC, 
+	[CustomerStatus] ASC,
+	[BusinessType] ASC,
+	[FirstDate] ASC,
+	[Priority] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_A_R_D_Z')
+CREATE NONCLUSTERED INDEX [IX_Customer_A_R_D_Z] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[Area] ASC, 
+	[Region] ASC,
+	[Districtn] ASC,
+	[Zone] ASC
+) 
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_C_D_D_S')
+CREATE NONCLUSTERED INDEX [IX_Customer_C_D_D_S] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[ClassCode] ASC, 
+	[DepartmentCode] ASC,
+	[DivisionCode] ASC,
+	[SourceCode] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_ChannelNum_ChannelAccountNum')
+CREATE NONCLUSTERED INDEX [IX_Customer_ChannelNum_ChannelAccountNum] ON [dbo].[Customer]
+(
+	[ChannelNum] ASC, 
+	[ChannelAccountNum] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_MasterAccountNum_ChannelNum_ChannelAccountNum')
+CREATE NONCLUSTERED INDEX [IX_Customer_MasterAccountNum_ChannelNum_ChannelAccountNum] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[ChannelNum] ASC, 
+	[ChannelAccountNum] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_SalesRep1234')
+CREATE NONCLUSTERED INDEX [IX_Customer_SalesRep1234] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SalesRep] ASC,
+	[SalesRep2] ASC,
+	[SalesRep3] ASC,
+	[SalesRep4] ASC
 ) 
 GO
 

@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DigitBridge.CommerceCentral.ERPApiSDK
+{
+    /// <summary>
+    /// Add event and add message to queue to create qbo payment
+    /// </summary>
+    public class QboPaymentClient : ErpEventClient
+    {
+
+        public QboPaymentClient() : base()
+        { }
+        public QboPaymentClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        { }
+
+
+        public async Task<bool> SendAddQboPaymentAsync(AddErpEventDto eventDto)
+        {
+            return await AddEventERPAsync(eventDto, FunctionUrl.QuickBooksPayment);
+        }
+
+        public async Task<bool> SendDeleteQboPaymentAsync(AddErpEventDto eventDto)
+        {
+            return await AddEventERPAsync(eventDto, FunctionUrl.QuickBooksPaymentDelete);
+        }
+    }
+}

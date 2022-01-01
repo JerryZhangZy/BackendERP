@@ -112,6 +112,7 @@
                 seq += 1;
                 child.Seq = seq;
 <# } #>
+                child.CheckIntegrity();
             }
             return children;
         }

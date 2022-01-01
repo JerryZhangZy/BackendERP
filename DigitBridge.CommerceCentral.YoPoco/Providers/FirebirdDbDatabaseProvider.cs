@@ -1,10 +1,8 @@
 ﻿using System.Data;
 using System.Data.Common;
 using System.Linq;
-#if ASYNC
 using System.Threading;
 using System.Threading.Tasks;
-#endif
 
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -28,13 +26,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return ExecuteScalarHelper(database, cmd);
         }
 
-#if ASYNC
-        public override Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName)
+        public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName)
         {
             PrepareInsert(cmd, primaryKeyName);
-            return ExecuteScalarHelperAsync(cancellationToken, database, cmd);
+            return await ExecuteScalarHelperAsync(cancellationToken, database, cmd);
         }
-#endif
 
         private void PrepareInsert(IDbCommand cmd, string primaryKeyName)
         {

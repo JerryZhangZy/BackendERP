@@ -149,8 +149,8 @@ namespace GhpIntegration.OrderImportApmMdl.Mappings
                     ordHR.PaidAmt = imOrdHR.PaidAmt;
                     ordHR.SplitReferenceNum1 = imOrdHR.ReferenceNum1;
                     ordHR.SplitReferenceNum2 = imOrdHR.ReferenceNum2;
-                    ordHR.EnterDate = DateTime.Now;
-                    ordHR.LastUpdate = DateTime.Now;
+                    ordHR.EnterDate = DateTime.UtcNow;
+                    ordHR.LastUpdate = DateTime.UtcNow;
 
                     ordHd.Rows.Add(ordHR);
 
@@ -209,8 +209,8 @@ namespace GhpIntegration.OrderImportApmMdl.Mappings
                         {
                             ordLR.DestinateWhsNum = ""; //GetDestinateWhsNum(imOrdLR.ItemNum, imOrdLR.StyleColor, imOrdLR.Size, imOrdLR.Length, imOrdLR.Quantity);
                         }
-                        ordLR.EnterDate = DateTime.Now;
-                        ordLR.LastUpdate = DateTime.Now;
+                        ordLR.EnterDate = DateTime.UtcNow;
+                        ordLR.LastUpdate = DateTime.UtcNow;
 
                         ordLn.Rows.Add(ordLR);
                     }

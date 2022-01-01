@@ -12,11 +12,13 @@ namespace DigitBridge.Base.Utility
     /// </summary>
     public class ObjectConvert
     {
+        public static DateTime SystemMinDatatime = new DateTime(1800, 12, 28);
+
         public static DateTime MinDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
         public static DateTime MaxDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MaxValue;
 
-        public static TimeSpan MinTime = new TimeSpan(0,0,0);
-        public static TimeSpan MaxTime = new TimeSpan(11,59,59);
+        public static TimeSpan MinTime = new TimeSpan(0, 0, 0);
+        public static TimeSpan MaxTime = new TimeSpan(24, 0, 0).Subtract(new TimeSpan(1));
 
         public static int QtyDecimalDigits = 2;
         public static int PriceDecimalDigits = 2;
@@ -24,6 +26,17 @@ namespace DigitBridge.Base.Utility
         public static int AmountDecimalDigits = 2;
         public static int RateDecimalDigits = 3;
 
+        /// <summary>
+        /// Covert input to string,then read it to stream;
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static Stream ToStream(object input)
+        {
+            var inputString = input.ObjectToString();
+            var buffer = Encoding.Default.GetBytes(inputString);
+            return new MemoryStream(buffer);
+        }
 
         /// <summary>
         /// [True, T, Yes, Y, 1] are true, all the others are false.
@@ -237,8 +250,8 @@ namespace DigitBridge.Base.Utility
                 if (value == DBNull.Value)
                     value = null;
 
-                if (type is { })
-                    return value;
+                //if (type is {})
+                //    return value;
 
                 if ((value == null) || ((value is string s) && (type != typeof(string)) && string.IsNullOrEmpty(s)))
                     return (type.IsClass ||
@@ -284,6 +297,8 @@ namespace DigitBridge.Base.Utility
 
     public static class ObjectExtensions
     {
+        public static Stream ToStream(this object value) => ObjectConvert.ToStream(value);
+
         public static bool EqualsIgnoreSpace(this string source, string target, bool ignoreLeadingSpace = true, bool ignoreCase = true)
         {
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
@@ -301,7 +316,7 @@ namespace DigitBridge.Base.Utility
         public static T ConvertObject<T>(this object value, object context = null)
         {
             var obj = ObjectConvert.ConvertObject(value, typeof(T), context);
-            return (obj is null) ? default(T) : (T) obj;
+            return (obj is null) ? default(T) : (T)obj;
         }
 
         /// <summary>
@@ -384,6 +399,16 @@ namespace DigitBridge.Base.Utility
                 ? _str.PadRight(len, ' ')
                 : _str.Substring(0, len);
         }
+
+        /// <summary>
+        /// Convert string to Camel case
+        /// </summary>
+        /// <returns></returns>
+        public static string ToCamelCase(this string str, bool toCamelCase = true) =>
+            string.IsNullOrWhiteSpace(str) || !toCamelCase
+                ? str
+                : $"{Char.ToLowerInvariant(str[0])}{str.Substring(1)}";
+
 
         /// <summary>
         /// Get Datetime for sql server date range
@@ -472,6 +497,73 @@ namespace DigitBridge.Base.Utility
         /// <returns></returns>
         public static TimeSpan MaxValueSql(this TimeSpan netDateTime) => ObjectConvert.MaxTime;
 
+        public static T To<T>(this object input)
+        {
+            if (input is null)
+                return default(T);
+            var obj = ObjectConvert.ConvertObject(input, typeof(T));
+            return (obj is null) ? default(T) : (T)obj;
+        }
+
+        /// <summary>
+        /// Convert string to Enum by name
+        /// </summary>
+        public static T ToEnum<T>(this string value)
+        {
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+            else
+            {
+                foreach (string nm in Enum.GetNames(typeof(T)))
+                {
+                    if (nm.Equals(value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (T)Enum.Parse(typeof(T), nm);
+                    }
+                }
+            }
+            return default(T);
+        }
+        /// <summary>
+        /// Convert string to Enum by name with default
+        /// </summary>
+        public static T ToEnum<T>(this string value, T defaultValue)
+        {
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+            else
+            {
+                foreach (string nm in Enum.GetNames(typeof(T)))
+                {
+                    if (nm.Equals(value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (T)Enum.Parse(typeof(T), nm);
+                    }
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// Convert int to Enum by enum value
+        /// </summary>
+        public static T ToEnum<T>(this int value, T defaultValue) where T : struct
+        {
+            T result;
+            if (Enum.TryParse<T>(value.ToString(), out result))
+            {
+                if (Enum.IsDefined(typeof(T), result))
+                {
+                    return (T)result;
+                }
+            }
+            return defaultValue;
+        }
+
+
         public static string DbToString(this object obj) => (obj == null || obj == DBNull.Value) ? string.Empty : obj.ToString().TrimEnd();
         public static decimal ToDecimal(this object obj) => obj.DbToString().ToDecimal();
 
@@ -499,6 +591,13 @@ namespace DigitBridge.Base.Utility
                         ? r
                         : false;
 
+        public static bool ToBoolByString(this string s) =>
+            string.IsNullOrWhiteSpace(s)
+                ? false
+                : s.EqualsIgnoreSpace("true") || s.EqualsIgnoreSpace("yes")
+                    ? true
+                    : false;
+
         /// <summary>
         /// Convert nullable value to its default, non-nullable value when its nullable value is null. 
         /// For example: default(int?) is null, this function will return default(int) is 0;
@@ -509,13 +608,32 @@ namespace DigitBridge.Base.Utility
             return value ?? default(T);
         }
 
+        public static DateTime ToDateTime(this object obj) => obj.DbToString().ToDateTime();
+
+        public static DateTime ToDateTime(this string s) =>
+            string.IsNullOrWhiteSpace(s)
+                ? ObjectConvert.MinDatatime
+                : DateTime.TryParse(s, out DateTime r)
+                    ? r
+                    : ObjectConvert.MinDatatime;
+
 
         public static DateTime ToDateTime(this DateTime? input) => (input is null) ? ObjectConvert.MinDatatime : (DateTime)input;
         public static TimeSpan ToTimeSpan(this object input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this DateTime? input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this TimeSpan? input) => (input is null) ? ObjectConvert.MinTime : (TimeSpan)input;
-        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.Today : DateTime.Today + (TimeSpan)input;
-        public static DateTime ToDateTime(this TimeSpan input) => DateTime.Today + input;
+        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.UtcNow.Date : DateTime.UtcNow.Date + (TimeSpan)input;
+        public static DateTime ToDateTime(this TimeSpan input) => DateTime.UtcNow.Date + input;
+
+        public static string ToDateString(this object input) => input.ToDateTime().ToShortDateString();
+        public static string ToTimeString(this object input) => input.ToDateTime().ToShortTimeString();
+        public static string ToISO8601_o(this object input) => 
+            input.ToDateTime().ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+        public static string ToISO8601_s(this object input) => 
+            input.ToDateTime().ToString("s", System.Globalization.CultureInfo.InvariantCulture);
+        public static string ToISO8601(this object input) => 
+            input.ToDateTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ", System.Globalization.CultureInfo.InvariantCulture);
+
 
         public static int ToInt(this int? input) => (input is null) ? default(int) : (int)input;
         public static int ToInt(this string input) =>
@@ -560,29 +678,41 @@ namespace DigitBridge.Base.Utility
 
         public static bool ToBool(this bool? input) => (input is null) ? false : (bool)input;
 
-        public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;
+        //public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;//TODO input value is 0
+        public static bool IsZero(this decimal input) => input <= 0;
         public static bool IsZero(this decimal? input) => (input is null) ? true : input.ToDecimal().IsZero();
 
-        public static bool IsZero(this double input) => Math.Abs(input) < (double)0.000001;
+        public static bool IsZero(this double input) => Math.Abs(input) < (double)0.000001;//TODO input value is 0
         public static bool IsZero(this double? input) => (input is null) ? true : input.ToDouble().IsZero();
 
-        public static bool IsZero(this int input) => Math.Abs(input) < (int)0;
+        /// <summary>
+        /// Positive int number
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsZero(this int input) => input <= 0;
         public static bool IsZero(this int? input) => (input is null) ? true : input.ToInt().IsZero();
 
-        public static bool IsZero(this long input) => Math.Abs(input) < (long)0;
+        //public static bool IsZero(this long input) => Math.Abs(input) < (long)0;
+        /// <summary>
+        /// Positive long number
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsZero(this long input) => input <= 0;
         public static bool IsZero(this long? input) => (input is null) ? true : input.ToLong().IsZero();
 
-        public static bool IsZero(this string input) => string.IsNullOrEmpty(input);
+        public static bool IsZero(this string input) => string.IsNullOrWhiteSpace(input);
 
-        public static bool IsZero(this DateTime input) => input <= ObjectConvert.MinDatatime;
+        public static bool IsZero(this DateTime input) => input <= ObjectConvert.SystemMinDatatime;
         public static bool IsZero(this DateTime? input) => (input is null) ? true : input.ToDateTime().IsZero();
 
         public static bool IsZero(this TimeSpan input) => input < ObjectConvert.MinTime || input > ObjectConvert.MaxTime;
         public static bool IsZero(this TimeSpan? input) => (input is null) ? true : input.ToTimeSpan().IsZero();
 
 
-        public static decimal ToRateValue(this decimal? input) => (input is null) ? 0 : input.ToDecimal() / 100;
-        public static decimal ToRateValue(this decimal input) => input / 100;
+        public static decimal ToRateValue(this decimal? input) => (input is null) ? 0 : ToRateValue(input.Value);
+        public static decimal ToRateValue(this decimal input) => input < 0 ? 0 : (input > 100 ? 1 : (input / 100));
 
         public static decimal ToRateDisplay(this decimal? input) => (input is null) ? 0 : input.ToDecimal() * 100;
         public static decimal ToRateDisplay(this decimal input) => input * 100;
@@ -595,7 +725,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToPrice();
 
         public static decimal ToPrice(this decimal input) =>
-            Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
+           input <= 0 ? 0 : Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToPrice(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToPrice();
@@ -627,7 +757,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToAmount();
 
         public static decimal ToAmount(this decimal input) =>
-            Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
+          Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToAmount(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToAmount();
@@ -659,14 +789,39 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToRate();
 
         public static decimal ToRate(this decimal input) =>
-            Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero);
+          input <= 0 ? 0 : (input > 1 ? 1 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
         public static double ToRate(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToRate();
 
         public static double ToRate(this double input) =>
-            Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero);
+            input < 0 ? 0 : (input > 100 ? 100 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
+        public static string ToFormatString(this object input, string format)
+        {
+            if (format.EqualsIgnoreSpace(FormatType.Qty))
+                return input.ToDecimal().ToQty().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Amount))
+                return input.ToDecimal().ToAmount().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Price))
+                return input.ToDecimal().ToPrice().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Cost))
+                return input.ToDecimal().ToCost().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Rate))
+                return input.ToDecimal().ToRate().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.TaxRate))
+                return input.ToDecimal().ToRate().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Weight))
+                return input.ToDecimal().ToAmount().ToString();
+            if (format.EqualsIgnoreSpace(FormatType.Date))
+                return input.ToDateString();
+            if (format.EqualsIgnoreSpace(FormatType.Time))
+                return input.ToTimeString();
+            if (format.EqualsIgnoreSpace(FormatType.IsoDate))
+                return input.ToISO8601();
+
+            return input.ToString();
+        }
 
         public static decimal RoundTo(this decimal? input, int decimalDigit = 2) =>
             (input is null) ? (decimal)0 : input.ToDecimal().RoundTo(decimalDigit);
@@ -689,9 +844,9 @@ namespace DigitBridge.Base.Utility
         /// </summary>
         public static IEnumerable<T> SplitTo<T>(this string input, params char[] separator)
         {
-            if (string.IsNullOrWhiteSpace(input)) 
+            if (string.IsNullOrWhiteSpace(input))
                 return new List<T>();
-            if (separator is null || separator.Length == 0) 
+            if (separator is null || separator.Length == 0)
                 separator = new char[] { ',' };
             return Array.ConvertAll<string, T>(input.Split(separator), item => item.ConvertObject<T>());
         }
@@ -699,16 +854,16 @@ namespace DigitBridge.Base.Utility
         /// <summary>
         /// Convert IList<T> to IList<string>
         /// </summary>
-        public static IList<string> ToStringList<T>(this IEnumerable<T> lst) => 
-            (lst?.Any() != true) 
-                ? new List<string>() 
+        public static IList<string> ToStringList<T>(this IEnumerable<T> lst) =>
+            (lst?.Any() != true)
+                ? new List<string>()
             : lst.Select(x => x.ToString()).ToList();
 
         /// <summary>
         /// Convert IList<T> to IList<string>
         /// </summary>
         public static IList<string> ToStringList<T>(this IEnumerable<T> lst, Func<T, string> selector) =>
-            (lst?.Any() != true) 
+            (lst?.Any() != true)
                 ? new List<string>()
                 : lst.Select(selector).Distinct().ToList();
 

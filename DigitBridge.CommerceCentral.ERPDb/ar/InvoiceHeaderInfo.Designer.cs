@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -222,6 +220,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BillToNightPhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToNightPhone;
 
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _notes;
+
+        [Column("OrderDCAssignmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentNum;
+
+        [Column("DBChannelOrderHeaderRowID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _dBChannelOrderHeaderRowID;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -236,7 +243,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => InvoiceUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(InvoiceUuid)) 
 				InvoiceUuid = Guid.NewGuid().ToString(); 
@@ -1202,6 +1209,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Order notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
+        public virtual string Notes
+        {
+            get
+            {
+				return _notes?.TrimEnd(); 
+            }
+            set
+            {
+				_notes = value.TruncateTo(1000); 
+				OnPropertyChanged("Notes", value);
+            }
+        }
+
+		/// <summary>
+		/// C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentNum
+        {
+            get
+            {
+				return _orderDCAssignmentNum; 
+            }
+            set
+            {
+				_orderDCAssignmentNum = value; 
+				OnPropertyChanged("OrderDCAssignmentNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+		/// </summary>
+        public virtual string DBChannelOrderHeaderRowID
+        {
+            get
+            {
+				return _dBChannelOrderHeaderRowID?.TrimEnd(); 
+            }
+            set
+            {
+				_dBChannelOrderHeaderRowID = value.TruncateTo(50); 
+				OnPropertyChanged("DBChannelOrderHeaderRowID", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1216,7 +1271,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1342,10 +1397,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_billToEmail = String.Empty; 
 			_billToDaytimePhone = String.Empty; 
 			_billToNightPhone = String.Empty; 
+			_notes = String.Empty; 
+			_orderDCAssignmentNum = default(long); 
+			_dBChannelOrderHeaderRowID = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public override InvoiceHeaderInfo CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 
@@ -1366,6 +1431,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override InvoiceHeaderInfo ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override InvoiceHeaderInfo ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

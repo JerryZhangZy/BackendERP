@@ -5,12 +5,59 @@ using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace DigitBridge.Base.Utility
 {
     
     public static class JsonConvertExtension
     {
+        public static JsonSerializerSettings DefaultJsonSerializerSettings(this bool ignoreNull)
+        {
+            return new JsonSerializerSettings
+            {
+                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include,
+                Formatting = Formatting.None,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy
+                    {
+                        OverrideSpecifiedNames = false
+                    }
+                }
+            };
+        }
+
+        /// <summary>
+        /// Use Json.Net convert string to object instance.
+        /// Use default JsonSerializerSettings
+        /// This function was created because it was reported that 
+        /// calling JsonConvert.DeserializeObject in a timer trigger Azure directly will
+        /// gernerate exception
+        /// </summary>
+        public static void PopulateToObject<T>(this string jsonInput, T obj, bool ignoreNull = true)
+        {
+            if (string.IsNullOrWhiteSpace(jsonInput)) return;
+            var setting = ignoreNull.DefaultJsonSerializerSettings();
+            jsonInput.PopulateToObject<T>(obj, setting);
+        }
+        /// <summary>
+        /// Use Json.Net convert string to object instance.
+        /// Use custom JsonSerializerSettings
+        /// </summary>
+        public static void PopulateToObject<T>(this string jsonInput, T obj, JsonSerializerSettings setting)
+        {
+            if (string.IsNullOrWhiteSpace(jsonInput)) return;
+            try
+            {
+                JsonConvert.PopulateObject(jsonInput, obj, setting);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception. Location: JsonConvertExtension.PopulateToObject() ", ex);
+            }
+        }
+
         /// <summary>
         /// Use Json.Net convert string to object instance.
         /// Use default JsonSerializerSettings
@@ -21,10 +68,7 @@ namespace DigitBridge.Base.Utility
         public static T JsonToObject<T>(this string jsonInput, bool ignoreNull = true, bool withType = false)
         {
             if (string.IsNullOrWhiteSpace(jsonInput)) return default(T);
-            var setting = new JsonSerializerSettings
-            {
-                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include
-            };
+            var setting = ignoreNull.DefaultJsonSerializerSettings();
 
             if (withType)
                 setting.TypeNameHandling = TypeNameHandling.All;
@@ -55,11 +99,7 @@ namespace DigitBridge.Base.Utility
         {
             if (obj == null) return string.Empty;
 
-            var setting = new JsonSerializerSettings
-            {
-                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include,
-                Formatting = Formatting.None
-            };
+            var setting = ignoreNull.DefaultJsonSerializerSettings();
 
             if (!string.IsNullOrEmpty(dateFormat))
                 setting.DateFormatString = dateFormat;
@@ -119,6 +159,8 @@ namespace DigitBridge.Base.Utility
 
         public static string ToJsonString(this Dictionary<string, object> dict) => JObject.FromObject(dict).ToString(Formatting.None);
 
+        public static JObject ToJObject(this string jsonString) => string.IsNullOrEmpty(jsonString) ? new JObject() : JObject.Parse(jsonString);
+
         public static Dictionary<string, object> ToDicationary(this string jsonString)
         {
             if (string.IsNullOrEmpty(jsonString))
@@ -174,6 +216,8 @@ namespace DigitBridge.Base.Utility
             }
             return new List<object>();
         }
+
+        public static T ToObject<T>(this StringBuilder sb) => sb.ToString().JsonToObject<T>();
 
     }
 }

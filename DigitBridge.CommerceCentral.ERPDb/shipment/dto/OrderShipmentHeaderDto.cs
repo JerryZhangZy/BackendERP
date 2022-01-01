@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,12 +10,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -25,11 +25,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a OrderShipmentHeader Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class OrderShipmentHeaderDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -47,6 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -56,6 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -65,6 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -139,11 +146,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true")]
-        [StringLength(50, ErrorMessage = "The WarehouseID value cannot exceed 50 characters. ")]
-        public string WarehouseID { get; set; }
+        [StringLength(50, ErrorMessage = "The WarehouseCode value cannot exceed 50 characters. ")]
+        public string WarehouseCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasWarehouseID => WarehouseID != null;
+        public bool HasWarehouseCode => WarehouseCode != null;
 
 		/// <summary>
 		/// Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true
@@ -202,6 +209,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShippingCost => ShippingCost != null;
+
+		/// <summary>
+		/// Total handling fee. <br> Title: Total handling fee, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Total handling fee. <br> Title: Total handling fee, Display: true, Editable: true")]
+        public decimal? TotalHandlingFee { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTotalHandlingFee => TotalHandlingFee != null;
 
 		/// <summary>
 		/// Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
@@ -352,6 +368,46 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentUuid => OrderShipmentUuid != null;
+
+		/// <summary>
+		/// InvoiceNumber. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("InvoiceNumber. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The InvoiceNumber value cannot exceed 50 characters. ")]
+        public string InvoiceNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInvoiceNumber => InvoiceNumber != null;
+
+		/// <summary>
+		/// Invoice uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Invoice uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The InvoiceUuid value cannot exceed 50 characters. ")]
+        public string InvoiceUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInvoiceUuid => InvoiceUuid != null;
+
+		/// <summary>
+		/// Sales Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Order uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesOrderUuid => SalesOrderUuid != null;
+
+		/// <summary>
+		/// Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+        /// </summary>
+		[OpenApiPropertyDescription("Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The OrderNumber value cannot exceed 50 characters. ")]
+        public string OrderNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderNumber => OrderNumber != null;
 
 
 

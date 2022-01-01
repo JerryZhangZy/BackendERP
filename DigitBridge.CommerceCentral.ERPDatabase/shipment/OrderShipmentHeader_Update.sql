@@ -17,4 +17,79 @@ END
 IF COL_LENGTH('OrderShipmentHeader', 'DigitBridgeGuid') IS NULL					
 BEGIN					
     ALTER TABLE OrderShipmentHeader ADD [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid())
+END
+
+IF COL_LENGTH('OrderShipmentHeader', 'InvoiceNumber') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT ''
+END	
+
+
+
+-- 11/22/20201 By Jerry Z 
+IF COL_LENGTH('OrderShipmentHeader', 'InvoiceUuid') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT ''
 END					
+
+IF COL_LENGTH('OrderShipmentHeader', 'SalesOrderUuid') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('OrderShipmentHeader', 'OrderNumber') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [OrderNumber] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_InvoiceNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_InvoiceNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[InvoiceNumber] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_OrderNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_OrderNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[OrderNumber] ASC
+) 
+GO
+
+--Add by junxian 11/30/2021
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
+drop INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_ShipmentID')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[ShipmentID] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_SalesOrderUuid')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_SalesOrderUuid] ON [dbo].[OrderShipmentHeader]
+(
+	[SalesOrderUuid] ASC
+) 
+GO
+
+-- Add by junxian 12/24/2021
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_ShipmentDateUtc')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentDateUtc] ON [dbo].[OrderShipmentHeader]
+(
+	[ShipmentDateUtc] ASC
+) 
+GO
+
+
+-- 12/26/20201 By cuijunxian 
+IF COL_LENGTH('OrderShipmentHeader', 'TotalHandlingFee') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [TotalHandlingFee] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END
+

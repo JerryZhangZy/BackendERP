@@ -102,6 +102,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         Task<int> UpdateAsync(object poco);
 
+        Task<int> UpdateWithIgnoreAsync(object poco, IEnumerable<string> ignoreColumns);
+
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Update(object)" />.
         /// </summary>
@@ -125,7 +127,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Update(object, object, IEnumerable{string})" />.
         /// </summary>
-        Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns);
+        Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns, IEnumerable<string> ignoreColumns = null);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Update{t}(string, object[])" />.
@@ -210,21 +212,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(string, string, object)" />.
         /// </summary>
-        Task SaveAsync(string tableName, string primaryKeyName, object poco);
+        Task<object> SaveAsync(string tableName, string primaryKeyName, object poco);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(string, string, object)" />.
         /// </summary>
-        Task SaveAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco);
+        Task<object> SaveAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(object)" />.
         /// </summary>
-        Task SaveAsync(object poco);
+        Task<object> SaveAsync(object poco);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(object)" />.
         /// </summary>
-        Task SaveAsync(CancellationToken cancellationToken, object poco);
+        Task<object> SaveAsync(CancellationToken cancellationToken, object poco);
     }
 }

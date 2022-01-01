@@ -10,8 +10,15 @@ namespace DigitBridge.Base.Utility
         public bool UseAzureManagedIdentity { get; set; }
         public string TenantId { get; set; }
 
+        public string AccessToken { get; set; }
+        public string TokenProviderConnectionString { get; set; }
         public int DatabaseNum { get; set; }
-    }
 
+        public DbConnSetting() { }
+        public DbConnSetting(string connString) 
+        {
+            ConnString = connString;
+        }
+    }
 
 }

@@ -161,6 +161,67 @@ namespace DigitBridge.Base.Utility
             return selector(item);
         }
 
+
+        public static void RemoveKey<K, T>(this IDictionary<K, T> dict, K key)
+        {
+            if (!string.IsNullOrEmpty(key.ToString()) && dict != null && dict.ContainsKey(key))
+                dict.Remove(key);
+        }
+
+        public static T SetData<T>(this Dictionary<string, object> dict, string key, T objValue)
+        {
+            if (string.IsNullOrEmpty(key) || (dict == null))
+                return default;
+
+            dict[key] = objValue;
+            return objValue;
+        }
+        public static TV SetData<TK, TV>(this Dictionary<TK, TV> dict, TK key, TV objValue)
+        {
+            if (key == null || string.IsNullOrEmpty(key.ToString()) || (dict == null))
+                return default;
+
+            dict[key] = objValue;
+            return objValue;
+        }
+        public static Dictionary<TK, TV> MergeFrom<TK, TV>(this Dictionary<TK, TV> target, Dictionary<TK, TV> source)
+        {
+            if (source == null)
+                return target;
+
+            foreach (var item in source)
+            {
+                target.SetData(item.Key, item.Value);
+            }
+            return target;
+        }
+
+        public static T GetData<T>(this Dictionary<string, object> dict, string key)
+        {
+            if (dict == null)
+                return default;
+
+            if (!dict.TryGetValue(key, out var retValue))
+                return default;
+
+            return (T)retValue;
+        }
+
+        public static T GetFirstData<T>(this Dictionary<string, object> dict)
+        {
+            return (dict == null || dict.Count <= 0)
+                ? default
+                : (T)dict.ElementAt(0).Value;
+        }
+
+        public static bool HasData(this Dictionary<string, object> dict, string key)
+        {
+            if (dict == null)
+                return false;
+
+            return dict.ContainsKey(key);
+        }
+
     }
 
 }

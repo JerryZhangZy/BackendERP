@@ -8,11 +8,6 @@ BEGIN
 	    [OrderShipmentUuid] ASC,
 	    [OrderDCAssignmentLineNum] ASC
     );
-
-    UPDATE spi
-    SET spi.OrderShipmentUuid = sph.OrderShipmentUuid
-    FROM OrderShipmentShippedItem spi
-    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spi.OrderShipmentNum);
 END					
 
 IF COL_LENGTH('OrderShipmentShippedItem', 'OrderShipmentPackageUuid') IS NULL					
@@ -38,3 +33,39 @@ IF COL_LENGTH('OrderShipmentShippedItem', 'DigitBridgeGuid') IS NULL
 BEGIN					
     ALTER TABLE OrderShipmentShippedItem ADD [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid())
 END					
+
+/*
+    UPDATE spi
+    SET spi.OrderShipmentUuid = sph.OrderShipmentUuid
+    FROM OrderShipmentShippedItem spi
+    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spi.OrderShipmentNum);
+*/
+
+
+-- 11/22/20201 By Jerry Z 
+IF COL_LENGTH('OrderShipmentShippedItem', 'SalesOrderItemsUuid') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END	
+
+
+-- 12/26/20201 By cuijunxian 
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralOrderNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralOrderNum] [bigint] NULL DEFAULT 0
+END
+
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralOrderLineNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralOrderLineNum] [bigint] NULL DEFAULT 0
+END
+
+IF COL_LENGTH('OrderShipmentShippedItem', 'CentralProductNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [CentralProductNum] [bigint] NULL DEFAULT 0
+END
+
+IF COL_LENGTH('OrderShipmentShippedItem', 'DistributionProductNum') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [DistributionProductNum] [bigint] NULL DEFAULT 0
+END

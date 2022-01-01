@@ -88,7 +88,7 @@ if (!string.IsNullOrEmpty(table.UniqueKey))
 {
     WriteLine($"{new String('\t',2)}[IgnoreCompare] ");
     WriteLine($"{new String('\t',2)}public override string UniqueId => {table.UniqueKey}; ");
-    WriteLine($"{new String('\t',2)}public void CheckUniqueId() ");
+    WriteLine($"{new String('\t',2)}public override void CheckUniqueId() ");
     WriteLine($"{new String('\t',2)}{{");
     WriteLine($"{new String('\t',3)}if (string.IsNullOrEmpty({table.UniqueKey})) ");
     WriteLine($"{new String('\t',4)}{table.UniqueKey} = Guid.NewGuid().ToString(); ");
@@ -130,7 +130,7 @@ foreach(var col in table.Columns)
                 if (col.isString) {
                     WriteLine($"{new String('\t',indent)}return {col.privateName}?.TrimEnd(); ");
                 }
-                else if (col.isByte) {
+                else if (col.isByte && table.ConvertByteToBool) {
                     WriteLine($"{new String('\t',indent)}return ({col.privateName} == 1); ");
                 }
                 else {
@@ -155,13 +155,13 @@ foreach(var col in table.Columns)
                 else if (col.Type.ToLower() == "byte" && col.PropertyType.ToLower() == "bool")  
                     WriteLine($"{new String('\t',indent)}{col.privateName} = value ? (byte)1 : (byte)0; ");
                 else if (col.isDateTime && col.Null) {
-                    if (col.isDate)
+                    if (col.isDate && !col.isSqlDateTime)
                         WriteLine($"{new String('\t',indent)}{col.privateName} = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); ");
                     else
                         WriteLine($"{new String('\t',indent)}{col.privateName} = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); ");
                 }
                 else if (col.isDateTime && !col.Null){
-                    if (col.isDate)
+                    if (col.isDate && !col.isSqlDateTime)
                         WriteLine($"{new String('\t',indent)}{col.privateName} = value.Date.ToSqlSafeValue(); ");
                     else
                         WriteLine($"{new String('\t',indent)}{col.privateName} = value.ToSqlSafeValue(); ");
@@ -298,6 +298,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+1)}CheckUniqueId();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name}.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}if ({childTable.Name}.{table.UniqueKey} != {table.UniqueKey}) {childTable.Name}.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}{childTable.Name}.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -321,6 +322,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+1)}var child = new {childTable.Name}(dbFactory);");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -331,6 +333,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+2)}child = New{childTable.Name}();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name} = child;");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent)}}}");
 
         WriteLine($"{new String('\t',indent)}#endregion Methods - Children {childTable.Name}");
@@ -431,6 +434,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}CheckUniqueId();");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}if (child.{table.UniqueKey} != {table.UniqueKey}) child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -457,6 +461,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}var child = new {childTable.Name}(dbFactory);");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -521,6 +526,34 @@ if(table.HasOneToManyChildren)
             return this;
         }
 
+        public override <#= table.Name #> CheckIntegrity()
+        {
+            CheckUniqueId();
+<# // generate one to one children
+            if(table.HasOneToOneChildren)
+            { 
+                indent = 3;
+                foreach(var childTable in table.oneToOneChildren)
+                { 
+                    if (childTable == null) continue;
+                    WriteLine($"{new String('\t',indent)}CheckIntegrity{childTable.Name}();");
+                }
+            } 
+
+            if(table.HasOneToManyChildren)
+            { 
+                indent = 3;
+                foreach(var childTable in table.oneToManyChildren)
+                { 
+                    if (childTable == null) continue;
+                    WriteLine($"{new String('\t',indent)}CheckIntegrity{childTable.Name}();");
+                }
+            } 
+#>
+            CheckIntegrityOthers();
+            return this;
+        }
+
         public virtual <#= table.Name #> ClearChildren()
         {
 <# // generate one to one children
@@ -530,7 +563,7 @@ if(table.HasOneToManyChildren)
                 foreach(var childTable in table.oneToOneChildren)
                 { 
                     if (childTable == null) continue;
-                    WriteLine($"{new String('\t',indent)}{childTable.Name}.Clear();");
+                    WriteLine($"{new String('\t',indent)}{childTable.Name}?.Clear();");
                 }
             } 
 
@@ -651,29 +684,41 @@ if(table.HasForeignKey)
 #>
 
 <# // generate convert methods for json fields
-if (table.HasJsonColumns)
-{
-    foreach(var col in table.JsonColumns)
-    { 
+        
         indent = 2;
-
-        // convert from DB Json string
+        
         WriteLine($"{new String('\t',indent)}public override {table.Name} ConvertDbFieldsToData()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}base.ConvertDbFieldsToData();");
+        // convert from DB Json string
+        if (table.HasJsonColumns)
+        {
+            foreach(var col in table.JsonColumns)
+            {  
         WriteLine($"{new String('\t',indent+1)}{col.jsonDictionaryName}.LoadFromValueString({col.propertyName});");
+            }
+        }
         WriteLine($"{new String('\t',indent+1)}return this;");
         WriteLine($"{new String('\t',indent)}}}");
 
-        // convert to DB Json string
+        
         WriteLine($"{new String('\t',indent)}public override {table.Name} ConvertDataFieldsToDb()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}base.ConvertDataFieldsToDb();");
+        // convert to DB Json string
+        if (table.HasJsonColumns)
+        {
+            foreach(var col in table.JsonColumns)
+            {  
         WriteLine($"{new String('\t',indent+1)}{col.propertyName} = {col.jsonDictionaryName}.ToValueString();");
+            }
+        }
+        if (table.HasUpdateDateUtcColumn)
+        { 
+        WriteLine($"{new String('\t',indent+1)}{table.UpdateDateUtcColumn.Name} =DateTime.UtcNow;");
+        }
         WriteLine($"{new String('\t',indent+1)}return this;");
-        WriteLine($"{new String('\t',indent)}}}");
-    }
-} 
+        WriteLine($"{new String('\t',indent)}}}"); 
 #>
 
         #endregion Methods - Generated 

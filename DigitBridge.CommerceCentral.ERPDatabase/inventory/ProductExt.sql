@@ -28,6 +28,7 @@
     [GroupCode] VARCHAR(50) NOT NULL DEFAULT '', --Product Group. <br> Title: Group, Display: true, Editable: true
     [SubGroupCode] VARCHAR(50) NOT NULL DEFAULT '', --Product Sub Group. <br> Title: Sub Group, Display: true, Editable: true
 
+	[ProductStatus] INT NOT NULL DEFAULT 0, --Product status. <br> Title: Status, Display: true, Editable: true
 	[PriceRule] Varchar(50) NOT NULL DEFAULT '', --Product Default Price Rule. <br> Title: Price Rule, Display: true, Editable: true
 	[Stockable] TINYINT NOT NULL DEFAULT 1, --Product need calculate inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
 	[IsAr] TINYINT NOT NULL DEFAULT 1, --Product need add to Invoice sales amount amount. <br> Title: A/R, Display: true, Editable: true
@@ -64,12 +65,14 @@
 );
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'UK_ProductExt_ProductUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ProductExt_ProductUuid] ON [dbo].[ProductExt]
 (
 	[ProductUuid] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'UI_ProductExt_MasterAccountNum_ProfileNum_SKU')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_MasterAccountNum_ProfileNum_SKU] ON [dbo].[ProductExt]
 (
     [MasterAccountNum] ASC, 
@@ -78,9 +81,57 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_MasterAccountNum_ProfileNum_SKU]
 );
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'UI_ProductExt_CentralProductNum')
 CREATE NONCLUSTERED INDEX [UI_ProductExt_CentralProductNum] ON [dbo].[ProductExt]
 (
 	[CentralProductNum] ASC
 ) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_Status')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_Status] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [ProductStatus] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_StyleCode')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_StyleCode] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [StyleCode] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_StyleCode_C_S_W_L')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_StyleCode_C_S_W_L] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [StyleCode] ASC, 
+	[ColorPatternCode] ASC, 
+	[SizeCode] ASC, 
+	[WidthCode] ASC, 
+	[LengthCode] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductExt]') AND name = N'IX_IProductExt_S_C_S_W_L_W_L_L')
+CREATE NONCLUSTERED INDEX [IX_IProductExt_S_C_S_W_L_W_L_L] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+	[ClassCode] ASC, 
+	[SubClassCode] ASC,
+	[DepartmentCode] ASC,
+	[DivisionCode] ASC,
+	[OEMCode] ASC,
+	[AlternateCode] ASC,
+	[Remark] ASC,
+	[Model] ASC,
+	[CategoryCode] ASC,
+	[GroupCode] ASC,
+	[SubGroupCode] ASC
+) 
 GO
 

@@ -1,15 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>1.0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <Compile Remove="Helper\**" />
+    <EmbeddedResource Remove="Helper\**" />
+    <None Remove="Helper\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
+    <Compile Remove="Extension\AssemblyExtensions.cs" />
+    <Compile Remove="Extension\FunctionAttributeExtensions.cs" />
+    <Compile Remove="Extension\GenericExtensions.cs" />
+    <Compile Remove="JsonConverter\StringBuilderConverter - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UneedgoHelper.Dotnet.Common" Version="1.0.0.16" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
   </ItemGroup>
 
 </Project>

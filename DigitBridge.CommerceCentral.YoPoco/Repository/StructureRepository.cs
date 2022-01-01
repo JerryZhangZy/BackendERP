@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public class StructureRepository<TEntity> : IStructureRepository<TEntity>
         where TEntity : StructureRepository<TEntity>, new()
     {
-        public StructureRepository() {}
+        public StructureRepository() { }
 
         public StructureRepository(IDataBaseFactory dbFactory)
         {
@@ -30,7 +31,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return _dbFactory;
             }
         }
-            
+
         public TEntity SetDataBaseFactory(IDataBaseFactory dbFactory)
         {
             _dbFactory = dbFactory;
@@ -53,10 +54,37 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             return _Cache.FromCache<T>(id, () => dbFactory.GetById<T>(id));
         }
+        public T GetCache<T>(string id, Func<T> create) where T : StructureRepository<T>, new()
+        {
+            return _Cache.FromCache<T>(id, create);
+        }
+        public virtual T SetCache<T>(string id, T obj) where T : StructureRepository<T>, new()
+        {
+            return _Cache.SetData(id, obj);
+        }
 
         #endregion Cache
 
         #region Properties
+
+        [XmlIgnore, JsonIgnore]
+        protected virtual IList<string> _IgnoreSave { get; } = new List<string>();
+        [XmlIgnore, JsonIgnore]
+        protected virtual IList<string> _IgnoreDelete { get; } = new List<string>();
+
+        protected virtual bool NeedSave(string name) => !_IgnoreSave.Contains(name);
+        protected virtual bool NeedDelete(string name) => !_IgnoreDelete.Contains(name);
+
+        public virtual void AddIgnoreSave(string name)
+        {
+            if (!_IgnoreSave.Contains(name)) 
+                _IgnoreSave.Add(name);
+        }
+        public virtual void AddIgnoreDelete(string name)
+        {
+            if (!_IgnoreDelete.Contains(name))
+                _IgnoreDelete.Add(name);
+        }
 
         [XmlIgnore, JsonIgnore]
         public virtual bool AllowNull { get; private set; } = true;
@@ -106,15 +134,27 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #region CRUD Methods
 
+        public virtual TEntity CheckIntegrity()
+        {
+            CheckIntegrityOthers();
+            return (TEntity)this;
+        }
+        public virtual void CheckIntegrityOthers() { }
+
         public virtual void New() { }
         public virtual void Clear() { }
         public virtual TEntity Clone() => (TEntity)null;
         public virtual bool Get(long RowNum) => false;
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number) => false;
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null) => false;
+
         public virtual bool GetById(string InvoiceId) => false;
         public virtual bool Save() => false;
         public virtual bool Delete() => false;
 
         public virtual async Task<bool> GetAsync(long RowNum) => false;
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number) => false;
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null) => false;
         public virtual async Task<bool> GetByIdAsync(string id) => false;
         public virtual async Task<bool> SaveAsync() => false;
         public virtual async Task<bool> DeleteAsync() => false;

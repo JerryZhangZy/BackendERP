@@ -1,0 +1,131 @@
+﻿import { DbComponentEnums } from '../../types';
+import { IconNames } from '../../components/icon';
+import * as util from '../../util';
+
+<# 
+    indent = 1;
+    var parentName = table.JsPropertyName;
+
+    WriteLine($"//#region all grid columns for {table.Name}");
+    WriteLine($"/** copy column's define object to gridColumns will display column in screen.");
+    WriteLine($"const allColumns = [");
+
+    // rid hiden column
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}id: 'rid',");
+    WriteLine($"{new String('\t',indent+1)}name: 'rid',");
+    WriteLine($"{new String('\t',indent+1)}parentName: '{parentName}',");
+    WriteLine($"{new String('\t',indent+1)}columnType: DbComponentEnums.gridColumnTypeEnum.hiden,");
+    WriteLine($"{new String('\t',indent+1)}defaultFlex: 1,");
+    WriteLine($"{new String('\t',indent+1)}systemHide: true,");
+    WriteLine($"{new String('\t',indent)}}},");
+
+    // rno column
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}id: 'rno',");
+    WriteLine($"{new String('\t',indent+1)}name: 'rno',");
+    WriteLine($"{new String('\t',indent+1)}parentName: '{parentName}',");
+    WriteLine($"{new String('\t',indent+1)}columnType: DbComponentEnums.gridColumnTypeEnum.rowNo,");
+    WriteLine($"{new String('\t',indent+1)}header: '#',");
+    WriteLine($"{new String('\t',indent+1)}align: DbComponentEnums.alignEnum.center,");
+    WriteLine($"{new String('\t',indent+1)}defaultFlex: 1,");
+    WriteLine($"{new String('\t',indent+1)}textStyle: {{}},");
+    WriteLine($"{new String('\t',indent+1)}sortable: false,");
+    WriteLine($"{new String('\t',indent+1)}hide: true,");
+    WriteLine($"{new String('\t',indent)}}},");
+
+    // generate all properties
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerate || col.ignoreJsUi) continue;
+        var name = col.JsPropertyName;
+
+        WriteLine($"{new String('\t',indent)}{{");
+
+        WriteLine($"{new String('\t',indent+1)}id: '{col.JsPropertyName}',");
+        WriteLine($"{new String('\t',indent+1)}name: '{col.JsPropertyName}',");
+        WriteLine($"{new String('\t',indent+1)}parentName: '{parentName}',");
+        WriteLine($"{new String('\t',indent+1)}columnType: DbComponentEnums.gridColumnTypeEnum.text,");
+        WriteLine($"{new String('\t',indent+1)}header: '{col.JsPropertyName}',");
+        if (col.JsAlignRight)
+            WriteLine($"{new String('\t',indent+1)}align: DbComponentEnums.alignEnum.right,");
+        WriteLine($"{new String('\t',indent+1)}defaultFlex: {col.JsGridColumnWidth},");
+        WriteLine($"{new String('\t',indent+1)}textStyle: {{}},");
+        WriteLine($"{new String('\t',indent+1)}sortable: true,");
+        WriteLine($"{new String('\t',indent+1)}sortType: {col.JsGridSortType},");
+
+        if (!string.IsNullOrEmpty(col.JsFormat))
+            WriteLine($"{new String('\t',indent+1)}format: '{col.JsFormat}',");
+        WriteLine($"{new String('\t',indent+1)}enableEdit: false,");
+        WriteLine($"{new String('\t',indent+1)}hide: true,");
+
+        WriteLine($"{new String('\t',indent)}}},");
+    }
+    WriteLine($"];");
+    WriteLine($"*/");
+    WriteLine($"//#endregion all grid columns for {table.Name}");
+
+    WriteLine($"// display columns in screen grid");
+    WriteLine($"const gridColumns: any[] = [");
+    WriteLine($"];");
+#>
+
+export const <#= table.JsPropertyName #>Grid = { 
+	grid: {
+        name: '<#= table.JsPropertyName #>',
+	    idProperty: 'rid',
+        // className: '',
+        // bgColor: '',
+        // color: '',
+        // width: '100%',
+        // minWidth: null,
+        height: 500,
+        // minHeight: 500,
+
+        // hide: false,
+        // systemHide?: false,
+        // readOnly?: false,
+        // reverseScreenReadOnly?: false,
+        // disabled?: false,
+
+        // enableEip: true,
+        // enableSort: true,
+        // enableSelect: true,
+        // enableInsert: true,
+        // enableDelete: true,
+        // showRowNo: true,
+        // enableRowNoButton: true,      // Add row no as button. { name: `btnRowNo_${gridName}`, moreData: { gridName, rid } }
+
+        columns: gridColumns,
+	},
+	editor: {
+<# 
+    WriteLine($"{new String('\t',indent)}//#region grid editor for {table.Name}");
+    // generate all properties
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerateJs || col.ignoreJsUi) continue;
+        var name = col.JsPropertyName;
+
+        WriteLine($"{new String('\t',indent)}{col.JsPropertyName}: {{");
+        WriteLine($"{new String('\t',indent+1)}type: {col.JsInputType},");
+        WriteLine($"{new String('\t',indent+1)}parentName: '{parentName}',");
+        WriteLine($"{new String('\t',indent+1)}name: '{name}',");
+        WriteLine($"{new String('\t',indent+1)}placeholder: '{name}',");
+
+        if (!string.IsNullOrEmpty(col.JsFormat))
+            WriteLine($"{new String('\t',indent+1)}format: '{col.JsFormat}',");
+        if (!string.IsNullOrEmpty(col.JsMaxLength))
+            WriteLine($"{new String('\t',indent+1)}maxLength: {col.JsMaxLength},");
+        if (col.JsAlignRight)
+            WriteLine($"{new String('\t',indent+1)}align: DbComponentEnums.alignEnum.right,");
+
+        WriteLine($"{new String('\t',indent+1)}textStyle: {{}},");
+        WriteLine($"{new String('\t',indent)}}},");
+    }
+    WriteLine($"{new String('\t',indent)}//#endregion grid editor for {table.Name}");
+#>
+	}
+};
+
+

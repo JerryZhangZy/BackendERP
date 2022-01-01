@@ -27,16 +27,122 @@ namespace <#= NamespaceService #>
     /// <summary>
     /// Represents a default <#= ServiceName #> Validator class.
     /// </summary>
-    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>>
+    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>,<#= StructureDtoName #>>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public virtual IList<string> Messages { get; set; }
+        public <#= ServiceName #>ValidatorDefault() { }
+        public <#= ServiceName #>ValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) 
+        { 
+            this.ServiceMessage = serviceMessage; 
+            this.dbFactory = dbFactory;
+        }
+
+        protected IDataBaseFactory dbFactory { get; set; }
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages 
+        { 
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
         public virtual void Clear()
         {
             IsValid = true;
-            Messages = new List<string>();
+            Messages = new List<MessageClass>();
         }
+
+        public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as <#= PayloadName #>;
+            var dto = pl.<#= processName #>;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = pl.MasterAccountNum;
+                dto.<#= StructureClass.MainTable.Name #>.ProfileNum = pl.ProfileNum;
+                dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = <#= ServiceHelperName #>.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if(!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                        isValid = <#= ServiceHelperName #>.ExistRowNum(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as <#= PayloadName #>;
+            var dto = pl.<#= processName #>;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = pl.MasterAccountNum;
+                dto.<#= StructureClass.MainTable.Name #>.ProfileNum = pl.ProfileNum;
+                dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = await <#= ServiceHelperName #>.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if(!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                        isValid = await <#= ServiceHelperName #>.ExistRowNumAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        #region validate data
+
         public virtual bool Validate(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
@@ -60,13 +166,13 @@ namespace <#= NamespaceService #>
             if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -79,7 +185,7 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -92,14 +198,14 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -111,36 +217,37 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
+        #endregion
 
-        #region Async Methods
+        #region Async validate data
 
         public virtual async Task<bool> ValidateAsync(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
+            if (!(await ValidateAllModeAsync(data)))
                 return false;
 
             return processingMode switch
             {
-                ProcessingMode.Add => await ValidateAddAsync(data).ConfigureAwait(false),
-                ProcessingMode.Edit => await ValidateEditAsync(data).ConfigureAwait(false),
+                ProcessingMode.Add => await ValidateAddAsync(data),
+                ProcessingMode.Edit => await ValidateEditAsync(data),
                 ProcessingMode.List => false,
-                ProcessingMode.Delete => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Void => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Cancel => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                ProcessingMode.Delete => await ValidateDeleteAsync(data),
+                ProcessingMode.Void => await ValidateDeleteAsync(data),
+                ProcessingMode.Cancel => await ValidateDeleteAsync(data),
                 _ => false,
             };
         }
@@ -151,13 +258,13 @@ namespace <#= NamespaceService #>
             if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -170,7 +277,7 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && (await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -183,14 +290,14 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !(await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -202,20 +309,138 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !(await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        #endregion Async Methods
+        #endregion Async validate data
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(<#= StructureDtoName #> dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = Guid.NewGuid().ToString();
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = Guid.NewGuid().ToString();
+                }
+<#          } #>  
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.ProfileNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = null;
+                }
+<#          } #>
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region async Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(<#= StructureDtoName #> dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = Guid.NewGuid().ToString();
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = Guid.NewGuid().ToString();
+                }
+<#          } #>  
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.ProfileNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = null;
+                }
+<#          } #>  
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 

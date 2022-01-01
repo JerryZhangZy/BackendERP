@@ -7,6 +7,8 @@ using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -39,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// }
     /// </code>
     /// </example>
-    public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>
+    public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>, IMessage
         where TService : ServiceBase<TService, TEntity, TDto>
         where TEntity : StructureRepository<TEntity>, new()
         where TDto : class, new()
@@ -47,19 +49,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public ServiceBase()
         {
             _ProcessMode = ProcessingMode.List;
-            Init();
         }
         public ServiceBase(
             IDataBaseFactory dbFactory) : this()
         {
             SetDataBaseFactory(dbFactory);
+            Init();
         }
 
         public ServiceBase(
             IDataBaseFactory dbFactory,
             IDtoMapper<TEntity, TDto> dtoMapper,
             ICalculator<TEntity> calculator,
-            IList<IValidator<TEntity>> validators) : this(dbFactory)
+            IList<IValidator<TEntity, TDto>> validators) : this(dbFactory)
         {
             _DtoMapper = dtoMapper;
             _Calculator = calculator;
@@ -94,6 +96,47 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion DataBase
 
+        #region ActivityLog Service
+        [XmlIgnore, JsonIgnore]
+        protected IActivityLogService _ActivityLogService;
+
+        [XmlIgnore, JsonIgnore]
+        public IActivityLogService ActivityLogService
+        {
+            get
+            {
+                if (_ActivityLogService is null)
+                    _ActivityLogService = new ActivityLogService(this.dbFactory);
+                return _ActivityLogService;
+            }
+        }
+
+        public virtual async Task<bool> AddActivityLogAsync(ActivityLog data)
+        {
+            return await this.ActivityLogService.AddActivityLogAsync(new ActivityLogData(this.dbFactory, data));
+        }
+        public virtual bool AddActivityLog(ActivityLog data)
+        {
+            return this.ActivityLogService.AddActivityLog(new ActivityLogData(this.dbFactory, data));
+        }
+
+        #endregion ActivityLog Service
+
+        #region InitNumbersService Service
+        [XmlIgnore, JsonIgnore]
+        protected InitNumbersService _initNumbersService;
+        [XmlIgnore, JsonIgnore]
+        public InitNumbersService initNumbersService
+        {
+            get
+            {
+                if (_initNumbersService is null)
+                    _initNumbersService = new InitNumbersService(dbFactory);
+                return _initNumbersService;
+            }
+        }
+        #endregion InitNumbersService Service
+
         #region Properties
         protected ProcessingMode _ProcessMode;
         /// <summary>
@@ -119,9 +162,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual ICalculator<TEntity> Calculator => _Calculator;
         public virtual void SetCalculator(ICalculator<TEntity> calculator) => _Calculator = calculator;
 
-        protected IList<IValidator<TEntity>> _Validators;
+        protected IList<IValidator<TEntity, TDto>> _Validators;
         [XmlIgnore, JsonIgnore]
-        public virtual IList<IValidator<TEntity>> Validators => _Validators;
+        public virtual IList<IValidator<TEntity, TDto>> Validators => _Validators;
 
         #endregion Properties
 
@@ -139,12 +182,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion Event Callback Methods
 
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
         #region Methods
 
-        public virtual void AddValidator(IValidator<TEntity> validator)
+        public virtual void AddValidator(IValidator<TEntity, TDto> validator)
         {
             if (_Validators == null)
-                _Validators = new List<IValidator<TEntity>>();
+                _Validators = new List<IValidator<TEntity, TDto>>();
             _Validators.Add(validator);
         }
 
@@ -169,6 +238,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _ProcessMode = ProcessingMode.List;
             ClearData();
+            Messages.Clear();
             return (TService)this;
         }
 
@@ -176,11 +246,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _data = data;
             InitDataObject();
+            Messages.Clear();
             return (TService)this;
         }
         public virtual TService DetachData(TEntity data)
         {
             _data = null;
+            Messages.Clear();
             return (TService)this;
         }
         public virtual TService NewData()
@@ -214,6 +286,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return (TDto)null;
             return DtoMapper.WriteDto(data, null);
         }
+        public virtual IList<TDto> ToDto(IList<TEntity> datas)
+        {
+            if (datas is null || datas .Count == 0 || DtoMapper is null)
+                return (IList<TDto>)null;
+            return datas.Select(x => ToDto(x)).ToList();
+        }
 
         public virtual TEntity FromDto(TDto dto)
         {
@@ -231,9 +309,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Data is null || Calculator is null)
                 return false;
+            // cal SetDefault seperate from calculate, in saveData function
+            //SetDefault();
             return Calculator.Calculate(Data, ProcessMode);
         }
 
+        public virtual void PrepareData()
+        {
+            if (Data is null || Calculator is null)
+                return;
+            Calculator.PrepareData(Data, ProcessMode);
+        }
+        public virtual void SetDefault()
+        {
+            if (Data is null || Calculator is null)
+                return;
+            Calculator.SetDefault(Data, ProcessMode);
+        }
         public virtual bool Validate()
         {
             if (Data is null || Validators is null || Validators.Count == 0)
@@ -252,11 +344,72 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             foreach (var validator in Validators)
             {
-                if (!(await validator.ValidateAsync(Data, ProcessMode).ConfigureAwait(false)))
+                if (!(await validator.ValidateAsync(Data, ProcessMode)))
                     return false;
             }
             return true;
         }
+
+        public virtual bool ValidateAccount(IPayload payload, string number = null)
+        {
+            if (Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.ValidateAccount(payload, number, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null)
+        {
+            if (Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!(await validator.ValidateAccountAsync(payload, number, ProcessMode)))
+                    return false;
+            }
+            return true;
+        }
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param> 
+        /// <returns></returns>
+        public virtual bool Validate(TDto dto)
+        {
+            if (dto is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.Validate(dto, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region Validate dto async (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param> 
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(TDto dto)
+        {
+            if (dto is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!await validator.ValidateAsync(dto, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        #endregion
 
         #endregion Methods
 
@@ -268,13 +421,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             ClearData();
             return _data.Get(RowNum);
         }
-
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(number))
+            {
+                AddError($"Number is required.");
+                return false;
+            }
+            var success = _data.GetByNumber(masterAccountNum, profileNum, number);
+            if (!success)
+                AddError($"Data not found for {number}.");
+            return success;
+        }
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(number))
+            {
+                AddError($"Number is required.");
+                return false;
+            }
+            var success = _data.GetByNumber(masterAccountNum, profileNum, number, transType, transNum);
+            if (!success)
+                AddError($"Data not found for {number}.");
+            return success;
+        }
         public virtual bool GetDataById(string id)
         {
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrWhiteSpace(id))
                 return false;
             ClearData();
-            return _data.GetById(id);
+
+            var success = _data.GetById(id);
+
+            if (!success)
+                AddError($"Data not found for unique key : {id}");
+
+            return success;
         }
 
         public virtual bool SaveData()
@@ -283,9 +467,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-
+            //PrepareData();
+            SetDefault();
             Calculate();
-            return _data.Save();
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            BeforeSave();
+            var result = _data.Save();
+            // call AfterSaveAsync to update relative data, apply new update
+            AfterSave();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                this.SaveSuccess();
+            return result;
         }
 
         public virtual bool DeleteData()
@@ -294,7 +489,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-            return _data.Delete();
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            BeforeSave();
+            var result = _data.Delete();
+            // call AfterSaveAsync to update relative data, apply new update
+            AfterSave();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                this.SaveSuccess();
+            return result;
         }
 
         public virtual async Task<bool> GetDataAsync(long RowNum)
@@ -303,16 +508,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 NewData();
-            return await _data.GetAsync(RowNum).ConfigureAwait(false);
+            return await _data.GetAsync(RowNum);
         }
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(number))
+            {
+                AddError($"number is required.");
+                return false;
+            }
 
+            var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
+            if (!success)
+                AddError($"Data not found for {number}.");
+            return success;
+        }
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(number))
+            {
+                AddError($"number is required.");
+                return false;
+            }
+
+            var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number, transType, transNum);
+            if (!success)
+                AddError($"Data not found for {number}.");
+            return success;
+        }
         public virtual async Task<bool> GetDataByIdAsync(string id)
         {
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrWhiteSpace(id))
                 return false;
             if (_data is null)
                 NewData();
-            return await _data.GetByIdAsync(id).ConfigureAwait(false);
+            var success = await _data.GetByIdAsync(id);
+            if (!success)
+                AddError($"Data not found for unique key : {id}");
+            return success;
         }
 
         public virtual async Task<bool> SaveDataAsync()
@@ -321,8 +556,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
+            //PrepareData();
+            SetDefault();
             Calculate();
-            return await _data.SaveAsync().ConfigureAwait(false);
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            await BeforeSaveAsync();
+            var result = await _data.SaveAsync();
+            // call AfterSaveAsync to update relative data, apply new update
+            await AfterSaveAsync();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                await this.SaveSuccessAsync();
+
+            return result;
         }
 
         public virtual async Task<bool> DeleteDataAsync()
@@ -331,8 +579,94 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-            return await _data.DeleteAsync().ConfigureAwait(false);
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            await BeforeSaveAsync();
+            var result = await _data.DeleteAsync();
+            // call AfterSaveAsync to update relative data, apply new update
+            await AfterSaveAsync();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                await this.SaveSuccessAsync();
+
+            return result;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public virtual async Task BeforeSaveAsync() {}
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public virtual void BeforeSave() { }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public virtual async Task AfterSaveAsync() {}
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public virtual void AfterSave() { }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public virtual async Task SaveSuccessAsync()
+        {
+            await AddActivityLogForCurrentDataAsync();
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public virtual void SaveSuccess()
+        {
+            AddActivityLogForCurrentData();
+        }
+
+        /// <summary>
+        /// Add activity log record
+        /// </summary>
+        protected async Task AddActivityLogForCurrentDataAsync()
+        {
+            var obj = this.GetActivityLog();
+            if (obj == null)
+                return;
+            await this.AddActivityLogAsync(obj);
+        }
+
+        /// <summary>
+        /// Add activity log record
+        /// </summary>
+        protected void AddActivityLogForCurrentData()
+        {
+            var obj = this.GetActivityLog();
+            if (obj == null)
+                return;
+            this.AddActivityLog(obj);
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected virtual ActivityLog GetActivityLog() => null;
 
         #endregion CRUD Methods
 
@@ -384,7 +718,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Edit())
                 return false;
-            return await GetDataAsync(RowNum).ConfigureAwait(false);
+            return await GetDataAsync(RowNum);
         }
         /// <summary>
         /// Set ProcessMode to Edit and load data by Unique Id to edit
@@ -393,7 +727,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Edit())
                 return false;
-            return await GetDataByIdAsync(id).ConfigureAwait(false);
+            return await GetDataByIdAsync(id);
         }
 
         #endregion Service Method - Edit process
@@ -424,7 +758,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!List())
                 return false;
-            return await GetDataAsync(RowNum).ConfigureAwait(false);
+            return await GetDataAsync(RowNum);
         }
         /// <summary>
         /// Set ProcessMode to List and load data by Unique Id to edit
@@ -433,7 +767,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!List())
                 return false;
-            return await GetDataByIdAsync(id).ConfigureAwait(false);
+            return await GetDataByIdAsync(id);
         }
         #endregion Service Method - List process
 
@@ -476,9 +810,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Delete())
                 return false;
-            if (!(await GetDataAsync(RowNum).ConfigureAwait(false)))
+            if (!(await GetDataAsync(RowNum)))
                 return false;
-            return await DeleteDataAsync().ConfigureAwait(false);
+            return await DeleteDataAsync();
         }
         /// <summary>
         /// Set ProcessMode to Delete and delete data by Unique Id
@@ -487,9 +821,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Delete())
                 return false;
-            if (!(await GetDataByIdAsync(id).ConfigureAwait(false)))
+            if (!(await GetDataByIdAsync(id)))
                 return false;
-            return await DeleteDataAsync().ConfigureAwait(false);
+            return await DeleteDataAsync();
         }
 
         #endregion Service Method - Delete process

@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,12 +10,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -25,11 +25,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a Customer Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class CustomerDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -38,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -47,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -56,6 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -190,6 +197,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasWebSite => WebSite != null;
+
+		/// <summary>
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false")]
+        public int? ChannelNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasChannelNum => ChannelNum != null;
+
+		/// <summary>
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
+        public int? ChannelAccountNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasChannelAccountNum => ChannelAccountNum != null;
 
 		/// <summary>
 		/// Customer type. <br> Title: Type, Display: true, Editable: true
@@ -434,6 +459,100 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTermsDays => TermsDays != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep value cannot exceed 100 characters. ")]
+        public string SalesRep { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep => SalesRep != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep2 value cannot exceed 100 characters. ")]
+        public string SalesRep2 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep2 => SalesRep2 != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep3 value cannot exceed 100 characters. ")]
+        public string SalesRep3 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep3 => SalesRep3 != null;
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The SalesRep4 value cannot exceed 100 characters. ")]
+        public string SalesRep4 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesRep4 => SalesRep4 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate => CommissionRate != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate2 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate2 => CommissionRate2 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate3 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate3 => CommissionRate3 != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate4 { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate4 => CommissionRate4 != null;
+
+		/// <summary>
+		/// Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Handlling fee by order, Title: Order Handling, Display: true, Editable: true")]
+        public decimal? OrderMiscAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderMiscAmount => OrderMiscAmount != null;
+
+		/// <summary>
+		/// Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true")]
+        public decimal? ItemMiscAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasItemMiscAmount => ItemMiscAmount != null;
 
 		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false

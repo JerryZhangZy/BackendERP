@@ -11,12 +11,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -25,11 +26,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a CustomerAddress Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class CustomerAddressDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore, XmlIgnore]
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
+
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -49,15 +54,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Customer uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
+   
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCustomerUuid => CustomerUuid != null;
 
 		/// <summary>
-		/// Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.
+		/// Address code, human readable. <br> Title: Address Code, Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.")]
+		[OpenApiPropertyDescription("Address code, human readable. <br> Title: Address Code, Display: true, Editable: false.")]
         [StringLength(50, ErrorMessage = "The AddressCode value cannot exceed 50 characters. ")]
         public string AddressCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

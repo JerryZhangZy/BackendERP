@@ -8,16 +8,17 @@
 	[ShippingClass] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 	[DistributionCenterNum] INT NOT NULL DEFAULT 0, --(Readonly) Original DC number. <br> Title: DC number: Display: false, Editable: false
 	[CentralOrderNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
+    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) CentralOrderUuid. <br> Title: Central Order: Display: false, Editable: false
 	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
-	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT 0, --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
+	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT '', --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 	[SecondaryChannelOrderID] VARCHAR(200) NOT NULL DEFAULT '', --(Readonly) Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time. <br> Title: Other Channel Order: Display: true, Editable: false
 	[ShippingAccount] VARCHAR(100) NOT NULL DEFAULT '', --(Readonly) requested Vendor use Account to ship. <br> Title: Shipping Account: Display: false, Editable: false
 	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid. <br> Display: false, Editable: false
 	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
 	[RefNum] VARCHAR(100) NOT NULL DEFAULT '', --Reference Number. <br> Title: Reference Number: Display: true, Editable: true
 	[CustomerPoNum] VARCHAR(100) NOT NULL DEFAULT '', --Customer P/O Number. <br> Title: Customer PO: Display: true, Editable: true
-
+	  
 	[EndBuyerUserID] VARCHAR(255) NOT NULL DEFAULT '', --(Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false
 	[EndBuyerName] NVARCHAR(255) NOT NULL DEFAULT '', --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Title: Buyer Name : Display: true, Editable: false
 	[EndBuyerEmail] VARCHAR(255) NOT NULL DEFAULT '', --The email of the end customer. <br> Title: Buyer Email: Display: true, Editable: false
@@ -64,6 +65,11 @@
 	[BillToDaytimePhone] VARCHAR(50) NOT NULL DEFAULT '', --Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
 	[BillToNightPhone] VARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
 
+	[Notes] NVarchar(1000) NOT NULL DEFAULT '',--Order notes. <br> Title: Notes, Display: true, Editable: true
+
+	[OrderDCAssignmentNum] [bigint] NOT NULL DEFAULT 0, --C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+	[DBChannelOrderHeaderRowID] VARCHAR(50) NOT NULL DEFAULT '', --Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+
     [UpdateDateUtc] DATETIME NULL, --(Ignore)
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
@@ -73,12 +79,59 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'UK_SalesOrderHeaderInfo_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'UK_SalesOrderHeaderInfo_SalesOrderUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeaderInfo_SalesOrderUuid] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[SalesOrderUuid] ASC
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[CentralOrderNum] ASC
+)  
+GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_DistributionCenterNum_CentralOrderNum')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_DistributionCenterNum_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[DistributionCenterNum] ASC,
+	[CentralOrderNum] ASC
+)  
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_ShippingCarrier')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShippingCarrier] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[ShippingCarrier] ASC
+)  
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_ChannelOrderID')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_ChannelOrderID] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[ChannelNum] ASC,
+	[ChannelAccountNum] ASC,
+	[ChannelOrderID] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_WarehouseCode_RefNum_CustomerPoNum')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_WarehouseCode_RefNum_CustomerPoNum] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[WarehouseCode] ASC,
+	[RefNum] ASC,
+	[CustomerPoNum] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipToPostalCode')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipToPostalCode] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[ShipToName] ASC,
+	[ShipToState] ASC,
+	[ShipToPostalCode] ASC
+) 
+GO
 

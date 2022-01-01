@@ -84,14 +84,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<bool> SaveAsync<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
-            => await lst.SaveAsync<TEntity, long>().ConfigureAwait(false);
+            => await lst.SaveAsync<TEntity, long>();
 
         public static async Task<bool> SaveAsync<TEntity, TId>(this IList<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
         {
             var rtn = true;
             foreach (var tableRepository in lst?.Where(x => x != null))
             {
-                var rtn1 = await tableRepository.SaveAsync().ConfigureAwait(false);
+                var rtn1 = await tableRepository.SaveAsync();
                 rtn = rtn1 && rtn;
             }
             return rtn;
@@ -99,13 +99,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<int> DeleteAsync<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
-            => await lst.DeleteAsync<TEntity, long>().ConfigureAwait(false);
+            => await lst.DeleteAsync<TEntity, long>();
 
         public static async Task<int> DeleteAsync<TEntity, TId>(this IList<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
         {
             var rtn = 0;
             foreach (var tableRepository in lst?.Where(x => x != null))
-                rtn += await tableRepository.DeleteAsync().ConfigureAwait(false);
+                rtn += await tableRepository.DeleteAsync();
             return rtn;
         }
 
@@ -253,7 +253,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             IList<TEntity> lstMatch)
             where TEntity : TableRepository<TEntity, long>, new()
         {
-            return lst.Where(x => x.RowNum > 0 && !lstMatch.Any(m => m.RowNum == x.RowNum)).ToList();
+            return lst.Where(x => x != null && x.RowNum > 0 && !lstMatch.Any(m => m.RowNum == x.RowNum)).ToList();
         }
 
         public static TEntity FindBy<TEntity>(this IList<TEntity> lst, Func<TEntity, bool> predicate)
@@ -304,7 +304,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         public static IList<TEntity> RemoveEmpty<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
-            => lst.RemoveBy<TEntity, long>(x => x.IsEmpty);
+            => lst.RemoveBy<TEntity, long>(x => x == null || x.IsEmpty);
 
         public static bool EqualsList<TEntity>(this IList<TEntity> lst, IList<TEntity> listOther)
             where TEntity : TableRepository<TEntity, long>, new()

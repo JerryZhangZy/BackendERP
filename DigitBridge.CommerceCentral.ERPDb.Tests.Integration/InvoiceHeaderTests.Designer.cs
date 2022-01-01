@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -42,15 +40,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InvoiceNumber, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.QboDocNumber, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.OrderNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.InvoiceType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.InvoiceStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.InvoiceDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.InvoiceTime, f => f.Date.Timespan())
 					.RuleFor(u => u.DueDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.BillDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.ShipDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.CustomerCode, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.CustomerName, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
+					.RuleFor(u => u.CustomerName, f => f.Company.CompanyName())
 					.RuleFor(u => u.Terms, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.TermsDays, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
@@ -68,13 +70,27 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ChannelAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShippingCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.PaidAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.CreditAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Balance, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.InvoiceSourceCode, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.InvoiceSourceCode, f => f.Lorem.Word())
+					.RuleFor(u => u.SalesRep, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.SalesRep2, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.SalesRep3, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.SalesRep4, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.CommissionRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.CommissionRate2, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CommissionRate3, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CommissionRate4, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CommissionAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CommissionAmount2, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CommissionAmount3, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CommissionAmount4, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
@@ -183,14 +199,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "InvoiceNumber", "CustomerCode" });
+            data.Patch(new[] { "InvoiceNumber", "QboDocNumber" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<InvoiceHeader>(data.RowNum);
             var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.CustomerCode != dataOrig.CustomerCode &&
+                            dataGet.QboDocNumber != dataOrig.QboDocNumber &&
                             dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.CustomerCode == newData.CustomerCode;
+                            dataGet.QboDocNumber == newData.QboDocNumber;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -269,13 +285,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void AddList_Test()
         {
             var list = FakerData.Generate(10);
-            var CustomerUuid = Guid.NewGuid().ToString();
+            var SalesOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.CustomerUuid = CustomerUuid);
+            list.ForEach(x => x.SalesOrderUuid = SalesOrderUuid);
             list.SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .Save<InvoiceHeader>();
 
-            var cnt = DataBaseFactory.Count<InvoiceHeader>("WHERE CustomerUuid = @0", CustomerUuid);
+            var cnt = DataBaseFactory.Count<InvoiceHeader>("WHERE SalesOrderUuid = @0", SalesOrderUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -286,19 +302,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void SaveList_Test()
         {
             var list = FakerData.Generate(10);
-            var CustomerUuid = Guid.NewGuid().ToString();
+            var SalesOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.CustomerUuid = CustomerUuid);
+            list.ForEach(x => x.SalesOrderUuid = SalesOrderUuid);
             list.SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .Save<InvoiceHeader>();
 
-            var NewCustomerCode = Guid.NewGuid().ToString();
-            var listFind = DataBaseFactory.Find<InvoiceHeader>("WHERE CustomerUuid = @0 ORDER BY RowNum", CustomerUuid).ToList();
-            listFind.ToList().ForEach(x => x.CustomerCode = NewCustomerCode);
+            var NewQboDocNumber = Guid.NewGuid().ToString();
+            var listFind = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
+            listFind.ToList().ForEach(x => x.QboDocNumber = NewQboDocNumber);
             listFind.Save<InvoiceHeader>();
 
-            list = DataBaseFactory.Find<InvoiceHeader>("WHERE CustomerUuid = @0 ORDER BY RowNum", CustomerUuid).ToList();
-            var result = list.Where(x => x.CustomerCode == NewCustomerCode).Count() == listFind.Count();
+            list = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
+            var result = list.Where(x => x.QboDocNumber == NewQboDocNumber).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -308,16 +324,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void DeleteList_Test()
         {
             var list = FakerData.Generate(10);
-            var CustomerUuid = Guid.NewGuid().ToString();
+            var SalesOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.CustomerUuid = CustomerUuid);
+            list.ForEach(x => x.SalesOrderUuid = SalesOrderUuid);
             list.SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<InvoiceHeader>("WHERE CustomerUuid = @0 ORDER BY RowNum", CustomerUuid).ToList();
+            var listFind = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
             listFind.Delete();
 
-            var cnt = DataBaseFactory.Count<InvoiceHeader>("WHERE CustomerUuid = @0", CustomerUuid);
+            var cnt = DataBaseFactory.Count<InvoiceHeader>("WHERE SalesOrderUuid = @0", SalesOrderUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -391,14 +407,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "InvoiceNumber", "CustomerCode" });
+            await data.PatchAsync(new[] { "InvoiceNumber", "QboDocNumber" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceHeader>(data.RowNum);
             var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.CustomerCode != dataOrig.CustomerCode &&
+                            dataGet.QboDocNumber != dataOrig.QboDocNumber &&
                             dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.CustomerCode == newData.CustomerCode;
+                            dataGet.QboDocNumber == newData.QboDocNumber;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -473,14 +489,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task AddListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var CustomerUuid = Guid.NewGuid().ToString();
+            var SalesOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.CustomerUuid = CustomerUuid);
+            list.ForEach(x => x.SalesOrderUuid = SalesOrderUuid);
             await list
                 .SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .SaveAsync<InvoiceHeader>();
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceHeader>("WHERE CustomerUuid = @0", CustomerUuid);
+            var cnt = await DataBaseFactory.CountAsync<InvoiceHeader>("WHERE SalesOrderUuid = @0", SalesOrderUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -491,20 +507,20 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task SaveListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var CustomerUuid = Guid.NewGuid().ToString();
+            var SalesOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.CustomerUuid = CustomerUuid);
+            list.ForEach(x => x.SalesOrderUuid = SalesOrderUuid);
             await list
                 .SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .SaveAsync<InvoiceHeader>();
 
-            var NewCustomerCode = Guid.NewGuid().ToString();
-            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeader>("WHERE CustomerUuid = @0 ORDER BY RowNum", CustomerUuid)).ToList();
-            listFind.ToList().ForEach(x => x.CustomerCode = NewCustomerCode);
+            var NewQboDocNumber = Guid.NewGuid().ToString();
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid)).ToList();
+            listFind.ToList().ForEach(x => x.QboDocNumber = NewQboDocNumber);
             await listFind.SaveAsync<InvoiceHeader>();
 
-            list = DataBaseFactory.Find<InvoiceHeader>("WHERE CustomerUuid = @0 ORDER BY RowNum", CustomerUuid).ToList();
-            var result = list.Where(x => x.CustomerCode == NewCustomerCode).Count() == listFind.Count();
+            list = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
+            var result = list.Where(x => x.QboDocNumber == NewQboDocNumber).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -514,17 +530,17 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task DeleteListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var CustomerUuid = Guid.NewGuid().ToString();
+            var SalesOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.CustomerUuid = CustomerUuid);
+            list.ForEach(x => x.SalesOrderUuid = SalesOrderUuid);
             await list
                 .SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .SaveAsync();
 
-            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeader>("WHERE CustomerUuid = @0 ORDER BY RowNum", CustomerUuid)).ToList();
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid)).ToList();
             await listFind.DeleteAsync();
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceHeader>("WHERE CustomerUuid = @0", CustomerUuid);
+            var cnt = await DataBaseFactory.CountAsync<InvoiceHeader>("WHERE SalesOrderUuid = @0", SalesOrderUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

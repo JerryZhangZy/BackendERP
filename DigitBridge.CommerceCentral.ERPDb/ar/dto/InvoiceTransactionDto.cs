@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,13 +10,15 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -25,19 +26,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a InvoiceTransaction Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class InvoiceTransactionDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
 
-		/// <summary>
+        public string CustomerCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCustomerCode => CustomerCode != null;
+
+        /// <summary>
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -47,6 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -56,6 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -99,6 +112,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasInvoiceNumber => InvoiceNumber != null;
+
+		/// <summary>
+		/// Group Payment uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Group Payment uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The PaymentUuid value cannot exceed 50 characters. ")]
+        public string PaymentUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPaymentUuid => PaymentUuid != null;
+
+		/// <summary>
+		/// Group Payment readable Number. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Group Payment readable Number. <br> Display: false, Editable: false.")]
+        public long? PaymentNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPaymentNumber => PaymentNumber != null;
 
 		/// <summary>
 		/// Transaction type, payment, return. <br> Title: Type, Display: true, Editable: true
@@ -411,7 +443,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasUpdateBy => UpdateBy != null;
 
 
-
+        public decimal PaidAmount => TotalAmount.ToDecimal();
         #endregion Properties - Generated 
 
         #region Children - Generated 

@@ -1,4 +1,3 @@
-
               
     
 
@@ -80,9 +79,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             srvGet.Edit();
             srvGet.GetDataById(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
-            result = true;
 
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
         [Fact()]
@@ -120,7 +118,6 @@ WHERE itm.cnt > 0
             srvGet.GetData(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
-            result = true;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -147,7 +144,6 @@ WHERE itm.cnt > 0
             srv.DeleteData();
 
             var result = DataBaseFactory.ExistUniqueId<OrderHeader>(srv.Data.UniqueId);
-            result = false;
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }

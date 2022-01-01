@@ -1,11 +1,6 @@
 
 
-
-
-
-
               
-
               
     
 
@@ -64,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			get => CentralOrderNum.ToLong();
 			set => CentralOrderNum = value.ToLong();
 		}
-		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => CentralOrderNum <= 0; 
         [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
         private int _masterAccountNum;
@@ -78,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true)]
         private int _channelAccountNum;
 
-        [Column("UserDataPresent",SqlDbType.TinyInt,NotNull=true)]
+        [Column("UserDataPresent",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _userDataPresent;
 
         [Column("UserDataRemoveDateUtc",SqlDbType.DateTime)]
@@ -348,16 +343,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CentralOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _centralOrderUuid;
 
+        [Column("TotalDueSellerAmount",SqlDbType.Money,NotNull=true,IsDefault=true)]
+        private decimal _totalDueSellerAmount;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => CentralOrderUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(CentralOrderUuid)) 
 				CentralOrderUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// Database Number. Required, Title: Database Number, Display: false, Editable: false--
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -371,6 +372,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int MasterAccountNum
         {
             get
@@ -384,6 +388,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int ProfileNum
         {
             get
@@ -397,6 +404,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The channel which sells the item. Refer to Master Account Channel Setting
+		/// </summary>
         public virtual int ChannelNum
         {
             get
@@ -410,6 +420,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The unique number of this profile’s channel account
+		/// </summary>
         public virtual int ChannelAccountNum
         {
             get
@@ -423,6 +436,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Default 1 Has User data. Some channel may require to remove the user data after a certain time frame. 0, unknow. 1, Present. 255, Removed. Default 0.
+		/// </summary>
         public virtual bool UserDataPresent
         {
             get
@@ -436,6 +452,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The UTC date user data was removed
+		/// </summary>
         public virtual DateTime? UserDataRemoveDateUtc
         {
             get
@@ -448,12 +467,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_userDataRemoveDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_userDataRemoveDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UserDataRemoveDateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// This usually is the marketplace order ID, or merchant PO Number
+		/// </summary>
         public virtual string ChannelOrderID
         {
             get
@@ -467,6 +489,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
+		/// </summary>
         public virtual string SecondaryChannelOrderID
         {
             get
@@ -485,6 +510,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order identifier assigned by the seller. Usually it is not used.
+		/// </summary>
         public virtual string SellerOrderID
         {
             get
@@ -503,6 +531,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string Currency
         {
             get
@@ -521,6 +552,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Timestamp when the order was created at the original channel
+		/// </summary>
         public virtual DateTime OriginalOrderDateUtc
         {
             get
@@ -529,11 +563,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_originalOrderDateUtc = value.Date.ToSqlSafeValue(); 
+				_originalOrderDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("OriginalOrderDateUtc", value);
             }
         }
 
+		/// <summary>
+		/// The note from the seller may be included on the invoice or packing list
+		/// </summary>
         public virtual string SellerPublicNote
         {
             get
@@ -552,6 +589,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The note from the seller for internal use. Cannot be printed on invoice or packing listing
+		/// </summary>
         public virtual string SellerPrivateNote
         {
             get
@@ -570,6 +610,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Usually it is related to shipping instruction
+		/// </summary>
         public virtual string EndBuyerInstruction
         {
             get
@@ -588,6 +631,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation
+		/// </summary>
         public virtual decimal? TotalOrderAmount
         {
             get
@@ -606,6 +652,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Reference calculation. The real amount is provided by the channel.
+		/// </summary>
         public virtual decimal? TotalTaxAmount
         {
             get
@@ -624,6 +673,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Sum of all OrderItems ShippingPrice (Related to VAT. Refer to tax info for more detail) Does not include shipping item-level shipping promotions.
+		/// </summary>
         public virtual decimal? TotalShippingAmount
         {
             get
@@ -642,6 +694,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Sum of all OrderItems ShippingTaxPrice. Number generated here is estimate based on tax (VAT) settings in the profile. For representation only. No actual data provided by channels.
+		/// </summary>
         public virtual decimal? TotalShippingTaxAmount
         {
             get
@@ -660,6 +715,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Sum of all OrderItems ShippingDiscount Negative.
+		/// </summary>
         public virtual decimal? TotalShippingDiscount
         {
             get
@@ -678,6 +736,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Sum of all OrderItems ShippingDiscount Negative.
+		/// </summary>
         public virtual decimal? TotalShippingDiscountTaxAmount
         {
             get
@@ -696,6 +757,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// TotalInsurancePrice data - provided at order level only.
+		/// </summary>
         public virtual decimal? TotalInsuranceAmount
         {
             get
@@ -714,6 +778,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Sum of all OrderItems GiftPrice (Related to VAT setting)
+		/// </summary>
         public virtual decimal? TotalGiftOptionAmount
         {
             get
@@ -732,6 +799,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Number generated here is estimate based on VAT settings in the profile. For representation only. No actual data provided by channels.
+		/// </summary>
         public virtual decimal? TotalGiftOptionTaxAmount
         {
             get
@@ -750,6 +820,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// provided at order level only. Not commonly populated. Miscellaneous cost modification which may be positive to indicate a cost or negative to indicate a discount.
+		/// </summary>
         public virtual decimal? AdditionalCostOrDiscount
         {
             get
@@ -768,6 +841,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// provided at order level. Not a sum of Promotion Level pricing. A negative decimal. Will not be populated if item level promotions exist.
+		/// </summary>
         public virtual decimal? PromotionAmount
         {
             get
@@ -786,6 +862,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Timestamp estimating when the order will be fulfilled.
+		/// </summary>
         public virtual DateTime? EstimatedShipDateUtc
         {
             get
@@ -798,12 +877,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_estimatedShipDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_estimatedShipDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("EstimatedShipDateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// Timestamp indicating the deadline for fulfilling the order.
+		/// </summary>
         public virtual DateTime? DeliverByDateUtc
         {
             get
@@ -816,12 +898,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_deliverByDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_deliverByDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("DeliverByDateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// Original requested shipping carrier from the channel.
+		/// </summary>
         public virtual string RequestedShippingCarrier
         {
             get
@@ -840,6 +925,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Original requested shipping class provided from the channel
+		/// </summary>
         public virtual string RequestedShippingClass
         {
             get
@@ -858,6 +946,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Identifier for a reseller agency. Amazon: FulfillmentChannel(AFN/MFN)
+		/// </summary>
         public virtual string ResellerID
         {
             get
@@ -876,6 +967,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Enum. Identify the flag of an order, which may signal special attention is required.
+		/// </summary>
         public virtual short? FlagNum
         {
             get
@@ -894,6 +988,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Describe the flag reason or other notice
+		/// </summary>
         public virtual string FlagDesc
         {
             get
@@ -912,6 +1009,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Enum. 0, unknown. 1, Paid. 200, NotPaid.
+		/// </summary>
         public virtual bool PaymentStatus
         {
             get
@@ -930,6 +1030,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Timestamp indicating the latest update to PaymentStatus.
+		/// </summary>
         public virtual DateTime? PaymentUpdateUtc
         {
             get
@@ -942,12 +1045,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_paymentUpdateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_paymentUpdateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("PaymentUpdateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// Timestamp indicating the latest update to ShippingStatus.
+		/// </summary>
         public virtual DateTime? ShippingUpdateUtc
         {
             get
@@ -960,12 +1066,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_shippingUpdateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_shippingUpdateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("ShippingUpdateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
+		/// </summary>
         public virtual string EndBuyerUserID
         {
             get
@@ -984,6 +1093,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The email of the end customer
+		/// </summary>
         public virtual string EndBuyerEmail
         {
             get
@@ -1002,6 +1114,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string PaymentMethod
         {
             get
@@ -1020,6 +1135,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToName
         {
             get
@@ -1038,6 +1156,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToFirstName
         {
             get
@@ -1056,6 +1177,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToLastName
         {
             get
@@ -1074,6 +1198,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToSuffix
         {
             get
@@ -1092,6 +1219,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToCompany
         {
             get
@@ -1110,6 +1240,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToCompanyJobTitle
         {
             get
@@ -1128,6 +1261,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToAttention
         {
             get
@@ -1146,6 +1282,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToDaytimePhone
         {
             get
@@ -1164,6 +1303,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToNightPhone
         {
             get
@@ -1182,6 +1324,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToAddressLine1
         {
             get
@@ -1200,6 +1345,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToAddressLine2
         {
             get
@@ -1218,6 +1366,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToAddressLine3
         {
             get
@@ -1236,6 +1387,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToCity
         {
             get
@@ -1254,6 +1408,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToState
         {
             get
@@ -1272,6 +1429,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToStateFullName
         {
             get
@@ -1290,6 +1450,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToPostalCode
         {
             get
@@ -1308,6 +1471,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToPostalCodeExt
         {
             get
@@ -1326,6 +1492,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToCounty
         {
             get
@@ -1344,6 +1513,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToCountry
         {
             get
@@ -1362,6 +1534,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ShipToEmail
         {
             get
@@ -1380,6 +1555,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToName
         {
             get
@@ -1398,6 +1576,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToFirstName
         {
             get
@@ -1416,6 +1597,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToLastName
         {
             get
@@ -1434,6 +1618,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToSuffix
         {
             get
@@ -1452,6 +1639,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToCompany
         {
             get
@@ -1470,6 +1660,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToCompanyJobTitle
         {
             get
@@ -1488,6 +1681,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToAttention
         {
             get
@@ -1506,6 +1702,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToAddressLine1
         {
             get
@@ -1524,6 +1723,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToAddressLine2
         {
             get
@@ -1542,6 +1744,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToAddressLine3
         {
             get
@@ -1560,6 +1765,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToCity
         {
             get
@@ -1578,6 +1786,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToState
         {
             get
@@ -1596,6 +1807,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToStateFullName
         {
             get
@@ -1614,6 +1828,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToPostalCode
         {
             get
@@ -1632,6 +1849,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToPostalCodeExt
         {
             get
@@ -1650,6 +1870,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToCounty
         {
             get
@@ -1668,6 +1891,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToCountry
         {
             get
@@ -1686,6 +1912,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToEmail
         {
             get
@@ -1704,6 +1933,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToDaytimePhone
         {
             get
@@ -1722,6 +1954,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string BillToNightPhone
         {
             get
@@ -1740,6 +1975,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Shipping signature
+		/// </summary>
         public virtual string SignatureFlag
         {
             get
@@ -1758,6 +1996,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Flag if a customer will pick up the order.
+		/// </summary>
         public virtual string PickupFlag
         {
             get
@@ -1776,6 +2017,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The merchant’s division ID or name.
+		/// </summary>
         public virtual string MerchantDivision
         {
             get
@@ -1794,6 +2038,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The merchant assigned batch number from which the purchase order came.
+		/// </summary>
         public virtual string MerchantBatchNumber
         {
             get
@@ -1812,6 +2059,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// This field is used to identify the merchant’s sales department or web site.
+		/// </summary>
         public virtual string MerchantDepartmentSiteID
         {
             get
@@ -1830,6 +2080,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ReservationNumber
         {
             get
@@ -1848,6 +2101,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string MerchantShipToAddressType
         {
             get
@@ -1866,6 +2122,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 0-Consumer Order, 1-Businees Order
+		/// </summary>
         public virtual bool CustomerOrganizationType
         {
             get
@@ -1884,6 +2143,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 0-NotPrime Order(Amazon) 1-Prime Order(Amazon)
+		/// </summary>
         public virtual bool OrderMark
         {
             get
@@ -1902,6 +2164,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 0-ThirdPartyFulfilled (AFN) 1-SellerFulfilled (MFN) 2 Pickup 3 ShipToStore
+		/// </summary>
         public virtual bool OrderMark2
         {
             get
@@ -1920,6 +2185,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 0 Processing (Unshipped default), 1 Shipped, 2 PartiallyShipped, 4 PendingShipment, 8 ReadyToPickup, 16 Canceled, 100 OnHold
+		/// </summary>
         public virtual bool OrderStatus
         {
             get
@@ -1938,6 +2206,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual DateTime? OrderStatusUpdateDateUtc
         {
             get
@@ -1950,12 +2221,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_orderStatusUpdateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_orderStatusUpdateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("OrderStatusUpdateDateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string DBChannelOrderHeaderRowID
         {
             get
@@ -1974,6 +2248,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? DCAssignmentStatus
         {
             get
@@ -1992,6 +2269,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual DateTime? DCAssignmentDateUtc
         {
             get
@@ -2004,12 +2284,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_dCAssignmentDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_dCAssignmentDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("DCAssignmentDateUtc", value);
 				}
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string CentralOrderUuid
         {
             get
@@ -2023,13 +2306,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+        public virtual decimal TotalDueSellerAmount
+        {
+            get
+            {
+				return _totalDueSellerAmount; 
+            }
+            set
+            {
+				_totalDueSellerAmount = value; 
+				OnPropertyChanged("TotalDueSellerAmount", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private ChannelOrderData Parent { get; set; }
 		public ChannelOrderData GetParent() => Parent;
 		public OrderHeader SetParent(ChannelOrderData parent)
@@ -2148,7 +2447,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dCAssignmentStatus = AllowNull ? (int?)null : default(int); 
 			_dCAssignmentDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_centralOrderUuid = String.Empty; 
+			_totalDueSellerAmount = default(decimal); 
             ClearChildren();
+            return this;
+        }
+
+        public override OrderHeader CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 
@@ -2169,6 +2476,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override OrderHeader ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderHeader ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

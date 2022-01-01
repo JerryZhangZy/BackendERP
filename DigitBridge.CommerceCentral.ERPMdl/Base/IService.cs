@@ -1,4 +1,5 @@
 ﻿using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using System;
@@ -18,6 +19,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         IDataBaseFactory dbFactory { get; }
         TService SetDataBaseFactory(IDataBaseFactory dbFactory);
 
+        IActivityLogService ActivityLogService { get; }
+        Task<bool> AddActivityLogAsync(ActivityLog data);
+        bool AddActivityLog(ActivityLog data);
+
         TEntity Data { get; }
         ProcessingMode ProcessMode { get; }
         void SetProcessMode(ProcessingMode mode);
@@ -28,8 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ICalculator<TEntity> Calculator { get; }
         void SetCalculator(ICalculator<TEntity> calculator);
 
-        IList<IValidator<TEntity>> Validators { get; }
-        void AddValidator(IValidator<TEntity> validator);
+        IList<IValidator<TEntity,TDto>> Validators { get; }
+        void AddValidator(IValidator<TEntity,TDto> validator);
 
         void OnClear(TEntity data);
         bool OnAfterLoad(TEntity data);
@@ -51,13 +56,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         TDto ToDto();
         TDto ToDto(TEntity data);
+        IList<TDto> ToDto(IList<TEntity> datas);
         TEntity FromDto(TDto dto);
         TEntity FromDto(TEntity data, TDto dto);
 
 
+        void PrepareData();
+        void SetDefault();
         bool Calculate();
         bool Validate();
         Task<bool> ValidateAsync();
+
+        bool ValidateAccount(IPayload payload, string number = null);
+        Task<bool> ValidateAccountAsync(IPayload payload, string number = null);
+
+        bool Validate(TDto dto);
+        Task<bool> ValidateAsync(TDto dto);
 
         bool GetData(long RowNum);
         bool GetDataById(string id);
@@ -67,6 +81,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> GetDataByIdAsync(string id);
         Task<bool> SaveDataAsync();
         Task<bool> DeleteDataAsync();
+
+        Task BeforeSaveAsync();
+        void BeforeSave();
+        Task AfterSaveAsync();
+        void AfterSave();
+        Task SaveSuccessAsync();
+        void SaveSuccess();
 
 
         bool Add();

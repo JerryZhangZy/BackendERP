@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -46,13 +44,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ItemTime, f => f.Date.Timespan())
 					.RuleFor(u => u.ShipDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EtaArrivalDate, f => f.Date.Past(0).Date)
-					.RuleFor(u => u.SKU, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.EarliestShipDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.LatestShipDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.SignatureFlag, f => f.Random.Bool())
+					.RuleFor(u => u.SKU, f => f.Commerce.Product())
 					.RuleFor(u => u.ProductUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InventoryUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.Description, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.Description, f => f.Commerce.ProductName())
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.UOM, f => f.PickRandom(TestHelper.UOM))
@@ -95,9 +96,15 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.LotInDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.LotExpDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.CentralOrderLineUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.DBChannelOrderLineRowID, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.OrderDCAssignmentLineUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.OrderDCAssignmentLineNum, f => default(long))
+					.RuleFor(u => u.CommissionRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.CommissionAmount, f => f.Random.Decimal(1, 1000, 6))
 					;
             #endregion faker data rules
         }

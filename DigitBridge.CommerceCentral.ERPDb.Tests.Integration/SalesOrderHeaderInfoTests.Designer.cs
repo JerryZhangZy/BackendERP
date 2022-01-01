@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -43,58 +41,62 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ShippingClass, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.DistributionCenterNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.CentralOrderNum, f => default(long))
+					.RuleFor(u => u.CentralOrderUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.SecondaryChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ShippingAccount, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.RefNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.CustomerPoNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.EndBuyerUserID, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.EndBuyerName, f => f.Lorem.Sentence().TruncateTo(255))
-					.RuleFor(u => u.EndBuyerEmail, f => f.Lorem.Sentence().TruncateTo(255))
-					.RuleFor(u => u.ShipToName, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToFirstName, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.ShipToLastName, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.EndBuyerName, f => f.Company.CompanyName())
+					.RuleFor(u => u.EndBuyerEmail, f => f.Internet.Email())
+					.RuleFor(u => u.ShipToName, f => f.Company.CompanyName())
+					.RuleFor(u => u.ShipToFirstName, f => f.Company.CompanyName())
+					.RuleFor(u => u.ShipToLastName, f => f.Company.CompanyName())
 					.RuleFor(u => u.ShipToSuffix, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.ShipToCompany, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.ShipToCompanyJobTitle, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.ShipToAttention, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToAddressLine1, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.ShipToAddressLine2, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.ShipToAddressLine1, f => f.Address.StreetAddress())
+					.RuleFor(u => u.ShipToAddressLine2, f => f.Address.SecondaryAddress())
 					.RuleFor(u => u.ShipToAddressLine3, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.ShipToCity, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToState, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.ShipToStateFullName, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToPostalCode, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.ShipToPostalCodeExt, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.ShipToCity, f => f.Address.City())
+					.RuleFor(u => u.ShipToState, f => f.Address.State())
+					.RuleFor(u => u.ShipToStateFullName, f => f.Company.CompanyName())
+					.RuleFor(u => u.ShipToPostalCode, f => f.Address.ZipCode())
+					.RuleFor(u => u.ShipToPostalCodeExt, f => f.Lorem.Word())
 					.RuleFor(u => u.ShipToCounty, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToCountry, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToEmail, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ShipToDaytimePhone, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.ShipToNightPhone, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.BillToName, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.BillToFirstName, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.BillToLastName, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.ShipToCountry, f => f.Address.Country())
+					.RuleFor(u => u.ShipToEmail, f => f.Internet.Email())
+					.RuleFor(u => u.ShipToDaytimePhone, f => f.Phone.PhoneNumber())
+					.RuleFor(u => u.ShipToNightPhone, f => f.Phone.PhoneNumber())
+					.RuleFor(u => u.BillToName, f => f.Company.CompanyName())
+					.RuleFor(u => u.BillToFirstName, f => f.Company.CompanyName())
+					.RuleFor(u => u.BillToLastName, f => f.Company.CompanyName())
 					.RuleFor(u => u.BillToSuffix, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.BillToCompany, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.BillToCompanyJobTitle, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.BillToAttention, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.BillToAddressLine1, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.BillToAddressLine2, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.BillToAddressLine1, f => f.Address.StreetAddress())
+					.RuleFor(u => u.BillToAddressLine2, f => f.Address.SecondaryAddress())
 					.RuleFor(u => u.BillToAddressLine3, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.BillToCity, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.BillToState, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.BillToStateFullName, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.BillToPostalCode, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.BillToPostalCodeExt, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.BillToCity, f => f.Address.City())
+					.RuleFor(u => u.BillToState, f => f.Address.State())
+					.RuleFor(u => u.BillToStateFullName, f => f.Company.CompanyName())
+					.RuleFor(u => u.BillToPostalCode, f => f.Address.ZipCode())
+					.RuleFor(u => u.BillToPostalCodeExt, f => f.Lorem.Word())
 					.RuleFor(u => u.BillToCounty, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.BillToCountry, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.BillToEmail, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.BillToDaytimePhone, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.BillToNightPhone, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.BillToCountry, f => f.Address.Country())
+					.RuleFor(u => u.BillToEmail, f => f.Internet.Email())
+					.RuleFor(u => u.BillToDaytimePhone, f => f.Phone.PhoneNumber())
+					.RuleFor(u => u.BillToNightPhone, f => f.Phone.PhoneNumber())
+					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(1000))
+					.RuleFor(u => u.OrderDCAssignmentNum, f => default(long))
+					.RuleFor(u => u.DBChannelOrderHeaderRowID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
@@ -289,13 +291,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void AddList_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var CentralOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.CentralOrderUuid = CentralOrderUuid);
             list.SetDataBaseFactory<SalesOrderHeaderInfo>(DataBaseFactory)
                 .Save<SalesOrderHeaderInfo>();
 
-            var cnt = DataBaseFactory.Count<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = DataBaseFactory.Count<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0", CentralOrderUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -306,18 +308,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void SaveList_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var CentralOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.CentralOrderUuid = CentralOrderUuid);
             list.SetDataBaseFactory<SalesOrderHeaderInfo>(DataBaseFactory)
                 .Save<SalesOrderHeaderInfo>();
 
             var NewShippingClass = Guid.NewGuid().ToString();
-            var listFind = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            var listFind = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0 ORDER BY RowNum", CentralOrderUuid).ToList();
             listFind.ToList().ForEach(x => x.ShippingClass = NewShippingClass);
             listFind.Save<SalesOrderHeaderInfo>();
 
-            list = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            list = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0 ORDER BY RowNum", CentralOrderUuid).ToList();
             var result = list.Where(x => x.ShippingClass == NewShippingClass).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -328,16 +330,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void DeleteList_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var CentralOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.CentralOrderUuid = CentralOrderUuid);
             list.SetDataBaseFactory<SalesOrderHeaderInfo>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            var listFind = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0 ORDER BY RowNum", CentralOrderUuid).ToList();
             listFind.Delete();
 
-            var cnt = DataBaseFactory.Count<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = DataBaseFactory.Count<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0", CentralOrderUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -493,14 +495,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task AddListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var CentralOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.CentralOrderUuid = CentralOrderUuid);
             await list
                 .SetDataBaseFactory<SalesOrderHeaderInfo>(DataBaseFactory)
                 .SaveAsync<SalesOrderHeaderInfo>();
 
-            var cnt = await DataBaseFactory.CountAsync<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = await DataBaseFactory.CountAsync<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0", CentralOrderUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -511,19 +513,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task SaveListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var CentralOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.CentralOrderUuid = CentralOrderUuid);
             await list
                 .SetDataBaseFactory<SalesOrderHeaderInfo>(DataBaseFactory)
                 .SaveAsync<SalesOrderHeaderInfo>();
 
             var NewShippingClass = Guid.NewGuid().ToString();
-            var listFind = (await DataBaseFactory.FindAsync<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
+            var listFind = (await DataBaseFactory.FindAsync<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0 ORDER BY RowNum", CentralOrderUuid)).ToList();
             listFind.ToList().ForEach(x => x.ShippingClass = NewShippingClass);
             await listFind.SaveAsync<SalesOrderHeaderInfo>();
 
-            list = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            list = DataBaseFactory.Find<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0 ORDER BY RowNum", CentralOrderUuid).ToList();
             var result = list.Where(x => x.ShippingClass == NewShippingClass).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -534,17 +536,17 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task DeleteListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var CentralOrderUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.CentralOrderUuid = CentralOrderUuid);
             await list
                 .SetDataBaseFactory<SalesOrderHeaderInfo>(DataBaseFactory)
                 .SaveAsync();
 
-            var listFind = (await DataBaseFactory.FindAsync<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
+            var listFind = (await DataBaseFactory.FindAsync<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0 ORDER BY RowNum", CentralOrderUuid)).ToList();
             await listFind.DeleteAsync();
 
-            var cnt = await DataBaseFactory.CountAsync<SalesOrderHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = await DataBaseFactory.CountAsync<SalesOrderHeaderInfo>("WHERE CentralOrderUuid = @0", CentralOrderUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

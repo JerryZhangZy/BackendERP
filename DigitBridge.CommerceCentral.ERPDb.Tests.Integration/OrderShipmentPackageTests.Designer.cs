@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -57,6 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.PackageQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ParentPackageNum, f => default(long))
 					.RuleFor(u => u.HasChildPackage, f => f.Random.Bool())
+					.RuleFor(u => u.CentralOrderNum, f => default(long))
 					.RuleFor(u => u.OrderShipmentUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.OrderShipmentPackageUuid, f => f.Random.Guid().ToString())
 					;

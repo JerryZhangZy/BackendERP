@@ -81,8 +81,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasOrderStatus) data.OrderStatus = dto.OrderStatus.ToInt();
 			if (dto.HasOrderDate) data.OrderDate = dto.OrderDate.ToDateTime();
 			if (dto.HasOrderTime) data.OrderTime = dto.OrderTime.ToTimeSpan();
+			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
 			if (dto.HasBillDate) data.BillDate = dto.BillDate;
+			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
+			if (dto.HasEarliestShipDate) data.EarliestShipDate = dto.EarliestShipDate;
+			if (dto.HasLatestShipDate) data.LatestShipDate = dto.LatestShipDate;
+			if (dto.HasSignatureFlag) data.SignatureFlag = dto.SignatureFlag.ToBool();
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
 			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
 			if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
@@ -103,6 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount.ToDecimal();
 			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount.ToDecimal();
 			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
+			if (dto.HasChannelAmount) data.ChannelAmount = dto.ChannelAmount.ToDecimal();
 			if (dto.HasPaidAmount) data.PaidAmount = dto.PaidAmount.ToDecimal();
 			if (dto.HasCreditAmount) data.CreditAmount = dto.CreditAmount.ToDecimal();
 			if (dto.HasBalance) data.Balance = dto.Balance.ToDecimal();
@@ -110,12 +116,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasAvgCost) data.AvgCost = dto.AvgCost.ToDecimal();
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
 			if (dto.HasOrderSourceCode) data.OrderSourceCode = dto.OrderSourceCode;
+			if (dto.HasDepositAmount) data.DepositAmount = dto.DepositAmount.ToDecimal();
+			if (dto.HasMiscInvoiceUuid) data.MiscInvoiceUuid = dto.MiscInvoiceUuid;
+			if (dto.HasSalesRep) data.SalesRep = dto.SalesRep;
+			if (dto.HasSalesRep2) data.SalesRep2 = dto.SalesRep2;
+			if (dto.HasSalesRep3) data.SalesRep3 = dto.SalesRep3;
+			if (dto.HasSalesRep4) data.SalesRep4 = dto.SalesRep4;
+			if (dto.HasCommissionRate) data.CommissionRate = dto.CommissionRate.ToDecimal();
+			if (dto.HasCommissionRate2) data.CommissionRate2 = dto.CommissionRate2.ToDecimal();
+			if (dto.HasCommissionRate3) data.CommissionRate3 = dto.CommissionRate3.ToDecimal();
+			if (dto.HasCommissionRate4) data.CommissionRate4 = dto.CommissionRate4.ToDecimal();
+			if (dto.HasCommissionAmount) data.CommissionAmount = dto.CommissionAmount.ToDecimal();
+			if (dto.HasCommissionAmount2) data.CommissionAmount2 = dto.CommissionAmount2.ToDecimal();
+			if (dto.HasCommissionAmount3) data.CommissionAmount3 = dto.CommissionAmount3.ToDecimal();
+			if (dto.HasCommissionAmount4) data.CommissionAmount4 = dto.CommissionAmount4.ToDecimal();
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -133,6 +154,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
 			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum.ToInt();
 			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
+			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
@@ -142,6 +164,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasRefNum) data.RefNum = dto.RefNum;
 			if (dto.HasCustomerPoNum) data.CustomerPoNum = dto.CustomerPoNum;
+			if (dto.HasDBChannelOrderHeaderRowID) data.DBChannelOrderHeaderRowID = dto.DBChannelOrderHeaderRowID;
+			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum.ToLong();
 			if (dto.HasEndBuyerUserID) data.EndBuyerUserID = dto.EndBuyerUserID;
 			if (dto.HasEndBuyerName) data.EndBuyerName = dto.EndBuyerName;
 			if (dto.HasEndBuyerEmail) data.EndBuyerEmail = dto.EndBuyerEmail;
@@ -185,12 +209,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasBillToEmail) data.BillToEmail = dto.BillToEmail;
 			if (dto.HasBillToDaytimePhone) data.BillToDaytimePhone = dto.BillToDaytimePhone;
 			if (dto.HasBillToNightPhone) data.BillToNightPhone = dto.BillToNightPhone;
+			if (dto.HasNotes) data.Notes = dto.Notes;
+			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum.ToLong();
+			if (dto.HasDBChannelOrderHeaderRowID) data.DBChannelOrderHeaderRowID = dto.DBChannelOrderHeaderRowID;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -207,6 +235,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -227,6 +256,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasItemTime) data.ItemTime = dto.ItemTime.ToTimeSpan();
 			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
+			if (dto.HasEarliestShipDate) data.EarliestShipDate = dto.EarliestShipDate;
+			if (dto.HasLatestShipDate) data.LatestShipDate = dto.LatestShipDate;
+			if (dto.HasSignatureFlag) data.SignatureFlag = dto.SignatureFlag.ToBool();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
@@ -276,9 +308,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
 			if (dto.HasLotInDate) data.LotInDate = dto.LotInDate;
 			if (dto.HasLotExpDate) data.LotExpDate = dto.LotExpDate;
+			if (dto.HasCentralOrderLineUuid) data.CentralOrderLineUuid = dto.CentralOrderLineUuid;
+			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
+			if (dto.HasOrderDCAssignmentLineUuid) data.OrderDCAssignmentLineUuid = dto.OrderDCAssignmentLineUuid;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
+			if (dto.HasOrderDCAssignmentLineNum) data.OrderDCAssignmentLineNum = dto.OrderDCAssignmentLineNum.ToLong();
+			if (dto.HasCommissionRate) data.CommissionRate = dto.CommissionRate.ToDecimal();
+			if (dto.HasCommissionAmount) data.CommissionAmount = dto.CommissionAmount.ToDecimal();
 
 			#endregion read properties
 
@@ -293,6 +331,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read all grand children object
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -335,6 +374,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -392,8 +432,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderStatus = data.OrderStatus;
 			dto.OrderDate = data.OrderDate;
 			dto.OrderTime = data.OrderTime.ToDateTime();
+			dto.ShipDate = data.ShipDate;
 			dto.DueDate = data.DueDate;
 			dto.BillDate = data.BillDate;
+			dto.EtaArrivalDate = data.EtaArrivalDate;
+			dto.EarliestShipDate = data.EarliestShipDate;
+			dto.LatestShipDate = data.LatestShipDate;
+			dto.SignatureFlag = data.SignatureFlag;
 			dto.CustomerUuid = data.CustomerUuid;
 			dto.CustomerCode = data.CustomerCode;
 			dto.CustomerName = data.CustomerName;
@@ -414,6 +459,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.MiscAmount = data.MiscAmount;
 			dto.MiscTaxAmount = data.MiscTaxAmount;
 			dto.ChargeAndAllowanceAmount = data.ChargeAndAllowanceAmount;
+			dto.ChannelAmount = data.ChannelAmount;
 			dto.PaidAmount = data.PaidAmount;
 			dto.CreditAmount = data.CreditAmount;
 			dto.Balance = data.Balance;
@@ -421,6 +467,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.AvgCost = data.AvgCost;
 			dto.LotCost = data.LotCost;
 			dto.OrderSourceCode = data.OrderSourceCode;
+			dto.DepositAmount = data.DepositAmount;
+			dto.MiscInvoiceUuid = data.MiscInvoiceUuid;
+			dto.SalesRep = data.SalesRep;
+			dto.SalesRep2 = data.SalesRep2;
+			dto.SalesRep3 = data.SalesRep3;
+			dto.SalesRep4 = data.SalesRep4;
+			dto.CommissionRate = data.CommissionRate;
+			dto.CommissionRate2 = data.CommissionRate2;
+			dto.CommissionRate3 = data.CommissionRate3;
+			dto.CommissionRate4 = data.CommissionRate4;
+			dto.CommissionAmount = data.CommissionAmount;
+			dto.CommissionAmount2 = data.CommissionAmount2;
+			dto.CommissionAmount3 = data.CommissionAmount3;
+			dto.CommissionAmount4 = data.CommissionAmount4;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
@@ -446,6 +506,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ShippingClass = data.ShippingClass;
 			dto.DistributionCenterNum = data.DistributionCenterNum;
 			dto.CentralOrderNum = data.CentralOrderNum;
+			dto.CentralOrderUuid = data.CentralOrderUuid;
 			dto.ChannelNum = data.ChannelNum;
 			dto.ChannelAccountNum = data.ChannelAccountNum;
 			dto.ChannelOrderID = data.ChannelOrderID;
@@ -455,6 +516,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.WarehouseCode = data.WarehouseCode;
 			dto.RefNum = data.RefNum;
 			dto.CustomerPoNum = data.CustomerPoNum;
+			dto.DBChannelOrderHeaderRowID = data.DBChannelOrderHeaderRowID;
+			dto.OrderDCAssignmentNum = data.OrderDCAssignmentNum;
 			dto.EndBuyerUserID = data.EndBuyerUserID;
 			dto.EndBuyerName = data.EndBuyerName;
 			dto.EndBuyerEmail = data.EndBuyerEmail;
@@ -498,6 +561,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.BillToEmail = data.BillToEmail;
 			dto.BillToDaytimePhone = data.BillToDaytimePhone;
 			dto.BillToNightPhone = data.BillToNightPhone;
+			dto.Notes = data.Notes;
+			dto.OrderDCAssignmentNum = data.OrderDCAssignmentNum;
+			dto.DBChannelOrderHeaderRowID = data.DBChannelOrderHeaderRowID;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
@@ -544,6 +610,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ItemTime = data.ItemTime.ToDateTime();
 			dto.ShipDate = data.ShipDate;
 			dto.EtaArrivalDate = data.EtaArrivalDate;
+			dto.EarliestShipDate = data.EarliestShipDate;
+			dto.LatestShipDate = data.LatestShipDate;
+			dto.SignatureFlag = data.SignatureFlag;
 			dto.SKU = data.SKU;
 			dto.ProductUuid = data.ProductUuid;
 			dto.InventoryUuid = data.InventoryUuid;
@@ -593,11 +662,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.LotCost = data.LotCost;
 			dto.LotInDate = data.LotInDate;
 			dto.LotExpDate = data.LotExpDate;
+			dto.CentralOrderLineUuid = data.CentralOrderLineUuid;
+			dto.DBChannelOrderLineRowID = data.DBChannelOrderLineRowID;
+			dto.OrderDCAssignmentLineUuid = data.OrderDCAssignmentLineUuid;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.OrderDCAssignmentLineNum = data.OrderDCAssignmentLineNum;
+			dto.CommissionRate = data.CommissionRate;
+			dto.CommissionAmount = data.CommissionAmount;
 
 			#endregion read properties
 

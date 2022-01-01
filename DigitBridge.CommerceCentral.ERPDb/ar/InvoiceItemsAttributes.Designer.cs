@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -56,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => InvoiceItemsUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(InvoiceItemsUuid)) 
 				InvoiceItemsUuid = Guid.NewGuid().ToString(); 
@@ -160,6 +158,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_jsonFields = String.Empty; 
 			Fields.Clear(); 
             ClearChildren();
+            return this;
+        }
+
+        public override InvoiceItemsAttributes CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 

@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 using System.Threading;
@@ -10,9 +11,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     ///     Represents the core functionality of PetaPoco.
     /// </summary>
     public interface IDatabase : IDisposable, IQuery, IAlterPoco, IExecute, ITransactionAccessor, IStoredProc, IConnection
-#if ASYNC
                                  , IQueryAsync, IExecuteAsync, IStoredProcAsync, IAlterPocoAsync
-#endif
     {
         /// <summary>
         ///     Gets the default mapper. (Default is <see cref="ConventionMapper" />)
@@ -138,6 +137,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         bool IsInTransaction { get; }
 
+        IDbTransaction CurrentTransaction { get; }
+
+        void AddDbConnectionInterceptor(Func<IDbConnection, SqlConnection> connectionInterceptor);
+        void AddDbConnectionInterceptorAsync(Func<IDbConnection, Task<SqlConnection>> connectionInterceptor);
+
         /// <summary>
         ///     Starts a transaction scope, see GetTransaction() for recommended usage
         /// </summary>
@@ -192,7 +196,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         event EventHandler<ExceptionEventArgs> ExceptionThrown;
 
-#if ASYNC
         /// <summary>
         ///     Async version of <see cref="BeginTransaction" />.
         /// </summary>
@@ -202,6 +205,5 @@ namespace DigitBridge.CommerceCentral.YoPoco
         ///     Async version of <see cref="BeginTransaction" />.
         /// </summary>
         Task BeginTransactionAsync(CancellationToken cancellationToken);
-#endif
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -34,25 +32,43 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ProductUuid = productUuid;
             InventoryUuid = inventoryUuid;
         }
-        //public ItemCostClass(Inventory inv) : this()
-        //{
-        //    ProductUuid = inv.ProductUuid;
-        //    InventoryUuid = inv.InventoryUuid;
+        public ItemCostClass(Inventory inv) : this()
+        {
+            if (inv == null) return;
+            ProductUuid = inv.ProductUuid;
+            InventoryUuid = inv.InventoryUuid;
 
-        //    BaseCost = inv.BaseCost;
-        //    ShippingAmount = inv.ShippingAmount;
-        //    MiscAmount = inv.MiscAmount;
-        //    ChargeAndAllowanceAmount = inv.ChargeAndAllowanceAmount;
-        //    TaxRate = inv.TaxRate;
-        //    TaxAmount = inv.TaxAmount;
+            BaseCost = inv.BaseCost;
+            ShippingAmount = inv.ShippingAmount.ToAmount();
+            MiscAmount = inv.MiscAmount.ToAmount();
+            ChargeAndAllowanceAmount = inv.ChargeAndAllowanceAmount.ToAmount();
+            TaxRate = inv.TaxRate.ToRate();
+            TaxAmount = inv.TaxAmount.ToAmount();
+            UnitCost = inv.UnitCost;
+            AvgCost = inv.AvgCost;
+            SalesCost = inv.SalesCost;
+            Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
+            Instock = inv.Instock;
+        }
+        
+        public ItemCostClass(PoTransactionItems item) : this()
+        {
+            ProductUuid = item.ProductUuid;
+            InventoryUuid = item.InventoryUuid;
 
-        //    UnitCost = inv.UnitCost;
-        //    AvgCost = inv.AvgCost;
-        //    SalesCost = inv.SalesCost;
-        //    Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
+            BaseCost = item.Price.ToAmount();
+            ShippingAmount = item.ShippingAmount.ToAmount();
+            MiscAmount = item.MiscAmount.ToAmount();
+            ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
+            TaxRate = item.TaxRate.ToRate();
+            TaxAmount = item.TaxAmount.ToAmount();
+            UnitCost = item.UnitCost.ToAmount();
+            //AvgCost = 0;
+            SalesCost = item.Price.ToAmount();
+            Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 
-        //    Instock = inv.Instock;
-        //}
+            Qty = item.TransQty;
+        }
 
         /// <summary>
         /// Calculate UnitCost, and return cost
@@ -64,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             UnitCost = (BaseCost + TaxAmount + ShippingAmount + MiscAmount + ChargeAndAllowanceAmount).ToCost();
             if (AvgCost.IsZero())
                 AvgCost = UnitCost;
-            Cost = AvgCost;
+            Cost = AvgCost; 
             return this;
         }
         /// <summary>

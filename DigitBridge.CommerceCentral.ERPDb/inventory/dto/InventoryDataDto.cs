@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,9 +10,9 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -22,6 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a InventoryDataDto Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public partial class InventoryDataDto
     {
         public ProductBasicDto ProductBasic { get; set; }
@@ -40,6 +40,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInventory => Inventory != null;
 
+        public InventoryDataDto NewData()
+        {
+            ProductBasic = new ProductBasicDto();
+            ProductExt = new ProductExtDto();
+            ProductExtAttributes = new ProductExtAttributesDto();
+            Inventory = new List<InventoryDto>();
+
+            return this;
+        }
     }
 }
 

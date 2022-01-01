@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -28,6 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a OrderShipmentData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class OrderShipmentData : StructureRepository<OrderShipmentData>
     {
         public OrderShipmentData() : base() {}
@@ -38,7 +37,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => OrderShipmentHeader.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderShipmentHeaderTable ="OrderShipmentHeader ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderShipmentCanceledItemTable ="OrderShipmentCanceledItem ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderShipmentPackageTable ="OrderShipmentPackage ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderShipmentShippedItemTable ="OrderShipmentShippedItem ";
+		
         #region CRUD Methods
 
         public override bool Equals(OrderShipmentData other)
@@ -70,13 +81,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         // Check Children table Integrity
-        public virtual OrderShipmentData CheckIntegrity()
+        public override OrderShipmentData CheckIntegrity()
         {
 			if (OrderShipmentHeader is null) return this; 
-			OrderShipmentHeader.CheckUniqueId(); 
+			OrderShipmentHeader.CheckIntegrity(); 
 			CheckIntegrityOrderShipmentCanceledItem(); 
 			CheckIntegrityOrderShipmentPackage(); 
 			CheckIntegrityOrderShipmentShippedItem(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -169,26 +181,39 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			OrderShipmentHeader.SetDataBaseFactory(dbFactory);
-			if (!OrderShipmentHeader.Save()) return false;
 
-			if (OrderShipmentCanceledItem != null) 
-				OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory)?.Save();
-			var delOrderShipmentCanceledItem = _OrderShipmentCanceledItemDeleted;
-			if (delOrderShipmentCanceledItem != null)
-				delOrderShipmentCanceledItem.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(OrderShipmentHeaderTable))
+			{
+				OrderShipmentHeader.SetDataBaseFactory(dbFactory);
+				if (!OrderShipmentHeader.Save()) return false;
+			}
 
-			if (OrderShipmentPackage != null) 
-				OrderShipmentPackage.SetDataBaseFactory(dbFactory)?.Save();
-			var delOrderShipmentPackage = _OrderShipmentPackageDeleted;
-			if (delOrderShipmentPackage != null)
-				delOrderShipmentPackage.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(OrderShipmentCanceledItemTable))
+			{
+				if (OrderShipmentCanceledItem != null) 
+					OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory)?.Save();
+				var delOrderShipmentCanceledItem = _OrderShipmentCanceledItemDeleted;
+				if (delOrderShipmentCanceledItem != null)
+					delOrderShipmentCanceledItem.SetDataBaseFactory(dbFactory)?.Delete();
+			}
 
-			if (OrderShipmentShippedItem != null) 
-				OrderShipmentShippedItem.SetDataBaseFactory(dbFactory)?.Save();
-			var delChildrenOrderShipmentShippedItem = OrderShipmentShippedItemDeleted;
-			if (delChildrenOrderShipmentShippedItem != null)
-				delChildrenOrderShipmentShippedItem.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(OrderShipmentPackageTable))
+			{
+				if (OrderShipmentPackage != null) 
+					OrderShipmentPackage.SetDataBaseFactory(dbFactory)?.Save();
+				var delOrderShipmentPackage = _OrderShipmentPackageDeleted;
+				if (delOrderShipmentPackage != null)
+					delOrderShipmentPackage.SetDataBaseFactory(dbFactory)?.Delete();
+			}
+
+			 if (NeedSave(OrderShipmentShippedItemTable))
+			{
+				if (OrderShipmentShippedItem != null) 
+					OrderShipmentShippedItem.SetDataBaseFactory(dbFactory)?.Save();
+				var delChildrenOrderShipmentShippedItem = OrderShipmentShippedItemDeleted;
+				if (delChildrenOrderShipmentShippedItem != null)
+					delChildrenOrderShipmentShippedItem.SetDataBaseFactory(dbFactory)?.Delete();
+			}
 
 			if (_OnSave != null)
 			{
@@ -210,14 +235,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
-			if (OrderShipmentHeader.Delete() <= 0) return false; 
-			if (OrderShipmentCanceledItem != null) 
-				OrderShipmentCanceledItem?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (OrderShipmentPackage != null) 
-				OrderShipmentPackage?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (OrderShipmentShippedItem != null) 
-				OrderShipmentShippedItem?.SetDataBaseFactory(dbFactory)?.Delete(); 
+
+			 if (NeedDelete(OrderShipmentHeaderTable))
+			{
+				OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
+				if (OrderShipmentHeader.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(OrderShipmentCanceledItemTable))
+			{
+				if (OrderShipmentCanceledItem != null) 
+					OrderShipmentCanceledItem?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(OrderShipmentPackageTable))
+			{
+				if (OrderShipmentPackage != null) 
+					OrderShipmentPackage?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(OrderShipmentShippedItemTable))
+			{
+				if (OrderShipmentShippedItem != null) 
+					OrderShipmentShippedItem?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -271,25 +309,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
-			if (!(await OrderShipmentHeader.SaveAsync().ConfigureAwait(false))) return false; 
-			if (OrderShipmentCanceledItem != null) 
-				await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delOrderShipmentCanceledItem = _OrderShipmentCanceledItemDeleted;
-			if (delOrderShipmentCanceledItem != null)
-				await delOrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
 
-			if (OrderShipmentPackage != null) 
-				await OrderShipmentPackage.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delOrderShipmentPackage = _OrderShipmentPackageDeleted;
-			if (delOrderShipmentPackage != null)
-				await delOrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			 if (NeedSave(OrderShipmentHeaderTable))
+			{
+				OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
+				if (!(await OrderShipmentHeader.SaveAsync())) return false; 
+			}
+			 if (NeedSave(OrderShipmentCanceledItemTable))
+			{
+				if (OrderShipmentCanceledItem != null) 
+					await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delOrderShipmentCanceledItem = _OrderShipmentCanceledItemDeleted;
+				if (delOrderShipmentCanceledItem != null)
+					await delOrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
 
-			if (OrderShipmentShippedItem != null) 
-				await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delOrderShipmentShippedItem = OrderShipmentShippedItemDeleted;
-			if (delOrderShipmentShippedItem != null)
-				await delOrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			 if (NeedSave(OrderShipmentPackageTable))
+			{
+				if (OrderShipmentPackage != null) 
+					await OrderShipmentPackage.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delOrderShipmentPackage = _OrderShipmentPackageDeleted;
+				if (delOrderShipmentPackage != null)
+					await delOrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
+
+			 if (NeedSave(OrderShipmentShippedItemTable))
+			{
+				if (OrderShipmentShippedItem != null) 
+					await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delOrderShipmentShippedItem = OrderShipmentShippedItemDeleted;
+				if (delOrderShipmentShippedItem != null)
+					await delOrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
 
 			if (_OnSave != null)
 			{
@@ -311,14 +362,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(OrderShipmentHeaderTable))
+			{
 			OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
-			if ((await OrderShipmentHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
-			if (OrderShipmentCanceledItem != null) 
-				await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (OrderShipmentPackage != null) 
-				await OrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (OrderShipmentShippedItem != null) 
-				await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if ((await OrderShipmentHeader.DeleteAsync()) <= 0) return false; 
+			}
+			 if (NeedDelete(OrderShipmentCanceledItemTable))
+			{
+				if (OrderShipmentCanceledItem != null) 
+					await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(OrderShipmentPackageTable))
+			{
+				if (OrderShipmentPackage != null) 
+					await OrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(OrderShipmentShippedItemTable))
+			{
+				if (OrderShipmentShippedItem != null) 
+					await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -486,6 +549,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -598,6 +662,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -610,7 +675,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<OrderShipmentShippedItem> _OrderShipmentShippedItem;
 
-        protected IList<OrderShipmentShippedItem> OrderShipmentShippedItem 
+        public IList<OrderShipmentShippedItem> OrderShipmentShippedItem 
         { 
             get 
             {
@@ -685,6 +750,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                child.CheckIntegrity();
             }
             return children;
         }

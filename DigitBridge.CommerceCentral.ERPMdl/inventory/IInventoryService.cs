@@ -30,11 +30,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public interface IInventoryService : IService<InventoryService, InventoryData, InventoryDataDto>
     {
 
-        bool Add(InventoryDataDto dto);
         Task<bool> AddAsync(InventoryDataDto dto);
-        
-        bool Update(InventoryDataDto dto);
         Task<bool> UpdateAsync(InventoryDataDto dto);
+
+
+        Task<IList<InventoryFindClass>> FindNotExistSkuWarehouseAsync(IList<InventoryFindClass> list, int masterAccountNum, int profileNum);
+        Task<long> GetRowNumByProductFindAsync(ProductFindClass find);
+        Task<bool> GetInventoryByProductFindAsync(ProductFindClass find);
+        Task<bool> AddNewProductOrInventoryAsync(ProductBasic productBasic);
+        Task<bool> AddNewProductAsync(ProductBasic productBasic);
+        Task<bool> AddInventoryForExistProductAsync(InventoryData data);
 
     }
 }

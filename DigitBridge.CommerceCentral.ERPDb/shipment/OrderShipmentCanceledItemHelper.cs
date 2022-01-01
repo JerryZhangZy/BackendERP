@@ -1,4 +1,3 @@
-
               
     
 
@@ -25,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a OrderShipmentCanceledItem SQL Helper Static Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public static class OrderShipmentCanceledItemHelper
     {
@@ -38,25 +37,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region - static SQL fileds statement
 
-        public static string OrderShipmentCanceledItemNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderShipmentCanceledItemNum AS {name ?? "OrderShipmentCanceledItemNum"} ";
-        public static string DatabaseNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum"} ";
-        public static string MasterAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum"} ";
-        public static string ProfileNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum"} ";
-        public static string ChannelNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum"} ";
-        public static string ChannelAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum"} ";
-        public static string OrderShipmentNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderShipmentNum AS {name ?? "OrderShipmentNum"} ";
-        public static string ChannelOrderID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID"} ";
-        public static string OrderDCAssignmentLineNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentLineNum AS {name ?? "OrderDCAssignmentLineNum"} ";
-        public static string SKU(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU"} ";
-        public static string CanceledQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CanceledQty AS {name ?? "CanceledQty"} ";
-        public static string CancelCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CancelCode) AS {name ?? "CancelCode"} ";
-        public static string CancelOtherReason(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CancelOtherReason) AS {name ?? "CancelOtherReason"} ";
-        public static string DBChannelOrderLineRowID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderLineRowID) AS {name ?? "DBChannelOrderLineRowID"} ";
-        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
-        public static string OrderShipmentUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentUuid) AS {name ?? "OrderShipmentUuid"} ";
-        public static string OrderShipmentCanceledItemUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentCanceledItemUuid) AS {name ?? "OrderShipmentCanceledItemUuid"} ";
-        public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
+        public static string OrderShipmentCanceledItemNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderShipmentCanceledItemNum AS {name ?? "OrderShipmentCanceledItemNum".ToCamelCase(camelCase)} ";
+        public static string DatabaseNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum".ToCamelCase(camelCase)} ";
+        public static string MasterAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum".ToCamelCase(camelCase)} ";
+        public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
+        public static string ChannelNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum".ToCamelCase(camelCase)} ";
+        public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
+        public static string OrderShipmentNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderShipmentNum AS {name ?? "OrderShipmentNum".ToCamelCase(camelCase)} ";
+        public static string ChannelOrderID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID".ToCamelCase(camelCase)} ";
+        public static string OrderDCAssignmentLineNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentLineNum AS {name ?? "OrderDCAssignmentLineNum".ToCamelCase(camelCase)} ";
+        public static string SKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU".ToCamelCase(camelCase)} ";
+        public static string CanceledQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CanceledQty AS {name ?? "CanceledQty".ToCamelCase(camelCase)} ";
+        public static string CancelCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CancelCode) AS {name ?? "CancelCode".ToCamelCase(camelCase)} ";
+        public static string CancelOtherReason(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CancelOtherReason) AS {name ?? "CancelOtherReason".ToCamelCase(camelCase)} ";
+        public static string DBChannelOrderLineRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderLineRowID) AS {name ?? "DBChannelOrderLineRowID".ToCamelCase(camelCase)} ";
+        public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
+        public static string OrderShipmentUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentUuid) AS {name ?? "OrderShipmentUuid".ToCamelCase(camelCase)} ";
+        public static string OrderShipmentCanceledItemUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentCanceledItemUuid) AS {name ?? "OrderShipmentCanceledItemUuid".ToCamelCase(camelCase)} ";
+        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
+        public static string SalesOrderItemsUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderItemsUuid) AS {name ?? "SalesOrderItemsUuid".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -82,7 +82,8 @@ RTRIM({allies}DBChannelOrderLineRowID) AS DBChannelOrderLineRowID,
 RTRIM({allies}OrderShipmentUuid) AS OrderShipmentUuid,
 RTRIM({allies}OrderShipmentCanceledItemUuid) AS OrderShipmentCanceledItemUuid,
 {allies}RowNum AS RowNum,
-{allies}DigitBridgeGuid AS DigitBridgeGuid
+{allies}DigitBridgeGuid AS DigitBridgeGuid,
+RTRIM({allies}SalesOrderItemsUuid) AS SalesOrderItemsUuid
 ";
         }
 

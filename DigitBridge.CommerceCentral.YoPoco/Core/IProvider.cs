@@ -1,9 +1,7 @@
 using System.Data;
 using System.Data.Common;
-#if ASYNC
 using System.Threading;
 using System.Threading.Tasks;
-#endif
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -78,14 +76,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <returns>The ID of the newly inserted record</returns>
         object ExecuteInsert(Database database, IDbCommand cmd, string primaryKeyName);
 
-#if ASYNC
-
         /// <summary>
         ///     Async version of <see cref="ExecuteInsertAsync(Database, IDbCommand, string)" />.
         /// </summary>
         Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName);
-
-#endif
 
         /// <summary>
         ///     Returns an SQL expression that can be used to specify the return value of auto incremented columns.

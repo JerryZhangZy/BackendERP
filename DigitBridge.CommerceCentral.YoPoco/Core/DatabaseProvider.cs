@@ -3,10 +3,8 @@ using System.Collections.Concurrent;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-#if ASYNC
 using System.Threading;
 using System.Threading.Tasks;
-#endif
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -79,13 +77,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return ExecuteScalarHelper(database, cmd);
         }
 
-#if ASYNC
-        public virtual Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName)
+        public virtual async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName)
         {
             cmd.CommandText += ";\nSELECT @@IDENTITY AS NewID;";
-            return ExecuteScalarHelperAsync(cancellationToken, database, cmd);
+            return await ExecuteScalarHelperAsync (cancellationToken, database, cmd);
         }
-#endif
 
         /// <summary>
         ///     Returns the DbProviderFactory.
@@ -274,12 +270,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         protected object ExecuteScalarHelper(Database db, IDbCommand cmd) => db.ExecuteScalarHelper(cmd);
 
-#if ASYNC
-        protected Task ExecuteNonQueryHelperAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd)
-            => db.ExecuteNonQueryHelperAsync(cancellationToken, cmd);
+        protected async Task ExecuteNonQueryHelperAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd)
+            => await db.ExecuteNonQueryHelperAsync(cancellationToken, cmd);
 
-        protected Task<object> ExecuteScalarHelperAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd)
-            => db.ExecuteScalarHelperAsync(cancellationToken, cmd);
-#endif
+        protected async Task<object> ExecuteScalarHelperAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd)
+            => await db.ExecuteScalarHelperAsync(cancellationToken, cmd);
     }
 }

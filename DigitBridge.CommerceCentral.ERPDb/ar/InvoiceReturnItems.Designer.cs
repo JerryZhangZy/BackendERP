@@ -1,11 +1,6 @@
 
 
-
-
-
-
               
-
               
     
 
@@ -81,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private DateTime? _stockDate;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("ProductUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _productUuid;
@@ -117,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _currency;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uOM;
+        private string _uom;
 
         [Column("PackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packType;
@@ -163,6 +158,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("InvoiceDiscountPrice",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _invoiceDiscountPrice;
+
+        [Column("InvoiceDiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _invoiceDiscountAmount;
+
+        [Column("ReturnDiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _returnDiscountAmount;
 
         [Column("Price",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _price;
@@ -220,7 +221,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => ReturnItemUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(ReturnItemUuid)) 
 				ReturnItemUuid = Guid.NewGuid().ToString(); 
@@ -418,11 +419,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -610,11 +611,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uOM?.TrimEnd(); 
+				return _uom?.TrimEnd(); 
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+				_uom = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -844,7 +845,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Price, Display: true, Editable: false
+		/// Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Discount Price, Display: true, Editable: false
 		/// </summary>
         public virtual decimal InvoiceDiscountPrice
         {
@@ -856,6 +857,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceDiscountPrice = value; 
 				OnPropertyChanged("InvoiceDiscountPrice", value);
+            }
+        }
+
+		/// <summary>
+		/// Item invoice discount amount. <br> Title: Item invoice discount amount, Title:invoice return item discount amount, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal InvoiceDiscountAmount
+        {
+            get
+            {
+				return _invoiceDiscountAmount; 
+            }
+            set
+            {
+				_invoiceDiscountAmount = value; 
+				OnPropertyChanged("InvoiceDiscountAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// Item return discount amount. <br> Title: Item return discount amount, Title: return item discount amount, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal ReturnDiscountAmount
+        {
+            get
+            {
+				return _returnDiscountAmount; 
+            }
+            set
+            {
+				_returnDiscountAmount = value; 
+				OnPropertyChanged("ReturnDiscountAmount", value);
             }
         }
 
@@ -1098,7 +1131,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1175,7 +1208,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_returnTime = new TimeSpan().MinValueSql(); 
 			_receiveDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_stockDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_invoiceWarehouseUuid = String.Empty; 
@@ -1187,7 +1220,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_description = String.Empty; 
 			_notes = String.Empty; 
 			_currency = String.Empty; 
-			_uOM = String.Empty; 
+			_uom = String.Empty; 
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_returnPack = default(decimal); 
@@ -1203,6 +1236,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_damageWarehouseUuid = String.Empty; 
 			_damageWarehouseCode = String.Empty; 
 			_invoiceDiscountPrice = default(decimal); 
+			_invoiceDiscountAmount = default(decimal); 
+			_returnDiscountAmount = default(decimal); 
 			_price = default(decimal); 
 			_extAmount = default(decimal); 
 			_taxableAmount = default(decimal); 
@@ -1221,6 +1256,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public override InvoiceReturnItems CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 
@@ -1289,6 +1331,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<InvoiceReturnItems>("WHERE InvoiceItemsUuid = @0 ", invoiceItemsUuid);
 		}
 
+		public override InvoiceReturnItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override InvoiceReturnItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

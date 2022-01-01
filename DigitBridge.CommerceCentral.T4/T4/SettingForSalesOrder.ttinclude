@@ -40,7 +40,12 @@
     var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
     var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
 
+    var JsModelFolder = $"DigitBridge.CommerceCentral.ERPApi\\JsType\\{processForlderName}";
+    var PayloadName = $"{processName}Payload";
 
+    var OpenApiPayloadFolder = $"DigitBridge.CommerceCentral.ERPApi\\OpenApiModel";
+    var OpenApiPayloadName = $"{PayloadName}OpenApi";
+    
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
@@ -55,6 +60,7 @@
 
     // generate structure Dto class
     var generateStructureDto = true;
+    var generateStructureDtoCsv = true;
     var generateStructureDtoTester = true;
     var StructureDtoName = $"{structureName}Dto";
 
@@ -62,8 +68,17 @@
     var generateService = true;
     var ServiceName = $"{processName}Service";
     var ServiceHelperName = $"{processName}Helper";
-
+    
+    var generateStructureFindList=true;
     var generateServiceTester = true;
+
+    // generate IO functions
+    var generateIO = true;
+    var IOServiceName = $"{processName}IOManager";
+    var IOFormatName = $"{processName}IOFormat";
+    var IOCsvHelperName = $"{processName}IOCsv";
+    var IOFolder = $"DigitBridge.CommerceCentral.ERPMdl\\{processForlderName}\\io";
+    var DbIOFolder = $"DigitBridge.CommerceCentral.ERPDb\\{processForlderName}\\io";
 
     var indent = 2;
     var dir = string.Empty;

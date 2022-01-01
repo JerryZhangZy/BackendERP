@@ -1,11 +1,6 @@
 
 
-
-
-
-
               
-
               
     
 
@@ -95,6 +90,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("WebSite",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _webSite;
 
+        [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _channelNum;
+
+        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _channelAccountNum;
+
         [Column("CustomerType",SqlDbType.Int,IsDefault=true)]
         private int? _customerType;
 
@@ -170,6 +171,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("TermsDays",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _termsDays;
 
+        [Column("SalesRep",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep;
+
+        [Column("SalesRep2",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep2;
+
+        [Column("SalesRep3",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep3;
+
+        [Column("SalesRep4",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep4;
+
+        [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate;
+
+        [Column("CommissionRate2",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate2;
+
+        [Column("CommissionRate3",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate3;
+
+        [Column("CommissionRate4",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate4;
+
+        [Column("OrderMiscAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _orderMiscAmount;
+
+        [Column("ItemMiscAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _itemMiscAmount;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -184,7 +215,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => CustomerUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(CustomerUuid)) 
 				CustomerUuid = Guid.NewGuid().ToString(); 
@@ -442,6 +473,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_webSite = value.TruncateTo(200); 
 				OnPropertyChanged("WebSite", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
+		/// </summary>
+        public virtual int ChannelNum
+        {
+            get
+            {
+				return _channelNum; 
+            }
+            set
+            {
+				_channelNum = value; 
+				OnPropertyChanged("ChannelNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
+		/// </summary>
+        public virtual int ChannelAccountNum
+        {
+            get
+            {
+				return _channelAccountNum; 
+            }
+            set
+            {
+				_channelAccountNum = value; 
+				OnPropertyChanged("ChannelAccountNum", value);
             }
         }
 
@@ -866,6 +929,166 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep
+        {
+            get
+            {
+				return _salesRep?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep2
+        {
+            get
+            {
+				return _salesRep2?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep2 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep3
+        {
+            get
+            {
+				return _salesRep3?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep3 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep4
+        {
+            get
+            {
+				return _salesRep4?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep4 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep4", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate
+        {
+            get
+            {
+				return _commissionRate; 
+            }
+            set
+            {
+				_commissionRate = value; 
+				OnPropertyChanged("CommissionRate", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate2
+        {
+            get
+            {
+				return _commissionRate2; 
+            }
+            set
+            {
+				_commissionRate2 = value; 
+				OnPropertyChanged("CommissionRate2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate3
+        {
+            get
+            {
+				return _commissionRate3; 
+            }
+            set
+            {
+				_commissionRate3 = value; 
+				OnPropertyChanged("CommissionRate3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate4
+        {
+            get
+            {
+				return _commissionRate4; 
+            }
+            set
+            {
+				_commissionRate4 = value; 
+				OnPropertyChanged("CommissionRate4", value);
+            }
+        }
+
+		/// <summary>
+		/// Handlling fee by order, Title: Order Handling, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal OrderMiscAmount
+        {
+            get
+            {
+				return _orderMiscAmount; 
+            }
+            set
+            {
+				_orderMiscAmount = value; 
+				OnPropertyChanged("OrderMiscAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// Handling fee by item SKU, Title: Item Handling, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal ItemMiscAmount
+        {
+            get
+            {
+				return _itemMiscAmount; 
+            }
+            set
+            {
+				_itemMiscAmount = value; 
+				OnPropertyChanged("ItemMiscAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -880,7 +1103,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -962,6 +1185,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_phone4 = String.Empty; 
 			_email = String.Empty; 
 			_webSite = String.Empty; 
+			_channelNum = default(int); 
+			_channelAccountNum = default(int); 
 			_customerType = AllowNull ? (int?)null : default(int); 
 			_customerStatus = AllowNull ? (int?)null : default(int); 
 			_businessType = String.Empty; 
@@ -987,10 +1212,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_sourceCode = String.Empty; 
 			_terms = String.Empty; 
 			_termsDays = default(int); 
+			_salesRep = String.Empty; 
+			_salesRep2 = String.Empty; 
+			_salesRep3 = String.Empty; 
+			_salesRep4 = String.Empty; 
+			_commissionRate = default(decimal); 
+			_commissionRate2 = default(decimal); 
+			_commissionRate3 = default(decimal); 
+			_commissionRate4 = default(decimal); 
+			_orderMiscAmount = default(decimal); 
+			_itemMiscAmount = default(decimal); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public override Customer CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 
@@ -1011,6 +1253,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override Customer ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override Customer ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

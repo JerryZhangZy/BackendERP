@@ -50,6 +50,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 		}
 
         [Fact()]
+        public void QueryMultiResult_Test()
+		{
+            var srv = new CustomerService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var datas = GetFakerData(100);
+            var profileNum = 101;
+            var ids = new List<string>();
+            datas.ForEach(x =>
+            {
+                x.Customer.ProfileNum = profileNum;
+                var dto = mapper.WriteDto(x, null);
+
+                ids.Add(x.Customer.CustomerCode);
+                srv.Add(dto);
+            });
+
+            var srvGet = new CustomerService(DataBaseFactory);
+            var payload = new CustomerPayload() { ProfileNum = profileNum, CustomerCodes = ids };
+            //srvGet.Edit();
+            var resultlist= srvGet.GetCustomersByCodeArray(payload);
+            var result = payload.HasCustomers && payload.Customers.Count == 100;
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+        [Fact()]
 		//[Fact(Skip = SkipReason)]
 		public void UpdateDto_Test()
 		{
@@ -136,6 +164,130 @@ FROM Customer ins
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetRowNumByChannelAsync_Test()
+        {
+            var channelNum = 30009;
+            var channelAccountNum = 10011;
+            var masterAccountNum = 10001;
+            var profileNum = 10001;
+            var customerCode = "bfvcblgttb2keguf4pn0axg45nsrtyzbb30o9604g13pgaoqes";
+
+            var srv = new CustomerService(DataBaseFactory);
+
+            try
+            {
+                long rowNum = 0;
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    rowNum = await srv.GetRowNumByChannelAsync(channelNum, channelAccountNum, masterAccountNum, profileNum);
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetCustomerByChannelAsync_Test()
+        {
+            var channelNum = 30009;
+            var channelAccountNum = 10011;
+            var masterAccountNum = 10001;
+            var profileNum = 10001;
+            var customerCode = "bfvcblgttb2keguf4pn0axg45nsrtyzbb30o9604g13pgaoqes";
+
+            var srv = new CustomerService(DataBaseFactory);
+
+            try
+            {
+                var rtn = true;
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    rtn = await srv.GetCustomerByChannelAsync(channelNum, channelAccountNum, masterAccountNum, profileNum);
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetRowNumByCustomerFindAsync_Test()
+        {
+            var find = new CustomerFindClass()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                //CustomerUuid = "4a1f544f-1e76-4485-c272-f3e612039712",
+                //CustomerCode = "bfvcblgttb2keguf4pn0axg45nsrtyzbb30o9604g13pgaoqes",
+                CustomerName = "Ut tempore velit odio voluptate ut est velit distinctio.",
+                ChannelNum = 30009,
+                ChannelAccountNum = 10011,
+                //Phone1 = "i0t03ewh01v1f2gzzpx6h16ynwgn3vy6d5bqz6nr1mm17sfojc",
+                Email = "Ipsum consequatur necessitatibus dolorum temporibus.",
+            };
+
+            var srv = new CustomerService(DataBaseFactory);
+
+            try
+            {
+                long rowNum = 0;
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    rowNum = await srv.GetRowNumByCustomerFindAsync(find);
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetCustomerByCustomerFindAsyncc_Test()
+        {
+            var find = new CustomerFindClass()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                //CustomerUuid = "4a1f544f-1e76-4485-c272-f3e612039712",
+                //CustomerCode = "bfvcblgttb2keguf4pn0axg45nsrtyzbb30o9604g13pgaoqes",
+                CustomerName = "Ut tempore velit odio voluptate ut est velit distinctio.",
+                ChannelNum = 30009,
+                ChannelAccountNum = 10011,
+                //Phone1 = "i0t03ewh01v1f2gzzpx6h16ynwgn3vy6d5bqz6nr1mm17sfojc",
+                Email = "Ipsum consequatur necessitatibus dolorum temporibus.",
+            };
+
+            var srv = new CustomerService(DataBaseFactory);
+
+            try
+            {
+                var rtn = true;
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    rtn = await srv.GetCustomerByCustomerFindAsync(find);
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
 
     }
 }

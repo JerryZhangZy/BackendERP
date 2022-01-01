@@ -14,6 +14,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class CustomerAddress
     {
+        [IgnoreCompare]
+        public override bool IsEmpty => (
+            string.IsNullOrWhiteSpace(AddressCode) && 
+            string.IsNullOrWhiteSpace(AddressLine1) && 
+            string.IsNullOrWhiteSpace(PostalCode)
+        );
 
     }
 }

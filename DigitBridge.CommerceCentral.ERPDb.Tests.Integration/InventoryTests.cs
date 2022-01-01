@@ -27,6 +27,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
     public partial class InventoryTests
     {
 
+        [Fact()]
+        public void Test_Existis()
+        {
+            var b = DataBaseFactory.Exists<Inventory>("InventoryUuid=@0", "8cd1d564-adf5-44d0-be5b-a4b3e38f658".ToParameter("0"));
+            Assert.True(b, "Success");
+        }
+
     }
 }
 

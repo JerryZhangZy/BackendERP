@@ -11,7 +11,7 @@
 	[ItemTime] TIME NOT NULL, --(Ignore) Invoice time
 	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
-
+	 
 	[SKU] Varchar(100) NOT NULL DEFAULT '', --Product SKU. <br> Title: SKU, Display: true, Editable: true
 	[ProductUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
 	[InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
@@ -66,6 +66,14 @@
 	[LotInDate] DATE NULL, --(Ignore) Lot receive Date
 	[LotExpDate] DATE NULL, --(Ignore) Lot Expiration date
 
+    [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+	[DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+    [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+    [OrderDCAssignmentLineNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+	[OrderShipmentShippedItemNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Shipment Item Unique Number. Required, <br> Title: Shipped Item Number, Display: true, Editable: false.
+	[CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+	[CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Ignore) 
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 
@@ -75,14 +83,14 @@
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'UK_InvoiceItems_InvoiceItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'UK_InvoiceItems_InvoiceItemsUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceItems_InvoiceItemsUuid] ON [dbo].[InvoiceItems]
 (
 	[InvoiceItemsUuid] ASC
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'FK_InvoiceItems_InvoiceId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'FK_InvoiceItems_InvoiceUuid_Seq')
 CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceItems]
 (
 	[InvoiceUuid] ASC,
@@ -90,21 +98,21 @@ CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceIte
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'BLK_InvoiceItems_InvoiceId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'BLK_InvoiceItems_InvoiceUuid_Seq')
 CREATE NONCLUSTERED INDEX [BLK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceItems]
 (
 	[SKU] ASC
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InvoiceUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InvoiceUuid] ON [dbo].[InvoiceItems]
 (
 	[InvoiceUuid] ASC
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InventoryId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InventoryUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InventoryUuid] ON [dbo].[InvoiceItems]
 (
 	[InventoryUuid] ASC

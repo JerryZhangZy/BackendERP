@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -69,8 +67,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("EtaArrivalDate",SqlDbType.Date)]
         private DateTime? _etaArrivalDate;
 
+        [Column("EarliestShipDate",SqlDbType.Date)]
+        private DateTime? _earliestShipDate;
+
+        [Column("LatestShipDate",SqlDbType.Date)]
+        private DateTime? _latestShipDate;
+
+        [Column("SignatureFlag",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
+        private byte _signatureFlag;
+
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("ProductUuid",SqlDbType.VarChar,NotNull=true)]
         private string _productUuid;
@@ -97,7 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _currency;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uOM;
+        private string _uom;
 
         [Column("PackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packType;
@@ -216,6 +223,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("LotExpDate",SqlDbType.Date)]
         private DateTime? _lotExpDate;
 
+        [Column("CentralOrderLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _centralOrderLineUuid;
+
+        [Column("DBChannelOrderLineRowID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _dBChannelOrderLineRowID;
+
+        [Column("OrderDCAssignmentLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _orderDCAssignmentLineUuid;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -225,12 +241,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _updateBy;
 
+        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentLineNum;
+
+        [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate;
+
+        [Column("CommissionAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => SalesOrderItemsUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(SalesOrderItemsUuid)) 
 				SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
@@ -392,17 +417,75 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? EarliestShipDate
+        {
+            get
+            {
+				if (!AllowNull && _earliestShipDate is null) 
+					_earliestShipDate = new DateTime().MinValueSql(); 
+				return _earliestShipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_earliestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("EarliestShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? LatestShipDate
+        {
+            get
+            {
+				if (!AllowNull && _latestShipDate is null) 
+					_latestShipDate = new DateTime().MinValueSql(); 
+				return _latestShipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_latestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("LatestShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
+        public virtual bool SignatureFlag
+        {
+            get
+            {
+				return (_signatureFlag == 1); 
+            }
+            set
+            {
+				_signatureFlag = value ? (byte)1 : (byte)0; 
+				OnPropertyChanged("SignatureFlag", value);
+            }
+        }
+
+		/// <summary>
 		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
         public virtual string SKU
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -542,11 +625,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uOM?.TrimEnd(); 
+				return _uom?.TrimEnd(); 
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+				_uom = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -1186,6 +1269,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+        public virtual string CentralOrderLineUuid
+        {
+            get
+            {
+				return _centralOrderLineUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_centralOrderLineUuid = value.TruncateTo(50); 
+				OnPropertyChanged("CentralOrderLineUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+		/// </summary>
+        public virtual string DBChannelOrderLineRowID
+        {
+            get
+            {
+				return _dBChannelOrderLineRowID?.TrimEnd(); 
+            }
+            set
+            {
+				_dBChannelOrderLineRowID = value.TruncateTo(50); 
+				OnPropertyChanged("DBChannelOrderLineRowID", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+        public virtual string OrderDCAssignmentLineUuid
+        {
+            get
+            {
+				return _orderDCAssignmentLineUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_orderDCAssignmentLineUuid = value.TruncateTo(50); 
+				OnPropertyChanged("OrderDCAssignmentLineUuid", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1200,7 +1331,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1235,6 +1366,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_updateBy = value.TruncateTo(100); 
 				OnPropertyChanged("UpdateBy", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentLineNum
+        {
+            get
+            {
+				return _orderDCAssignmentLineNum; 
+            }
+            set
+            {
+				_orderDCAssignmentLineNum = value; 
+				OnPropertyChanged("OrderDCAssignmentLineNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate
+        {
+            get
+            {
+				return _commissionRate; 
+            }
+            set
+            {
+				_commissionRate = value; 
+				OnPropertyChanged("CommissionRate", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount
+        {
+            get
+            {
+				return _commissionAmount; 
+            }
+            set
+            {
+				_commissionAmount = value; 
+				OnPropertyChanged("CommissionAmount", value);
             }
         }
 
@@ -1290,6 +1469,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			SalesOrderItemsAttributes.SetParent(Parent);
 			if (SalesOrderItemsAttributes.SalesOrderItemsUuid != SalesOrderItemsUuid) SalesOrderItemsAttributes.SalesOrderItemsUuid = SalesOrderItemsUuid;
+			SalesOrderItemsAttributes.CheckIntegrity();
 			return SalesOrderItemsAttributes;
 		}
 		public SalesOrderItemsAttributes LoadSalesOrderItemsAttributes()
@@ -1308,6 +1488,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new SalesOrderItemsAttributes(dbFactory);
 			child.SetParent(Parent);
 			child.SalesOrderItemsUuid = SalesOrderItemsUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public SalesOrderItemsAttributes AddSalesOrderItemsAttributes(SalesOrderItemsAttributes child)
@@ -1316,6 +1497,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewSalesOrderItemsAttributes();
 			SalesOrderItemsAttributes = child;
 			return SalesOrderItemsAttributes;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children SalesOrderItemsAttributes
 
@@ -1339,7 +1521,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_itemTime = new TimeSpan().MinValueSql(); 
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_sKU = String.Empty; 
+			_earliestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_latestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_signatureFlag = default(byte); 
+			_sku = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_warehouseUuid = String.Empty; 
@@ -1348,7 +1533,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_description = String.Empty; 
 			_notes = String.Empty; 
 			_currency = String.Empty; 
-			_uOM = String.Empty; 
+			_uom = String.Empty; 
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_orderPack = default(decimal); 
@@ -1388,16 +1573,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_lotCost = default(decimal); 
 			_lotInDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_lotExpDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_centralOrderLineUuid = String.Empty; 
+			_dBChannelOrderLineRowID = String.Empty; 
+			_orderDCAssignmentLineUuid = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
+			_orderDCAssignmentLineNum = default(long); 
+			_commissionRate = default(decimal); 
+			_commissionAmount = default(decimal); 
             ClearChildren();
+            return this;
+        }
+
+        public override SalesOrderItems CheckIntegrity()
+        {
+            CheckUniqueId();
+			CheckIntegritySalesOrderItemsAttributes();
+            CheckIntegrityOthers();
             return this;
         }
 
         public virtual SalesOrderItems ClearChildren()
         {
-			SalesOrderItemsAttributes.Clear();
+			SalesOrderItemsAttributes?.Clear();
             return this;
         }
 
@@ -1432,6 +1631,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<SalesOrderItems>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
 
+		public override SalesOrderItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override SalesOrderItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

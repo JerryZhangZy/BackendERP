@@ -26,16 +26,122 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default ChannelOrderService Validator class.
     /// </summary>
-    public partial class ChannelOrderServiceValidatorDefault : IValidator<ChannelOrderData>
+    public partial class ChannelOrderServiceValidatorDefault : IValidator<ChannelOrderData,ChannelOrderDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public virtual IList<string> Messages { get; set; }
+        public ChannelOrderServiceValidatorDefault() { }
+        public ChannelOrderServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) 
+        { 
+            this.ServiceMessage = serviceMessage; 
+            this.dbFactory = dbFactory;
+        }
+
+        protected IDataBaseFactory dbFactory { get; set; }
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages 
+        { 
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
         public virtual void Clear()
         {
             IsValid = true;
-            Messages = new List<string>();
+            Messages = new List<MessageClass>();
         }
+
+        public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as ChannelOrderPayload;
+            var dto = pl.ChannelOrder;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.OrderHeader.MasterAccountNum = pl.MasterAccountNum;
+                dto.OrderHeader.ProfileNum = pl.ProfileNum;
+                dto.OrderHeader.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = ChannelOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if(!dto.OrderHeader.RowNum.IsZero())
+                        isValid = ChannelOrderHelper.ExistRowNum(dto.OrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as ChannelOrderPayload;
+            var dto = pl.ChannelOrder;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.OrderHeader.MasterAccountNum = pl.MasterAccountNum;
+                dto.OrderHeader.ProfileNum = pl.ProfileNum;
+                dto.OrderHeader.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = await ChannelOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if(!dto.OrderHeader.RowNum.IsZero())
+                        isValid = await ChannelOrderHelper.ExistRowNumAsync(dto.OrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        #region validate data
+
         public virtual bool Validate(ChannelOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
@@ -59,13 +165,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.OrderHeader.CentralOrderUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.OrderHeader.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -78,7 +184,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.OrderHeader.RowNum != 0 && dbFactory.Exists<OrderHeader>(data.OrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} is duplicate.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -91,14 +197,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.OrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.OrderHeader.RowNum != 0 && !dbFactory.Exists<OrderHeader>(data.OrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -110,36 +216,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.OrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.OrderHeader.RowNum != 0 && !dbFactory.Exists<OrderHeader>(data.OrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
+        #endregion
 
-        #region Async Methods
+        #region Async validate data
 
         public virtual async Task<bool> ValidateAsync(ChannelOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
+            if (!(await ValidateAllModeAsync(data)))
                 return false;
 
             return processingMode switch
             {
-                ProcessingMode.Add => await ValidateAddAsync(data).ConfigureAwait(false),
-                ProcessingMode.Edit => await ValidateEditAsync(data).ConfigureAwait(false),
+                ProcessingMode.Add => await ValidateAddAsync(data),
+                ProcessingMode.Edit => await ValidateEditAsync(data),
                 ProcessingMode.List => false,
-                ProcessingMode.Delete => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Void => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Cancel => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                ProcessingMode.Delete => await ValidateDeleteAsync(data),
+                ProcessingMode.Void => await ValidateDeleteAsync(data),
+                ProcessingMode.Cancel => await ValidateDeleteAsync(data),
                 _ => false,
             };
         }
@@ -150,13 +257,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.OrderHeader.CentralOrderUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.OrderHeader.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -169,7 +276,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.OrderHeader.RowNum != 0 && (await dbFactory.ExistsAsync<OrderHeader>(data.OrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} is duplicate.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -182,14 +289,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.OrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.OrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<OrderHeader>(data.OrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -201,20 +308,125 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.OrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.OrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<OrderHeader>(data.OrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.OrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.OrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        #endregion Async Methods
+        #endregion Async validate data
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(ChannelOrderDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.OrderHeader.CentralOrderUuid = Guid.NewGuid().ToString();
+                if (dto.OrderLine != null && dto.OrderLine.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderLine)
+                        detailItem.CentralOrderLineUuid = Guid.NewGuid().ToString();
+                }
+  
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                if (dto.OrderHeader.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("OrderHeader.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.OrderHeader.MasterAccountNum = null;
+                dto.OrderHeader.ProfileNum = null;
+                dto.OrderHeader.DatabaseNum = null;
+                dto.OrderHeader.CentralOrderUuid = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.OrderLine != null && dto.OrderLine.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderLine)
+                        detailItem.CentralOrderLineUuid = null;
+                }
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region async Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(ChannelOrderDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.OrderHeader.CentralOrderUuid = Guid.NewGuid().ToString();
+                if (dto.OrderLine != null && dto.OrderLine.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderLine)
+                        detailItem.CentralOrderLineUuid = Guid.NewGuid().ToString();
+                }
+  
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                if (dto.OrderHeader.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("OrderHeader.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.OrderHeader.MasterAccountNum = null;
+                dto.OrderHeader.ProfileNum = null;
+                dto.OrderHeader.DatabaseNum = null;
+                dto.OrderHeader.CentralOrderUuid = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.OrderLine != null && dto.OrderLine.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderLine)
+                        detailItem.CentralOrderLineUuid = null;
+                }
+  
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 

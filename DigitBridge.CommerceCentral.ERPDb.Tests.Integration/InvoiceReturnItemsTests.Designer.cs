@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -48,16 +46,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ReturnTime, f => f.Date.Timespan())
 					.RuleFor(u => u.ReceiveDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.StockDate, f => f.Date.Past(0).Date)
-					.RuleFor(u => u.SKU, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.SKU, f => f.Commerce.Product())
 					.RuleFor(u => u.ProductUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InventoryUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InvoiceWarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.InvoiceWarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.InvoiceWarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.Reason, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.Description, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.Description, f => f.Commerce.ProductName())
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.UOM, f => f.PickRandom(TestHelper.UOM))
@@ -72,10 +70,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.StockQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.NonStockQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.PutBackWarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.PutBackWarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.PutBackWarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.DamageWarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.DamageWarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.DamageWarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.InvoiceDiscountPrice, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.InvoiceDiscountAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ReturnDiscountAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Price, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ExtAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))

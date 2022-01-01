@@ -11,11 +11,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
     {
         string ConnectionString { get; }
         IDatabase Db { get; }
+        int DatabaseNum { get; set; }
 
         IDatabase GetDb(string connectionString = null);
 
         ITransaction GetTransaction(string connectionString = null);
         void Begin(string connectionString = null);
+        void BeginAsync(string connectionString = null);
+        
         bool Commit(string connectionString = null);
         void Abort(string connectionString = null);
 

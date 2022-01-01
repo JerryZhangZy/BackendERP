@@ -38,14 +38,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'UI_CustomerAddress_AddressId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'UK_CustomerAddress_AddressUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_CustomerAddress_AddressUuid] ON [dbo].[CustomerAddress]
 (
 	[AddressUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'UI_CustomerAddress_CustomerId_AddressCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'UI_CustomerAddress_CustomerUuid_AddressCode')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomerAddress_CustomerUuid_AddressCode] ON [dbo].[CustomerAddress]
 (
 	[CustomerUuid] ASC,
@@ -53,7 +53,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomerAddress_CustomerUuid_AddressCode] O
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'UI_CustomerAddress_CustomerId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'FK_CustomerAddress_CustomerUuid')
 CREATE NONCLUSTERED INDEX [FK_CustomerAddress_CustomerUuid] ON [dbo].[CustomerAddress]
 (
 	[CustomerUuid] ASC

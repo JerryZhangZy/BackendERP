@@ -43,9 +43,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public override string GetInsertOutputClause(string primaryKeyName)
             => $" OUTPUT INSERTED.[{primaryKeyName}]";
 
-#if ASYNC
-        public override Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd, string primaryKeyName)
-            => ExecuteScalarHelperAsync(cancellationToken, db, cmd);
-#endif
+        public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd, string primaryKeyName)
+            => await ExecuteScalarHelperAsync(cancellationToken, db, cmd);
     }
 }

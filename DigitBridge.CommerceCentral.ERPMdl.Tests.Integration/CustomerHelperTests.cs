@@ -59,6 +59,105 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #endregion async methods
 
+        [Fact()]
+        public void RandomRepeatRead_Test()
+        {
+            var idlist = DataBaseFactory.Db.Query<string>("select CustomerUuid from Customer").ToList();
+            var dataList = new List<CustomerData>();
+            var service = new CustomerService(DataBaseFactory);
+            using (var b = new Benchmark("RandomRepeatRead_Test"))
+            {
+                for (var i = 0; i < 1000; i++)
+                {
+                    foreach (var uuid in idlist)
+                    {
+                        if (service.GetDataById(uuid))
+                            dataList.Add(service.Data);
+                    }
+                }
+            }
+            Assert.True(dataList.Count > 1000, "");
+        }
+
+        //[Fact()]
+        //public void RandomRepeatReadWithIdCache_Test()
+        //{
+        //    var idlist = DataBaseFactory.Db.Query<string>("select CustomerUuid from Customer").ToList();
+        //    var dataList = new List<CustomerData>();
+        //    var service = new CustomerService(DataBaseFactory);
+        //    using (var b = new Benchmark("RandomRepeatReadWithIdCache_Test"))
+        //    {
+        //        for (var i = 0; i < 1000; i++)
+        //        {
+        //            foreach (var uuid in idlist)
+        //            {
+        //                var dt = service.GetCacheById(uuid);
+        //                if (dt != null)
+        //                    dataList.Add(service.Data);
+        //            }
+        //        }
+        //    }
+        //    Assert.True(dataList.Count > 1000, "");
+        //}
+
+        //[Fact()]
+        //public void RandomRepeatReadWithRowNumCache_Test()
+        //{
+        //    var idlist = DataBaseFactory.Db.Query<long>("select RowNum from Customer").ToList();
+        //    var dataList = new List<CustomerData>();
+        //    var service = new CustomerService(DataBaseFactory);
+        //    using (var b = new Benchmark("RandomRepeatReadWithRowNumCache_Test"))
+        //    {
+        //        for (var i = 0; i < 1000; i++)
+        //        {
+        //            foreach (var uuid in idlist)
+        //            {
+        //                var dt = service.GetCacheByRowNum(uuid);
+        //                if (dt != null)
+        //                    dataList.Add(service.Data);
+        //            }
+        //        }
+        //    }
+        //    Assert.True(dataList.Count > 1000, "");
+        //}
+
+        [Fact()]
+        public void Query_Test()
+        {
+            var paramlist = new List<string>()
+            {
+                "CustomerCode-Tester-0827-072806697", "CustomerCode-Tester-0826-220213558", "CustomerCode-Tester-0826-220201635", "CustomerCode-Tester-0826-220138564", "CustomerCode-Tester-0826-220048344",
+                "CustomerCode-Tester-0826-072313569"
+            };
+
+            var filters = new List<IQueryFilter>
+            {
+                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = 10001
+                },
+                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = 10001
+                }, 
+                new QueryFilter<string>("CustomerCode", "CustomerCode", "", FilterBy.eq, "")
+                {
+                    MultipleFilterValueList = paramlist
+                }
+        };
+
+            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
+            var sqlParams = filters.Select(f=>f.GetSqlParameter()).ToArray();
+            var sql = $"SELECT RowNum,CustomerUuid,CustomerCode FROM Customer WHERE {whereSql}";
+            using (var trs = new ScopedTransaction(DataBaseFactory))
+            {
+                var result = SqlQuery.Execute(
+                sql,
+                (long RowNum, string CustomerUuid, string CustomerCode) => (RowNum, CustomerUuid, CustomerCode),
+                sqlParams);
+            }
+        }
+
     }
 }
 

@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -28,6 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a InvoiceData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class InvoiceData : StructureRepository<InvoiceData>
     {
         public InvoiceData() : base() {}
@@ -38,7 +37,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => InvoiceHeader.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string InvoiceHeaderTable ="InvoiceHeader ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string InvoiceHeaderInfoTable ="InvoiceHeaderInfo ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string InvoiceHeaderAttributesTable ="InvoiceHeaderAttributes ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string InvoiceItemsTable ="InvoiceItems ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string InvoiceItemsAttributesTable ="InvoiceItemsAttributes ";
+		
         #region CRUD Methods
 
         public override bool Equals(InvoiceData other)
@@ -74,14 +88,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         // Check Children table Integrity
-        public virtual InvoiceData CheckIntegrity()
+        public override InvoiceData CheckIntegrity()
         {
 			if (InvoiceHeader is null) return this; 
-			InvoiceHeader.CheckUniqueId(); 
+			InvoiceHeader.CheckIntegrity(); 
 			CheckIntegrityInvoiceHeaderInfo(); 
 			CheckIntegrityInvoiceHeaderAttributes(); 
 			CheckIntegrityInvoiceItems(); 
 			CheckIntegrityInvoiceItemsAttributes(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -176,26 +191,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			InvoiceHeader.SetDataBaseFactory(dbFactory);
-			if (!InvoiceHeader.Save()) return false;
 
-			if (InvoiceHeaderInfo != null) 
-				InvoiceHeaderInfo.SetDataBaseFactory(dbFactory)?.Save();
+			 if (NeedSave(InvoiceHeaderTable))
+			{
+				InvoiceHeader.SetDataBaseFactory(dbFactory);
+				if (!InvoiceHeader.Save()) return false;
+			}
 
-			if (InvoiceHeaderAttributes != null) 
-				InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			 if (NeedSave(InvoiceHeaderInfoTable))
+			{
+				if (InvoiceHeaderInfo != null) 
+					InvoiceHeaderInfo.SetDataBaseFactory(dbFactory)?.Save();
+			}
 
-			if (InvoiceItems != null) 
-				InvoiceItems.SetDataBaseFactory(dbFactory)?.Save();
-			var delInvoiceItems = _InvoiceItemsDeleted;
-			if (delInvoiceItems != null)
-				delInvoiceItems.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(InvoiceHeaderAttributesTable))
+			{
+				if (InvoiceHeaderAttributes != null) 
+					InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			}
 
-			if (InvoiceItemsAttributes != null) 
-				InvoiceItemsAttributes.SetDataBaseFactory(dbFactory)?.Save();
-			var delChildrenInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
-			if (delChildrenInvoiceItemsAttributes != null)
-				delChildrenInvoiceItemsAttributes.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(InvoiceItemsTable))
+			{
+				if (InvoiceItems != null) 
+					InvoiceItems.SetDataBaseFactory(dbFactory)?.Save();
+				var delInvoiceItems = _InvoiceItemsDeleted;
+				if (delInvoiceItems != null)
+					delInvoiceItems.SetDataBaseFactory(dbFactory)?.Delete();
+			}
+
+			 if (NeedSave(InvoiceItemsAttributesTable))
+			{
+				if (InvoiceItemsAttributes != null) 
+					InvoiceItemsAttributes.SetDataBaseFactory(dbFactory)?.Save();
+				var delChildrenInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
+				if (delChildrenInvoiceItemsAttributes != null)
+					delChildrenInvoiceItemsAttributes.SetDataBaseFactory(dbFactory)?.Delete();
+			}
 
 			if (_OnSave != null)
 			{
@@ -217,16 +248,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if (InvoiceHeader.Delete() <= 0) return false; 
-			if (InvoiceHeaderInfo != null) 
-				InvoiceHeaderInfo?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (InvoiceHeaderAttributes != null) 
-				InvoiceHeaderAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (InvoiceItems != null) 
-				InvoiceItems?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (InvoiceItemsAttributes != null) 
-				InvoiceItemsAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+
+			 if (NeedDelete(InvoiceHeaderTable))
+			{
+				InvoiceHeader.SetDataBaseFactory(dbFactory); 
+				if (InvoiceHeader.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(InvoiceHeaderInfoTable))
+			{
+				if (InvoiceHeaderInfo != null) 
+					InvoiceHeaderInfo?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(InvoiceHeaderAttributesTable))
+			{
+				if (InvoiceHeaderAttributes != null) 
+					InvoiceHeaderAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(InvoiceItemsTable))
+			{
+				if (InvoiceItems != null) 
+					InvoiceItems?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(InvoiceItemsAttributesTable))
+			{
+				if (InvoiceItemsAttributes != null) 
+					InvoiceItemsAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -281,25 +328,41 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if (!(await InvoiceHeader.SaveAsync().ConfigureAwait(false))) return false; 
-			if (InvoiceHeaderInfo != null) 
-				await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
 
-			if (InvoiceHeaderAttributes != null) 
-				await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			 if (NeedSave(InvoiceHeaderTable))
+			{
+				InvoiceHeader.SetDataBaseFactory(dbFactory); 
+				if (!(await InvoiceHeader.SaveAsync())) return false; 
+			}
+			 if (NeedSave(InvoiceHeaderInfoTable))
+			{
+				if (InvoiceHeaderInfo != null) 
+					await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			}
 
-			if (InvoiceItems != null) 
-				await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delInvoiceItems = _InvoiceItemsDeleted;
-			if (delInvoiceItems != null)
-				await delInvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			 if (NeedSave(InvoiceHeaderAttributesTable))
+			{
+				if (InvoiceHeaderAttributes != null) 
+					await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			}
 
-			if (InvoiceItemsAttributes != null) 
-				await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
-			if (delInvoiceItemsAttributes != null)
-				await delInvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			 if (NeedSave(InvoiceItemsTable))
+			{
+				if (InvoiceItems != null) 
+					await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delInvoiceItems = _InvoiceItemsDeleted;
+				if (delInvoiceItems != null)
+					await delInvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
+
+			 if (NeedSave(InvoiceItemsAttributesTable))
+			{
+				if (InvoiceItemsAttributes != null) 
+					await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
+				if (delInvoiceItemsAttributes != null)
+					await delInvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
 
 			if (_OnSave != null)
 			{
@@ -321,16 +384,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(InvoiceHeaderTable))
+			{
 			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if ((await InvoiceHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
-			if (InvoiceHeaderInfo != null) 
-				await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (InvoiceHeaderAttributes != null) 
-				await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (InvoiceItems != null) 
-				await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (InvoiceItemsAttributes != null) 
-				await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if ((await InvoiceHeader.DeleteAsync()) <= 0) return false; 
+			}
+			 if (NeedDelete(InvoiceHeaderInfoTable))
+			{
+				if (InvoiceHeaderInfo != null) 
+					await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(InvoiceHeaderAttributesTable))
+			{
+				if (InvoiceHeaderAttributes != null) 
+					await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(InvoiceItemsTable))
+			{
+				if (InvoiceItems != null) 
+					await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(InvoiceItemsAttributesTable))
+			{
+				if (InvoiceItemsAttributes != null) 
+					await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -442,6 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             InvoiceHeaderInfo.SetParent(this);
             if (InvoiceHeaderInfo.InvoiceUuid != InvoiceHeader.InvoiceUuid)
                 InvoiceHeaderInfo.InvoiceUuid = InvoiceHeader.InvoiceUuid;
+            InvoiceHeaderInfo.CheckIntegrity();
             return InvoiceHeaderInfo;
         }
 
@@ -497,6 +576,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             InvoiceHeaderAttributes.SetParent(this);
             if (InvoiceHeaderAttributes.InvoiceUuid != InvoiceHeader.InvoiceUuid)
                 InvoiceHeaderAttributes.InvoiceUuid = InvoiceHeader.InvoiceUuid;
+            InvoiceHeaderAttributes.CheckIntegrity();
             return InvoiceHeaderAttributes;
         }
 
@@ -610,6 +690,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.InvoiceUuid = InvoiceHeader.InvoiceUuid;
                 seq += 1;
                 child.Seq = seq;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -622,7 +703,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<InvoiceItemsAttributes> _InvoiceItemsAttributes;
 
-        protected IList<InvoiceItemsAttributes> InvoiceItemsAttributes 
+        public IList<InvoiceItemsAttributes> InvoiceItemsAttributes 
         { 
             get 
             {
@@ -697,6 +778,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.InvoiceUuid != InvoiceHeader.InvoiceUuid)
                     child.InvoiceUuid = InvoiceHeader.InvoiceUuid;
+                child.CheckIntegrity();
             }
             return children;
         }

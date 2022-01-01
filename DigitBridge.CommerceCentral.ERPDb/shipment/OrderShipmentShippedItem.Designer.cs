@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -58,13 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
 		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => OrderShipmentShippedItemNum <= 0; 
-        [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
+        [Column("DatabaseNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _databaseNum;
 
-        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _masterAccountNum;
 
-        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _profileNum;
 
         [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
@@ -73,20 +71,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelAccountNum;
 
-        [Column("OrderShipmentNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _orderShipmentNum;
+        [Column("OrderShipmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderShipmentNum;
 
-        [Column("OrderShipmentPackageNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _orderShipmentPackageNum;
+        [Column("OrderShipmentPackageNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderShipmentPackageNum;
 
         [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _channelOrderID;
 
-        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _orderDCAssignmentLineNum;
+        [Column("CentralOrderNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralOrderNum;
 
-        [Column("SKU",SqlDbType.VarChar,IsDefault=true)]
-        private string _sKU;
+        [Column("CentralOrderLineNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralOrderLineNum;
+
+        [Column("CentralProductNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _centralProductNum;
+
+        [Column("DistributionProductNum",SqlDbType.BigInt,IsDefault=true)]
+        private long? _distributionProductNum;
+
+        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentLineNum;
+
+        [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _sku;
 
         [Column("ShippedQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _shippedQty;
@@ -103,12 +113,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderShipmentShippedItemUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderShipmentShippedItemUuid;
 
+        [Column("SalesOrderItemsUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderItemsUuid;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => OrderShipmentShippedItemUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(OrderShipmentShippedItemUuid)) 
 				OrderShipmentShippedItemUuid = Guid.NewGuid().ToString(); 
@@ -196,42 +209,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
-        public virtual long? OrderShipmentNum
+        public virtual long OrderShipmentNum
         {
             get
             {
-				if (!AllowNull && _orderShipmentNum is null) 
-					_orderShipmentNum = default(long); 
 				return _orderShipmentNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_orderShipmentNum = value; 
-					OnPropertyChanged("OrderShipmentNum", value);
-				}
+				_orderShipmentNum = value; 
+				OnPropertyChanged("OrderShipmentNum", value);
             }
         }
 
 		/// <summary>
 		/// (Readonly) Shipment Package Unique Number. Required, <br> Title: Package Number, Display: true, Editable: false.
 		/// </summary>
-        public virtual long? OrderShipmentPackageNum
+        public virtual long OrderShipmentPackageNum
         {
             get
             {
-				if (!AllowNull && _orderShipmentPackageNum is null) 
-					_orderShipmentPackageNum = default(long); 
 				return _orderShipmentPackageNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_orderShipmentPackageNum = value; 
-					OnPropertyChanged("OrderShipmentPackageNum", value);
-				}
+				_orderShipmentPackageNum = value; 
+				OnPropertyChanged("OrderShipmentPackageNum", value);
             }
         }
 
@@ -252,23 +255,102 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
+		/// (Readonly) The unique number of CentralOrder. <br> Title: CentralOrder Number: Display: true, Editable: false
 		/// </summary>
-        public virtual long? OrderDCAssignmentLineNum
+        public virtual long? CentralOrderNum
         {
             get
             {
-				if (!AllowNull && _orderDCAssignmentLineNum is null) 
-					_orderDCAssignmentLineNum = default(long); 
-				return _orderDCAssignmentLineNum; 
+				if (!AllowNull && _centralOrderNum is null) 
+					_centralOrderNum = default(long); 
+				return _centralOrderNum; 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_orderDCAssignmentLineNum = value; 
-					OnPropertyChanged("OrderDCAssignmentLineNum", value);
+					_centralOrderNum = value; 
+					OnPropertyChanged("CentralOrderNum", value);
 				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralOrderLine. <br> Title: CentralOrderLine Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? CentralOrderLineNum
+        {
+            get
+            {
+				if (!AllowNull && _centralOrderLineNum is null) 
+					_centralOrderLineNum = default(long); 
+				return _centralOrderLineNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_centralOrderLineNum = value; 
+					OnPropertyChanged("CentralOrderLineNum", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of CentralProduct. <br> Title: CentralProduct Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? CentralProductNum
+        {
+            get
+            {
+				if (!AllowNull && _centralProductNum is null) 
+					_centralProductNum = default(long); 
+				return _centralProductNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_centralProductNum = value; 
+					OnPropertyChanged("CentralProductNum", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of DistributionProduct. <br> Title: DistributionProduct Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long? DistributionProductNum
+        {
+            get
+            {
+				if (!AllowNull && _distributionProductNum is null) 
+					_distributionProductNum = default(long); 
+				return _distributionProductNum; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_distributionProductNum = value; 
+					OnPropertyChanged("DistributionProductNum", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentLineNum
+        {
+            get
+            {
+				return _orderDCAssignmentLineNum; 
+            }
+            set
+            {
+				_orderDCAssignmentLineNum = value; 
+				OnPropertyChanged("OrderDCAssignmentLineNum", value);
             }
         }
 
@@ -279,17 +361,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _sKU is null) 
-					_sKU = String.Empty; 
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_sKU = value.TruncateTo(100); 
-					OnPropertyChanged("SKU", value);
-				}
+				_sku = value.TruncateTo(100); 
+				OnPropertyChanged("SKU", value);
             }
         }
 
@@ -373,6 +450,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Order Item Line uuid. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual string SalesOrderItemsUuid
+        {
+            get
+            {
+				return _salesOrderItemsUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_salesOrderItemsUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderItemsUuid", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -408,17 +501,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
-			_orderShipmentNum = AllowNull ? (long?)null : default(long); 
-			_orderShipmentPackageNum = AllowNull ? (long?)null : default(long); 
+			_orderShipmentNum = default(long); 
+			_orderShipmentPackageNum = default(long); 
 			_channelOrderID = String.Empty; 
-			_orderDCAssignmentLineNum = AllowNull ? (long?)null : default(long); 
-			_sKU = AllowNull ? (string)null : String.Empty; 
+			_centralOrderNum = AllowNull ? (long?)null : default(long); 
+			_centralOrderLineNum = AllowNull ? (long?)null : default(long); 
+			_centralProductNum = AllowNull ? (long?)null : default(long); 
+			_distributionProductNum = AllowNull ? (long?)null : default(long); 
+			_orderDCAssignmentLineNum = default(long); 
+			_sku = String.Empty; 
 			_shippedQty = default(decimal); 
 			_dBChannelOrderLineRowID = String.Empty; 
 			_orderShipmentUuid = String.Empty; 
 			_orderShipmentPackageUuid = String.Empty; 
 			_orderShipmentShippedItemUuid = String.Empty; 
+			_salesOrderItemsUuid = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public override OrderShipmentShippedItem CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 
@@ -455,6 +560,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}
 
+		public override OrderShipmentShippedItem ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderShipmentShippedItem ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

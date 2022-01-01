@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -28,17 +26,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a ChannelOrderData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class ChannelOrderData : StructureRepository<ChannelOrderData>
     {
         public ChannelOrderData() : base() {}
         public ChannelOrderData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => OrderHeader.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => OrderHeader.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderHeaderTable ="OrderHeader ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderHeaderMerchantExtTable ="OrderHeaderMerchantExt ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderLineTable ="OrderLine ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderLineMerchantExtTable ="OrderLineMerchantExt ";
+		
         #region CRUD Methods
 
         public override bool Equals(ChannelOrderData other)
@@ -54,19 +65,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return false; 
 			if (OrderHeader != null && other.OrderHeader != null && !OrderHeader.Equals(other.OrderHeader)) 
 				return false; 
+			if (OrderHeaderMerchantExt == null && other.OrderHeaderMerchantExt != null || OrderHeaderMerchantExt != null && other.OrderHeaderMerchantExt == null) 
+				return false; 
+			if (OrderHeaderMerchantExt != null && other.OrderHeaderMerchantExt != null && !OrderHeaderMerchantExt.Equals(other.OrderHeaderMerchantExt)) 
+				return false; 
 			if (OrderLine == null && other.OrderLine != null || OrderLine != null && other.OrderLine == null) 
 				return false; 
 			if (OrderLine != null && other.OrderLine != null && !OrderLine.EqualsList(other.OrderLine)) 
+				return false; 
+			if (OrderLineMerchantExt == null && other.OrderLineMerchantExt != null || OrderLineMerchantExt != null && other.OrderLineMerchantExt == null) 
+				return false; 
+			if (OrderLineMerchantExt != null && other.OrderLineMerchantExt != null && !OrderLineMerchantExt.EqualsList(other.OrderLineMerchantExt)) 
 				return false; 
             return true;
         }
 
         // Check Children table Integrity
-        public virtual ChannelOrderData CheckIntegrity()
+        public override ChannelOrderData CheckIntegrity()
         {
 			if (OrderHeader is null) return this; 
-			OrderHeader.CheckUniqueId(); 
+			OrderHeader.CheckIntegrity(); 
+			CheckIntegrityOrderHeaderMerchantExt(); 
 			CheckIntegrityOrderLine(); 
+			CheckIntegrityOrderLineMerchantExt(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -74,8 +96,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void Clear()
         {
 			OrderHeader?.Clear(); 
+			OrderHeaderMerchantExt?.Clear(); 
 			OrderLine = new List<OrderLine>(); 
 			ClearOrderLineDeleted(); 
+			OrderLineMerchantExt = new List<OrderLineMerchantExt>(); 
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
@@ -86,8 +110,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             Clear();
 			OrderHeader = NewOrderHeader(); 
+			OrderHeaderMerchantExt = NewOrderHeaderMerchantExt(); 
 			OrderLine = new List<OrderLine>(); 
 			AddOrderLine(NewOrderLine()); 
+			OrderLine.ToList().ForEach(x => x?.NewChildren()); 
 			ClearOrderLineDeleted(); 
             return;
         }
@@ -95,6 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual void CopyFrom(ChannelOrderData data)
         {
 			CopyOrderHeaderFrom(data); 
+			CopyOrderHeaderMerchantExtFrom(data); 
 			CopyOrderLineFrom(data); 
             CheckIntegrity();
             return;
@@ -106,7 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			newData.New(); 
 			newData?.CopyFrom(this); 
 			newData.OrderHeader.ClearMetaData(); 
+			newData.OrderHeaderMerchantExt.ClearMetaData(); 
 			newData.OrderLine.ClearMetaData(); 
+			newData.OrderLineMerchantExt.ClearMetaData(); 
             newData.CheckIntegrity();
             return newData;
         }
@@ -137,7 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(OrderHeader.CentralOrderUuid)) return; 
-			OrderLine = DigitBridge.CommerceCentral.ERPDb.OrderLine.FindByCentralOrderNum(dbFactory, OrderHeader.CentralOrderNum); 
+			OrderHeaderMerchantExt = GetOrderHeaderMerchantExtByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
+			OrderLine = GetOrderLineByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
+			OrderLineMerchantExt = GetOrderLineMerchantExtByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
         }
 
         public override bool Save()
@@ -147,14 +178,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			OrderHeader.SetDataBaseFactory(dbFactory);
-			if (!OrderHeader.Save()) return false;
 
-			if (OrderLine != null) 
-				OrderLine.SetDataBaseFactory(dbFactory)?.Save();
-			var delOrderLine = _OrderLineDeleted;
-			if (delOrderLine != null)
-				delOrderLine.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(OrderHeaderTable))
+			{
+				OrderHeader.SetDataBaseFactory(dbFactory);
+				if (!OrderHeader.Save()) return false;
+			}
+
+			 if (NeedSave(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					OrderHeaderMerchantExt.SetDataBaseFactory(dbFactory)?.Save();
+			}
+
+			 if (NeedSave(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					OrderLine.SetDataBaseFactory(dbFactory)?.Save();
+				var delOrderLine = _OrderLineDeleted;
+				if (delOrderLine != null)
+					delOrderLine.SetDataBaseFactory(dbFactory)?.Delete();
+			}
+
+			 if (NeedSave(OrderLineMerchantExtTable))
+			{
+				if (OrderLineMerchantExt != null) 
+					OrderLineMerchantExt.SetDataBaseFactory(dbFactory)?.Save();
+				var delChildrenOrderLineMerchantExt = OrderLineMerchantExtDeleted;
+				if (delChildrenOrderLineMerchantExt != null)
+					delChildrenOrderLineMerchantExt.SetDataBaseFactory(dbFactory)?.Delete();
+			}
 
 			if (_OnSave != null)
 			{
@@ -176,10 +229,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			OrderHeader.SetDataBaseFactory(dbFactory); 
-			if (OrderHeader.Delete() <= 0) return false; 
-			if (OrderLine != null) 
-				OrderLine?.SetDataBaseFactory(dbFactory)?.Delete(); 
+
+			 if (NeedDelete(OrderHeaderTable))
+			{
+				OrderHeader.SetDataBaseFactory(dbFactory); 
+				if (OrderHeader.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					OrderHeaderMerchantExt?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					OrderLine?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(OrderLineMerchantExtTable))
+			{
+				if (OrderLineMerchantExt != null) 
+					OrderLineMerchantExt?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -221,7 +291,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(OrderHeader.CentralOrderUuid)) return; 
+			OrderHeaderMerchantExt = await GetOrderHeaderMerchantExtByCentralOrderUuidAsync(OrderHeader.CentralOrderUuid); 
 			OrderLine = await GetOrderLineByCentralOrderUuidAsync(OrderHeader.CentralOrderUuid); 
+			OrderLineMerchantExt = await GetOrderLineMerchantExtByCentralOrderUuidAsync(OrderHeader.CentralOrderUuid); 
         }
 
         public override async Task<bool> SaveAsync()
@@ -231,13 +303,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			OrderHeader.SetDataBaseFactory(dbFactory); 
-			if (!(await OrderHeader.SaveAsync().ConfigureAwait(false))) return false; 
-			if (OrderLine != null) 
-				await OrderLine.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delOrderLine = _OrderLineDeleted;
-			if (delOrderLine != null)
-				await delOrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+
+			 if (NeedSave(OrderHeaderTable))
+			{
+				OrderHeader.SetDataBaseFactory(dbFactory); 
+				if (!(await OrderHeader.SaveAsync())) return false; 
+			}
+			 if (NeedSave(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					await OrderHeaderMerchantExt.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			}
+
+			 if (NeedSave(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					await OrderLine.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delOrderLine = _OrderLineDeleted;
+				if (delOrderLine != null)
+					await delOrderLine.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
+
+			 if (NeedSave(OrderLineMerchantExtTable))
+			{
+				if (OrderLineMerchantExt != null) 
+					await OrderLineMerchantExt.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delOrderLineMerchantExt = OrderLineMerchantExtDeleted;
+				if (delOrderLineMerchantExt != null)
+					await delOrderLineMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync();
+			}
 
 			if (_OnSave != null)
 			{
@@ -259,10 +353,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(OrderHeaderTable))
+			{
 			OrderHeader.SetDataBaseFactory(dbFactory); 
-			if ((await OrderHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
-			if (OrderLine != null) 
-				await OrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if ((await OrderHeader.DeleteAsync()) <= 0) return false; 
+			}
+			 if (NeedDelete(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					await OrderHeaderMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					await OrderLine.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
+			 if (NeedDelete(OrderLineMerchantExtTable))
+			{
+				if (OrderLineMerchantExt != null) 
+					await OrderLineMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -325,6 +435,62 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 
         #endregion OrderHeader - Generated 
+
+        #region OrderHeaderMerchantExt - Generated 
+    
+
+        // one to one children
+        protected OrderHeaderMerchantExt _OrderHeaderMerchantExt;
+
+        public virtual OrderHeaderMerchantExt OrderHeaderMerchantExt 
+        { 
+            get => _OrderHeaderMerchantExt;
+            set => _OrderHeaderMerchantExt = value?.SetParent(this); 
+        }
+
+        public virtual void CopyOrderHeaderMerchantExtFrom(ChannelOrderData data) => 
+            OrderHeaderMerchantExt?.CopyFrom(data.OrderHeaderMerchantExt, new string[] {"CentralOrderUuid"});
+
+        public virtual OrderHeaderMerchantExt NewOrderHeaderMerchantExt() => new OrderHeaderMerchantExt(dbFactory).SetParent(this);
+
+        public virtual OrderHeaderMerchantExt GetOrderHeaderMerchantExt(long RowNum) =>
+            (RowNum <= 0) ? null : dbFactory.Get<OrderHeaderMerchantExt>(RowNum);
+
+        public virtual OrderHeaderMerchantExt GetOrderHeaderMerchantExtByCentralOrderUuid(string CentralOrderUuid) =>
+            (string.IsNullOrEmpty(CentralOrderUuid)) ? null : dbFactory.GetById<OrderHeaderMerchantExt>(CentralOrderUuid);
+
+        public virtual bool SaveOrderHeaderMerchantExt(OrderHeaderMerchantExt data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int DeleteOrderHeaderMerchantExt(OrderHeaderMerchantExt data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<OrderHeaderMerchantExt> GetOrderHeaderMerchantExtAsync(long RowNum) =>
+            (RowNum <= 0) ? null : await dbFactory.GetAsync<OrderHeaderMerchantExt>(RowNum);
+
+        public virtual async Task<OrderHeaderMerchantExt> GetOrderHeaderMerchantExtByCentralOrderUuidAsync(string CentralOrderUuid) =>
+            (string.IsNullOrEmpty(CentralOrderUuid)) ? null : await dbFactory.GetByIdAsync<OrderHeaderMerchantExt>(CentralOrderUuid);
+
+        public virtual async Task<bool> SaveOrderHeaderMerchantExtAsync(OrderHeaderMerchantExt data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> DeleteOrderHeaderMerchantExtAsync(OrderHeaderMerchantExt data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+        public virtual OrderHeaderMerchantExt CheckIntegrityOrderHeaderMerchantExt()
+        {
+            if (OrderHeaderMerchantExt is null || OrderHeader is null) 
+                return OrderHeaderMerchantExt;
+            OrderHeaderMerchantExt.SetParent(this);
+            if (OrderHeaderMerchantExt.CentralOrderUuid != OrderHeader.CentralOrderUuid)
+                OrderHeaderMerchantExt.CentralOrderUuid = OrderHeader.CentralOrderUuid;
+            OrderHeaderMerchantExt.CheckIntegrity();
+            return OrderHeaderMerchantExt;
+        }
+
+
+
+        #endregion OrderHeaderMerchantExt - Generated 
 
         #region OrderLine - Generated 
         // One to many children
@@ -430,6 +596,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.CentralOrderUuid != OrderHeader.CentralOrderUuid)
                     child.CentralOrderUuid = OrderHeader.CentralOrderUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -437,6 +604,93 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 
         #endregion OrderLine - Generated 
+
+        #region OrderLineMerchantExt - Generated 
+        // grand children
+        protected IList<OrderLineMerchantExt> _OrderLineMerchantExt;
+
+        public IList<OrderLineMerchantExt> OrderLineMerchantExt 
+        { 
+            get 
+            {
+                _OrderLineMerchantExt = OrderLine is null ? null : OrderLine.SelectMany(x => x.GetChildrenOrderLineMerchantExt()).ToList();
+                return _OrderLineMerchantExt;
+            } 
+            set
+            {
+                _OrderLineMerchantExt = value;
+                if (OrderLine != null)
+                    foreach (var par in OrderLine)
+                        par.SetChildrenOrderLineMerchantExt(_OrderLineMerchantExt);
+            } 
+        }
+
+        protected IList<OrderLineMerchantExt> OrderLineMerchantExtDeleted 
+        { 
+            get 
+            {
+                var deleted = new List<OrderLineMerchantExt>();
+                if (_OrderLineDeleted != null)
+                {
+                    var del = _OrderLineDeleted
+                            .Where(x => x?.GetChildrenOrderLineMerchantExt() != null)
+                            .SelectMany(x => x?.GetChildrenOrderLineMerchantExt());
+                    if (del.Any())
+                        deleted.AddRange(del.ToList());
+                }
+                if (OrderLine != null)
+                {
+                    var delChildren = OrderLine
+                                    .Where(x => x?.GetChildrenDeletedOrderLineMerchantExt() != null)
+                                    .SelectMany(x => x?.GetChildrenDeletedOrderLineMerchantExt());
+                    if (delChildren.Any())
+                        deleted.AddRange(delChildren.ToList());
+                }
+                return deleted;
+            } 
+        }
+
+        public virtual IList<OrderLineMerchantExt> GetOrderLineMerchantExtByCentralOrderUuid(string CentralOrderUuid) =>
+            (string.IsNullOrEmpty(CentralOrderUuid)) 
+                ? null 
+                : dbFactory.Find<OrderLineMerchantExt>("WHERE CentralOrderUuid = @0 ORDER BY RowNum ", CentralOrderUuid).ToList();
+
+        public virtual bool SaveOrderLineMerchantExt(IList<OrderLineMerchantExt> data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int DeleteOrderLineMerchantExt(IList<OrderLineMerchantExt> data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<IList<OrderLineMerchantExt>> GetOrderLineMerchantExtByCentralOrderUuidAsync(string CentralOrderUuid) =>
+            (string.IsNullOrEmpty(CentralOrderUuid)) 
+                ? null
+                : (await dbFactory.FindAsync<OrderLineMerchantExt>("WHERE CentralOrderUuid = @0 ORDER BY RowNum ", CentralOrderUuid)).ToList();
+
+        public virtual async Task<bool> SaveOrderLineMerchantExtAsync(IList<OrderLineMerchantExt> data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> DeleteOrderLineMerchantExtAsync(IList<OrderLineMerchantExt> data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+        public virtual IList<OrderLineMerchantExt> CheckIntegrityOrderLineMerchantExt()
+        {
+            if (OrderLineMerchantExt is null || OrderHeader is null) 
+                return OrderLineMerchantExt;
+            var seq = 0;
+            OrderLineMerchantExt.RemoveEmpty();
+            var children = OrderLineMerchantExt.ToList();
+            foreach (var child in children.Where(x => x != null))
+            {
+                child.SetParent(this);
+                if (child.CentralOrderUuid != OrderHeader.CentralOrderUuid)
+                    child.CentralOrderUuid = OrderHeader.CentralOrderUuid;
+                child.CheckIntegrity();
+            }
+            return children;
+        }
+
+
+        #endregion OrderLineMerchantExt - Generated 
 
 
     }

@@ -56,6 +56,105 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #endregion sync methods
 
         #region async methods
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetInvoiceItemsReturnedQtyAsync_Test()
+        {
+            var payload = new InvoiceReturnPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+            };
+            var invoiceItemUuids = new List<string>()
+            {
+                "8268641a-256a-ef3c-ef55-9b8e66776e45",
+                "3b33dd2f-5e6c-ec55-ee7c-971c57506e02",
+                "4f639f07-6a0a-c8d9-00b0-5a893c038bd1",
+                "d8762dc4-0856-d9bf-c605-2427bb46c337",
+                "6b3c50ba-b84d-cce1-66a5-be2b793dd306",
+                "c9228a26-36fe-1436-dc0b-1079b4c45783",
+                "0c05a851-08ea-14f9-3294-c2674fc3d42a",
+                "2b5e2f27-cd55-9962-5a5f-af781eb3132c",
+                "33dabb0c-66ca-437a-b340-b81b113755ad",
+                "2d19f5fd-a6a6-5739-2ca4-aacdc29ee8d1",
+                "f6d4d175-c113-89c9-8f05-bd21e3b37860",
+                "ca9e77cf-0610-d4d3-0485-a0dd89afde8e",
+                "e358b5fb-1a6a-46cd-3651-968b0b02f0e9",
+                "5198da5f-a74e-2e89-8797-d39a78ef0044",
+                "72c08400-847c-4ed4-d24e-89d180634513",
+                "3e77a13d-dd6f-d952-220e-79a281d5cf4d",
+                "e103da0a-dcde-a9c2-4892-8ac80331c023",
+                "bbf495cb-5704-8e92-1a34-f7035f2febde",
+                "70ebe3c8-9f8d-5819-2ed8-2aefe1ecdce8",
+                "561cd98a-7fb2-1ebf-953a-e3f92d3b8370",
+                "d68b4f87-248d-664c-3e0a-6fb09868b0b0",
+                "1f77f3d6-0ec2-5054-f7e8-1d52c5bbbb16",
+                "3fc35fec-2bb8-079c-bbd5-27436291c285",
+                "141755f8-1387-a441-cb41-f085df933d00",
+                "9be57f70-37c4-2881-090e-b31b8a44bd98",
+                "c01465ba-c018-a99e-f175-8bba394fa1f2",
+                "424d024a-3f4e-917c-3762-a020062062ef",
+                "a11cf653-4a70-73f7-25ab-cf4c5af120ee",
+                "3ce60e8f-ea80-3704-4187-db40d5677c0e",
+                "9c8261f1-3582-7169-021d-1453ea0685cb",
+                "6e6afed6-29f9-c400-5621-f329720eaa2b",
+                "2169d6cc-b9af-c5d6-35ba-976850c848d9",
+                "1971d813-7613-41b7-af6e-a7a446a7eff8",
+                "18931ce8-1a21-441c-5428-b6eaa6544d2d",
+                "554fd625-43c9-bd1c-d234-9ee175ac29d3",
+                "d51d33ef-e8d7-121c-3add-15ebbb1b4d74",
+                "d38774b2-2ccc-e4f4-fbe5-b91130e00f6c",
+                "e0f8390a-2f8b-816b-3a0b-cbed2ebf14c8",
+                "75f42c1e-961b-28f9-7f99-071c404b81f9",
+                "da8425e4-a8a8-6fbf-8885-4c6046a25260",
+                "1df29e8e-081e-f16e-2828-84b3bd011c1d",
+                "2a856ba5-ddb8-3675-05d8-a978ad2c6432",
+                "76be3851-c177-e25c-f067-d0a5f68584aa",
+                "3a4f3c50-14db-ed07-1cb1-21377cea3fc6",
+                "737bf1ef-2027-7914-672d-d026fed175d0",
+                "3cd8c38e-da9e-27ac-d7c3-8a557c4a1c22",
+                "ee54d005-c58c-0861-3f02-e61f6abfc1cc",
+                "8012d321-38e1-fe36-41f4-1a7b5c5c0d9e",
+                "32e94014-6e9c-6f40-33fc-0133d8553b22",
+                "461918d9-d6fd-adb1-085a-24a10b4f8d80",
+                "f87297e4-4dbc-fcf6-6a9d-92ce5dfe80a4",
+                "8d9aa037-e465-1cf9-6d0e-fb5195dd3323",
+                "3ffd4c2c-5187-8a99-de85-52bfb72bfdec",
+                "531eda1d-84f6-e442-fa4b-27cfff924e49",
+                "fab4fea3-61b8-61ae-82d3-f67fbac464b3",
+                "5302a782-2245-443e-01cd-437b548d8d06",
+                "c6ab7a7f-a31d-caf0-aee5-986d41ab51cc",
+                "be0366f3-a142-71fe-d4e7-57a7604d5ff4",
+                "b2366d52-2f7e-64a9-d0c1-f828d15b533c",
+                "8e0382d5-80b4-92da-2af5-c7fc0fd75ada",
+                "f0da4456-3d0b-6568-6e75-6568fb7c231a",
+                "e8fbdea4-4972-df40-3b69-201e7f65c124",
+                "0099d049-941e-3f07-0e6c-280e2a6869ac",
+                "292bfc9f-ab1c-2c92-1439-7051c4e5ae2e",
+                "c07261ae-3d75-73d3-72a9-a9f55df84980",
+                "cd59bb6a-4e1a-94a5-474f-b501f39f772f",
+                "e7faa6f9-576f-6d51-6d35-ae799f6318ff",
+                "df093365-6763-7d03-52e2-6ab5e3d14aed"
+            };
+
+            try
+            {
+                IDictionary<string, decimal> result;
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        result = await InvoiceTransactionHelper.GetInvoiceItemsReturnedQtyAsync(invoiceItemUuids);
+                    }
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
 
         #endregion async methods
 

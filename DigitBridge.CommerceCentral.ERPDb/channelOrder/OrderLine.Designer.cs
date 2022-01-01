@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -56,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			get => CentralOrderLineNum.ToLong();
 			set => CentralOrderLineNum = value.ToLong();
 		}
-		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => CentralOrderLineNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
@@ -86,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _channelItemID;
 
         [Column("SKU",SqlDbType.VarChar)]
-        private string _sKU;
+        private string _sku;
 
         [Column("ItemTitle",SqlDbType.NVarChar)]
         private string _itemTitle;
@@ -160,16 +158,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CentralOrderLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _centralOrderLineUuid;
 
+        [Column("UnitDueSellerAmount",SqlDbType.Money,NotNull=true,IsDefault=true)]
+        private decimal _unitDueSellerAmount;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => CentralOrderLineUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(CentralOrderLineUuid)) 
 				CentralOrderLineUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// Each database has its own default value.
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -183,6 +187,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual long CentralOrderNum
         {
             get
@@ -196,6 +203,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int MasterAccountNum
         {
             get
@@ -209,6 +219,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int ProfileNum
         {
             get
@@ -222,6 +235,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The channel which sells the item. Refer to Master Account Channel Setting
+		/// </summary>
         public virtual int ChannelNum
         {
             get
@@ -235,6 +251,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The unique number of this profile’s channel account
+		/// </summary>
         public virtual int ChannelAccountNum
         {
             get
@@ -248,6 +267,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ChannelOrderID
         {
             get
@@ -261,6 +283,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Unique product (item) number
+		/// </summary>
         public virtual long? CentralProductNum
         {
             get
@@ -279,6 +304,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The item ID on channel, which mostly is not the SKU unless it is the webstore order.
+		/// </summary>
         public virtual string ChannelItemID
         {
             get
@@ -297,24 +325,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string SKU
         {
             get
             {
-				if (!AllowNull && _sKU is null) 
-					_sKU = String.Empty; 
-				return _sKU?.TrimEnd(); 
+				if (!AllowNull && _sku is null) 
+					_sku = String.Empty; 
+				return _sku?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_sKU = value.TruncateTo(100); 
+					_sku = value.TruncateTo(100); 
 					OnPropertyChanged("SKU", value);
 				}
             }
         }
 
+		/// <summary>
+		/// The title comes with the original order. If the original title is longer, it will be truncated.
+		/// </summary>
         public virtual string ItemTitle
         {
             get
@@ -333,6 +367,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Use int here to be consistent with the majority of the channels.
+		/// </summary>
         public virtual decimal? OrderQty
         {
             get
@@ -351,6 +388,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// For dropship, The cost, to the merchant, per unit (wholesale price).
+		/// </summary>
         public virtual decimal? UnitPrice
         {
             get
@@ -369,6 +409,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LineItemTaxAmount
         {
             get
@@ -387,6 +430,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LineShippingAmount
         {
             get
@@ -405,6 +451,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LineShippingTaxAmount
         {
             get
@@ -423,6 +472,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LineShippingDiscount
         {
             get
@@ -441,6 +493,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LineShippingDiscountTaxAmount
         {
             get
@@ -459,6 +514,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LineRecyclingFee
         {
             get
@@ -477,6 +535,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Gift message printed on the line level.
+		/// </summary>
         public virtual string LineGiftMsg
         {
             get
@@ -495,6 +556,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Description of the gift wrapping.
+		/// </summary>
         public virtual string LineGiftNotes
         {
             get
@@ -513,6 +577,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The gift wrapping cost for all quantity.
+		/// </summary>
         public virtual decimal? LineGiftAmount
         {
             get
@@ -531,6 +598,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// The gift wrapping tax cost for all quantity.
+		/// </summary>
         public virtual decimal? LineGiftTaxAmount
         {
             get
@@ -549,6 +619,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string LinePromotionCodes
         {
             get
@@ -567,6 +640,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LinePromotionAmount
         {
             get
@@ -585,6 +661,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? LinePromotionTaxAmount
         {
             get
@@ -603,6 +682,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Indicates if the order item is a bundle.
+		/// </summary>
         public virtual bool BundleStatus
         {
             get
@@ -621,6 +703,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string HarmonizedCode
         {
             get
@@ -639,6 +724,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string UPC
         {
             get
@@ -657,6 +745,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string EAN
         {
             get
@@ -675,6 +766,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string UnitOfMeasure
         {
             get
@@ -693,6 +787,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string DBChannelOrderLineRowID
         {
             get
@@ -711,6 +808,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Global Unique Guid for CentralOrder
+		/// </summary>
         public virtual string CentralOrderUuid
         {
             get
@@ -724,6 +824,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string CentralOrderLineUuid
         {
             get
@@ -737,13 +840,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+        public virtual decimal UnitDueSellerAmount
+        {
+            get
+            {
+				return _unitDueSellerAmount; 
+            }
+            set
+            {
+				_unitDueSellerAmount = value; 
+				OnPropertyChanged("UnitDueSellerAmount", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private ChannelOrderData Parent { get; set; }
 		public ChannelOrderData GetParent() => Parent;
 		public OrderLine SetParent(ChannelOrderData parent)
@@ -753,6 +872,73 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
         #endregion Methods - Parent
 
+		#region Methods - Children OrderLineMerchantExt
+		protected OrderLineMerchantExt _OrderLineMerchantExt;
+		[IgnoreCompare]
+		public OrderLineMerchantExt OrderLineMerchantExt
+		{
+			get
+			{
+				return _OrderLineMerchantExt;
+			}
+			set
+			{
+				_OrderLineMerchantExt = value;
+				CheckIntegrityOrderLineMerchantExt();
+			}
+		}
+		public OrderLineMerchantExt SetChildrenOrderLineMerchantExt(IList<OrderLineMerchantExt> children)
+		{
+			var childrenList = children.ToList();
+			OrderLineMerchantExt = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(CentralOrderLineUuid) && x.CentralOrderLineUuid == CentralOrderLineUuid);
+			return OrderLineMerchantExt;
+		}
+		public IList<OrderLineMerchantExt> GetChildrenOrderLineMerchantExt()
+		{
+			return new List<OrderLineMerchantExt>() { OrderLineMerchantExt };
+		}
+		public IList<OrderLineMerchantExt> GetChildrenDeletedOrderLineMerchantExt()
+		{
+			return null;
+		}
+		public OrderLineMerchantExt CheckIntegrityOrderLineMerchantExt()
+		{
+			if (OrderLineMerchantExt == null)
+				return OrderLineMerchantExt;
+			CheckUniqueId();
+			OrderLineMerchantExt.SetParent(Parent);
+			if (OrderLineMerchantExt.CentralOrderLineUuid != CentralOrderLineUuid) OrderLineMerchantExt.CentralOrderLineUuid = CentralOrderLineUuid;
+			OrderLineMerchantExt.CheckIntegrity();
+			return OrderLineMerchantExt;
+		}
+		public OrderLineMerchantExt LoadOrderLineMerchantExt()
+		{
+			OrderLineMerchantExt = dbFactory.GetById<OrderLineMerchantExt>(CentralOrderLineUuid);
+			return OrderLineMerchantExt;
+		}
+		public async Task<OrderLineMerchantExt> LoadOrderLineMerchantExtAsync()
+		{
+			OrderLineMerchantExt = await dbFactory.GetByIdAsync<OrderLineMerchantExt>(CentralOrderLineUuid);
+			return OrderLineMerchantExt;
+		}
+		public OrderLineMerchantExt NewOrderLineMerchantExt()
+		{
+			CheckUniqueId();
+			var child = new OrderLineMerchantExt(dbFactory);
+			child.SetParent(Parent);
+			child.CentralOrderLineUuid = CentralOrderLineUuid;
+			child.CheckIntegrity();
+			return child;
+		}
+		public OrderLineMerchantExt AddOrderLineMerchantExt(OrderLineMerchantExt child)
+		{
+			if (child == null)
+				child = NewOrderLineMerchantExt();
+			OrderLineMerchantExt = child;
+			return OrderLineMerchantExt;
+			child.CheckIntegrity();
+		}
+		#endregion Methods - Children OrderLineMerchantExt
 
         #region Methods - Generated 
         public override void ClearMetaData()
@@ -776,7 +962,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_channelOrderID = String.Empty; 
 			_centralProductNum = AllowNull ? (long?)null : default(long); 
 			_channelItemID = AllowNull ? (string)null : String.Empty; 
-			_sKU = AllowNull ? (string)null : String.Empty; 
+			_sku = AllowNull ? (string)null : String.Empty; 
 			_itemTitle = AllowNull ? (string)null : String.Empty; 
 			_orderQty = AllowNull ? (decimal?)null : default(decimal); 
 			_unitPrice = AllowNull ? (decimal?)null : default(decimal); 
@@ -801,23 +987,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dBChannelOrderLineRowID = AllowNull ? (string)null : String.Empty; 
 			_centralOrderUuid = String.Empty; 
 			_centralOrderLineUuid = String.Empty; 
+			_unitDueSellerAmount = default(decimal); 
             ClearChildren();
+            return this;
+        }
+
+        public override OrderLine CheckIntegrity()
+        {
+            CheckUniqueId();
+			CheckIntegrityOrderLineMerchantExt();
+            CheckIntegrityOthers();
             return this;
         }
 
         public virtual OrderLine ClearChildren()
         {
+			OrderLineMerchantExt?.Clear();
             return this;
         }
 
         public virtual OrderLine NewChildren()
         {
+			AddOrderLineMerchantExt(NewOrderLineMerchantExt());
             return this;
         }
 
         public virtual void CopyChildrenFrom(OrderLine data)
         {
             if (data is null) return;
+			OrderLineMerchantExt?.CopyFrom(data.OrderLineMerchantExt);
+			CheckIntegrityOrderLineMerchantExt(); 
             return;
         }
 
@@ -838,6 +1037,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<OrderLine>("WHERE CentralOrderNum = @0 ", centralOrderNum);
 		}
 
+		public override OrderLine ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderLine ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

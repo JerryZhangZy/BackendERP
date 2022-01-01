@@ -1,85 +1,94 @@
 ﻿CREATE TABLE [dbo].[PoHeaderInfo]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [PoId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O. <br> Display: false, Editable: false.
 
-	-- drop ship S/O info
-	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
-	[ShippingCarrier] VARCHAR(50) NULL,
-	[ShippingClass] VARCHAR(50) NULL,
-	[DistributionCenterNum] INT NULL,
-	[CentralOrderNum] BIGINT NULL, --CentralOrderNum is DigitBridgeOrderId, use same DatabaseNum
-	[ChannelNum] INT NOT NULL, --The channel which sells the item. Refer to Master Account Channel Setting
-	[ChannelAccountNum] INT NOT NULL, --The unique number of this profile’s channel account
-	[ChannelOrderID] VARCHAR(130) NOT NULL, --This usually is the marketplace order ID, or merchant PO Number
-	[SecondaryChannelOrderID] VARCHAR(200) NULL, --Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
-	[ShippingAccount] VARCHAR(100) NULL, --requested Vendor use Account to ship
-	[RefNum] VARCHAR(100) NULL, --Reference Number
-	[CustomerPoNum] VARCHAR(100) NULL, --Customer P/O Number
+	[CentralFulfillmentNum] BIGINT NOT NULL DEFAULT 0,  --(Ignore) Reference to CentralFulfillmentNum. <br> Display: false, Editable: false
+	[ShippingCarrier] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
+	[ShippingClass] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
+	[DistributionCenterNum] INT NOT NULL DEFAULT 0, --(Readonly) Original DC number. <br> Title: DC number: Display: false, Editable: false
+	[CentralOrderNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
+	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
+	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
+	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT '',  --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
+	[SecondaryChannelOrderID] VARCHAR(200) NOT NULL DEFAULT '',--(Readonly) Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time. <br> Title: Other Channel Order: Display: true, Editable: false
+	[ShippingAccount] VARCHAR(100) NOT NULL DEFAULT '',--(Readonly) requested Vendor use Account to ship. <br> Title: Shipping Account: Display: false, Editable: false
+	[RefNum] VARCHAR(100) NOT NULL DEFAULT '', --Reference Number. <br> Title: Reference Number: Display: true, Editable: true
+	[CustomerPoNum] VARCHAR(100) NOT NULL DEFAULT '', --Customer P/O Number. <br> Title: Customer PO: Display: true, Editable: true
 
-	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
-	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
+	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid, load from warehouse data. <br> Display: false, Editable: false
+	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
+	[CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Customer uuid, load from customer data. <br> Display: false, Editable: false
 
-	[EndBuyerUserID] VARCHAR(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
-	[EndBuyerName] NVARCHAR(255) NULL, --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
-	[EndBuyerEmail] VARCHAR(255) NULL, --The email of the end customer
-	[ShipToName] NVARCHAR(100) NULL,
-	[ShipToFirstName] NVARCHAR(50) NULL,
-	[ShipToLastName] NVARCHAR(50) NULL,
-	[ShipToSuffix] NVARCHAR(50) NULL,
-	[ShipToCompany] NVARCHAR(100) NULL,
-	[ShipToCompanyJobTitle] NVARCHAR(100) NULL,
-	[ShipToAttention] NVARCHAR(100) NULL,
-	[ShipToAddressLine1] NVARCHAR(200) NULL,
-	[ShipToAddressLine2] NVARCHAR(200) NULL,
-	[ShipToAddressLine3] NVARCHAR(200) NULL,
-	[ShipToCity] NVARCHAR(100) NULL,
-	[ShipToState] NVARCHAR(50) NULL,
-	[ShipToStateFullName] NVARCHAR(100) NULL,
-	[ShipToPostalCode] VARCHAR(50) NULL,
-	[ShipToPostalCodeExt] VARCHAR(50) NULL,
-	[ShipToCounty] NVARCHAR(100) NULL,
-	[ShipToCountry] NVARCHAR(100) NULL,
-	[ShipToEmail] VARCHAR(100) NULL,
-	[ShipToDaytimePhone] VARCHAR(50) NULL,
-	[ShipToNightPhone] VARCHAR(50) NULL,
+	[EndBuyerUserID] VARCHAR(255) NOT NULL DEFAULT '', --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
+	[EndBuyerName] NVARCHAR(255) NOT NULL DEFAULT '', --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
+	[EndBuyerEmail] VARCHAR(255) NOT NULL DEFAULT '', --The email of the end customer。<br> Display: false, Editable: false
+	[ShipToName] NVARCHAR(100) NOT NULL DEFAULT '',--Ship to name <br> Title: Ship to name: Display: true, Editable: true
+	[ShipToFirstName] NVARCHAR(50) NOT NULL DEFAULT '',--(Ignore)
+	[ShipToLastName] NVARCHAR(50) NOT NULL DEFAULT '',--(Ignore)
+	[ShipToSuffix] NVARCHAR(50) NOT NULL DEFAULT '',--(Ignore)
+	[ShipToCompany] NVARCHAR(100) NOT NULL DEFAULT '', --Ship to company name. <br> Title: Ship to company: Display: true, Editable: true
+	[ShipToCompanyJobTitle] NVARCHAR(100) NOT NULL DEFAULT '',--(Ignore)
+	[ShipToAttention] NVARCHAR(100) NOT NULL DEFAULT '',--Ship to contact <br> Title: Ship to contact: Display: true, Editable: true
+	[ShipToAddressLine1] NVARCHAR(200) NOT NULL DEFAULT '',--Ship to address 1 <br> Title: Ship to address 1: Display: true, Editable: true
+	[ShipToAddressLine2] NVARCHAR(200) NOT NULL DEFAULT '',--Ship to address 2 <br> Title: Ship to address 2: Display: true, Editable: true
+	[ShipToAddressLine3] NVARCHAR(200) NOT NULL DEFAULT '',--Ship to address 3 <br> Title: Ship to address 3: Display: true, Editable: true
+	[ShipToCity] NVARCHAR(100) NOT NULL DEFAULT '',--Ship to city <br> Title: Ship to city: Display: true, Editable: true
+	[ShipToState] NVARCHAR(50) NOT NULL DEFAULT '',--Ship to state <br> Title: Ship to state: Display: true, Editable: true
+	[ShipToStateFullName] NVARCHAR(100) NOT NULL DEFAULT '',--(Ignore)
+	[ShipToPostalCode] VARCHAR(50) NOT NULL DEFAULT '',--Ship to zip code <br> Title: Ship to zip Display: true, Editable: true
+	[ShipToPostalCodeExt] VARCHAR(50) NOT NULL DEFAULT '',--(Ignore)
+	[ShipToCounty] NVARCHAR(100) NOT NULL DEFAULT '',--Ship to county <br> Title: Ship to county: Display: true, Editable: true
+	[ShipToCountry] NVARCHAR(100) NOT NULL DEFAULT '',--Ship to country <br> Title: Ship to country: Display: true, Editable: true
+	[ShipToEmail] VARCHAR(100) NOT NULL DEFAULT '',--Ship to email <br> Title: Ship to email: Display: true, Editable: true
+	[ShipToDaytimePhone] VARCHAR(50) NOT NULL DEFAULT '',--Ship to phone <br> Title: Ship to phone: Display: true, Editable: true
+	[ShipToNightPhone] VARCHAR(50) NOT NULL DEFAULT '',--(Ignore)
 
-	[BillToName] NVARCHAR(100) NULL,
-	[BillToFirstName] NVARCHAR(50) NULL,
-	[BillToLastName] NVARCHAR(50) NULL,
-	[BillToSuffix] NVARCHAR(50) NULL,
-	[BillToCompany] NVARCHAR(100) NULL,
-	[BillToCompanyJobTitle] NVARCHAR(100) NULL,
-	[BillToAttention] NVARCHAR(100) NULL,
-	[BillToAddressLine1] NVARCHAR(200) NULL,
-	[BillToAddressLine2] NVARCHAR(200) NULL,
-	[BillToAddressLine3] NVARCHAR(200) NULL,
-	[BillToCity] NVARCHAR(100) NULL,
-	[BillToState] NVARCHAR(50) NULL,
-	[BillToStateFullName] NVARCHAR(100) NULL,
-	[BillToPostalCode] VARCHAR(50) NULL,
-	[BillToPostalCodeExt] VARCHAR(50) NULL,
-	[BillToCounty] NVARCHAR(50) NULL,
-	[BillToCountry] NVARCHAR(100) NULL,
-	[BillToEmail] VARCHAR(100) NULL,
-	[BillToDaytimePhone] VARCHAR(50) NULL,
-	[BillToNightPhone] VARCHAR(50) NULL,
+	[BillToName] NVARCHAR(100) NOT NULL DEFAULT '',--Bill to name <br> Title: Bill to name: Display: true, Editable: true
+	[BillToFirstName] NVARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
+	[BillToLastName] NVARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
+	[BillToSuffix] NVARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
+	[BillToCompany] NVARCHAR(100) NOT NULL DEFAULT '', --Bill to company name. <br> Title: Bill to company: Display: true, Editable: true
+	[BillToCompanyJobTitle] NVARCHAR(100) NOT NULL DEFAULT '', --(Ignore)
+	[BillToAttention] NVARCHAR(100) NOT NULL DEFAULT '',--Bill to contact <br> Title: Bill to contact: Display: true, Editable: true
+	[BillToAddressLine1] NVARCHAR(200) NOT NULL DEFAULT '', --Bill to address 1 <br> Title: Bill to address 1: Display: true, Editable: true
+	[BillToAddressLine2] NVARCHAR(200) NOT NULL DEFAULT '', --Bill to address 2 <br> Title: Bill to address 2: Display: true, Editable: true
+	[BillToAddressLine3] NVARCHAR(200) NOT NULL DEFAULT '', --Bill to address 3 <br> Title: Bill to address 3: Display: true, Editable: true
+	[BillToCity] NVARCHAR(100) NOT NULL DEFAULT '',--Bill to city <br> Title: Bill to city: Display: true, Editable: true
+	[BillToState] NVARCHAR(50) NOT NULL DEFAULT '', --Bill to state <br> Title: Bill to state: Display: true, Editable: true
+	[BillToStateFullName] NVARCHAR(100) NOT NULL DEFAULT '', --(Ignore)
+	[BillToPostalCode] VARCHAR(50) NOT NULL DEFAULT '',--Bill to zip code <br> Title: Bill to zip Display: true, Editable: true
+	[BillToPostalCodeExt] VARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
+	[BillToCounty] NVARCHAR(50) NOT NULL DEFAULT '', --Bill to county <br> Title: Bill to county: Display: true, Editable: true
+	[BillToCountry] NVARCHAR(100) NOT NULL DEFAULT '', --Bill to country <br> Title: Bill to country: Display: true, Editable: true
+	[BillToEmail] VARCHAR(100) NOT NULL DEFAULT '', --Bill to email <br> Title: Bill to email: Display: true, Editable: true
+	[BillToDaytimePhone] VARCHAR(50) NOT NULL DEFAULT '', --Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
+	[BillToNightPhone] VARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
 
-    [EnterDateUtc] DATETIME NULL,
-    [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+	[Notes] NVarchar(1000) NOT NULL DEFAULT '',--Order notes. <br> Title: Notes, Display: true, Editable: true
+
+    [EnterDateUtc] DATETIME NULL, --(Ignore)
+    [UpdateDateUtc] DATETIME NULL, --(Ignore)
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_PoHeaderInfo] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'UI_PoHeaderInfo_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeaderInfo_PoUuid] ON [dbo].[PoHeaderInfo]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'UK_PoHeaderInfo_PoUuid')
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoHeaderInfo_PoUuid] ON [dbo].[PoHeaderInfo]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'IX_PoHeaderInfo_WarehouseCode')
+CREATE NONCLUSTERED INDEX [IX_PoHeaderInfo_WarehouseCode] ON [dbo].[PoHeaderInfo]
+(
+	[PoUuid] ASC,
+	[WarehouseCode] ASC
+) ON [PRIMARY]
+GO
 
 

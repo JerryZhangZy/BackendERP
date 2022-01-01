@@ -1,4 +1,3 @@
-
               
     
 
@@ -25,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a OrderShipmentHeader SQL Helper Static Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public static class OrderShipmentHeaderHelper
     {
@@ -38,43 +37,47 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region - static SQL fileds statement
 
-        public static string OrderShipmentNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderShipmentNum AS {name ?? "OrderShipmentNum"} ";
-        public static string DatabaseNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum"} ";
-        public static string MasterAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum"} ";
-        public static string ProfileNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum"} ";
-        public static string ChannelNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum"} ";
-        public static string ChannelAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum"} ";
-        public static string OrderDCAssignmentNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentNum AS {name ?? "OrderDCAssignmentNum"} ";
-        public static string DistributionCenterNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DistributionCenterNum AS {name ?? "DistributionCenterNum"} ";
-        public static string CentralOrderNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CentralOrderNum AS {name ?? "CentralOrderNum"} ";
-        public static string ChannelOrderID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID"} ";
-        public static string ShipmentID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipmentID) AS {name ?? "ShipmentID"} ";
-        public static string WarehouseID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseID) AS {name ?? "WarehouseID"} ";
-        public static string ShipmentType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShipmentType AS {name ?? "ShipmentType"} ";
-        public static string ShipmentReferenceID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipmentReferenceID) AS {name ?? "ShipmentReferenceID"} ";
-        public static string ShipmentDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShipmentDateUtc AS {name ?? "ShipmentDateUtc"} ";
-        public static string ShippingCarrier(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingCarrier) AS {name ?? "ShippingCarrier"} ";
-        public static string ShippingClass(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingClass) AS {name ?? "ShippingClass"} ";
-        public static string ShippingCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShippingCost AS {name ?? "ShippingCost"} ";
-        public static string MainTrackingNumber(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.MainTrackingNumber) AS {name ?? "MainTrackingNumber"} ";
-        public static string MainReturnTrackingNumber(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.MainReturnTrackingNumber) AS {name ?? "MainReturnTrackingNumber"} ";
-        public static string BillOfLadingID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillOfLadingID) AS {name ?? "BillOfLadingID"} ";
-        public static string TotalPackages(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TotalPackages AS {name ?? "TotalPackages"} ";
-        public static string TotalShippedQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TotalShippedQty AS {name ?? "TotalShippedQty"} ";
-        public static string TotalCanceledQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TotalCanceledQty AS {name ?? "TotalCanceledQty"} ";
-        public static string TotalWeight(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TotalWeight AS {name ?? "TotalWeight"} ";
-        public static string TotalVolume(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TotalVolume AS {name ?? "TotalVolume"} ";
-        public static string WeightUnit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.WeightUnit AS {name ?? "WeightUnit"} ";
-        public static string LengthUnit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.LengthUnit AS {name ?? "LengthUnit"} ";
-        public static string VolumeUnit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.VolumeUnit AS {name ?? "VolumeUnit"} ";
-        public static string ShipmentStatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShipmentStatus AS {name ?? "ShipmentStatus"} ";
-        public static string DBChannelOrderHeaderRowID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderHeaderRowID) AS {name ?? "DBChannelOrderHeaderRowID"} ";
-        public static string ProcessStatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProcessStatus AS {name ?? "ProcessStatus"} ";
-        public static string ProcessDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProcessDateUtc AS {name ?? "ProcessDateUtc"} ";
-        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
-        public static string OrderShipmentUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentUuid) AS {name ?? "OrderShipmentUuid"} ";
-        public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
+        public static string OrderShipmentNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderShipmentNum AS {name ?? "OrderShipmentNum".ToCamelCase(camelCase)} ";
+        public static string DatabaseNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum".ToCamelCase(camelCase)} ";
+        public static string MasterAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum".ToCamelCase(camelCase)} ";
+        public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
+        public static string ChannelNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum".ToCamelCase(camelCase)} ";
+        public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
+        public static string OrderDCAssignmentNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentNum AS {name ?? "OrderDCAssignmentNum".ToCamelCase(camelCase)} ";
+        public static string DistributionCenterNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DistributionCenterNum AS {name ?? "DistributionCenterNum".ToCamelCase(camelCase)} ";
+        public static string CentralOrderNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CentralOrderNum AS {name ?? "CentralOrderNum".ToCamelCase(camelCase)} ";
+        public static string ChannelOrderID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID".ToCamelCase(camelCase)} ";
+        public static string ShipmentID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipmentID) AS {name ?? "ShipmentID".ToCamelCase(camelCase)} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode".ToCamelCase(camelCase)} ";
+        public static string ShipmentType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipmentType AS {name ?? "ShipmentType".ToCamelCase(camelCase)} ";
+        public static string ShipmentReferenceID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipmentReferenceID) AS {name ?? "ShipmentReferenceID".ToCamelCase(camelCase)} ";
+        public static string ShipmentDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipmentDateUtc AS {name ?? "ShipmentDateUtc".ToCamelCase(camelCase)} ";
+        public static string ShippingCarrier(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShippingCarrier) AS {name ?? "ShippingCarrier".ToCamelCase(camelCase)} ";
+        public static string ShippingClass(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShippingClass) AS {name ?? "ShippingClass".ToCamelCase(camelCase)} ";
+        public static string ShippingCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShippingCost AS {name ?? "ShippingCost".ToCamelCase(camelCase)} ";
+        public static string MainTrackingNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.MainTrackingNumber) AS {name ?? "MainTrackingNumber".ToCamelCase(camelCase)} ";
+        public static string MainReturnTrackingNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.MainReturnTrackingNumber) AS {name ?? "MainReturnTrackingNumber".ToCamelCase(camelCase)} ";
+        public static string BillOfLadingID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillOfLadingID) AS {name ?? "BillOfLadingID".ToCamelCase(camelCase)} ";
+        public static string TotalPackages(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalPackages AS {name ?? "TotalPackages".ToCamelCase(camelCase)} ";
+        public static string TotalShippedQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalShippedQty AS {name ?? "TotalShippedQty".ToCamelCase(camelCase)} ";
+        public static string TotalCanceledQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalCanceledQty AS {name ?? "TotalCanceledQty".ToCamelCase(camelCase)} ";
+        public static string TotalWeight(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalWeight AS {name ?? "TotalWeight".ToCamelCase(camelCase)} ";
+        public static string TotalVolume(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalVolume AS {name ?? "TotalVolume".ToCamelCase(camelCase)} ";
+        public static string WeightUnit(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.WeightUnit AS {name ?? "WeightUnit".ToCamelCase(camelCase)} ";
+        public static string LengthUnit(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LengthUnit AS {name ?? "LengthUnit".ToCamelCase(camelCase)} ";
+        public static string VolumeUnit(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.VolumeUnit AS {name ?? "VolumeUnit".ToCamelCase(camelCase)} ";
+        public static string ShipmentStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipmentStatus AS {name ?? "ShipmentStatus".ToCamelCase(camelCase)} ";
+        public static string DBChannelOrderHeaderRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderHeaderRowID) AS {name ?? "DBChannelOrderHeaderRowID".ToCamelCase(camelCase)} ";
+        public static string ProcessStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProcessStatus AS {name ?? "ProcessStatus".ToCamelCase(camelCase)} ";
+        public static string ProcessDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProcessDateUtc AS {name ?? "ProcessDateUtc".ToCamelCase(camelCase)} ";
+        public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
+        public static string OrderShipmentUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentUuid) AS {name ?? "OrderShipmentUuid".ToCamelCase(camelCase)} ";
+        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
+        public static string InvoiceNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceNumber) AS {name ?? "InvoiceNumber".ToCamelCase(camelCase)} ";
+        public static string InvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceUuid) AS {name ?? "InvoiceUuid".ToCamelCase(camelCase)} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid".ToCamelCase(camelCase)} ";
+        public static string OrderNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderNumber) AS {name ?? "OrderNumber".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -93,7 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}CentralOrderNum AS CentralOrderNum,
 RTRIM({allies}ChannelOrderID) AS ChannelOrderID,
 RTRIM({allies}ShipmentID) AS ShipmentID,
-RTRIM({allies}WarehouseID) AS WarehouseID,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 {allies}ShipmentType AS ShipmentType,
 RTRIM({allies}ShipmentReferenceID) AS ShipmentReferenceID,
 {allies}ShipmentDateUtc AS ShipmentDateUtc,
@@ -118,7 +121,11 @@ RTRIM({allies}DBChannelOrderHeaderRowID) AS DBChannelOrderHeaderRowID,
 {allies}EnterDateUtc AS EnterDateUtc,
 RTRIM({allies}OrderShipmentUuid) AS OrderShipmentUuid,
 {allies}RowNum AS RowNum,
-{allies}DigitBridgeGuid AS DigitBridgeGuid
+{allies}DigitBridgeGuid AS DigitBridgeGuid,
+RTRIM({allies}InvoiceNumber) AS InvoiceNumber,
+RTRIM({allies}InvoiceUuid) AS InvoiceUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
+RTRIM({allies}OrderNumber) AS OrderNumber
 ";
         }
 

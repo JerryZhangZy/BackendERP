@@ -1,11 +1,6 @@
 
 
-
-
-
-
               
-
               
     
 
@@ -74,11 +69,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderTime",SqlDbType.Time,NotNull=true)]
         private TimeSpan _orderTime;
 
+        [Column("ShipDate",SqlDbType.Date)]
+        private DateTime? _shipDate;
+
         [Column("DueDate",SqlDbType.Date)]
         private DateTime? _dueDate;
 
         [Column("BillDate",SqlDbType.Date)]
         private DateTime? _billDate;
+
+        [Column("EtaArrivalDate",SqlDbType.Date)]
+        private DateTime? _etaArrivalDate;
+
+        [Column("EarliestShipDate",SqlDbType.Date)]
+        private DateTime? _earliestShipDate;
+
+        [Column("LatestShipDate",SqlDbType.Date)]
+        private DateTime? _latestShipDate;
+
+        [Column("SignatureFlag",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
+        private byte _signatureFlag;
 
         [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true)]
         private string _customerUuid;
@@ -140,6 +150,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChargeAndAllowanceAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _chargeAndAllowanceAmount;
 
+        [Column("ChannelAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _channelAmount;
+
         [Column("PaidAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _paidAmount;
 
@@ -161,6 +174,48 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderSourceCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderSourceCode;
 
+        [Column("DepositAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _depositAmount;
+
+        [Column("MiscInvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _miscInvoiceUuid;
+
+        [Column("SalesRep",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep;
+
+        [Column("SalesRep2",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep2;
+
+        [Column("SalesRep3",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep3;
+
+        [Column("SalesRep4",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesRep4;
+
+        [Column("CommissionRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate;
+
+        [Column("CommissionRate2",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate2;
+
+        [Column("CommissionRate3",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate3;
+
+        [Column("CommissionRate4",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionRate4;
+
+        [Column("CommissionAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount;
+
+        [Column("CommissionAmount2",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount2;
+
+        [Column("CommissionAmount3",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount3;
+
+        [Column("CommissionAmount4",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _commissionAmount4;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -175,7 +230,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => SalesOrderUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(SalesOrderUuid)) 
 				SalesOrderUuid = Guid.NewGuid().ToString(); 
@@ -325,6 +380,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? ShipDate
+        {
+            get
+            {
+				if (!AllowNull && _shipDate is null) 
+					_shipDate = new DateTime().MinValueSql(); 
+				return _shipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_shipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("ShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
 		/// (Ignore) Order due date. <br> Display: false, Editable: false
 		/// </summary>
         public virtual DateTime? DueDate
@@ -363,6 +439,85 @@ namespace DigitBridge.CommerceCentral.ERPDb
 					_billDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
 					OnPropertyChanged("BillDate", value);
 				}
+            }
+        }
+
+		/// <summary>
+		/// Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? EtaArrivalDate
+        {
+            get
+            {
+				if (!AllowNull && _etaArrivalDate is null) 
+					_etaArrivalDate = new DateTime().MinValueSql(); 
+				return _etaArrivalDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_etaArrivalDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("EtaArrivalDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? EarliestShipDate
+        {
+            get
+            {
+				if (!AllowNull && _earliestShipDate is null) 
+					_earliestShipDate = new DateTime().MinValueSql(); 
+				return _earliestShipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_earliestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("EarliestShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? LatestShipDate
+        {
+            get
+            {
+				if (!AllowNull && _latestShipDate is null) 
+					_latestShipDate = new DateTime().MinValueSql(); 
+				return _latestShipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_latestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("LatestShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
+        public virtual bool SignatureFlag
+        {
+            get
+            {
+				return (_signatureFlag == 1); 
+            }
+            set
+            {
+				_signatureFlag = value ? (byte)1 : (byte)0; 
+				OnPropertyChanged("SignatureFlag", value);
             }
         }
 
@@ -687,6 +842,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Amount from Channel Order. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual decimal ChannelAmount
+        {
+            get
+            {
+				return _channelAmount; 
+            }
+            set
+            {
+				_channelAmount = value; 
+				OnPropertyChanged("ChannelAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore) Total Paid amount. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal PaidAmount
@@ -799,6 +970,230 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Ignore) Deposit Amount. <br> Display: true, Editable: false
+		/// </summary>
+        public virtual decimal DepositAmount
+        {
+            get
+            {
+				return _depositAmount; 
+            }
+            set
+            {
+				_depositAmount = value; 
+				OnPropertyChanged("DepositAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// Misc Invoice Uuid. <br> Display: true, Editable: false.
+		/// </summary>
+        public virtual string MiscInvoiceUuid
+        {
+            get
+            {
+				return _miscInvoiceUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_miscInvoiceUuid = value.TruncateTo(50); 
+				OnPropertyChanged("MiscInvoiceUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 1, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep
+        {
+            get
+            {
+				return _salesRep?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 2, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep2
+        {
+            get
+            {
+				return _salesRep2?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep2 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 3, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep3
+        {
+            get
+            {
+				return _salesRep3?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep3 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Code <br> Title: Sales Rep 4, Display: true, Editable: true
+		/// </summary>
+        public virtual string SalesRep4
+        {
+            get
+            {
+				return _salesRep4?.TrimEnd(); 
+            }
+            set
+            {
+				_salesRep4 = value.TruncateTo(100); 
+				OnPropertyChanged("SalesRep4", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate
+        {
+            get
+            {
+				return _commissionRate; 
+            }
+            set
+            {
+				_commissionRate = value; 
+				OnPropertyChanged("CommissionRate", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate2
+        {
+            get
+            {
+				return _commissionRate2; 
+            }
+            set
+            {
+				_commissionRate2 = value; 
+				OnPropertyChanged("CommissionRate2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate3
+        {
+            get
+            {
+				return _commissionRate3; 
+            }
+            set
+            {
+				_commissionRate3 = value; 
+				OnPropertyChanged("CommissionRate3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionRate4
+        {
+            get
+            {
+				return _commissionRate4; 
+            }
+            set
+            {
+				_commissionRate4 = value; 
+				OnPropertyChanged("CommissionRate4", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount
+        {
+            get
+            {
+				return _commissionAmount; 
+            }
+            set
+            {
+				_commissionAmount = value; 
+				OnPropertyChanged("CommissionAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount2
+        {
+            get
+            {
+				return _commissionAmount2; 
+            }
+            set
+            {
+				_commissionAmount2 = value; 
+				OnPropertyChanged("CommissionAmount2", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount3
+        {
+            get
+            {
+				return _commissionAmount3; 
+            }
+            set
+            {
+				_commissionAmount3 = value; 
+				OnPropertyChanged("CommissionAmount3", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal CommissionAmount4
+        {
+            get
+            {
+				return _commissionAmount4; 
+            }
+            set
+            {
+				_commissionAmount4 = value; 
+				OnPropertyChanged("CommissionAmount4", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -813,7 +1208,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -888,8 +1283,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_orderStatus = default(int); 
 			_orderDate = new DateTime().MinValueSql(); 
 			_orderTime = new TimeSpan().MinValueSql(); 
+			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_billDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_earliestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_latestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_signatureFlag = default(byte); 
 			_customerUuid = String.Empty; 
 			_customerCode = String.Empty; 
 			_customerName = String.Empty; 
@@ -910,6 +1310,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_miscAmount = default(decimal); 
 			_miscTaxAmount = default(decimal); 
 			_chargeAndAllowanceAmount = default(decimal); 
+			_channelAmount = default(decimal); 
 			_paidAmount = default(decimal); 
 			_creditAmount = default(decimal); 
 			_balance = default(decimal); 
@@ -917,10 +1318,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_avgCost = default(decimal); 
 			_lotCost = default(decimal); 
 			_orderSourceCode = String.Empty; 
+			_depositAmount = default(decimal); 
+			_miscInvoiceUuid = String.Empty; 
+			_salesRep = String.Empty; 
+			_salesRep2 = String.Empty; 
+			_salesRep3 = String.Empty; 
+			_salesRep4 = String.Empty; 
+			_commissionRate = default(decimal); 
+			_commissionRate2 = default(decimal); 
+			_commissionRate3 = default(decimal); 
+			_commissionRate4 = default(decimal); 
+			_commissionAmount = default(decimal); 
+			_commissionAmount2 = default(decimal); 
+			_commissionAmount3 = default(decimal); 
+			_commissionAmount4 = default(decimal); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public override SalesOrderHeader CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 
@@ -957,6 +1379,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<SalesOrderHeader>("WHERE CustomerUuid = @0 ", customerUuid);
 		}
 
+		public override SalesOrderHeader ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override SalesOrderHeader ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

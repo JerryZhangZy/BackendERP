@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -131,7 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => AddressUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(AddressUuid)) 
 				AddressUuid = Guid.NewGuid().ToString(); 
@@ -551,7 +549,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -649,6 +647,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public override CustomerAddress CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
+            return this;
+        }
+
         public virtual CustomerAddress ClearChildren()
         {
             return this;
@@ -682,6 +687,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<CustomerAddress>("WHERE CustomerUuid = @0 ", customerUuid);
 		}
 
+		public override CustomerAddress ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override CustomerAddress ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

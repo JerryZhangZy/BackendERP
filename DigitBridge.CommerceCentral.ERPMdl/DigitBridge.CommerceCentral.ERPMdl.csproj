@@ -5,25 +5,59 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApiClient\**" />
+    <Compile Remove="CustomDefineCodes\dto\**" />
+    <EmbeddedResource Remove="ApiClient\**" />
+    <EmbeddedResource Remove="CustomDefineCodes\dto\**" />
+    <None Remove="ApiClient\**" />
+    <None Remove="CustomDefineCodes\dto\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Compile Remove="selectList\SelectListService.cs" />
+	<Compile Remove="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
+	<Compile Remove="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
+  </ItemGroup>
+	
+  <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.AzureStorage\DigitBridge.CommerceCentral.AzureStorage.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPApiSDK\DigitBridge.CommerceCentral.ERPApiSDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ar\" />
-    <Folder Include="CustomDefineCodes\dto\" />
-    <Folder Include="customer\" />
-    <Folder Include="inventory\" />
-    <Folder Include="ap\" />
-    <Folder Include="channelOrder\" />
-    <Folder Include="inventoryLog\" />
-    <Folder Include="shipment\" />
-    <Folder Include="po\" />
-    <Folder Include="vendor\" />
+    <Folder Include="ap\io\" />
+    <Folder Include="ar\io\" />
+    <Folder Include="CustomDefineCodes\io\" />
+    <Folder Include="CustomDefineCodes\io\" />
+    <Folder Include="customer\io\" />
+    <Folder Include="event\" />
+    <Folder Include="inventoryUpdate\io\" />
+    <Folder Include="inventory\io\" />
+    <Folder Include="channel\" />
+    <Folder Include="po\io\" />
+    <Folder Include="shipmentInquiry\" />
+    <Folder Include="shipment\io\" />
+    <Folder Include="soInquiry\" />
+    <Folder Include="customerInquiry\" />
+    <Folder Include="companySummary\" />
+    <Folder Include="so\io\" />
+    <Folder Include="vendor\io\" />
+    <Folder Include="warehouseTransfer\io\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
+    <None Include="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DigitBridge.DataSource" Version="1.0.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.18" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.18" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 
 </Project>

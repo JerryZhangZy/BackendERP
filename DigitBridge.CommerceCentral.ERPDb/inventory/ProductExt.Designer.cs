@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -58,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private long _centralProductNum;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("StyleCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _styleCode;
@@ -114,6 +112,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("SubGroupCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _subGroupCode;
 
+        [Column("ProductStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _productStatus;
+
         [Column("PriceRule",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _priceRule;
 
@@ -142,7 +143,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _currency;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uOM;
+        private string _uom;
 
         [Column("QtyPerPallot",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _qtyPerPallot;
@@ -197,7 +198,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => ProductUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(ProductUuid)) 
 				ProductUuid = Guid.NewGuid().ToString(); 
@@ -289,11 +290,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -587,6 +588,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Product status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
+        public virtual int ProductStatus
+        {
+            get
+            {
+				return _productStatus; 
+            }
+            set
+            {
+				_productStatus = value; 
+				OnPropertyChanged("ProductStatus", value);
+            }
+        }
+
+		/// <summary>
 		/// Product Default Price Rule. <br> Title: Price Rule, Display: true, Editable: true
 		/// </summary>
         public virtual string PriceRule
@@ -737,11 +754,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uOM?.TrimEnd(); 
+				return _uom?.TrimEnd(); 
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+				_uom = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -969,7 +986,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1040,7 +1057,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_productUuid = String.Empty; 
 			_centralProductNum = default(long); 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_styleCode = String.Empty; 
 			_colorPatternCode = String.Empty; 
 			_sizeType = String.Empty; 
@@ -1059,6 +1076,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_categoryCode = String.Empty; 
 			_groupCode = String.Empty; 
 			_subGroupCode = String.Empty; 
+			_productStatus = default(int); 
 			_priceRule = String.Empty; 
 			_stockable = default(byte); 
 			_isAr = default(byte); 
@@ -1068,7 +1086,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_isProfit = default(byte); 
 			_release = default(byte); 
 			_currency = String.Empty; 
-			_uOM = String.Empty; 
+			_uom = String.Empty; 
 			_qtyPerPallot = default(decimal); 
 			_qtyPerCase = default(decimal); 
 			_qtyPerBox = default(decimal); 
@@ -1089,6 +1107,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public override ProductExt CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
+            return this;
+        }
+
         public virtual ProductExt ClearChildren()
         {
             return this;
@@ -1106,6 +1131,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override ProductExt ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override ProductExt ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

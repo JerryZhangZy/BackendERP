@@ -17,9 +17,7 @@
 	[SellerPrivateNote] Varchar(4500) NULL, --The note from the seller for internal use. Cannot be printed on invoice or packing listing
 	[EndBuyerInstruction] Varchar(4500) NULL, --Usually it is related to shipping instruction
 	[TotalOrderAmount] Money NULL, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation 
-									--(Sum of all items OrderItems Quantity x OrderItems UnitPrice ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems Promotions Amount + OrderItems Promotions ShippingAmount + OrderItems RecyclingFee)
 	[TotalTaxAmount] Money NULL, --Reference calculation. The real amount is provided by the channel. 
-									--(Sum of all OrderItems TaxPrice) + TotalShippingTaxPrice + TotalGiftOptionTaxPrice
 	[TotalShippingAmount] Money NULL, --Sum of all OrderItems ShippingPrice (Related to VAT. Refer to tax info for more detail) Does not include shipping item-level shipping promotions. 
 	[TotalShippingTaxAmount] Money NULL, --Sum of all OrderItems ShippingTaxPrice. Number generated here is estimate based on tax (VAT) settings in the profile. For representation only. No actual data provided by channels.
 	[TotalShippingDiscount] Money NULL, --Sum of all OrderItems ShippingDiscount Negative. 
@@ -101,9 +99,12 @@
     [DCAssignmentStatus] INT NULL, 
     [DCAssignmentDateUtc] DATETIME NULL, 
 
-    [RowNum]      BIGINT NOT NULL DEFAULT 0,
-    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for CentralOrder
-
+    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
+    [RowNum] BIGINT NOT NULL DEFAULT 0,
+    [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0,
+	[TotalCommissionAmount] [money] NOT NULL,
+	[TotalCommissionTaxAmount] [money] NOT NULL,
+	[TotalRemittedTaxAmount] [money] NULL,
     CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([CentralOrderNum])
 ) ON [PRIMARY]
 GO
@@ -132,11 +133,25 @@ GO
 ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_DigitBridgeGuid]  DEFAULT (newid()) FOR [DigitBridgeGuid]
 GO
 
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_RowNum]  DEFAULT ((0)) FOR [RowNum]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalDueSellerAmount]  DEFAULT ((0)) FOR [TotalDueSellerAmount]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalCommissionAmount]  DEFAULT ((0)) FOR [TotalCommissionAmount]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalCommissionTaxAmount]  DEFAULT ((0)) FOR [TotalCommissionTaxAmount]
+GO
+
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_TotalRemittedTaxAmount]  DEFAULT ((0)) FOR [TotalRemittedTaxAmount]
+GO
+
 CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderHeader_ChannelAccountNum_ChannelNum_ChannelOrderID] ON [dbo].[OrderHeader]
 (
 	[ChannelNum] ASC,
-	[ChannelAccountNum] ASC,
-	[ChannelOrderID] ASC
+	[ChannelAccountNum] ASC,	[ChannelOrderID] ASC
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 GO
 
@@ -160,4 +175,12 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderHeader] ON [dbo].[OrderHeader]
 ) 
 GO
 
+
+CREATE NONCLUSTERED INDEX [UK_OrderHeader_OriginalOrderDateUtc] ON [dbo].[OrderHeader]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[OriginalOrderDateUtc] ASC
+) 
+GO
 

@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,12 +10,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -25,11 +25,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a SalesOrderHeaderInfo Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class SalesOrderHeaderInfoDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -90,6 +94,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderNum => CentralOrderNum != null;
+
+		/// <summary>
+		/// (Readonly) CentralOrderUuid. <br> Title: Central Order: Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) CentralOrderUuid. <br> Title: Central Order: Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The CentralOrderUuid value cannot exceed 50 characters. ")]
+        public string CentralOrderUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralOrderUuid => CentralOrderUuid != null;
 
 		/// <summary>
 		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
@@ -178,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCustomerPoNum => CustomerPoNum != null;
-
+        
 		/// <summary>
 		/// (Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false
 		/// </summary>
@@ -608,6 +622,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToNightPhone => BillToNightPhone != null;
+
+		/// <summary>
+		/// Order notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Order notes. <br> Title: Notes, Display: true, Editable: true")]
+        [StringLength(1000, ErrorMessage = "The Notes value cannot exceed 1000 characters. ")]
+        public string Notes { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasNotes => Notes != null;
+
+		/// <summary>
+		/// C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false")]
+        public long? OrderDCAssignmentNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentNum => OrderDCAssignmentNum != null;
+
+		/// <summary>
+		/// Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The DBChannelOrderHeaderRowID value cannot exceed 50 characters. ")]
+        public string DBChannelOrderHeaderRowID { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDBChannelOrderHeaderRowID => DBChannelOrderHeaderRowID != null;
 
 		/// <summary>
 		/// (Ignore)

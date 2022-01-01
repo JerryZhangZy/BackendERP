@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,12 +10,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -25,11 +25,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a SalesOrderItems Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class SalesOrderItemsDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -122,6 +126,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEtaArrivalDate => EtaArrivalDate != null;
 
 		/// <summary>
+		/// Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? EarliestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasEarliestShipDate => EarliestShipDate != null;
+
+		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? LatestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLatestShipDate => LatestShipDate != null;
+
+		/// <summary>
+		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Request Signature. <br> Title: Stockable, Display: true, Editable: true")]
+        public bool? SignatureFlag { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSignatureFlag => SignatureFlag != null;
+
+		/// <summary>
 		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product SKU. <br> Title: SKU, Display: true, Editable: true")]
@@ -131,10 +164,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSKU => SKU != null;
 
-		/// <summary>
-		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false")]
+        /// <summary>
+		/// Product SKU title. <br> Title: SKU title, Display: false, Editable: false
+		/// </summary> 
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public string SKUTitle { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSKUTitle => SKUTitle != null;
+
+        /// <summary>
+        /// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+        /// </summary>
+        [OpenApiPropertyDescription("(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The ProductUuid value cannot exceed 50 characters. ")]
         public string ProductUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -577,6 +620,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasLotExpDate => LotExpDate != null;
 
 		/// <summary>
+		/// (Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The CentralOrderLineUuid value cannot exceed 50 characters. ")]
+        public string CentralOrderLineUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralOrderLineUuid => CentralOrderLineUuid != null;
+
+		/// <summary>
+		/// (Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The DBChannelOrderLineRowID value cannot exceed 50 characters. ")]
+        public string DBChannelOrderLineRowID { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDBChannelOrderLineRowID => DBChannelOrderLineRowID != null;
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The OrderDCAssignmentLineUuid value cannot exceed 50 characters. ")]
+        public string OrderDCAssignmentLineUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentLineUuid => OrderDCAssignmentLineUuid != null;
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore)")]
@@ -605,6 +678,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateBy => UpdateBy != null;
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+        /// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false")]
+        public long? OrderDCAssignmentLineNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentLineNum => OrderDCAssignmentLineNum != null;
+
+		/// <summary>
+		/// Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Rate, Title: Commission%, Display: true, Editable: true")]
+        public decimal? CommissionRate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionRate => CommissionRate != null;
+
+		/// <summary>
+		/// Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Rep Commission Amount, Title: Commission, Display: true, Editable: true")]
+        public decimal? CommissionAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCommissionAmount => CommissionAmount != null;
 
 
 

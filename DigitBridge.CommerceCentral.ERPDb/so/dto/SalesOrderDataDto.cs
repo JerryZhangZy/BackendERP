@@ -11,9 +11,9 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -22,6 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a SalesOrderDataDto Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public partial class SalesOrderDataDto
     {
         public SalesOrderHeaderDto SalesOrderHeader { get; set; }
@@ -40,6 +41,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderItems => SalesOrderItems != null;
 
+        public SalesOrderDataDto NewData()
+        {
+            SalesOrderHeader = new SalesOrderHeaderDto();
+            SalesOrderHeaderInfo = new SalesOrderHeaderInfoDto();
+            SalesOrderHeaderAttributes = new SalesOrderHeaderAttributesDto();
+            SalesOrderItems = new List<SalesOrderItemsDto>();
+            return this;
+        }
     }
 }
 

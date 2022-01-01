@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,18 +7,6 @@
 
     <OutputType>Library</OutputType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="appsettings.test.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.test.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="33.0.2" />
@@ -41,4 +29,9 @@
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

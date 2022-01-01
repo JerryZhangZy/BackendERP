@@ -43,7 +43,9 @@
 	[DamageWarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Damage Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
 	[DamageWarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable Damage warehouse code, load from inventory data. <br> Title: Damage Warehouse Code, Display: true, Editable: true
 
-	[InvoiceDiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Price, Display: true, Editable: false
+	[InvoiceDiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Discount Price, Display: true, Editable: false
+	[InvoiceDiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item invoice discount amount. <br> Title: Item invoice discount amount, Title:invoice return item discount amount, Display: true, Editable: false
+	[ReturnDiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item return discount amount. <br> Title: Item return discount amount, Title: return item discount amount, Display: true, Editable: true
 	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item return price. <br> Title: Return Price, Display: true, Editable: true
 	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. <br> Title: Ext.Amount, Display: true, Editable: false
 	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should apply tax. <br> Display: false, Editable: false
@@ -69,14 +71,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'UK_InvoiceReturnItems_InvoiceReturnItemId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'UK_InvoiceReturnItems_InvoiceReturnItemUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceReturnItems_InvoiceReturnItemUuid] ON [dbo].[InvoiceReturnItems]
 (
 	[ReturnItemUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'FK_InvoiceReturnItems_TransId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'FK_InvoiceReturnItems_TransUuid_Seq')
 CREATE NONCLUSTERED INDEX [FK_InvoiceReturnItems_TransUuid_Seq] ON [dbo].[InvoiceReturnItems]
 (
 	[TransUuid] ASC,
@@ -84,14 +86,14 @@ CREATE NONCLUSTERED INDEX [FK_InvoiceReturnItems_TransUuid_Seq] ON [dbo].[Invoic
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_TransId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_TransUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceReturnItems_TransUuid] ON [dbo].[InvoiceReturnItems]
 (
 	[TransUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_InvoiceId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'FK_InvoiceReturnItems_InvoiceUuid_Seq')
 CREATE NONCLUSTERED INDEX [FK_InvoiceReturnItems_InvoiceUuid_Seq] ON [dbo].[InvoiceReturnItems]
 (
 	[InvoiceUuid] ASC,
@@ -99,21 +101,21 @@ CREATE NONCLUSTERED INDEX [FK_InvoiceReturnItems_InvoiceUuid_Seq] ON [dbo].[Invo
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_InvoiceUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceReturnItems_InvoiceUuid] ON [dbo].[InvoiceReturnItems]
 (
 	[InvoiceUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_InvoiceItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'FK_InvoiceReturnItems_InvoiceItemsUuid')
 CREATE NONCLUSTERED INDEX [FK_InvoiceReturnItems_InvoiceItemsUuid] ON [dbo].[InvoiceReturnItems]
 (
 	[InvoiceItemsUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceReturnItems_InventoryId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceReturnItems]') AND name = N'IX_InvoiceItems_InventoryUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InventoryUuid] ON [dbo].[InvoiceReturnItems]
 (
 	[InventoryUuid] ASC

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
-#if ASYNC
     public class AsyncReader<T> : IAsyncReader<T>
     {
         private readonly bool _isAsync;
@@ -37,7 +36,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             Poco = default(T);
 
-            var hasRecords = _isAsync ? await Reader.ReadAsync().ConfigureAwait(false) : _reader.Read();
+            var hasRecords = _isAsync ? await Reader.ReadAsync() : _reader.Read();
 
             if (hasRecords)
                 Poco = _pocoFactory(_reader);
@@ -60,5 +59,4 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static AsyncReader<T> Empty()
             => new AsyncReader<T>();
     }
-#endif
 }

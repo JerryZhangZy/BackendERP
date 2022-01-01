@@ -1,4 +1,3 @@
-
               
     
 
@@ -25,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a SalesOrderHeaderInfo SQL Helper Static Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public static class SalesOrderHeaderInfoHelper
     {
@@ -38,70 +37,74 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region - static SQL fileds statement
 
-        public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string SalesOrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid"} ";
-        public static string CentralFulfillmentNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CentralFulfillmentNum AS {name ?? "CentralFulfillmentNum"} ";
-        public static string ShippingCarrier(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingCarrier) AS {name ?? "ShippingCarrier"} ";
-        public static string ShippingClass(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingClass) AS {name ?? "ShippingClass"} ";
-        public static string DistributionCenterNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DistributionCenterNum AS {name ?? "DistributionCenterNum"} ";
-        public static string CentralOrderNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CentralOrderNum AS {name ?? "CentralOrderNum"} ";
-        public static string ChannelNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum"} ";
-        public static string ChannelAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum"} ";
-        public static string ChannelOrderID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID"} ";
-        public static string SecondaryChannelOrderID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SecondaryChannelOrderID) AS {name ?? "SecondaryChannelOrderID"} ";
-        public static string ShippingAccount(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingAccount) AS {name ?? "ShippingAccount"} ";
-        public static string WarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid"} ";
-        public static string WarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode"} ";
-        public static string RefNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.RefNum) AS {name ?? "RefNum"} ";
-        public static string CustomerPoNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerPoNum) AS {name ?? "CustomerPoNum"} ";
-        public static string EndBuyerUserID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerUserID) AS {name ?? "EndBuyerUserID"} ";
-        public static string EndBuyerName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerName) AS {name ?? "EndBuyerName"} ";
-        public static string EndBuyerEmail(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerEmail) AS {name ?? "EndBuyerEmail"} ";
-        public static string ShipToName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToName) AS {name ?? "ShipToName"} ";
-        public static string ShipToFirstName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToFirstName) AS {name ?? "ShipToFirstName"} ";
-        public static string ShipToLastName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToLastName) AS {name ?? "ShipToLastName"} ";
-        public static string ShipToSuffix(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToSuffix) AS {name ?? "ShipToSuffix"} ";
-        public static string ShipToCompany(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCompany) AS {name ?? "ShipToCompany"} ";
-        public static string ShipToCompanyJobTitle(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCompanyJobTitle) AS {name ?? "ShipToCompanyJobTitle"} ";
-        public static string ShipToAttention(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAttention) AS {name ?? "ShipToAttention"} ";
-        public static string ShipToAddressLine1(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAddressLine1) AS {name ?? "ShipToAddressLine1"} ";
-        public static string ShipToAddressLine2(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAddressLine2) AS {name ?? "ShipToAddressLine2"} ";
-        public static string ShipToAddressLine3(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAddressLine3) AS {name ?? "ShipToAddressLine3"} ";
-        public static string ShipToCity(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCity) AS {name ?? "ShipToCity"} ";
-        public static string ShipToState(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToState) AS {name ?? "ShipToState"} ";
-        public static string ShipToStateFullName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToStateFullName) AS {name ?? "ShipToStateFullName"} ";
-        public static string ShipToPostalCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToPostalCode) AS {name ?? "ShipToPostalCode"} ";
-        public static string ShipToPostalCodeExt(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToPostalCodeExt) AS {name ?? "ShipToPostalCodeExt"} ";
-        public static string ShipToCounty(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCounty) AS {name ?? "ShipToCounty"} ";
-        public static string ShipToCountry(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCountry) AS {name ?? "ShipToCountry"} ";
-        public static string ShipToEmail(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToEmail) AS {name ?? "ShipToEmail"} ";
-        public static string ShipToDaytimePhone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToDaytimePhone) AS {name ?? "ShipToDaytimePhone"} ";
-        public static string ShipToNightPhone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShipToNightPhone) AS {name ?? "ShipToNightPhone"} ";
-        public static string BillToName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToName) AS {name ?? "BillToName"} ";
-        public static string BillToFirstName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToFirstName) AS {name ?? "BillToFirstName"} ";
-        public static string BillToLastName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToLastName) AS {name ?? "BillToLastName"} ";
-        public static string BillToSuffix(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToSuffix) AS {name ?? "BillToSuffix"} ";
-        public static string BillToCompany(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToCompany) AS {name ?? "BillToCompany"} ";
-        public static string BillToCompanyJobTitle(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToCompanyJobTitle) AS {name ?? "BillToCompanyJobTitle"} ";
-        public static string BillToAttention(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToAttention) AS {name ?? "BillToAttention"} ";
-        public static string BillToAddressLine1(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToAddressLine1) AS {name ?? "BillToAddressLine1"} ";
-        public static string BillToAddressLine2(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToAddressLine2) AS {name ?? "BillToAddressLine2"} ";
-        public static string BillToAddressLine3(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToAddressLine3) AS {name ?? "BillToAddressLine3"} ";
-        public static string BillToCity(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToCity) AS {name ?? "BillToCity"} ";
-        public static string BillToState(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToState) AS {name ?? "BillToState"} ";
-        public static string BillToStateFullName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToStateFullName) AS {name ?? "BillToStateFullName"} ";
-        public static string BillToPostalCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToPostalCode) AS {name ?? "BillToPostalCode"} ";
-        public static string BillToPostalCodeExt(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToPostalCodeExt) AS {name ?? "BillToPostalCodeExt"} ";
-        public static string BillToCounty(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToCounty) AS {name ?? "BillToCounty"} ";
-        public static string BillToCountry(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToCountry) AS {name ?? "BillToCountry"} ";
-        public static string BillToEmail(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToEmail) AS {name ?? "BillToEmail"} ";
-        public static string BillToDaytimePhone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToDaytimePhone) AS {name ?? "BillToDaytimePhone"} ";
-        public static string BillToNightPhone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BillToNightPhone) AS {name ?? "BillToNightPhone"} ";
-        public static string UpdateDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc"} ";
-        public static string EnterBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy"} ";
-        public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
-        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
-        public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
+        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid".ToCamelCase(camelCase)} ";
+        public static string CentralFulfillmentNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CentralFulfillmentNum AS {name ?? "CentralFulfillmentNum".ToCamelCase(camelCase)} ";
+        public static string ShippingCarrier(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShippingCarrier) AS {name ?? "ShippingCarrier".ToCamelCase(camelCase)} ";
+        public static string ShippingClass(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShippingClass) AS {name ?? "ShippingClass".ToCamelCase(camelCase)} ";
+        public static string DistributionCenterNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DistributionCenterNum AS {name ?? "DistributionCenterNum".ToCamelCase(camelCase)} ";
+        public static string CentralOrderNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CentralOrderNum AS {name ?? "CentralOrderNum".ToCamelCase(camelCase)} ";
+        public static string CentralOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CentralOrderUuid) AS {name ?? "CentralOrderUuid".ToCamelCase(camelCase)} ";
+        public static string ChannelNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum".ToCamelCase(camelCase)} ";
+        public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
+        public static string ChannelOrderID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID".ToCamelCase(camelCase)} ";
+        public static string SecondaryChannelOrderID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SecondaryChannelOrderID) AS {name ?? "SecondaryChannelOrderID".ToCamelCase(camelCase)} ";
+        public static string ShippingAccount(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShippingAccount) AS {name ?? "ShippingAccount".ToCamelCase(camelCase)} ";
+        public static string WarehouseUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid".ToCamelCase(camelCase)} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode".ToCamelCase(camelCase)} ";
+        public static string RefNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.RefNum) AS {name ?? "RefNum".ToCamelCase(camelCase)} ";
+        public static string CustomerPoNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CustomerPoNum) AS {name ?? "CustomerPoNum".ToCamelCase(camelCase)} ";
+        public static string EndBuyerUserID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerUserID) AS {name ?? "EndBuyerUserID".ToCamelCase(camelCase)} ";
+        public static string EndBuyerName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerName) AS {name ?? "EndBuyerName".ToCamelCase(camelCase)} ";
+        public static string EndBuyerEmail(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerEmail) AS {name ?? "EndBuyerEmail".ToCamelCase(camelCase)} ";
+        public static string ShipToName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToName) AS {name ?? "ShipToName".ToCamelCase(camelCase)} ";
+        public static string ShipToFirstName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToFirstName) AS {name ?? "ShipToFirstName".ToCamelCase(camelCase)} ";
+        public static string ShipToLastName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToLastName) AS {name ?? "ShipToLastName".ToCamelCase(camelCase)} ";
+        public static string ShipToSuffix(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToSuffix) AS {name ?? "ShipToSuffix".ToCamelCase(camelCase)} ";
+        public static string ShipToCompany(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCompany) AS {name ?? "ShipToCompany".ToCamelCase(camelCase)} ";
+        public static string ShipToCompanyJobTitle(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCompanyJobTitle) AS {name ?? "ShipToCompanyJobTitle".ToCamelCase(camelCase)} ";
+        public static string ShipToAttention(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAttention) AS {name ?? "ShipToAttention".ToCamelCase(camelCase)} ";
+        public static string ShipToAddressLine1(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAddressLine1) AS {name ?? "ShipToAddressLine1".ToCamelCase(camelCase)} ";
+        public static string ShipToAddressLine2(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAddressLine2) AS {name ?? "ShipToAddressLine2".ToCamelCase(camelCase)} ";
+        public static string ShipToAddressLine3(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToAddressLine3) AS {name ?? "ShipToAddressLine3".ToCamelCase(camelCase)} ";
+        public static string ShipToCity(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCity) AS {name ?? "ShipToCity".ToCamelCase(camelCase)} ";
+        public static string ShipToState(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToState) AS {name ?? "ShipToState".ToCamelCase(camelCase)} ";
+        public static string ShipToStateFullName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToStateFullName) AS {name ?? "ShipToStateFullName".ToCamelCase(camelCase)} ";
+        public static string ShipToPostalCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToPostalCode) AS {name ?? "ShipToPostalCode".ToCamelCase(camelCase)} ";
+        public static string ShipToPostalCodeExt(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToPostalCodeExt) AS {name ?? "ShipToPostalCodeExt".ToCamelCase(camelCase)} ";
+        public static string ShipToCounty(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCounty) AS {name ?? "ShipToCounty".ToCamelCase(camelCase)} ";
+        public static string ShipToCountry(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToCountry) AS {name ?? "ShipToCountry".ToCamelCase(camelCase)} ";
+        public static string ShipToEmail(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToEmail) AS {name ?? "ShipToEmail".ToCamelCase(camelCase)} ";
+        public static string ShipToDaytimePhone(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToDaytimePhone) AS {name ?? "ShipToDaytimePhone".ToCamelCase(camelCase)} ";
+        public static string ShipToNightPhone(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShipToNightPhone) AS {name ?? "ShipToNightPhone".ToCamelCase(camelCase)} ";
+        public static string BillToName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToName) AS {name ?? "BillToName".ToCamelCase(camelCase)} ";
+        public static string BillToFirstName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToFirstName) AS {name ?? "BillToFirstName".ToCamelCase(camelCase)} ";
+        public static string BillToLastName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToLastName) AS {name ?? "BillToLastName".ToCamelCase(camelCase)} ";
+        public static string BillToSuffix(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToSuffix) AS {name ?? "BillToSuffix".ToCamelCase(camelCase)} ";
+        public static string BillToCompany(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToCompany) AS {name ?? "BillToCompany".ToCamelCase(camelCase)} ";
+        public static string BillToCompanyJobTitle(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToCompanyJobTitle) AS {name ?? "BillToCompanyJobTitle".ToCamelCase(camelCase)} ";
+        public static string BillToAttention(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToAttention) AS {name ?? "BillToAttention".ToCamelCase(camelCase)} ";
+        public static string BillToAddressLine1(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToAddressLine1) AS {name ?? "BillToAddressLine1".ToCamelCase(camelCase)} ";
+        public static string BillToAddressLine2(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToAddressLine2) AS {name ?? "BillToAddressLine2".ToCamelCase(camelCase)} ";
+        public static string BillToAddressLine3(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToAddressLine3) AS {name ?? "BillToAddressLine3".ToCamelCase(camelCase)} ";
+        public static string BillToCity(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToCity) AS {name ?? "BillToCity".ToCamelCase(camelCase)} ";
+        public static string BillToState(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToState) AS {name ?? "BillToState".ToCamelCase(camelCase)} ";
+        public static string BillToStateFullName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToStateFullName) AS {name ?? "BillToStateFullName".ToCamelCase(camelCase)} ";
+        public static string BillToPostalCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToPostalCode) AS {name ?? "BillToPostalCode".ToCamelCase(camelCase)} ";
+        public static string BillToPostalCodeExt(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToPostalCodeExt) AS {name ?? "BillToPostalCodeExt".ToCamelCase(camelCase)} ";
+        public static string BillToCounty(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToCounty) AS {name ?? "BillToCounty".ToCamelCase(camelCase)} ";
+        public static string BillToCountry(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToCountry) AS {name ?? "BillToCountry".ToCamelCase(camelCase)} ";
+        public static string BillToEmail(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToEmail) AS {name ?? "BillToEmail".ToCamelCase(camelCase)} ";
+        public static string BillToDaytimePhone(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToDaytimePhone) AS {name ?? "BillToDaytimePhone".ToCamelCase(camelCase)} ";
+        public static string BillToNightPhone(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BillToNightPhone) AS {name ?? "BillToNightPhone".ToCamelCase(camelCase)} ";
+        public static string Notes(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes".ToCamelCase(camelCase)} ";
+        public static string OrderDCAssignmentNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentNum AS {name ?? "OrderDCAssignmentNum".ToCamelCase(camelCase)} ";
+        public static string DBChannelOrderHeaderRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderHeaderRowID) AS {name ?? "DBChannelOrderHeaderRowID".ToCamelCase(camelCase)} ";
+        public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
+        public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
+        public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
+        public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
+        public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -116,6 +119,7 @@ RTRIM({allies}ShippingCarrier) AS ShippingCarrier,
 RTRIM({allies}ShippingClass) AS ShippingClass,
 {allies}DistributionCenterNum AS DistributionCenterNum,
 {allies}CentralOrderNum AS CentralOrderNum,
+RTRIM({allies}CentralOrderUuid) AS CentralOrderUuid,
 {allies}ChannelNum AS ChannelNum,
 {allies}ChannelAccountNum AS ChannelAccountNum,
 RTRIM({allies}ChannelOrderID) AS ChannelOrderID,
@@ -168,6 +172,9 @@ RTRIM({allies}BillToCountry) AS BillToCountry,
 RTRIM({allies}BillToEmail) AS BillToEmail,
 RTRIM({allies}BillToDaytimePhone) AS BillToDaytimePhone,
 RTRIM({allies}BillToNightPhone) AS BillToNightPhone,
+RTRIM({allies}Notes) AS Notes,
+{allies}OrderDCAssignmentNum AS OrderDCAssignmentNum,
+RTRIM({allies}DBChannelOrderHeaderRowID) AS DBChannelOrderHeaderRowID,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,
@@ -176,6 +183,80 @@ RTRIM({allies}UpdateBy) AS UpdateBy,
 ";
         }
 
+        // TODO merge SelectAll
+        public static string SelectAll(string tableAllies, string outputStructName)
+        {
+            var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
+            var outputAllies = string.IsNullOrEmpty(outputStructName) ? string.Empty : $"{outputStructName.TrimEnd()}.";
+            return $@"
+{allies}RowNum AS '{outputAllies}RowNum',
+RTRIM({allies}SalesOrderUuid) AS '{outputAllies}SalesOrderUuid',
+{allies}CentralFulfillmentNum AS '{outputAllies}CentralFulfillmentNum',
+RTRIM({allies}ShippingCarrier) AS '{outputAllies}ShippingCarrier',
+RTRIM({allies}ShippingClass) AS '{outputAllies}ShippingClass',
+{allies}DistributionCenterNum AS '{outputAllies}DistributionCenterNum',
+{allies}CentralOrderNum AS '{outputAllies}CentralOrderNum',
+{allies}CentralOrderUuid AS '{outputAllies}CentralOrderUuid',
+{allies}ChannelNum AS '{outputAllies}ChannelNum',
+{allies}ChannelAccountNum AS '{outputAllies}ChannelAccountNum',
+RTRIM({allies}ChannelOrderID) AS '{outputAllies}ChannelOrderID',
+RTRIM({allies}SecondaryChannelOrderID) AS '{outputAllies}SecondaryChannelOrderID',
+RTRIM({allies}ShippingAccount) AS '{outputAllies}ShippingAccount',
+RTRIM({allies}WarehouseUuid) AS '{outputAllies}WarehouseUuid',
+RTRIM({allies}WarehouseCode) AS '{outputAllies}WarehouseCode',
+RTRIM({allies}RefNum) AS '{outputAllies}RefNum',
+RTRIM({allies}CustomerPoNum) AS '{outputAllies}CustomerPoNum',
+RTRIM({allies}EndBuyerUserID) AS '{outputAllies}EndBuyerUserID',
+RTRIM({allies}EndBuyerName) AS '{outputAllies}EndBuyerName',
+RTRIM({allies}EndBuyerEmail) AS '{outputAllies}EndBuyerEmail',
+RTRIM({allies}ShipToName) AS '{outputAllies}ShipToName',
+RTRIM({allies}ShipToFirstName) AS '{outputAllies}ShipToFirstName',
+RTRIM({allies}ShipToLastName) AS '{outputAllies}ShipToLastName',
+RTRIM({allies}ShipToSuffix) AS '{outputAllies}ShipToSuffix',
+RTRIM({allies}ShipToCompany) AS '{outputAllies}ShipToCompany',
+RTRIM({allies}ShipToCompanyJobTitle) AS '{outputAllies}ShipToCompanyJobTitle',
+RTRIM({allies}ShipToAttention) AS '{outputAllies}ShipToAttention',
+RTRIM({allies}ShipToAddressLine1) AS '{outputAllies}ShipToAddressLine1',
+RTRIM({allies}ShipToAddressLine2) AS '{outputAllies}ShipToAddressLine2',
+RTRIM({allies}ShipToAddressLine3) AS '{outputAllies}ShipToAddressLine3',
+RTRIM({allies}ShipToCity) AS '{outputAllies}ShipToCity',
+RTRIM({allies}ShipToState) AS '{outputAllies}ShipToState',
+RTRIM({allies}ShipToStateFullName) AS '{outputAllies}ShipToStateFullName',
+RTRIM({allies}ShipToPostalCode) AS '{outputAllies}ShipToPostalCode',
+RTRIM({allies}ShipToPostalCodeExt) AS '{outputAllies}ShipToPostalCodeExt',
+RTRIM({allies}ShipToCounty) AS '{outputAllies}ShipToCounty',
+RTRIM({allies}ShipToCountry) AS '{outputAllies}ShipToCountry',
+RTRIM({allies}ShipToEmail) AS '{outputAllies}ShipToEmail',
+RTRIM({allies}ShipToDaytimePhone) AS '{outputAllies}ShipToDaytimePhone',
+RTRIM({allies}ShipToNightPhone) AS '{outputAllies}ShipToNightPhone',
+RTRIM({allies}BillToName) AS '{outputAllies}BillToName',
+RTRIM({allies}BillToFirstName) AS '{outputAllies}BillToFirstName',
+RTRIM({allies}BillToLastName) AS '{outputAllies}BillToLastName',
+RTRIM({allies}BillToSuffix) AS '{outputAllies}BillToSuffix',
+RTRIM({allies}BillToCompany) AS '{outputAllies}BillToCompany',
+RTRIM({allies}BillToCompanyJobTitle) AS '{outputAllies}BillToCompanyJobTitle',
+RTRIM({allies}BillToAttention) AS '{outputAllies}BillToAttention',
+RTRIM({allies}BillToAddressLine1) AS '{outputAllies}BillToAddressLine1',
+RTRIM({allies}BillToAddressLine2) AS '{outputAllies}BillToAddressLine2',
+RTRIM({allies}BillToAddressLine3) AS '{outputAllies}BillToAddressLine3',
+RTRIM({allies}BillToCity) AS '{outputAllies}BillToCity',
+RTRIM({allies}BillToState) AS '{outputAllies}BillToState',
+RTRIM({allies}BillToStateFullName) AS '{outputAllies}BillToStateFullName',
+RTRIM({allies}BillToPostalCode) AS '{outputAllies}BillToPostalCode',
+RTRIM({allies}BillToPostalCodeExt) AS '{outputAllies}BillToPostalCodeExt',
+RTRIM({allies}BillToCounty) AS '{outputAllies}BillToCounty',
+RTRIM({allies}BillToCountry) AS '{outputAllies}BillToCountry',
+RTRIM({allies}BillToEmail) AS '{outputAllies}BillToEmail',
+RTRIM({allies}BillToDaytimePhone) AS '{outputAllies}BillToDaytimePhone',
+RTRIM({allies}BillToNightPhone) AS '{outputAllies}BillToNightPhone',
+RTRIM({allies}Notes) AS '{outputAllies}Notes',
+{allies}UpdateDateUtc AS '{outputAllies}UpdateDateUtc',
+RTRIM({allies}EnterBy) AS '{outputAllies}EnterBy',
+RTRIM({allies}UpdateBy) AS '{outputAllies}UpdateBy',
+{allies}EnterDateUtc AS '{outputAllies}EnterDateUtc',
+{allies}DigitBridgeGuid AS '{outputAllies}DigitBridgeGuid'
+";
+        }
         public static string SelectAllWhere(string sqlWhere, string tableAllies = null, bool forJson = false) 
         {
             if (!sqlWhere.StartsWith("WHERE", StringComparison.CurrentCultureIgnoreCase))

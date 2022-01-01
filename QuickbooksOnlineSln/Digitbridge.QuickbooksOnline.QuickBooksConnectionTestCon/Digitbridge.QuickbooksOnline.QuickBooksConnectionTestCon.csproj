@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.AzureQueue\Digitbridge.QuickbooksOnline.AzureQueue.csproj" />
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.DbToQuickbooksMdl\Digitbridge.QuickbooksOnline.DbToQuickbooksMdl.csproj" />
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.Db\Digitbridge.QuickbooksOnline.Db.csproj" />
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.QuickBooksConnection\Digitbridge.QuickbooksOnline.QuickBooksConnection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

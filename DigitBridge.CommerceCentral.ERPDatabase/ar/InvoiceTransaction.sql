@@ -11,6 +11,9 @@
     [InvoiceUuid] VARCHAR(50) NOT NULL, --Invoice uuid. <br> Display: false, Editable: false.
 	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable invoice number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
 
+    [PaymentUuid] VARCHAR(50) NOT NULL DEFAULT '', --Group Payment uuid. <br> Display: false, Editable: false.
+    [PaymentNumber] BIGINT NOT NULL DEFAULT 0, --Group Payment readable Number. <br> Display: false, Editable: false.
+
     [TransType] INT NOT NULL DEFAULT 0, --Transaction type, payment, return. <br> Title: Type, Display: true, Editable: true
     [TransStatus] INT NOT NULL DEFAULT 0, --Transaction status. <br> Title: Status, Display: true, Editable: true
 	[TransDate] DATE NOT NULL, --Invoice date. <br> Title: Date, Display: true, Editable: true
@@ -55,14 +58,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UK_InvoiceTransaction_TransId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UK_InvoiceTransaction_TransUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceTransaction_TransUuid] ON [dbo].[InvoiceTransaction]
 (
 	[TransUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'FK_InvoiceTransaction_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'FK_InvoiceTransaction_InvoiceUuid')
 CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceUuid] ON [dbo].[InvoiceTransaction]
 (
 	[InvoiceUuid] ASC,
@@ -70,7 +73,7 @@ CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceUuid] ON [dbo].[InvoiceT
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UI_InvoiceTransaction_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UI_InvoiceTransaction_TransNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_InvoiceTransaction_TransNum] ON [dbo].[InvoiceTransaction]
 (
 	[ProfileNum] ASC,
@@ -78,3 +81,23 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_InvoiceTransaction_TransNum] ON [dbo].[Invo
 	[TransNum] ASC
 ) 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_PaymentUuid')
+CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_PaymentUuid] ON [dbo].[InvoiceTransaction]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+    [PaymentUuid] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_PaymentNumber')
+CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_PaymentNumber] ON [dbo].[InvoiceTransaction]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[TransType] ASC,
+    [PaymentNumber] ASC
+) 
+GO
+

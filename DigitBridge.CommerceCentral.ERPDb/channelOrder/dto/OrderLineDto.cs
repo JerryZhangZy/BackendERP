@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,180 +10,374 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a OrderLine Dto Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class OrderLineDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
 
+		/// <summary>
+		/// Global unique in this database. CommerceCentral
+		/// </summary>
+		[OpenApiPropertyDescription("Global unique in this database. CommerceCentral")]
         public long? CentralOrderLineNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderLineNum => CentralOrderLineNum != null;
 
+		/// <summary>
+		/// Each database has its own default value.
+		/// </summary>
+		[OpenApiPropertyDescription("Each database has its own default value.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDatabaseNum => DatabaseNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public long? CentralOrderNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderNum => CentralOrderNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
+		/// <summary>
+		/// The channel which sells the item. Refer to Master Account Channel Setting
+		/// </summary>
+		[OpenApiPropertyDescription("The channel which sells the item. Refer to Master Account Channel Setting")]
         public int? ChannelNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelNum => ChannelNum != null;
 
+		/// <summary>
+		/// The unique number of this profile’s channel account
+		/// </summary>
+		[OpenApiPropertyDescription("The unique number of this profile’s channel account")]
         public int? ChannelAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelAccountNum => ChannelAccountNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(130, ErrorMessage = "The ChannelOrderID value cannot exceed 130 characters. ")]
         public string ChannelOrderID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelOrderID => ChannelOrderID != null;
 
+		/// <summary>
+		/// Unique product (item) number
+		/// </summary>
+		[OpenApiPropertyDescription("Unique product (item) number")]
         public long? CentralProductNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralProductNum => CentralProductNum != null;
 
+		/// <summary>
+		/// The item ID on channel, which mostly is not the SKU unless it is the webstore order.
+		/// </summary>
+		[OpenApiPropertyDescription("The item ID on channel, which mostly is not the SKU unless it is the webstore order.")]
         [StringLength(50, ErrorMessage = "The ChannelItemID value cannot exceed 50 characters. ")]
         public string ChannelItemID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelItemID => ChannelItemID != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(100, ErrorMessage = "The SKU value cannot exceed 100 characters. ")]
         public string SKU { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSKU => SKU != null;
 
+		/// <summary>
+		/// The title comes with the original order. If the original title is longer, it will be truncated.
+		/// </summary>
+		[OpenApiPropertyDescription("The title comes with the original order. If the original title is longer, it will be truncated.")]
         [StringLength(200, ErrorMessage = "The ItemTitle value cannot exceed 200 characters. ")]
         public string ItemTitle { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasItemTitle => ItemTitle != null;
 
+		/// <summary>
+		/// Use int here to be consistent with the majority of the channels.
+		/// </summary>
+		[OpenApiPropertyDescription("Use int here to be consistent with the majority of the channels.")]
         public decimal? OrderQty { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderQty => OrderQty != null;
 
+		/// <summary>
+		/// For dropship, The cost, to the merchant, per unit (wholesale price).
+		/// </summary>
+		[OpenApiPropertyDescription("For dropship, The cost, to the merchant, per unit (wholesale price).")]
         public decimal? UnitPrice { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUnitPrice => UnitPrice != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LineItemTaxAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineItemTaxAmount => LineItemTaxAmount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LineShippingAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineShippingAmount => LineShippingAmount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LineShippingTaxAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineShippingTaxAmount => LineShippingTaxAmount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LineShippingDiscount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineShippingDiscount => LineShippingDiscount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LineShippingDiscountTaxAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineShippingDiscountTaxAmount => LineShippingDiscountTaxAmount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LineRecyclingFee { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineRecyclingFee => LineRecyclingFee != null;
 
+		/// <summary>
+		/// Gift message printed on the line level.
+		/// </summary>
+		[OpenApiPropertyDescription("Gift message printed on the line level.")]
         [StringLength(500, ErrorMessage = "The LineGiftMsg value cannot exceed 500 characters. ")]
         public string LineGiftMsg { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineGiftMsg => LineGiftMsg != null;
 
+		/// <summary>
+		/// Description of the gift wrapping.
+		/// </summary>
+		[OpenApiPropertyDescription("Description of the gift wrapping.")]
         [StringLength(400, ErrorMessage = "The LineGiftNotes value cannot exceed 400 characters. ")]
         public string LineGiftNotes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineGiftNotes => LineGiftNotes != null;
 
+		/// <summary>
+		/// The gift wrapping cost for all quantity.
+		/// </summary>
+		[OpenApiPropertyDescription("The gift wrapping cost for all quantity.")]
         public decimal? LineGiftAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineGiftAmount => LineGiftAmount != null;
 
+		/// <summary>
+		/// The gift wrapping tax cost for all quantity.
+		/// </summary>
+		[OpenApiPropertyDescription("The gift wrapping tax cost for all quantity.")]
         public decimal? LineGiftTaxAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLineGiftTaxAmount => LineGiftTaxAmount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(500, ErrorMessage = "The LinePromotionCodes value cannot exceed 500 characters. ")]
         public string LinePromotionCodes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLinePromotionCodes => LinePromotionCodes != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LinePromotionAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLinePromotionAmount => LinePromotionAmount != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? LinePromotionTaxAmount { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLinePromotionTaxAmount => LinePromotionTaxAmount != null;
 
+		/// <summary>
+		/// Indicates if the order item is a bundle.
+		/// </summary>
+		[OpenApiPropertyDescription("Indicates if the order item is a bundle.")]
         public bool? BundleStatus { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBundleStatus => BundleStatus != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(20, ErrorMessage = "The HarmonizedCode value cannot exceed 20 characters. ")]
         public string HarmonizedCode { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasHarmonizedCode => HarmonizedCode != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(20, ErrorMessage = "The UPC value cannot exceed 20 characters. ")]
         public string UPC { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUPC => UPC != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(20, ErrorMessage = "The EAN value cannot exceed 20 characters. ")]
         public string EAN { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasEAN => EAN != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(20, ErrorMessage = "The UnitOfMeasure value cannot exceed 20 characters. ")]
         public string UnitOfMeasure { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUnitOfMeasure => UnitOfMeasure != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(50, ErrorMessage = "The DBChannelOrderLineRowID value cannot exceed 50 characters. ")]
         public string DBChannelOrderLineRowID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDBChannelOrderLineRowID => DBChannelOrderLineRowID != null;
 
+		/// <summary>
+		/// Global Unique Guid for CentralOrder
+		/// </summary>
+		[OpenApiPropertyDescription("Global Unique Guid for CentralOrder")]
         [StringLength(50, ErrorMessage = "The CentralOrderUuid value cannot exceed 50 characters. ")]
         public string CentralOrderUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderUuid => CentralOrderUuid != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(50, ErrorMessage = "The CentralOrderLineUuid value cannot exceed 50 characters. ")]
         public string CentralOrderLineUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderLineUuid => CentralOrderLineUuid != null;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
+        public decimal? UnitDueSellerAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasUnitDueSellerAmount => UnitDueSellerAmount != null;
 
 
 
@@ -192,6 +385,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Children - Generated 
 
+		public OrderLineMerchantExtDto OrderLineMerchantExt { get; set; }
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
+		[OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+		public bool HasOrderLineMerchantExt => OrderLineMerchantExt != null;
+		
         #endregion Children - Generated 
 
     }

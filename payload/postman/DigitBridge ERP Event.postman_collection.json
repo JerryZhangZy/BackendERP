@@ -1,0 +1,830 @@
+{
+	"info": {
+		"_postman_id": "a187c759-2f1f-4c74-9593-89749cfe63ab",
+		"name": "DigitBridge ERP Event",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Broker Tests",
+			"item": [
+				{
+					"name": "Add  create salesorder by centralorder event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"{{centralOrderUuid}}\"\n}"
+						},
+						"url": {
+							"raw": "{{erpEvent_Base_Url}}/erpevents/addCreateSalesOrderByCentralOrder?code={{erpEvent_Code}}",
+							"host": [
+								"{{erpEvent_Base_Url}}"
+							],
+							"path": [
+								"erpevents",
+								"addCreateSalesOrderByCentralOrder"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{erpEvent_Code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add quickbooks invoice event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"094d4ac2-31dd-41aa-bd41-d335682c475e\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addQuicksBooksInvoice?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addQuicksBooksInvoice"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add quickbooks invoice void event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"afc62d87-3c54-43e8-869f-5af8effb89fb\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addQuicksBooksInvoiceVoid?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addQuicksBooksInvoiceVoid"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add quickbooks return event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"bb8989f5-78d7-4e40-b8ff-37ca59348eac\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addQuicksBooksReturn?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addQuicksBooksReturn"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add quickbooks return delete event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"{{$randomUUID}}\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addQuicksBooksReturnDelete?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addQuicksBooksReturnDelete"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add quickbooks payment event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"d84d3a1b-5b00-414e-bf48-4a023bf2241e\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addQuicksBooksPayment?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addQuicksBooksPayment"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add quickbooks payment delete event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"d84d3a1b-5b00-414e-bf48-4a023bf2241e\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addQuicksBooksPaymentDelete?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addQuicksBooksPaymentDelete"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add  create salesorder by centralorder event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"{{centralOrderUuid}}\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addCreateSalesOrderByCentralOrder?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addCreateSalesOrderByCentralOrder"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add  create invoice by ordershipment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"processUuid\": \"{{$randomUUID}}\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/addCreateInvoiceByOrderShipment?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"addCreateInvoiceByOrderShipment"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update event execute status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"masterAccountNum\": {{masterAccountNum}},\n  \"profileNum\": {{profileNum}},\n  \"eventUuid\": \"dde6bdc9-b02f-4001-9c9a-7c919ab6fd64\",\n  \"actionStatus\": 6,\n  \"eventMessage\": \"叮叮当当\"\n}"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get new sample of erpevent find",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/sample/POST/erpevents/find?code={{erpEvent_Code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sample",
+						"POST",
+						"erpevents",
+						"find"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Load erpevent list data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// const erprequest = {",
+							"//   url: pm.environment.get('erpEvent_Base_Url')+'/sample/POST/erpevents/find?code='+pm.environment.get('code'),",
+							"//   method: 'GET',",
+							"//   header: {",
+							"//       'masterAccountNum':pm.environment.get('masterAccountNum'),",
+							"//       'profileNum':pm.environment.get('profileNum')",
+							"//   }, ",
+							"// };",
+							"// pm.sendRequest(erprequest, function (err, response) {",
+							"//     var json=response.json();",
+							"//     pm.variables.set('RequestData',JSON.stringify(json));",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"$top\": 100,\r\n    \"$skip\": 0,\r\n    \"$count\": true,\r\n    \"$sortBy\": \"\",\r\n    \"$loadAll\": true,\r\n    \"$filter\": {\r\n        \"eRPEventType\":5\r\n    }\r\n} \r\n"
+				},
+				"url": {
+					"raw": "{{erpEvent_Base_Url}}/erpevents/find?code={{erpEvent_Code}}",
+					"host": [
+						"{{erpEvent_Base_Url}}"
+					],
+					"path": [
+						"erpevents",
+						"find"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{erpEvent_Code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Response Status Code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"",
+					"});",
+					"if(pm.response.code==200){        ",
+					"    var json=pm.response.json();",
+					"    var msgs=JSON.stringify(json.messages);",
+					"    pm.test(msgs, function () {",
+					"        pm.expect(json.success).to.be.true;",
+					"    }); ",
+					"}"
+				]
+			}
+		}
+	]
+}

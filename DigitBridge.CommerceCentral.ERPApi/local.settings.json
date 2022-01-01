@@ -1,8 +1,0 @@
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;"
-  }
-}

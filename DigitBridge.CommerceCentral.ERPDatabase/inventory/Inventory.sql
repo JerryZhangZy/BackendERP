@@ -77,6 +77,13 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_Inventory_InventoryUuid] ON [dbo].[Inventor
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_ProductUuid')
+CREATE NONCLUSTERED INDEX [IX_Inventory_ProductUuid] ON [dbo].[Inventory]
+(
+	[ProductUuid] ASC
+) 
+GO
+
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'FK_Inventory_ProductUuid_WarehouseUuid')
 CREATE NONCLUSTERED INDEX [FK_Inventory_ProductUuid_WarehouseUuid] ON [dbo].[Inventory]
 (
@@ -85,33 +92,11 @@ CREATE NONCLUSTERED INDEX [FK_Inventory_ProductUuid_WarehouseUuid] ON [dbo].[Inv
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'BLK_Inventory_SKU_WarehouseCode')
-CREATE NONCLUSTERED INDEX [BLK_Inventory_SKU_WarehouseCode] ON [dbo].[Inventory]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_ProductUuid_WarehouseCode')
+CREATE NONCLUSTERED INDEX [IX_Inventory_ProductUuid_WarehouseCode] ON [dbo].[Inventory]
 (
-	[SKU] ASC,
+	[ProductUuid] ASC,
 	[WarehouseCode] ASC
-)
-GO
-
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_S_C_S_W_L_W')
-CREATE NONCLUSTERED INDEX [IX_Inventory_S_C_S_W_L_W] ON [dbo].[Inventory]
-(
-	[SKU] ASC, 
-	[ColorPatternCode] ASC,
-	[SizeCode] ASC,
-	[WidthCode] ASC,
-	[LengthCode] ASC,
-	[WarehouseCode] ASC
-) 
-GO
-
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_S_W_L_L')
-CREATE NONCLUSTERED INDEX [IX_Inventory_S_W_L_L] ON [dbo].[Inventory]
-(
-	[SKU] ASC, 
-	[WarehouseCode] ASC, 
-	[LotNum] ASC, 
-	[LpnNum] ASC
 ) 
 GO
 
@@ -122,12 +107,67 @@ CREATE NONCLUSTERED INDEX [FK_Inventory_WarehouseID] ON [dbo].[Inventory]
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_SKU')
+CREATE NONCLUSTERED INDEX [IX_Inventory_SKU] ON [dbo].[Inventory]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SKU] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_WarehouseCode')
+CREATE NONCLUSTERED INDEX [IX_Inventory_WarehouseCode] ON [dbo].[Inventory]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[WarehouseCode] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'BLK_Inventory_SKU_WarehouseCode')
+CREATE NONCLUSTERED INDEX [BLK_Inventory_SKU_WarehouseCode] ON [dbo].[Inventory]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SKU] ASC,
+	[WarehouseCode] ASC
+)
+GO
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_S_C_S_W_L_W')
+CREATE NONCLUSTERED INDEX [IX_Inventory_S_C_S_W_L_W] ON [dbo].[Inventory]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SKU] ASC, 
+	[ColorPatternCode] ASC,
+	[SizeCode] ASC,
+	[WidthCode] ASC,
+	[LengthCode] ASC,
+	[WarehouseCode] ASC
+) 
+GO
+
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_LpnNum')
 CREATE NONCLUSTERED INDEX [IX_Inventory_LpnNum] ON [dbo].[Inventory]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[LpnNum] ASC
 ) 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_LotNum')
+CREATE NONCLUSTERED INDEX [IX_Inventory_LotNum] ON [dbo].[Inventory]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[LotNum] ASC
+) 
+GO
+
 
 
 

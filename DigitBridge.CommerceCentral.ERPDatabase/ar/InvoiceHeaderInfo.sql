@@ -19,7 +19,7 @@
 	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
 	[RefNum] VARCHAR(100) NOT NULL DEFAULT '', --Reference Number. <br> Title: Reference Number: Display: true, Editable: true
 	[CustomerPoNum] VARCHAR(100) NOT NULL DEFAULT '', --Customer P/O Number. <br> Title: Customer PO: Display: true, Editable: true
-
+	
 	[EndBuyerUserId] VARCHAR(255) NOT NULL DEFAULT '', --(Ignore) The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Display: false, Editable: false
 	[EndBuyerName] NVARCHAR(255) NOT NULL DEFAULT '', --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department. <br> Title: Buyer Name : Display: true, Editable: false
 	[EndBuyerEmail] VARCHAR(255) NOT NULL DEFAULT '', --The email of the end customer. <br> Title: Buyer Email: Display: true, Editable: false
@@ -66,6 +66,11 @@
 	[BillToDaytimePhone] VARCHAR(50) NOT NULL DEFAULT '', --Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
 	[BillToNightPhone] VARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
 
+	[Notes] NVarchar(1000) NOT NULL DEFAULT '',--Order notes. <br> Title: Notes, Display: true, Editable: true
+
+	[OrderDCAssignmentNum] [bigint] NOT NULL DEFAULT 0, --C&C DC DCAssignment Number. <br> Title: DCAssignment, Display: true, Editable: false
+	[DBChannelOrderHeaderRowID] VARCHAR(50) NOT NULL DEFAULT '', --Channel Order Header RowID. <br> Title: OrderRowID, Display: false, Editable: false
+
     [UpdateDateUtc] DATETIME NULL, --(Ignore)
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
@@ -75,12 +80,55 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'UK_InvoiceHeaderInfo_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'UK_InvoiceHeaderInfo_InvoiceUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeaderInfo_InvoiceUuid] ON [dbo].[InvoiceHeaderInfo]
 (
 	[InvoiceUuid] ASC
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_OrderShipmentUuid')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_OrderShipmentUuid] ON [dbo].[InvoiceHeaderInfo]
+(
+	[OrderShipmentUuid] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_CentralFulfillmentNum')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_CentralFulfillmentNum] ON [dbo].[InvoiceHeaderInfo]
+(
+	[CentralFulfillmentNum] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_OrderShipmentNum')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_OrderShipmentNum] ON [dbo].[InvoiceHeaderInfo]
+(
+	[OrderShipmentNum] ASC
+)
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_CentralOrderNum')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_CentralOrderNum] ON [dbo].[InvoiceHeaderInfo]
+(
+	[CentralOrderNum] ASC
+) 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_ChannelNum')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_ChannelNum] ON [dbo].[InvoiceHeaderInfo]
+(
+	[ChannelNum] ASC
+)
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_ChannelOrderID')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_ChannelOrderID] ON [dbo].[InvoiceHeaderInfo]
+(
+	[ChannelOrderID] ASC
+)
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'IX_InvoiceHeaderInfo_ShipToName')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_ShipToName] ON [dbo].[InvoiceHeaderInfo]
+(
+	[ShipToName] ASC
+)
 
 

@@ -4,12 +4,14 @@ using System.Text;
 
 namespace DigitBridge.Base.Common
 {
-    public enum InvoiceStatus : int
+    public enum InvoiceStatusEnum : int
     {
         New = 0,
         Outstanding = 1,
         Paid = 2,
-        Closed = 3,
+        OverPaid = 3,
+        PastDue = 100,
+        Closed = 200,
         Void = 255,
     }
 }

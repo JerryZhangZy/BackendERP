@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -62,6 +60,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
+
+        [Column("PaymentUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _paymentUuid;
+
+        [Column("PaymentNumber",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _paymentNumber;
 
         [Column("TransType",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _transType;
@@ -167,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => TransUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(TransUuid)) 
 				TransUuid = Guid.NewGuid().ToString(); 
@@ -281,6 +285,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceNumber = value.TruncateTo(50); 
 				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Group Payment uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string PaymentUuid
+        {
+            get
+            {
+				return _paymentUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_paymentUuid = value.TruncateTo(50); 
+				OnPropertyChanged("PaymentUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Group Payment readable Number. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual long PaymentNumber
+        {
+            get
+            {
+				return _paymentNumber; 
+            }
+            set
+            {
+				_paymentNumber = value; 
+				OnPropertyChanged("PaymentNumber", value);
             }
         }
 
@@ -779,7 +815,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -852,6 +888,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_transNum = default(int); 
 			_invoiceUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
+			_paymentUuid = String.Empty; 
+			_paymentNumber = default(long); 
 			_transType = default(int); 
 			_transStatus = default(int); 
 			_transDate = new DateTime().MinValueSql(); 
@@ -889,6 +927,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public override InvoiceTransaction CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
+            return this;
+        }
+
         public virtual InvoiceTransaction ClearChildren()
         {
             return this;
@@ -922,6 +967,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
 
+		public override InvoiceTransaction ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override InvoiceTransaction ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

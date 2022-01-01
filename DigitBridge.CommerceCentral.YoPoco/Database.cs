@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -9,17 +10,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if !NETSTANDARD
-using System.Configuration;
-
-#endif
-
 namespace DigitBridge.CommerceCentral.YoPoco
 {
     /// <inheritdoc />
     public class Database : IDatabase
     {
-#region Internal operations
+        #region Internal operations
 
         internal void DoPreExecute(IDbCommand cmd)
         {
@@ -36,9 +32,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _lastArgs = cmd.Parameters.Cast<IDataParameter>().Select(parameter => parameter.Value).ToArray();
         }
 
-#endregion
+        #endregion Internal operations
 
-#region Member Fields
+        #region Member Fields
 
         private IMapper _defaultMapper;
         private string _connectionString;
@@ -54,54 +50,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         private DbProviderFactory _factory;
         private IsolationLevel? _isolationLevel;
 
-#endregion
+        #endregion Member Fields
 
-#region Constructors
-
-#if !NETSTANDARD
-        /// <summary>
-        ///     Constructs an instance using the first connection string found in the app/web configuration file.
-        /// </summary>
-        /// <param name="defaultMapper">The default mapper to use when no specific mapper has been registered.</param>
-        /// <exception cref="InvalidOperationException">Thrown when no connection strings can registered.</exception>
-        public Database(IMapper defaultMapper = null)
-        {
-            if (ConfigurationManager.ConnectionStrings.Count == 0)
-                throw new InvalidOperationException("One or more connection strings must be registered to use the no-parameter constructor");
-
-            var entry = ConfigurationManager.ConnectionStrings[0];
-            _connectionString = entry.ConnectionString;
-            InitialiseFromEntry(entry, defaultMapper);
-        }
-
-        /// <summary>
-        ///     Constructs an instance using a supplied connection string name. The actual connection string and provider will be
-        ///     read from app/web.config.
-        /// </summary>
-        /// <param name="connectionStringName">The name of the connection.</param>
-        /// <param name="defaultMapper">The default mapper to use when no specific mapper has been registered.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="connectionStringName" /> is null or empty.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when a connection string cannot be found.</exception>
-        public Database(string connectionStringName, IMapper defaultMapper = null)
-        {
-            if (string.IsNullOrEmpty(connectionStringName))
-                throw new ArgumentException("Connection string name must not be null or empty", nameof(connectionStringName));
-
-            var entry = ConfigurationManager.ConnectionStrings[connectionStringName];
-
-            if (entry == null)
-                throw new InvalidOperationException(string.Format("Can't find a connection string with the name '{0}'", connectionStringName));
-
-            _connectionString = entry.ConnectionString;
-            InitialiseFromEntry(entry, defaultMapper);
-        }
-
-        private void InitialiseFromEntry(ConnectionStringSettings entry, IMapper defaultMapper)
-        {
-            var providerName = !string.IsNullOrEmpty(entry.ProviderName) ? entry.ProviderName : "System.Data.SqlClient";
-            Initialise(DatabaseProvider.Resolve(providerName, false, _connectionString), defaultMapper);
-        }
-#endif
+        #region Constructors
 
         /// <summary>
         ///     Constructs an instance using a supplied IDbConnection.
@@ -207,7 +158,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            var settings = (IBuildConfigurationSettings) configuration;
+            var settings = (IBuildConfigurationSettings)configuration;
 
             IMapper defaultMapper = null;
             settings.TryGetSetting<IMapper>(DatabaseConfigurationExtensions.DefaultMapper, v => defaultMapper = v);
@@ -215,9 +166,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             IProvider provider = null;
             IDbConnection connection = null;
             string providerName = null;
-#if !NETSTANDARD
-            ConnectionStringSettings entry = null;
-#endif
 
             settings.TryGetSetting<IProvider>(DatabaseConfigurationExtensions.Provider, p => provider = p);
             settings.TryGetSetting<IDbConnection>(DatabaseConfigurationExtensions.Connection, c => connection = c);
@@ -230,43 +178,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             else
             {
                 settings.TryGetSetting<string>(DatabaseConfigurationExtensions.ConnectionString, cs => _connectionString = cs);
-
-#if !NETSTANDARD
-                if (_connectionString == null)
-                {
-                    string connectionStringName = null;
-                    settings.TryGetSetting<string>(DatabaseConfigurationExtensions.ConnectionStringName, n => connectionStringName = n);
-
-                    if (connectionStringName != null)
-                    {
-                        entry = ConfigurationManager.ConnectionStrings[connectionStringName];
-                        if (entry == null)
-                            throw new InvalidOperationException($"Can't find a connection string with the name '{connectionStringName}'");
-                    }
-                    else
-                    {
-                        if (ConfigurationManager.ConnectionStrings.Count == 0)
-                            throw new InvalidOperationException("One or more connection strings must be registered, when not providing a connection string");
-
-                        entry = ConfigurationManager.ConnectionStrings[0];
-                    }
-
-                    _connectionString = entry.ConnectionString;
-                }
-#else
                 if (_connectionString == null)
                     throw new InvalidOperationException("A connection string is required.");
-#endif
             }
 
             if (provider != null)
                 Initialise(provider, defaultMapper);
             else if (providerName != null)
                 Initialise(DatabaseProvider.Resolve(providerName, false, _connectionString), defaultMapper);
-#if !NETSTANDARD
-            else if (entry != null)
-                InitialiseFromEntry(entry, defaultMapper);
-#endif
             else if (connection != null)
                 Initialise(DatabaseProvider.Resolve(_sharedConnection.GetType(), false, _connectionString), defaultMapper);
             else
@@ -302,11 +221,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _factory = _provider.GetFactory();
 
             _defaultMapper = mapper ?? new ConventionMapper();
+            _connectionInterceptor = null;
         }
 
-#endregion
+        #endregion Constructors
 
-#region Connection Management
+        #region Connection Management
 
         /// <summary>
         ///     When set to true the first opened connection is kept alive until <see cref="CloseSharedConnection" />
@@ -326,6 +246,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <seealso cref="KeepConnectionAlive" />
         public IDbConnection Connection => _sharedConnection;
 
+        private Func<IDbConnection, SqlConnection> _connectionInterceptor;
+
+        public void AddDbConnectionInterceptor(Func<IDbConnection, SqlConnection> connectionInterceptor)
+        {
+            _connectionInterceptor = connectionInterceptor;
+        }
+
+        private Func<IDbConnection, Task<SqlConnection>> _connectionInterceptorAsync;
+
+        public void AddDbConnectionInterceptorAsync(Func<IDbConnection, Task<SqlConnection>> connectionInterceptor)
+        {
+            _connectionInterceptorAsync = connectionInterceptor;
+        }
+
         /// <summary>
         ///     Opens a connection that will be used for all subsequent queries.
         /// </summary>
@@ -342,6 +276,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 _sharedConnection = _factory.CreateConnection();
                 _sharedConnection.ConnectionString = _connectionString;
+                if (_connectionInterceptor != null)
+                    _sharedConnection = _connectionInterceptor(_sharedConnection);
 
                 if (_sharedConnection.State == ConnectionState.Broken)
                     _sharedConnection.Close();
@@ -358,12 +294,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _sharedConnectionDepth++;
         }
 
-#if ASYNC
         /// <summary>
         ///     The async version of <see cref="OpenSharedConnection" />.
         /// </summary>
-        public Task OpenSharedConnectionAsync()
-            => OpenSharedConnectionAsync(CancellationToken.None);
+        public async Task OpenSharedConnectionAsync()
+            => await OpenSharedConnectionAsync(CancellationToken.None);
 
         /// <summary>
         ///     The async version of <see cref="OpenSharedConnection" />.
@@ -374,6 +309,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 _sharedConnection = _factory.CreateConnection();
                 _sharedConnection.ConnectionString = _connectionString;
+                if (_connectionInterceptorAsync != null)
+                    _sharedConnection = await _connectionInterceptorAsync(_sharedConnection);
 
                 if (_sharedConnection.State == ConnectionState.Broken)
                     _sharedConnection.Close();
@@ -382,7 +319,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 {
                     var con = _sharedConnection as DbConnection;
                     if (con != null)
-                        await con.OpenAsync(cancellationToken).ConfigureAwait(false);
+                        await con.OpenAsync();
                     else
                         _sharedConnection.Open();
                 }
@@ -395,7 +332,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             _sharedConnectionDepth++;
         }
-#endif
 
         /// <summary>
         ///     Releases the shared connection.
@@ -434,13 +370,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
             CloseSharedConnection();
         }
 
-#endregion
+        #endregion Connection Management
 
-#region Transaction Management
+        #region Transaction Management
 
         /// <inheritdoc />
         IDbTransaction ITransactionAccessor.Transaction => _transaction;
+
         public bool IsInTransaction => (_transaction != null) && (_sharedConnection.State != ConnectionState.Closed);
+        public IDbTransaction CurrentTransaction => _transaction;
 
         /// <inheritdoc />
         public ITransaction GetTransaction()
@@ -476,10 +414,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-#if ASYNC
         /// <inheritdoc />
-        public Task BeginTransactionAsync()
-            => BeginTransactionAsync(CancellationToken.None);
+        public async Task BeginTransactionAsync()
+            => await BeginTransactionAsync(CancellationToken.None);
 
         /// <inheritdoc />
         public async Task BeginTransactionAsync(CancellationToken cancellationToken)
@@ -488,13 +425,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             if (_transactionDepth == 1)
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 _transaction = !_isolationLevel.HasValue ? _sharedConnection.BeginTransaction() : _sharedConnection.BeginTransaction(_isolationLevel.Value);
                 _transactionCancelled = false;
                 OnBeginTransaction();
             }
         }
-#endif
 
         /// <summary>
         ///     Internal helper to cleanup transaction
@@ -529,9 +465,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 CleanupTransaction();
         }
 
-#endregion
+        #endregion Transaction Management
 
-#region Command Management
+        #region Command Management
 
         /// <summary>
         ///     Add a parameter to a DB command
@@ -588,7 +524,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 var t = value.GetType();
                 if (t.IsEnum) // PostgreSQL .NET driver wont cast enum to int
                 {
-                    p.Value = Convert.ChangeType(value, ((Enum) value).GetTypeCode());
+                    p.Value = Convert.ChangeType(value, ((Enum)value).GetTypeCode());
                 }
                 else if (t == typeof(Guid) && !_provider.HasNativeGuidSupport)
                 {
@@ -664,9 +600,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
                         sql = sql.ReplaceParamPrefix(_paramPrefix);
                     sql = sql.Replace("@@", "@"); // <- double @@ escapes a single @
                     break;
+
                 case CommandType.StoredProcedure:
                     args = ParametersHelper.ProcessStoredProcParams(cmd, args, SetParameterProperties);
                     break;
+
                 case CommandType.TableDirect:
                     break;
             }
@@ -679,9 +617,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return cmd;
         }
 
-#endregion
+        #endregion Command Management
 
-#region Exception Reporting and Logging
+        #region Exception Reporting and Logging
 
         /// <summary>
         ///     Called if an exception occurs during processing of a DB operation.  Override to provide custom logging/handling.
@@ -745,9 +683,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             CommandExecuted?.Invoke(this, new DbCommandEventArgs(cmd));
         }
 
-#endregion
+        #endregion Exception Reporting and Logging
 
-#region operation: Execute
+        #region operation: Execute
 
         /// <inheritdoc />
         public int Execute(string sql, params object[] args)
@@ -776,36 +714,35 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return -1;
             }
         }
 
-#if ASYNC
+        public async Task<int> ExecuteAsync(string sql, params object[] args)
+            => await ExecuteInternalAsync(CancellationToken.None, CommandType.Text, sql, args);
 
-        public Task<int> ExecuteAsync(string sql, params object[] args)
-            => ExecuteInternalAsync(CancellationToken.None, CommandType.Text, sql, args);
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken, string sql, params object[] args)
+            => await ExecuteInternalAsync(cancellationToken, CommandType.Text, sql, args);
 
-        public Task<int> ExecuteAsync(CancellationToken cancellationToken, string sql, params object[] args)
-            => ExecuteInternalAsync(cancellationToken, CommandType.Text, sql, args);
+        public async Task<int> ExecuteAsync(Sql sql)
+            => await ExecuteInternalAsync(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
 
-        public Task<int> ExecuteAsync(Sql sql)
-            => ExecuteInternalAsync(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
-
-        public Task<int> ExecuteAsync(CancellationToken cancellationToken, Sql sql)
-            => ExecuteInternalAsync(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken, Sql sql)
+            => await ExecuteInternalAsync(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
 
         protected virtual async Task<int> ExecuteInternalAsync(CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
                     {
-                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
                     }
                 }
                 finally
@@ -815,17 +752,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return -1;
             }
         }
 
-#endif
+        #endregion operation: Execute
 
-#endregion
-
-#region operation: ExecuteScalar
+        #region operation: ExecuteScalar
 
         /// <inheritdoc />
         public T ExecuteScalar<T>(string sql, params object[] args)
@@ -862,47 +798,51 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return default(T);
             }
         }
 
-#if ASYNC
+        /// <inheritdoc />
+        public async Task<T> ExecuteScalarAsync<T>(string sql, params object[] args)
+            => await ExecuteScalarInternalAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
 
         /// <inheritdoc />
-        public Task<T> ExecuteScalarAsync<T>(string sql, params object[] args)
-            => ExecuteScalarInternalAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
+        public async Task<T> ExecuteScalarAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
+            => await ExecuteScalarInternalAsync<T>(cancellationToken, CommandType.Text, sql, args);
 
         /// <inheritdoc />
-        public Task<T> ExecuteScalarAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => ExecuteScalarInternalAsync<T>(cancellationToken, CommandType.Text, sql, args);
+        public async Task<T> ExecuteScalarAsync<T>(Sql sql)
+            => await ExecuteScalarInternalAsync<T>(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<T> ExecuteScalarAsync<T>(Sql sql)
-            => ExecuteScalarInternalAsync<T>(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
-
-        /// <inheritdoc />
-        public Task<T> ExecuteScalarAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => ExecuteScalarInternalAsync<T>(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task<T> ExecuteScalarAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await ExecuteScalarInternalAsync<T>(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
 
         protected virtual async Task<T> ExecuteScalarInternalAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql,
                                                                       params object[] args)
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
                     {
-                        var val = await ExecuteScalarHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
-
+                        var val = await ExecuteScalarHelperAsync(cancellationToken, cmd);
                         var u = Nullable.GetUnderlyingType(typeof(T));
-                        if (u != null && (val == null || val == DBNull.Value))
+
+                        if (default(T) == null)
+                        {
+                            if (u != null && (val == null || val == DBNull.Value))
+                                return default(T);
+                        }
+                        else if (val == null)
                             return default(T);
 
-                        return (T) Convert.ChangeType(val, u == null ? typeof(T) : u);
+                        return (T)Convert.ChangeType(val, u == null ? typeof(T) : u);
                     }
                 }
                 finally
@@ -912,17 +852,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return default(T);
             }
         }
 
-#endif
+        #endregion operation: ExecuteScalar
 
-#endregion
-
-#region operation: Fetch
+        #region operation: Fetch
 
         /// <inheritdoc />
         public List<T> Fetch<T>()
@@ -948,98 +887,95 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public List<T> Fetch<T>(long page, long itemsPerPage, Sql sql)
             => SkipTake<T>((page - 1) * itemsPerPage, itemsPerPage, sql.SQL, sql.Arguments);
 
-#if ASYNC
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>()
-            => FetchAsync<T>(CancellationToken.None, CommandType.Text, string.Empty);
+        public async Task<List<T>> FetchAsync<T>()
+            => await FetchAsync<T>(CancellationToken.None, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CommandType commandType)
-            => FetchAsync<T>(CancellationToken.None, CommandType.Text, string.Empty);
+        public async Task<List<T>> FetchAsync<T>(CommandType commandType)
+            => await FetchAsync<T>(CancellationToken.None, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken)
-            => FetchAsync<T>(cancellationToken, CommandType.Text, string.Empty);
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken)
+            => await FetchAsync<T>(cancellationToken, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType)
-            => FetchAsync<T>(cancellationToken, commandType, string.Empty);
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType)
+            => await FetchAsync<T>(cancellationToken, commandType, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(string sql, params object[] args)
-            => FetchAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
+        public async Task<List<T>> FetchAsync<T>(string sql, params object[] args)
+            => await FetchAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
 
-        public Task<List<T>> FetchAsync<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
-            => FetchAsync<T>(CancellationToken.None, CommandType.Text, tableColumns, sql, args);
-
-        /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CommandType commandType, string sql, params object[] args)
-            => FetchAsync<T>(CancellationToken.None, commandType, sql, args);
+        public async Task<List<T>> FetchAsync<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
+            => await FetchAsync<T>(CancellationToken.None, CommandType.Text, tableColumns, sql, args);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => FetchAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
+        public async Task<List<T>> FetchAsync<T>(CommandType commandType, string sql, params object[] args)
+            => await FetchAsync<T>(CancellationToken.None, commandType, sql, args);
+
+        /// <inheritdoc />
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
+            => await FetchAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
 
         /// <inheritdoc />
         public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
         {
             var pocos = new List<T>();
-            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args).ConfigureAwait(false);
+            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args);
             return pocos;
         }
+
         public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType, IEnumerable<string> tableColumns, string sql, params object[] args)
         {
             var pocos = new List<T>();
-            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args).ConfigureAwait(false);
+            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args);
             return pocos;
         }
 
-        
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(Sql sql)
-            => FetchAsync<T>(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
-
-        /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CommandType commandType, Sql sql)
-            => FetchAsync<T>(CancellationToken.None, commandType, sql.SQL, sql.Arguments);
+        public async Task<List<T>> FetchAsync<T>(Sql sql)
+            => await FetchAsync<T>(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => FetchAsync<T>(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task<List<T>> FetchAsync<T>(CommandType commandType, Sql sql)
+            => await FetchAsync<T>(CancellationToken.None, commandType, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType, Sql sql)
-            => FetchAsync<T>(cancellationToken, commandType, sql.SQL, sql.Arguments);
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await FetchAsync<T>(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(long page, long itemsPerPage)
-            => FetchAsync<T>(page, itemsPerPage, string.Empty);
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType, Sql sql)
+            => await FetchAsync<T>(cancellationToken, commandType, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage)
-            => FetchAsync<T>(cancellationToken, page, itemsPerPage, string.Empty);
+        public async Task<List<T>> FetchAsync<T>(long page, long itemsPerPage)
+            => await FetchAsync<T>(page, itemsPerPage, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(long page, long itemsPerPage, string sql, params object[] args)
-            => FetchAsync<T>(CancellationToken.None, page, itemsPerPage, sql, args);
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage)
+            => await FetchAsync<T>(cancellationToken, page, itemsPerPage, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, string sql, params object[] args)
-            => SkipTakeAsync<T>(cancellationToken, (page - 1) * itemsPerPage, itemsPerPage, sql, args);
+        public async Task<List<T>> FetchAsync<T>(long page, long itemsPerPage, string sql, params object[] args)
+            => await FetchAsync<T>(CancellationToken.None, page, itemsPerPage, sql, args);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(long page, long itemsPerPage, Sql sql)
-            => FetchAsync<T>(CancellationToken.None, page, itemsPerPage, sql);
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, string sql, params object[] args)
+            => await SkipTakeAsync<T>(cancellationToken, (page - 1) * itemsPerPage, itemsPerPage, sql, args);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, Sql sql)
-            => SkipTakeAsync<T>(cancellationToken, (page - 1) * itemsPerPage, itemsPerPage, sql.SQL, sql.Arguments);
+        public async Task<List<T>> FetchAsync<T>(long page, long itemsPerPage, Sql sql)
+            => await FetchAsync<T>(CancellationToken.None, page, itemsPerPage, sql);
 
-#endif
+        /// <inheritdoc />
+        public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, Sql sql)
+            => await SkipTakeAsync<T>(cancellationToken, (page - 1) * itemsPerPage, itemsPerPage, sql.SQL, sql.Arguments);
 
-#endregion
+        #endregion operation: Fetch
 
-#region operation: Page
+        #region operation: Page
 
         /// <summary>
         ///     Starting with a regular SELECT statement, derives the SQL statements required to query a
@@ -1109,8 +1045,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public Page<T> Page<T>(long page, long itemsPerPage, Sql sqlCount, Sql sqlPage)
             => Page<T>(page, itemsPerPage, sqlCount.SQL, sqlCount.Arguments, sqlPage.SQL, sqlPage.Arguments);
 
-#if ASYNC
-
         /// <inheritdoc />
         public async Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, string sqlCount, object[] countArgs,
                                                 string sqlPage, object[] pageArgs)
@@ -1121,7 +1055,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 CurrentPage = page,
                 ItemsPerPage = itemsPerPage,
-                TotalItems = await ExecuteScalarAsync<long>(cancellationToken, sqlCount, countArgs).ConfigureAwait(false)
+                TotalItems = await ExecuteScalarAsync<long>(cancellationToken, sqlCount, countArgs)
             };
             result.TotalPages = result.TotalItems / itemsPerPage;
 
@@ -1130,55 +1064,53 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             OneTimeCommandTimeout = saveTimeout;
 
-            result.Items = await FetchAsync<T>(cancellationToken, sqlPage, pageArgs).ConfigureAwait(false);
+            result.Items = await FetchAsync<T>(cancellationToken, sqlPage, pageArgs);
 
             return result;
         }
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, string sqlCount, object[] countArgs, string sqlPage, object[] pageArgs)
-            => PageAsync<T>(CancellationToken.None, page, itemsPerPage, sqlCount, countArgs, sqlPage, pageArgs);
+        public async Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, string sqlCount, object[] countArgs, string sqlPage, object[] pageArgs)
+            => await PageAsync<T>(CancellationToken.None, page, itemsPerPage, sqlCount, countArgs, sqlPage, pageArgs);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage)
-            => PageAsync<T>(cancellationToken, page, itemsPerPage, string.Empty);
+        public async Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage)
+            => await PageAsync<T>(cancellationToken, page, itemsPerPage, string.Empty);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(long page, long itemsPerPage)
-            => PageAsync<T>(CancellationToken.None, page, itemsPerPage, string.Empty);
+        public async Task<Page<T>> PageAsync<T>(long page, long itemsPerPage)
+            => await PageAsync<T>(CancellationToken.None, page, itemsPerPage, string.Empty);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, string sql, params object[] args)
+        public async Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, string sql, params object[] args)
         {
             BuildPageQueries<T>((page - 1) * itemsPerPage, itemsPerPage, sql, ref args, out var sqlCount, out var sqlPage);
-            return PageAsync<T>(cancellationToken, page, itemsPerPage, sqlCount, args, sqlPage, args);
+            return await PageAsync<T>(cancellationToken, page, itemsPerPage, sqlCount, args, sqlPage, args);
         }
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, string sql, params object[] args)
-            => PageAsync<T>(CancellationToken.None, page, itemsPerPage, sql, args);
+        public async Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, string sql, params object[] args)
+            => await PageAsync<T>(CancellationToken.None, page, itemsPerPage, sql, args);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, Sql sql)
-            => PageAsync<T>(cancellationToken, page, itemsPerPage, sql.SQL, sql.Arguments);
+        public async Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, Sql sql)
+            => await PageAsync<T>(cancellationToken, page, itemsPerPage, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, Sql sql)
-            => PageAsync<T>(CancellationToken.None, page, itemsPerPage, sql.SQL, sql.Arguments);
+        public async Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, Sql sql)
+            => await PageAsync<T>(CancellationToken.None, page, itemsPerPage, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, Sql sqlCount, Sql sqlPage)
-            => PageAsync<T>(cancellationToken, page, itemsPerPage, sqlCount.SQL, sqlCount.Arguments, sqlPage.SQL, sqlPage.Arguments);
+        public async Task<Page<T>> PageAsync<T>(CancellationToken cancellationToken, long page, long itemsPerPage, Sql sqlCount, Sql sqlPage)
+            => await PageAsync<T>(cancellationToken, page, itemsPerPage, sqlCount.SQL, sqlCount.Arguments, sqlPage.SQL, sqlPage.Arguments);
 
         /// <inheritdoc />
-        public Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, Sql sqlCount, Sql sqlPage)
-            => PageAsync<T>(CancellationToken.None, page, itemsPerPage, sqlCount.SQL, sqlCount.Arguments, sqlPage.SQL, sqlPage.Arguments);
+        public async Task<Page<T>> PageAsync<T>(long page, long itemsPerPage, Sql sqlCount, Sql sqlPage)
+            => await PageAsync<T>(CancellationToken.None, page, itemsPerPage, sqlCount.SQL, sqlCount.Arguments, sqlPage.SQL, sqlPage.Arguments);
 
-#endif
+        #endregion operation: Page
 
-#endregion
-
-#region operation: SkipTake
+        #region operation: SkipTake
 
         /// <inheritdoc />
         public List<T> SkipTake<T>(long skip, long take)
@@ -1195,40 +1127,36 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return Fetch<T>(sqlPage, args);
         }
 
-#if ASYNC
+        /// <inheritdoc />
+        public async Task<List<T>> SkipTakeAsync<T>(CancellationToken cancellationToken, long skip, long take)
+            => await SkipTakeAsync<T>(cancellationToken, skip, take, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> SkipTakeAsync<T>(CancellationToken cancellationToken, long skip, long take)
-            => SkipTakeAsync<T>(cancellationToken, skip, take, string.Empty);
+        public async Task<List<T>> SkipTakeAsync<T>(long skip, long take)
+            => await SkipTakeAsync<T>(CancellationToken.None, skip, take, string.Empty);
 
         /// <inheritdoc />
-        public Task<List<T>> SkipTakeAsync<T>(long skip, long take)
-            => SkipTakeAsync<T>(CancellationToken.None, skip, take, string.Empty);
-
-        /// <inheritdoc />
-        public Task<List<T>> SkipTakeAsync<T>(CancellationToken cancellationToken, long skip, long take, string sql, params object[] args)
+        public async Task<List<T>> SkipTakeAsync<T>(CancellationToken cancellationToken, long skip, long take, string sql, params object[] args)
         {
             BuildPageQueries<T>(skip, take, sql, ref args, out var sqlCount, out var sqlPage);
-            return FetchAsync<T>(cancellationToken, sqlPage, args);
+            return await FetchAsync<T>(cancellationToken, sqlPage, args);
         }
 
         /// <inheritdoc />
-        public Task<List<T>> SkipTakeAsync<T>(long skip, long take, string sql, params object[] args)
-            => SkipTakeAsync<T>(CancellationToken.None, skip, take, sql, args);
+        public async Task<List<T>> SkipTakeAsync<T>(long skip, long take, string sql, params object[] args)
+            => await SkipTakeAsync<T>(CancellationToken.None, skip, take, sql, args);
 
         /// <inheritdoc />
-        public Task<List<T>> SkipTakeAsync<T>(CancellationToken cancellationToken, long skip, long take, Sql sql)
-            => SkipTakeAsync<T>(cancellationToken, skip, take, sql.SQL, sql.Arguments);
+        public async Task<List<T>> SkipTakeAsync<T>(CancellationToken cancellationToken, long skip, long take, Sql sql)
+            => await SkipTakeAsync<T>(cancellationToken, skip, take, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<List<T>> SkipTakeAsync<T>(long skip, long take, Sql sql)
-            => SkipTakeAsync<T>(skip, take, sql.SQL, sql.Arguments);
+        public async Task<List<T>> SkipTakeAsync<T>(long skip, long take, Sql sql)
+            => await SkipTakeAsync<T>(skip, take, sql.SQL, sql.Arguments);
 
-#endif
+        #endregion operation: SkipTake
 
-#endregion
-
-#region operation: Query
+        #region operation: Query
 
         /// <inheritdoc />
         public IEnumerable<T> Query<T>()
@@ -1241,6 +1169,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             return ExecuteReader<T>(CommandType.Text, sql, args);
         }
+
         /// <inheritdoc />
         public IEnumerable<T> Query<T>(Sql sql)
             => Query<T>(sql.SQL, sql.Arguments);
@@ -1257,149 +1186,157 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return ExecuteReader<T>(CommandType.Text, sql, args);
         }
 
-#if ASYNC
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, string.Empty);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CommandType commandType)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, commandType, string.Empty);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CommandType commandType)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, commandType, string.Empty);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken)
-            => QueryAsync(receivePocoCallback, cancellationToken, CommandType.Text, string.Empty);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken)
+            => await QueryAsync(receivePocoCallback, cancellationToken, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType)
-            => QueryAsync(receivePocoCallback, cancellationToken, commandType, string.Empty);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType)
+            => await QueryAsync(receivePocoCallback, cancellationToken, commandType, string.Empty);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, string sql, params object[] args)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, sql, args);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, string sql, params object[] args)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, sql, args);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CommandType commandType, string sql, params object[] args)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, commandType, sql, args);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CommandType commandType, string sql, params object[] args)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, commandType, sql, args);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, string sql, params object[] args)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, sql, args);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, string sql, params object[] args)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, sql, args);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
         {
             if (EnableAutoSelect)
                 sql = AutoSelectHelper.AddSelectClause<T>(_provider, sql, _defaultMapper);
-            return ExecuteReaderAsync(receivePocoCallback, cancellationToken, commandType, sql, args);
+            await ExecuteReaderAsync(receivePocoCallback, cancellationToken, commandType, sql, args);
         }
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType, IEnumerable<string> tableColumns, string sql, params object[] args)
+
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType, IEnumerable<string> tableColumns, string sql, params object[] args)
         {
             if (EnableAutoSelect)
                 sql = AutoSelectHelper.AddSelectClause<T>(_provider, sql, _defaultMapper, tableColumns);
-            return ExecuteReaderAsync(receivePocoCallback, cancellationToken, commandType, sql, args);
+            await ExecuteReaderAsync(receivePocoCallback, cancellationToken, commandType, sql, args);
         }
 
+        /// <inheritdoc />
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, Sql sql)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, Sql sql)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CommandType commandType, Sql sql)
+            => await QueryAsync(receivePocoCallback, CancellationToken.None, commandType, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CommandType commandType, Sql sql)
-            => QueryAsync(receivePocoCallback, CancellationToken.None, commandType, sql.SQL, sql.Arguments);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, Sql sql)
+            => await QueryAsync(receivePocoCallback, cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, Sql sql)
-            => QueryAsync(receivePocoCallback, cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType, Sql sql)
+            => await QueryAsync(receivePocoCallback, cancellationToken, commandType, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task QueryAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, CommandType commandType, Sql sql)
-            => QueryAsync(receivePocoCallback, cancellationToken, commandType, sql.SQL, sql.Arguments);
+        public async Task<IAsyncReader<T>> QueryAsync<T>()
+            => await QueryAsync<T>(CancellationToken.None, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>()
-            => QueryAsync<T>(CancellationToken.None, CommandType.Text, string.Empty);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CommandType commandType)
+            => await QueryAsync<T>(CancellationToken.None, commandType, string.Empty);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CommandType commandType)
-            => QueryAsync<T>(CancellationToken.None, commandType, string.Empty);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken)
+            => await QueryAsync<T>(cancellationToken, CommandType.Text, string.Empty);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken)
-            => QueryAsync<T>(cancellationToken, CommandType.Text, string.Empty);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType)
+            => await QueryAsync<T>(cancellationToken, commandType, string.Empty);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType)
-            => QueryAsync<T>(cancellationToken, commandType, string.Empty);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(string sql, params object[] args)
+            => await QueryAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
+
+        public async Task<IAsyncReader<T>> QueryAsync<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
+            => await QueryAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(string sql, params object[] args)
-            => QueryAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
-
-        public Task<IAsyncReader<T>> QueryAsync<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
-            => QueryAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CommandType commandType, string sql, params object[] args)
+            => await QueryAsync<T>(CancellationToken.None, commandType, sql, args);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CommandType commandType, string sql, params object[] args)
-            => QueryAsync<T>(CancellationToken.None, commandType, sql, args);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
+            => await QueryAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => QueryAsync<T>(CancellationToken.None, CommandType.Text, sql, args);
-
-        /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
         {
             if (EnableAutoSelect)
                 sql = AutoSelectHelper.AddSelectClause<T>(_provider, sql, _defaultMapper);
 
-            return ExecuteReaderAsync<T>(cancellationToken, commandType, sql, args);
+            return await ExecuteReaderAsync<T>(cancellationToken, commandType, sql, args);
         }
 
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType, IEnumerable<string> tableColumns, string sql, params object[] args)
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType, IEnumerable<string> tableColumns, string sql, params object[] args)
         {
             if (EnableAutoSelect)
                 sql = AutoSelectHelper.AddSelectClause<T>(_provider, sql, _defaultMapper, tableColumns);
 
-            return ExecuteReaderAsync<T>(cancellationToken, commandType, sql, args);
+            return await ExecuteReaderAsync<T>(cancellationToken, commandType, sql, args);
         }
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(Sql sql)
-            => QueryAsync<T>(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(Sql sql)
+            => await QueryAsync<T>(CancellationToken.None, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CommandType commandType, Sql sql)
-            => QueryAsync<T>(CancellationToken.None, commandType, sql.SQL, sql.Arguments);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CommandType commandType, Sql sql)
+            => await QueryAsync<T>(CancellationToken.None, commandType, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => QueryAsync<T>(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await QueryAsync<T>(cancellationToken, CommandType.Text, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType, Sql sql)
-            => QueryAsync<T>(cancellationToken, commandType, sql.SQL, sql.Arguments);
+        public async Task<IAsyncReader<T>> QueryAsync<T>(CancellationToken cancellationToken, CommandType commandType, Sql sql)
+            => await QueryAsync<T>(cancellationToken, commandType, sql.SQL, sql.Arguments);
 
         protected virtual async Task ExecuteReaderAsync<T>(Action<T> processPoco, CancellationToken cancellationToken, CommandType commandType, string sql,
                                                            object[] args)
         {
-            await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+            await OpenSharedConnectionAsync(cancellationToken);
             try
             {
                 using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
                 {
-                    IDataReader reader;
+                    IDataReader reader = null;
                     var pd = PocoData.ForType(typeof(T), _defaultMapper);
-                    
+
                     try
                     {
-                        reader = await ExecuteReaderHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        reader = await ExecuteReaderHelperAsync(cancellationToken, cmd);
                     }
                     catch (Exception e)
                     {
                         if (OnException(e))
                             throw;
+                        try
+                        {
+                            cmd?.Dispose();
+                            reader?.Dispose();
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
                         return;
                     }
 
@@ -1417,13 +1354,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             {
                                 if (readerAsync != null)
                                 {
-                                    if (!await readerAsync.ReadAsync(cancellationToken).ConfigureAwait(false))
-                                        return;
+                                    if (!await readerAsync.ReadAsync())
+                                        break;
                                 }
                                 else
                                 {
                                     if (!reader.Read())
-                                        return;
+                                        break;
                                 }
 
                                 poco = factory(reader);
@@ -1431,6 +1368,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             }
                             catch (Exception e)
                             {
+                                CloseSharedConnection();
                                 if (OnException(e))
                                     throw;
                                 return;
@@ -1448,14 +1386,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected virtual async Task<IAsyncReader<T>> ExecuteReaderAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql,
                                                                             object[] args)
         {
-            await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+            await OpenSharedConnectionAsync(cancellationToken);
             var cmd = CreateCommand(_sharedConnection, commandType, sql, args);
             IDataReader reader = null;
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
 
             try
             {
-                reader = await ExecuteReaderHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                reader = await ExecuteReaderHelperAsync(cancellationToken, cmd);
             }
             catch (Exception e)
             {
@@ -1479,8 +1417,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             return new AsyncReader<T>(this, cmd, reader, factory);
         }
-
-#endif
 
         protected virtual IEnumerable<T> ExecuteReader<T>(CommandType commandType, string sql, params object[] args)
         {
@@ -1533,9 +1469,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-#endregion
+        #endregion operation: Query
 
-#region operation: Exists
+        #region operation: Exists
 
         /// <inheritdoc />
         public bool Exists<T>(string sqlCondition, params object[] args)
@@ -1564,18 +1500,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 uniqueKey is T ? poco.Columns[poco.TableInfo.UniqueId].GetValue(uniqueKey) : uniqueKey);
         }
 
-#if ASYNC
-        public Task<bool> ExistsAsync<T>(object primaryKey)
-            => ExistsAsync<T>(CancellationToken.None, primaryKey);
-        public Task<bool> ExistsAsync<T>(CancellationToken cancellationToken, object primaryKey)
+        public async Task<bool> ExistsAsync<T>(object primaryKey)
+            => await ExistsAsync<T>(CancellationToken.None, primaryKey);
+
+        public async Task<bool> ExistsAsync<T>(CancellationToken cancellationToken, object primaryKey)
         {
             var poco = PocoData.ForType(typeof(T), _defaultMapper);
-            return ExistsAsync<T>(cancellationToken, $"{_provider.EscapeSqlIdentifier(poco.TableInfo.PrimaryKey)}=@0",
+            return await ExistsAsync<T>(cancellationToken, $"{_provider.EscapeSqlIdentifier(poco.TableInfo.PrimaryKey)}=@0",
                 primaryKey is T ? poco.Columns[poco.TableInfo.PrimaryKey].GetValue(primaryKey) : primaryKey);
         }
 
-        public Task<bool> ExistsAsync<T>(string sqlCondition, params object[] args)
-            => ExistsAsync<T>(CancellationToken.None, sqlCondition, args);
+        public async Task<bool> ExistsAsync<T>(string sqlCondition, params object[] args)
+            => await ExistsAsync<T>(CancellationToken.None, sqlCondition, args);
 
         public async Task<bool> ExistsAsync<T>(CancellationToken cancellationToken, string sqlCondition, params object[] args)
         {
@@ -1585,21 +1521,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 sqlCondition = sqlCondition.TrimStart().Substring(5);
 
             return await ExecuteScalarAsync<int>(cancellationToken,
-                       string.Format(_provider.GetExistsSql(), Provider.EscapeTableName(poco.TableName), sqlCondition), args).ConfigureAwait(false) != 0;
+                       string.Format(_provider.GetExistsSql(), Provider.EscapeTableName(poco.TableName), sqlCondition), args) != 0;
         }
 
-        public Task<bool> ExistUniqueIdAsync<T>(object uniqueKey)
-            => ExistUniqueIdAsync<T>(CancellationToken.None, uniqueKey);
-        public Task<bool> ExistUniqueIdAsync<T>(CancellationToken cancellationToken, object uniqueKey)
+        public async Task<bool> ExistUniqueIdAsync<T>(object uniqueKey)
+            => await ExistUniqueIdAsync<T>(CancellationToken.None, uniqueKey);
+
+        public async Task<bool> ExistUniqueIdAsync<T>(CancellationToken cancellationToken, object uniqueKey)
         {
             var poco = PocoData.ForType(typeof(T), _defaultMapper);
-            return ExistsAsync<T>(cancellationToken, $"{_provider.EscapeSqlIdentifier(poco.TableInfo.UniqueId)}=@0",
+            return await ExistsAsync<T>(cancellationToken, $"{_provider.EscapeSqlIdentifier(poco.TableInfo.UniqueId)}=@0",
                 uniqueKey is T ? poco.Columns[poco.TableInfo.PrimaryKey].GetValue(uniqueKey) : uniqueKey);
         }
 
-#endif
-
-        #endregion
+        #endregion operation: Exists
 
         #region operation: Linq style (Exists, Single, SingleOrDefault etc...)
 
@@ -1649,99 +1584,94 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public T FirstOrDefault<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
             => Query<T>(tableColumns, sql, args).FirstOrDefault();
 
-#if ASYNC
+        /// <inheritdoc />
+        public async Task<T> SingleAsync<T>(object primaryKey)
+            => await SingleAsync<T>(CancellationToken.None, primaryKey);
 
         /// <inheritdoc />
-        public Task<T> SingleAsync<T>(object primaryKey)
-            => SingleAsync<T>(CancellationToken.None, primaryKey);
+        public async Task<T> SingleAsync<T>(CancellationToken cancellationToken, object primaryKey)
+            => await SingleAsync<T>(cancellationToken, GenerateSingleByKeySql<T>(primaryKey));
 
         /// <inheritdoc />
-        public Task<T> SingleAsync<T>(CancellationToken cancellationToken, object primaryKey)
-            => SingleAsync<T>(cancellationToken, GenerateSingleByKeySql<T>(primaryKey));
-
-        /// <inheritdoc />
-        public Task<T> SingleAsync<T>(string sql, params object[] args)
-            => SingleAsync<T>(CancellationToken.None, sql, args);
+        public async Task<T> SingleAsync<T>(string sql, params object[] args)
+            => await SingleAsync<T>(CancellationToken.None, sql, args);
 
         /// <inheritdoc />
         public async Task<T> SingleAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).Single();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).Single();
 
         /// <inheritdoc />
-        public Task<T> SingleAsync<T>(Sql sql)
-            => SingleAsync<T>(CancellationToken.None, sql);
+        public async Task<T> SingleAsync<T>(Sql sql)
+            => await SingleAsync<T>(CancellationToken.None, sql);
 
         /// <inheritdoc />
-        public Task<T> SingleAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => SingleAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
+        public async Task<T> SingleAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await SingleAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<T> SingleOrDefaultAsync<T>(Sql sql)
-            => SingleOrDefaultAsync<T>(CancellationToken.None, sql);
+        public async Task<T> SingleOrDefaultAsync<T>(Sql sql)
+            => await SingleOrDefaultAsync<T>(CancellationToken.None, sql);
 
         /// <inheritdoc />
-        public Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => SingleOrDefaultAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
+        public async Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await SingleOrDefaultAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<T> SingleOrDefaultAsync<T>(object primaryKey, bool isUniqueKey = false)
-            => SingleOrDefaultAsync<T>(CancellationToken.None, primaryKey, isUniqueKey);
+        public async Task<T> SingleOrDefaultAsync<T>(object primaryKey, bool isUniqueKey = false)
+            => await SingleOrDefaultAsync<T>(CancellationToken.None, primaryKey, isUniqueKey);
 
         /// <inheritdoc />
-        public Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, object primaryKey, bool isUniqueKey = false)
-            => SingleOrDefaultAsync<T>(cancellationToken, isUniqueKey ? GenerateSingleByUniqueKeySql<T>(primaryKey) : GenerateSingleByKeySql<T>(primaryKey));
+        public async Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, object primaryKey, bool isUniqueKey = false)
+            => await SingleOrDefaultAsync<T>(cancellationToken, isUniqueKey ? GenerateSingleByUniqueKeySql<T>(primaryKey) : GenerateSingleByKeySql<T>(primaryKey));
 
-        public Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, IEnumerable<string> tableColumns, object primaryKey, bool isUniqueKey = false)
-            => SingleOrDefaultAsync<T>(cancellationToken, isUniqueKey ? GenerateSingleByUniqueKeySql<T>(primaryKey, tableColumns) : GenerateSingleByKeySql<T>(primaryKey, tableColumns));
+        public async Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, IEnumerable<string> tableColumns, object primaryKey, bool isUniqueKey = false)
+            => await SingleOrDefaultAsync<T>(cancellationToken, isUniqueKey ? GenerateSingleByUniqueKeySql<T>(primaryKey, tableColumns) : GenerateSingleByKeySql<T>(primaryKey, tableColumns));
 
         /// <inheritdoc />
-        public Task<T> SingleOrDefaultAsync<T>(string sql, params object[] args)
-            => SingleOrDefaultAsync<T>(CancellationToken.None, sql, args);
+        public async Task<T> SingleOrDefaultAsync<T>(string sql, params object[] args)
+            => await SingleOrDefaultAsync<T>(CancellationToken.None, sql, args);
 
         /// <inheritdoc />
         public async Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).SingleOrDefault();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).SingleOrDefault();
 
         /// <inheritdoc />
-        public Task<T> FirstAsync<T>(string sql, params object[] args)
-            => FirstAsync<T>(CancellationToken.None, sql, args);
+        public async Task<T> FirstAsync<T>(string sql, params object[] args)
+            => await FirstAsync<T>(CancellationToken.None, sql, args);
 
         /// <inheritdoc />
         public async Task<T> FirstAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).First();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).First();
 
         /// <inheritdoc />
-        public Task<T> FirstAsync<T>(Sql sql)
-            => FirstAsync<T>(CancellationToken.None, sql);
+        public async Task<T> FirstAsync<T>(Sql sql)
+            => await FirstAsync<T>(CancellationToken.None, sql);
 
         /// <inheritdoc />
-        public Task<T> FirstAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => FirstAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
+        public async Task<T> FirstAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await FirstAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
 
         /// <inheritdoc />
-        public Task<T> FirstOrDefaultAsync<T>(string sql, params object[] args)
-            => FirstOrDefaultAsync<T>(CancellationToken.None, sql, args);
+        public async Task<T> FirstOrDefaultAsync<T>(string sql, params object[] args)
+            => await FirstOrDefaultAsync<T>(CancellationToken.None, sql, args);
 
         /// <inheritdoc />
         public async Task<T> FirstOrDefaultAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).FirstOrDefault();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).FirstOrDefault();
 
         /// <inheritdoc />
-        public Task<T> FirstOrDefaultAsync<T>(Sql sql)
-            => FirstOrDefaultAsync<T>(CancellationToken.None, sql);
+        public async Task<T> FirstOrDefaultAsync<T>(Sql sql)
+            => await FirstOrDefaultAsync<T>(CancellationToken.None, sql);
 
         /// <inheritdoc />
-        public Task<T> FirstOrDefaultAsync<T>(CancellationToken cancellationToken, Sql sql)
-            => FirstOrDefaultAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
+        public async Task<T> FirstOrDefaultAsync<T>(CancellationToken cancellationToken, Sql sql)
+            => await FirstOrDefaultAsync<T>(cancellationToken, sql.SQL, sql.Arguments);
 
-        public Task<T> SingleOrDefaultAsync<T>(IEnumerable<string> tableColumns, object primaryKey, bool isUniqueKey = false)
-            => SingleOrDefaultAsync<T>(isUniqueKey ? GenerateSingleByUniqueKeySql<T>(primaryKey, tableColumns) : GenerateSingleByKeySql<T>(primaryKey, tableColumns));
+        public async Task<T> SingleOrDefaultAsync<T>(IEnumerable<string> tableColumns, object primaryKey, bool isUniqueKey = false)
+            => await SingleOrDefaultAsync<T>(isUniqueKey ? GenerateSingleByUniqueKeySql<T>(primaryKey, tableColumns) : GenerateSingleByKeySql<T>(primaryKey, tableColumns));
 
-        //public Task<T> FirstOrDefaultAsync<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
-        //    => (await FetchAsync<T>(tableColumns, sql, args)).FirstOrDefault();
-
-
-#endif
+        //public async Task<T> FirstOrDefaultAsync<T>(IEnumerable<string> tableColumns, string sql, params object[] args)
+        //    => await (await FetchAsync<T>(tableColumns, sql, args)).FirstOrDefault();
 
         private Sql GenerateSingleByKeySql<T>(object primaryKey, IEnumerable<string> tableColumns = null)
         {
@@ -1767,7 +1697,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return new Sql(sql, uniqueKey);
         }
 
-        #endregion
+        #endregion operation: Linq style (Exists, Single, SingleOrDefault etc...)
 
         #region operation: Insert
 
@@ -1872,6 +1802,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return null;
@@ -1919,12 +1850,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 $"INSERT INTO {_provider.EscapeTableName(tableName)} ({string.Join(",", names.ToArray())}){outputClause} VALUES ({string.Join(",", values.ToArray())})";
         }
 
-#if ASYNC
+        public async Task<object> InsertAsync(string tableName, object poco)
+            => await InsertAsync(CancellationToken.None, tableName, poco);
 
-        public Task<object> InsertAsync(string tableName, object poco)
-            => InsertAsync(CancellationToken.None, tableName, poco);
-
-        public Task<object> InsertAsync(CancellationToken cancellationToken, string tableName, object poco)
+        public async Task<object> InsertAsync(CancellationToken cancellationToken, string tableName, object poco)
         {
             if (tableName == null)
                 throw new ArgumentNullException(nameof(tableName));
@@ -1932,13 +1861,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 throw new ArgumentNullException(nameof(poco));
 
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
-            return ExecuteInsertAsync(cancellationToken, tableName, pd?.TableInfo.PrimaryKey, pd != null && pd.TableInfo.AutoIncrement, poco);
+            return await ExecuteInsertAsync(cancellationToken, tableName, pd?.TableInfo.PrimaryKey, pd != null && pd.TableInfo.AutoIncrement, poco);
         }
 
-        public Task<object> InsertAsync(string tableName, string primaryKeyName, object poco)
-            => InsertAsync(CancellationToken.None, tableName, primaryKeyName, poco);
+        public async Task<object> InsertAsync(string tableName, string primaryKeyName, object poco)
+            => await InsertAsync(CancellationToken.None, tableName, primaryKeyName, poco);
 
-        public Task<object> InsertAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
+        public async Task<object> InsertAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
         {
             if (tableName == null)
                 throw new ArgumentNullException(nameof(tableName));
@@ -1952,13 +1881,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var autoIncrement = pd == null || pd.TableInfo.AutoIncrement || t.Name.Contains("AnonymousType") &&
                                 !t.GetProperties().Any(p => p.Name.Equals(primaryKeyName, StringComparison.OrdinalIgnoreCase));
 
-            return ExecuteInsertAsync(cancellationToken, tableName, primaryKeyName, autoIncrement, poco);
+            return await ExecuteInsertAsync(cancellationToken, tableName, primaryKeyName, autoIncrement, poco);
         }
 
-        public Task<object> InsertAsync(string tableName, string primaryKeyName, bool autoIncrement, object poco)
-            => InsertAsync(CancellationToken.None, tableName, primaryKeyName, autoIncrement, poco);
+        public async Task<object> InsertAsync(string tableName, string primaryKeyName, bool autoIncrement, object poco)
+            => await InsertAsync(CancellationToken.None, tableName, primaryKeyName, autoIncrement, poco);
 
-        public Task<object> InsertAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, bool autoIncrement, object poco)
+        public async Task<object> InsertAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, bool autoIncrement, object poco)
         {
             if (tableName == null)
                 throw new ArgumentNullException(nameof(tableName));
@@ -1967,19 +1896,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (poco == null)
                 throw new ArgumentNullException(nameof(poco));
 
-            return ExecuteInsertAsync(cancellationToken, tableName, primaryKeyName, autoIncrement, poco);
+            return await ExecuteInsertAsync(cancellationToken, tableName, primaryKeyName, autoIncrement, poco);
         }
 
-        public Task<object> InsertAsync(object poco)
-            => InsertAsync(CancellationToken.None, poco);
+        public async Task<object> InsertAsync(object poco)
+            => await InsertAsync(CancellationToken.None, poco);
 
-        public Task<object> InsertAsync(CancellationToken cancellationToken, object poco)
+        public async Task<object> InsertAsync(CancellationToken cancellationToken, object poco)
         {
             if (poco == null)
                 throw new ArgumentNullException(nameof(poco));
 
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
-            return ExecuteInsertAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, pd.TableInfo.AutoIncrement, poco);
+            return await ExecuteInsertAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, pd.TableInfo.AutoIncrement, poco);
         }
 
         private async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, bool autoIncrement,
@@ -1987,7 +1916,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, string.Empty))
@@ -2000,7 +1929,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
                         if (!autoIncrement)
                         {
-                            await ExecuteNonQueryHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                            await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
 
                             if (primaryKeyName != null && pd.Columns.TryGetValue(primaryKeyName, out var pkColumn))
                                 return pkColumn.GetValue(poco);
@@ -2008,7 +1937,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                                 return null;
                         }
 
-                        var id = await _provider.ExecuteInsertAsync(cancellationToken, this, cmd, primaryKeyName).ConfigureAwait(false);
+                        var id = await _provider.ExecuteInsertAsync(cancellationToken, this, cmd, primaryKeyName);
 
                         // Assign the ID back to the primary key property
                         if (primaryKeyName != null && !poco.GetType().Name.Contains("AnonymousType"))
@@ -2025,15 +1954,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return null;
             }
         }
 
-#endif
-
-        #endregion
+        #endregion operation: Insert
 
         #region operation: Update
 
@@ -2066,7 +1994,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <inheritdoc />
         public int Update(string tableName, string primaryKeyName, object poco, IEnumerable<string> columns)
             => Update(tableName, primaryKeyName, poco, null, columns);
-        
+
         /// <inheritdoc />
         public int Update(object poco, IEnumerable<string> columns)
             => Update(poco, null, columns);
@@ -2078,7 +2006,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <inheritdoc />
         public int Update(object poco, object primaryKeyValue)
             => Update(poco, primaryKeyValue, null);
-
 
         public int UpdateColumns(object poco, IEnumerable<string> columns, IEnumerable<string> tableColumns)
             => Update(poco, null, columns, tableColumns);
@@ -2095,6 +2022,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             if (columns?.Any() == false)
                 return 0;
+
+            columns = columns?.Distinct();
 
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
             return ExecuteUpdate(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns, tableColumns, ignoreUpdateColumns);
@@ -2140,6 +2069,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return -1;
@@ -2230,22 +2160,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
             AddParam(cmd, primaryKeyValue, pkpi);
         }
 
-#if ASYNC
+        /// <inheritdoc />
+        public async Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco, object primaryKeyValue)
+            => await UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco, primaryKeyValue);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco, object primaryKeyValue)
-            => UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco, primaryKeyValue);
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, object primaryKeyValue)
+            => await UpdateAsync(cancellationToken, tableName, primaryKeyName, poco, primaryKeyValue, null);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, object primaryKeyValue)
-            => UpdateAsync(cancellationToken, tableName, primaryKeyName, poco, primaryKeyValue, null);
+        public async Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco, object primaryKeyValue, IEnumerable<string> columns)
+            => await UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco, primaryKeyValue, columns);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco, object primaryKeyValue, IEnumerable<string> columns)
-            => UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco, primaryKeyValue, columns);
-
-        /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, object primaryKeyValue,
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, object primaryKeyValue,
                                      IEnumerable<string> columns)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -2258,108 +2186,112 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 throw new ArgumentNullException(nameof(poco));
 
             if (columns?.Any() == false)
-                return Task.FromResult(0);
+                return await Task.FromResult(0);
 
-            return ExecuteUpdateAsync(cancellationToken, tableName, primaryKeyName, poco, primaryKeyValue, columns);
+            return await ExecuteUpdateAsync(cancellationToken, tableName, primaryKeyName, poco, primaryKeyValue, columns);
         }
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco)
-            => UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco);
+        public async Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco)
+            => await UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
-            => UpdateAsync(cancellationToken, tableName, primaryKeyName, poco, null);
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
+            => await UpdateAsync(cancellationToken, tableName, primaryKeyName, poco, null);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco, IEnumerable<string> columns)
-            => UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco, columns);
+        public async Task<int> UpdateAsync(string tableName, string primaryKeyName, object poco, IEnumerable<string> columns)
+            => await UpdateAsync(CancellationToken.None, tableName, primaryKeyName, poco, columns);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, IEnumerable<string> columns)
-            => UpdateAsync(cancellationToken, tableName, primaryKeyName, poco, null, columns);
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, IEnumerable<string> columns)
+            => await UpdateAsync(cancellationToken, tableName, primaryKeyName, poco, null, columns);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(object poco, IEnumerable<string> columns)
-            => UpdateAsync(CancellationToken.None, poco, columns);
+        public async Task<int> UpdateAsync(object poco, IEnumerable<string> columns)
+            => await UpdateAsync(CancellationToken.None, poco, columns);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, IEnumerable<string> columns)
-            => UpdateAsync(cancellationToken, poco, null, columns);
+        public async Task<int> UpdateWithIgnoreAsync(object poco, IEnumerable<string> ignoreColumns)
+            => await UpdateAsync(CancellationToken.None, poco, null, null, ignoreColumns);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(object poco)
-            => UpdateAsync(CancellationToken.None, poco);
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, IEnumerable<string> columns)
+            => await UpdateAsync(cancellationToken, poco, null, columns);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, object poco)
-            => UpdateAsync(cancellationToken, poco, null, null);
+        public async Task<int> UpdateAsync(object poco)
+            => await UpdateAsync(CancellationToken.None, poco);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(object poco, object primaryKeyValue)
-            => UpdateAsync(CancellationToken.None, poco, primaryKeyValue);
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco)
+            => await UpdateAsync(cancellationToken, poco, null, null);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue)
-            => UpdateAsync(cancellationToken, poco, primaryKeyValue, null);
+        public async Task<int> UpdateAsync(object poco, object primaryKeyValue)
+            => await UpdateAsync(CancellationToken.None, poco, primaryKeyValue);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(object poco, object primaryKeyValue, IEnumerable<string> columns)
-            => UpdateAsync(CancellationToken.None, poco, primaryKeyValue, columns);
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue)
+            => await UpdateAsync(cancellationToken, poco, primaryKeyValue, null);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns)
+        public async Task<int> UpdateAsync(object poco, object primaryKeyValue, IEnumerable<string> columns)
+            => await UpdateAsync(CancellationToken.None, poco, primaryKeyValue, columns);
+
+        /// <inheritdoc />
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns, IEnumerable<string> ignoreColumns = null)
         {
             if (poco == null)
                 throw new ArgumentNullException(nameof(poco));
 
             if (columns?.Any() == false)
-                return Task.FromResult(0);
+                return await Task.FromResult(0);
 
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
-            return ExecuteUpdateAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns);
+            return await ExecuteUpdateAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns, ignoreColumns);
         }
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync<T>(string sql, params object[] args)
-            => UpdateAsync<T>(CancellationToken.None, sql, args);
+        public async Task<int> UpdateAsync<T>(string sql, params object[] args)
+            => await UpdateAsync<T>(CancellationToken.None, sql, args);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
+        public async Task<int> UpdateAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
         {
             if (string.IsNullOrEmpty(sql))
                 throw new ArgumentNullException(nameof(sql));
 
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
-            return ExecuteAsync(cancellationToken, $"UPDATE {_provider.EscapeTableName(pd.TableInfo.TableName)} {sql}", args);
+            return await ExecuteAsync(cancellationToken, $"UPDATE {_provider.EscapeTableName(pd.TableInfo.TableName)} {sql}", args);
         }
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync<T>(Sql sql)
-            => UpdateAsync<T>(CancellationToken.None, sql);
+        public async Task<int> UpdateAsync<T>(Sql sql)
+            => await UpdateAsync<T>(CancellationToken.None, sql);
 
         /// <inheritdoc />
-        public Task<int> UpdateAsync<T>(CancellationToken cancellationToken, Sql sql)
+        public async Task<int> UpdateAsync<T>(CancellationToken cancellationToken, Sql sql)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql));
 
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
-            return ExecuteAsync(cancellationToken, new Sql($"UPDATE {_provider.EscapeTableName(pd.TableInfo.TableName)}").Append(sql));
+            return await ExecuteAsync(cancellationToken, new Sql($"UPDATE {_provider.EscapeTableName(pd.TableInfo.TableName)}").Append(sql));
         }
 
         private async Task<int> ExecuteUpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco,
-                                                   object primaryKeyValue, IEnumerable<string> columns)
+                                                   object primaryKeyValue, IEnumerable<string> columns, IEnumerable<string> ignoreColumns = null)
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, string.Empty))
                     {
-                        PreExecuteUpdate(tableName, primaryKeyName, poco, primaryKeyValue, columns, cmd);
-                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        PreExecuteUpdate(tableName, primaryKeyName, poco, primaryKeyValue, columns, cmd, null, ignoreColumns);
+                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
                     }
                 }
                 finally
@@ -2369,17 +2301,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             catch (Exception x)
             {
+                AbortTransaction();
                 if (OnException(x))
                     throw;
                 return -1;
             }
         }
 
-#endif
+        #endregion operation: Update
 
-#endregion
-
-#region operation: Delete
+        #region operation: Delete
 
         /// <inheritdoc />
         public int Delete(string tableName, string primaryKeyName, object poco)
@@ -2441,22 +2372,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return Execute(new Sql($"DELETE FROM {_provider.EscapeTableName(pd.TableInfo.TableName)}").Append(sql));
         }
 
-#if ASYNC
+        /// <inheritdoc />
+        public async Task<int> DeleteAsync(string tableName, string primaryKeyName, object poco)
+            => await DeleteAsync(CancellationToken.None, tableName, primaryKeyName, poco);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync(string tableName, string primaryKeyName, object poco)
-            => DeleteAsync(CancellationToken.None, tableName, primaryKeyName, poco);
+        public async Task<int> DeleteAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
+            => await DeleteAsync(cancellationToken, tableName, primaryKeyName, poco, null);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
-            => DeleteAsync(cancellationToken, tableName, primaryKeyName, poco, null);
+        public async Task<int> DeleteAsync(string tableName, string primaryKeyName, object poco, object primaryKeyValue)
+            => await DeleteAsync(CancellationToken.None, tableName, primaryKeyName, poco, primaryKeyValue);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync(string tableName, string primaryKeyName, object poco, object primaryKeyValue)
-            => DeleteAsync(CancellationToken.None, tableName, primaryKeyName, poco, primaryKeyValue);
-
-        /// <inheritdoc />
-        public Task<int> DeleteAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, object primaryKeyValue)
+        public async Task<int> DeleteAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco, object primaryKeyValue)
         {
             if (primaryKeyValue == null)
             {
@@ -2466,29 +2395,29 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
 
             var sql = $"DELETE FROM {_provider.EscapeTableName(tableName)} WHERE {_provider.EscapeSqlIdentifier(primaryKeyName)}=@0";
-            return ExecuteAsync(cancellationToken, sql, primaryKeyValue);
+            return await ExecuteAsync(cancellationToken, sql, primaryKeyValue);
         }
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync(object poco)
-            => DeleteAsync(CancellationToken.None, poco);
+        public async Task<int> DeleteAsync(object poco)
+            => await DeleteAsync(CancellationToken.None, poco);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync(CancellationToken cancellationToken, object poco)
+        public async Task<int> DeleteAsync(CancellationToken cancellationToken, object poco)
         {
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
-            return DeleteAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
+            return await DeleteAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
         }
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync<T>(object pocoOrPrimaryKey)
-            => DeleteAsync<T>(CancellationToken.None, pocoOrPrimaryKey);
+        public async Task<int> DeleteAsync<T>(object pocoOrPrimaryKey)
+            => await DeleteAsync<T>(CancellationToken.None, pocoOrPrimaryKey);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync<T>(CancellationToken cancellationToken, object pocoOrPrimaryKey)
+        public async Task<int> DeleteAsync<T>(CancellationToken cancellationToken, object pocoOrPrimaryKey)
         {
             if (pocoOrPrimaryKey.GetType() == typeof(T))
-                return DeleteAsync(cancellationToken, pocoOrPrimaryKey);
+                return await DeleteAsync(cancellationToken, pocoOrPrimaryKey);
 
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
 
@@ -2502,36 +2431,34 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 pocoOrPrimaryKey = pi.GetValue(pocoOrPrimaryKey, new object[0]);
             }
 
-            return DeleteAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, null, pocoOrPrimaryKey);
+            return await DeleteAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, null, pocoOrPrimaryKey);
         }
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync<T>(string sql, params object[] args)
-            => DeleteAsync<T>(CancellationToken.None, sql, args);
+        public async Task<int> DeleteAsync<T>(string sql, params object[] args)
+            => await DeleteAsync<T>(CancellationToken.None, sql, args);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
+        public async Task<int> DeleteAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
         {
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
-            return ExecuteAsync(cancellationToken, $"DELETE FROM {_provider.EscapeTableName(pd.TableInfo.TableName)} {sql}", args);
+            return await ExecuteAsync(cancellationToken, $"DELETE FROM {_provider.EscapeTableName(pd.TableInfo.TableName)} {sql}", args);
         }
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync<T>(Sql sql)
-            => DeleteAsync<T>(CancellationToken.None, sql);
+        public async Task<int> DeleteAsync<T>(Sql sql)
+            => await DeleteAsync<T>(CancellationToken.None, sql);
 
         /// <inheritdoc />
-        public Task<int> DeleteAsync<T>(CancellationToken cancellationToken, Sql sql)
+        public async Task<int> DeleteAsync<T>(CancellationToken cancellationToken, Sql sql)
         {
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
-            return ExecuteAsync(cancellationToken, new Sql($"DELETE FROM {_provider.EscapeTableName(pd.TableInfo.TableName)}").Append(sql));
+            return await ExecuteAsync(cancellationToken, new Sql($"DELETE FROM {_provider.EscapeTableName(pd.TableInfo.TableName)}").Append(sql));
         }
 
-#endif
+        #endregion operation: Delete
 
-#endregion
-
-#region operation: IsNew
+        #region operation: IsNew
 
         /// <inheritdoc />
         public bool IsNew(string primaryKeyName, object poco)
@@ -2587,29 +2514,29 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (!pi.GetPropertyType().IsValueType)
                 return pk == null;
             if (type == typeof(long))
-                return (long) pk == default(long);
+                return (long)pk == default(long);
             if (type == typeof(int))
-                return (int) pk == default(int);
+                return (int)pk == default(int);
             if (type == typeof(Guid))
-                return (Guid) pk == default(Guid);
+                return (Guid)pk == default(Guid);
             if (type == typeof(ulong))
-                return (ulong) pk == default(ulong);
+                return (ulong)pk == default(ulong);
             if (type == typeof(uint))
-                return (uint) pk == default(uint);
+                return (uint)pk == default(uint);
             if (type == typeof(short))
-                return (short) pk == default(short);
+                return (short)pk == default(short);
             if (type == typeof(ushort))
-                return (ushort) pk == default(ushort);
+                return (ushort)pk == default(ushort);
             if (type == typeof(decimal))
-                return (decimal) pk == default(decimal);
+                return (decimal)pk == default(decimal);
 
             // Create a default instance and compare
             return pk == Activator.CreateInstance(pk.GetType());
         }
 
-#endregion
+        #endregion operation: IsNew
 
-#region operation: Save
+        #region operation: Save
 
         /// <inheritdoc />
         public void Save(string tableName, string primaryKeyName, object poco)
@@ -2627,37 +2554,33 @@ namespace DigitBridge.CommerceCentral.YoPoco
             Save(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
         }
 
-#if ASYNC
+        /// <inheritdoc />
+        public async Task<object> SaveAsync(string tableName, string primaryKeyName, object poco)
+            => await SaveAsync(CancellationToken.None, tableName, primaryKeyName, poco);
 
         /// <inheritdoc />
-        public Task SaveAsync(string tableName, string primaryKeyName, object poco)
-            => SaveAsync(CancellationToken.None, tableName, primaryKeyName, poco);
-
-        /// <inheritdoc />
-        public Task SaveAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
+        public async Task<object> SaveAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco)
         {
             if (IsNew(primaryKeyName, poco))
-                return InsertAsync(cancellationToken, tableName, primaryKeyName, true, poco);
+                return await InsertAsync(cancellationToken, tableName, primaryKeyName, true, poco);
 
-            return UpdateAsync(cancellationToken, tableName, primaryKeyName, poco);
+            return await UpdateAsync(cancellationToken, tableName, primaryKeyName, poco);
         }
 
         /// <inheritdoc />
-        public Task SaveAsync(object poco)
-            => SaveAsync(CancellationToken.None, poco);
+        public async Task<object> SaveAsync(object poco)
+            => await SaveAsync(CancellationToken.None, poco);
 
         /// <inheritdoc />
-        public Task SaveAsync(CancellationToken cancellationToken, object poco)
+        public async Task<object> SaveAsync(CancellationToken cancellationToken, object poco)
         {
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
-            return SaveAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
+            return await SaveAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
         }
 
-#endif
+        #endregion operation: Save
 
-#endregion
-
-#region operation: Multi-Poco Query/Fetch
+        #region operation: Multi-Poco Query/Fetch
 
         /// <inheritdoc />
         public List<TRet> Fetch<T1, T2, TRet>(Func<T1, T2, TRet> cb, string sql, params object[] args)
@@ -2834,7 +2757,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
                         if (bNeedTerminator)
                         {
-                            var poco = (TRet) (cb as Delegate).DynamicInvoke(new object[types.Length]);
+                            var poco = (TRet)(cb as Delegate).DynamicInvoke(new object[types.Length]);
                             if (poco != null)
                                 yield return poco;
                             else
@@ -2849,9 +2772,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-#endregion
+        #endregion operation: Multi-Poco Query/Fetch
 
-#region operation: Multi-Result Set
+        #region operation: Multi-Result Set
 
         public IGridReader QueryMultiple(Sql sql)
             => QueryMultiple(sql.SQL, sql.Arguments);
@@ -2878,9 +2801,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return result;
         }
 
-#endregion
+        #endregion operation: Multi-Result Set
 
-#region operation: StoredProc
+        #region operation: StoredProc
 
         /// <inheritdoc />
         public IEnumerable<T> QueryProc<T>(string storedProcedureName, params object[] args)
@@ -2898,55 +2821,53 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public int ExecuteNonQueryProc(string storedProcedureName, params object[] args)
             => ExecuteInternal(CommandType.StoredProcedure, storedProcedureName, args);
 
-#if ASYNC
         /// <inheritdoc />
-        public Task QueryProcAsync<T>(Action<T> receivePocoCallback, string storedProcedureName, params object[] args)
-            => QueryProcAsync(receivePocoCallback, CancellationToken.None, storedProcedureName, args);
+        public async Task QueryProcAsync<T>(Action<T> receivePocoCallback, string storedProcedureName, params object[] args)
+            => await QueryProcAsync(receivePocoCallback, CancellationToken.None, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task QueryProcAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, string storedProcedureName, params object[] args)
-            => ExecuteReaderAsync(receivePocoCallback, cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
+        public async Task QueryProcAsync<T>(Action<T> receivePocoCallback, CancellationToken cancellationToken, string storedProcedureName, params object[] args)
+            => await ExecuteReaderAsync(receivePocoCallback, cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryProcAsync<T>(string storedProcedureName, params object[] args)
-            => QueryProcAsync<T>(CancellationToken.None, storedProcedureName, args);
+        public async Task<IAsyncReader<T>> QueryProcAsync<T>(string storedProcedureName, params object[] args)
+            => await QueryProcAsync<T>(CancellationToken.None, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task<IAsyncReader<T>> QueryProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
-            => ExecuteReaderAsync<T>(cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
+        public async Task<IAsyncReader<T>> QueryProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
+            => await ExecuteReaderAsync<T>(cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task<List<T>> FetchProcAsync<T>(string storedProcedureName, params object[] args)
-            => FetchProcAsync<T>(CancellationToken.None, storedProcedureName, args);
+        public async Task<List<T>> FetchProcAsync<T>(string storedProcedureName, params object[] args)
+            => await FetchProcAsync<T>(CancellationToken.None, storedProcedureName, args);
 
         /// <inheritdoc />
         public async Task<List<T>> FetchProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
         {
             var pocos = new List<T>();
-            await ExecuteReaderAsync<T>(p => pocos.Add(p), cancellationToken, CommandType.StoredProcedure, storedProcedureName, args).ConfigureAwait(false);
+            await ExecuteReaderAsync<T>(p => pocos.Add(p), cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
             return pocos;
         }
 
         /// <inheritdoc />
-        public Task<T> ExecuteScalarProcAsync<T>(string storedProcedureName, params object[] args)
-            => ExecuteScalarProcAsync<T>(CancellationToken.None, storedProcedureName, args);
+        public async Task<T> ExecuteScalarProcAsync<T>(string storedProcedureName, params object[] args)
+            => await ExecuteScalarProcAsync<T>(CancellationToken.None, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task<T> ExecuteScalarProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
-            => ExecuteScalarInternalAsync<T>(cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
+        public async Task<T> ExecuteScalarProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
+            => await ExecuteScalarInternalAsync<T>(cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task<int> ExecuteNonQueryProcAsync(string storedProcedureName, params object[] args)
-            => ExecuteNonQueryProcAsync(CancellationToken.None, storedProcedureName, args);
+        public async Task<int> ExecuteNonQueryProcAsync(string storedProcedureName, params object[] args)
+            => await ExecuteNonQueryProcAsync(CancellationToken.None, storedProcedureName, args);
 
         /// <inheritdoc />
-        public Task<int> ExecuteNonQueryProcAsync(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
-            => ExecuteInternalAsync(cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
-#endif
+        public async Task<int> ExecuteNonQueryProcAsync(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
+            => await ExecuteInternalAsync(cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
 
-#endregion
+        #endregion operation: StoredProc
 
-#region Last Command
+        #region Last Command
 
         /// <summary>
         ///     Retrieves the SQL of the last executed statement
@@ -2963,9 +2884,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         public string LastCommand => FormatCommand(_lastSql, _lastArgs);
 
-#endregion
+        #endregion Last Command
 
-#region FormatCommand
+        #region FormatCommand
 
         /// <summary>
         ///     Formats the contents of a DB command for display
@@ -3003,9 +2924,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return sb.ToString();
         }
 
-#endregion
+        #endregion FormatCommand
 
-#region Public Properties
+        #region Public Properties
 
         /// <summary>
         ///     Gets the default mapper.
@@ -3067,76 +2988,135 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-        #endregion
+        #endregion Public Properties
 
         #region Helpers
-        internal protected IDataReader ExecuteReaderHelper(IDbCommand cmd)
-        {
-            return (IDataReader)CommandHelper(cmd, c => c.ExecuteReader());
-        }
 
-        internal protected int ExecuteNonQueryHelper(IDbCommand cmd)
+        protected internal IDataReader ExecuteReaderHelper(IDbCommand cmd)
         {
-            return (int)CommandHelper(cmd, c => c.ExecuteNonQuery());
-        }
-
-        internal protected object ExecuteScalarHelper(IDbCommand cmd)
-        {
-            return CommandHelper(cmd, c => c.ExecuteScalar());
-        }
-
-        private object CommandHelper(IDbCommand cmd, Func<IDbCommand, object> cmdFunc)
-        {            
             DoPreExecute(cmd);
-            var result = cmdFunc(cmd);
+            var result = cmd.ExecuteReader();
             OnExecutedCommand(cmd);
             return result;
+            //return (IDataReader)CommandHelper(cmd, c => c.ExecuteReader());
         }
 
-#if ASYNC
-        internal protected async Task<IDataReader> ExecuteReaderHelperAsync(CancellationToken cancellationToken, IDbCommand cmd)
+        protected internal int ExecuteNonQueryHelper(IDbCommand cmd)
+        {
+            DoPreExecute(cmd);
+            var result = cmd.ExecuteNonQuery();
+            OnExecutedCommand(cmd);
+            return result;
+            //return (int)CommandHelper(cmd, c => c.ExecuteNonQuery());
+        }
+
+        protected internal object ExecuteScalarHelper(IDbCommand cmd)
+        {
+            DoPreExecute(cmd);
+            var result = cmd.ExecuteScalar();
+            OnExecutedCommand(cmd);
+            return result;
+            //return CommandHelper(cmd, c => c.ExecuteScalar());
+        }
+
+        //private object CommandHelper(IDbCommand cmd, Func<IDbCommand, object> cmdFunc)
+        //{
+        //    try
+        //    {
+        //        DoPreExecute(cmd);
+        //        var result = cmdFunc(cmd);
+        //        OnExecutedCommand(cmd);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        protected internal async Task<IDataReader> ExecuteReaderHelperAsync(CancellationToken cancellationToken, IDbCommand cmd)
         {
             if (cmd is DbCommand dbCommand)
             {
-                var task = CommandHelper(cancellationToken, dbCommand, 
-                    async (t, c) => await c.ExecuteReaderAsync(t).ConfigureAwait(false));
-                return (IDataReader)await task.ConfigureAwait(false);
+                DoPreExecute(dbCommand);
+                var result = await dbCommand.ExecuteReaderAsync();
+                OnExecutedCommand(dbCommand);
+                return (IDataReader)result;
+
+                //var task = CommandHelper(cancellationToken, dbCommand,
+                //    async (t, c) => await c.ExecuteReaderAsync(t));
+                //return (IDataReader)await task;
             }
             else
                 return ExecuteReaderHelper(cmd);
         }
 
-        internal protected async Task<int> ExecuteNonQueryHelperAsync(CancellationToken cancellationToken, IDbCommand cmd)
+        protected internal async Task<int> ExecuteNonQueryHelperAsync(CancellationToken cancellationToken, IDbCommand cmd)
         {
             if (cmd is DbCommand dbCommand)
             {
-                var task = CommandHelper(cancellationToken, dbCommand, 
-                    async (t, c) => await c.ExecuteNonQueryAsync(t).ConfigureAwait(false));
-                return (int)await task.ConfigureAwait(false);
+                DoPreExecute(dbCommand);
+                try
+                {
+                    var result = await dbCommand.ExecuteNonQueryAsync();
+                    OnExecutedCommand(dbCommand);
+                    return (int)result;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
+               
+
+                //var task = CommandHelper(cancellationToken, dbCommand,
+                //    async (t, c) => await c.ExecuteNonQueryAsync(t));
+                //return (int)await task;
             }
             else
                 return ExecuteNonQueryHelper(cmd);
         }
 
-        internal protected Task<object> ExecuteScalarHelperAsync(CancellationToken cancellationToken, IDbCommand cmd)
+        protected internal async Task<object> ExecuteScalarHelperAsync(CancellationToken cancellationToken, IDbCommand cmd)
         {
-            if (cmd is DbCommand dbCommand)
-                return CommandHelper(cancellationToken, dbCommand, 
-                    async (t, c) => await c.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));                
+            if (cmd is SqlCommand dbCommand)
+            {
+                try
+                {
+                    //DoPreExecute(dbCommand);
+                    var result = await dbCommand.ExecuteScalarAsync();
+                    //OnExecutedCommand(dbCommand);
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    //return null;
+                    throw e;
+                }
+
+                //return CommandHelper(cancellationToken, dbCommand,
+                //        async (t, c) => await c.ExecuteScalarAsync(cancellationToken));
+            }
             else
                 return Task.FromResult(ExecuteScalarHelper(cmd));
         }
 
-        private async Task<object> CommandHelper(CancellationToken cancellationToken, DbCommand cmd, 
-            Func<CancellationToken, DbCommand, Task<object>> cmdFunc)
-        {
-            DoPreExecute(cmd);
-            var result = await cmdFunc(cancellationToken, cmd).ConfigureAwait(false);
-            OnExecutedCommand(cmd);
-            return result;            
-        }
-#endif
-        #endregion
+        //private async Task<object> CommandHelper(CancellationToken cancellationToken, DbCommand cmd,
+        //    Func<CancellationToken, DbCommand, Task<object>> cmdFunc)
+        //{
+        //    try
+        //    {
+        //        DoPreExecute(cmd);
+        //        var result = await cmdFunc(cancellationToken, cmd);
+        //        OnExecutedCommand(cmd);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        #endregion Helpers
 
         #region Events
 
@@ -3175,7 +3155,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         public event EventHandler<ExceptionEventArgs> ExceptionThrown;
 
-#endregion
+        #endregion Events
     }
 
     public class Database<TDatabaseProvider> : Database where TDatabaseProvider : IProvider

@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -44,17 +42,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InvoiceNumber, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.PaymentUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.PaymentNumber, f => default(long))
 					.RuleFor(u => u.TransType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TransStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TransDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.TransTime, f => f.Date.Timespan())
-					.RuleFor(u => u.Description, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.Description, f => f.Commerce.ProductName())
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
 					.RuleFor(u => u.PaidBy, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.BankAccountUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.BankAccountCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.BankAccountCode, f => f.Lorem.Word())
 					.RuleFor(u => u.CheckNum, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.AuthCode, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.AuthCode, f => f.Lorem.Word())
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.ExchangeRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
 					.RuleFor(u => u.SubTotalAmount, f => f.Random.Decimal(1, 1000, 6))
@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.CreditAccount, f => default(long))
 					.RuleFor(u => u.DebitAccount, f => default(long))
-					.RuleFor(u => u.TransSourceCode, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.TransSourceCode, f => f.Lorem.Word())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))

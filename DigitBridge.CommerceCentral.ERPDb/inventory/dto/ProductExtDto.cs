@@ -1,4 +1,3 @@
-
               
     
 
@@ -11,12 +10,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -25,11 +25,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a ProductExt Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class ProductExtDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore, XmlIgnore]
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore, XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -269,6 +272,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSubGroupCode => SubGroupCode != null;
+
+		/// <summary>
+		/// Product status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Product status. <br> Title: Status, Display: true, Editable: true")]
+        public int? ProductStatus { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasProductStatus => ProductStatus != null;
 
 		/// <summary>
 		/// Product Default Price Rule. <br> Title: Price Rule, Display: true, Editable: true
