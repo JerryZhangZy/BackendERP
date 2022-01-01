@@ -624,6 +624,31 @@ WHERE spc.OrderShipmentUuid=@0
 
             return datas;
         }
+
+        public async Task<bool> GetOrderShipmentByUuidAsync(OrderShipmentPayload payload, string shipmentID)
+        {
+            if (string.IsNullOrEmpty(shipmentID))
+                return false;
+            List();
+
+            long rowNum = await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum, shipmentID);
+            if (rowNum <= 0) return false;
+            return await GetDataAsync(rowNum);
+
+        }
+
+
+
+
+        public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string shipmentID)
+        {
+            return await dbFactory.Db.ExecuteScalarAsync<long>("SELECT RowNum FROM OrderShipmentHeader WHERE MasterAccountNum=@0 AND ProfileNum=@1  AND ShipmentID=@2 "
+                ,
+                masterAccountNum.ToSqlParameter("0"),
+                profileNum.ToSqlParameter("1"),
+                shipmentID.ToSqlParameter("2")
+                );
+        }
     }
 }
 
