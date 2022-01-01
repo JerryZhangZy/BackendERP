@@ -42,14 +42,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'UK_InventoryUpdateItems_InventoryUpdateItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'UK_InventoryUpdateItems_InventoryUpdateItemsUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InventoryUpdateItems_InventoryUpdateItemsUuid] ON [dbo].[InventoryUpdateItems]
 (
 	[InventoryUpdateItemsUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'FK_InventoryUpdateItems_OrderId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'FK_InventoryUpdateItems_InventoryUpdateUuid_Seq')
 CREATE NONCLUSTERED INDEX [FK_InventoryUpdateItems_InventoryUpdateUuid_Seq] ON [dbo].[InventoryUpdateItems]
 (
 	[InventoryUpdateUuid] ASC,
@@ -57,21 +57,21 @@ CREATE NONCLUSTERED INDEX [FK_InventoryUpdateItems_InventoryUpdateUuid_Seq] ON [
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'BLK_InventoryUpdateItems_OrderId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'BLK_InventoryUpdateItems_InventoryUpdateUuid_Seq')
 CREATE NONCLUSTERED INDEX [BLK_InventoryUpdateItems_InventoryUpdateUuid_Seq] ON [dbo].[InventoryUpdateItems]
 (
 	[SKU] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'IX_InventoryUpdateItems_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'IX_InventoryUpdateItems_ProductUuid')
 CREATE NONCLUSTERED INDEX [IX_InventoryUpdateItems_ProductUuid] ON [dbo].[InventoryUpdateItems]
 (
 	[ProductUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'IX_InventoryUpdateItems_InventoryId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'IX_InventoryUpdateItems_InventoryUuid')
 CREATE NONCLUSTERED INDEX [IX_InventoryUpdateItems_InventoryUuid] ON [dbo].[InventoryUpdateItems]
 (
 	[InventoryUuid] ASC

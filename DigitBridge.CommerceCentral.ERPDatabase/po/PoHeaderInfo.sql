@@ -76,12 +76,19 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'UI_PoHeaderInfo_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'UK_PoHeaderInfo_PoUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PoHeaderInfo_PoUuid] ON [dbo].[PoHeaderInfo]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'IX_PoHeaderInfo_WarehouseCode')
+CREATE NONCLUSTERED INDEX [IX_PoHeaderInfo_WarehouseCode] ON [dbo].[PoHeaderInfo]
+(
+	[PoUuid] ASC,
+	[WarehouseCode] ASC
+) ON [PRIMARY]
+GO
 
 

@@ -24,14 +24,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ActivityLog]') AND name = N'UK_ActivityLog_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ActivityLog]') AND name = N'UK_ActivityLog')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ActivityLog] ON [dbo].[ActivityLog]
 (
 	[LogUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ActivityLog]') AND name = N'IX_ActivityLog_LogDate')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ActivityLog]') AND name = N'IX_ActivityLog_LogDate')
 CREATE NONCLUSTERED INDEX [IX_ActivityLog_LogDate] ON [dbo].[ActivityLog]
 (
 	[ProfileNum] ASC,
@@ -39,7 +39,7 @@ CREATE NONCLUSTERED INDEX [IX_ActivityLog_LogDate] ON [dbo].[ActivityLog]
 )  
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ActivityLog]') AND name = N'IX_ActivityLog_LogDate_ProcessNumber_Action')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ActivityLog]') AND name = N'IX_ActivityLog_LogDate_ProcessNumber_Action')
 CREATE NONCLUSTERED INDEX [IX_ActivityLog_LogDate_ProcessNumber_Action] ON [dbo].[ActivityLog]
 (
 	[ProfileNum] ASC,

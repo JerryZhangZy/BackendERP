@@ -18,12 +18,19 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemSetting]') AND name = N'UI_SystemSettingId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemSetting]') AND name = N'UK_SystemSettingUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SystemSettingUuid] ON [dbo].[SystemSetting]
 (
 	[SystemSettingUuid] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemSetting]') AND name = N'UI_MasterAccountNum')
+CREATE UNIQUE NONCLUSTERED INDEX [UI_MasterAccountNum] ON [dbo].[SystemSetting]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC
+) ON [PRIMARY]
+GO
 
 

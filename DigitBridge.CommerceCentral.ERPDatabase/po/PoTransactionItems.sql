@@ -63,21 +63,21 @@
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'UI_PoTransactionItems_PoTransactionItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'UK_PoTransactionItems_PoTransactionItemsUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PoTransactionItems_PoTransactionItemsUuid] ON [dbo].[PoTransactionItems]
 (
 	[TransItemUuid] ASC
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_PoUuid')
 CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_PoUuid] ON [dbo].[PoTransactionItems]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_TransId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_TransUuid_Seq')
 CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransUuid_Seq] ON [dbo].[PoTransactionItems]
 (
 	[TransUuid] ASC,
@@ -85,7 +85,7 @@ CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransUuid_Seq] ON [dbo].[PoTran
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_TransId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_TransUuid')
 CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransUuid] ON [dbo].[PoTransactionItems]
 (
 	[TransUuid] ASC
@@ -93,7 +93,7 @@ CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransUuid] ON [dbo].[PoTransact
 GO
 
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_PoItemId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_PoItemUuid')
 CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_PoItemUuid] ON [dbo].[PoTransactionItems]
 (
 	[PoItemUuid] ASC

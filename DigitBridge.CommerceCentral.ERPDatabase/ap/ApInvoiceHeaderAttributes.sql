@@ -9,7 +9,7 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeaderAttributes]') AND name = N'UI_ApInvoiceHeaderAttributes_ApInvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeaderAttributes]') AND name = N'UK_ApInvoiceHeaderAttributes_ApInvoiceUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceHeaderAttributes_ApInvoiceUuid] ON [dbo].[ApInvoiceHeaderAttributes]
 (
 	[ApInvoiceUuid] ASC

@@ -29,7 +29,7 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerSku]') AND name = N'UI_Customer_CustomerId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerSku]') AND name = N'UI_Customer_CustomerUuid_SKU')
 CREATE NONCLUSTERED INDEX [UI_Customer_CustomerUuid_SKU] ON [dbo].[CustomerSku]
 (
 	[CustomerUuid] ASC,
@@ -37,7 +37,7 @@ CREATE NONCLUSTERED INDEX [UI_Customer_CustomerUuid_SKU] ON [dbo].[CustomerSku]
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerSku]') AND name = N'UI_Customer_CustomerId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerSku]') AND name = N'UI_Customer_CustomerUuid_CustomerSKU')
 CREATE NONCLUSTERED INDEX [UI_Customer_CustomerUuid_CustomerSKU] ON [dbo].[CustomerSku]
 (
 	[CustomerUuid] ASC,

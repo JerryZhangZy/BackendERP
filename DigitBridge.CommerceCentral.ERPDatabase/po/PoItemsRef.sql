@@ -75,14 +75,14 @@
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsRef]') AND name = N'UI_PoItemsRef_PoItemId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsRef]') AND name = N'UK_PoItemsRef_PoItemUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PoItemsRef_PoItemUuid] ON [dbo].[PoItemsRef]
 (
 	[PoItemUuid] ASC
 ) ON [PRIMARY]
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsRef]') AND name = N'UI_PoItemsRef_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsRef]') AND name = N'FK_PoItemsRef_PoUuid')
 CREATE NONCLUSTERED INDEX [FK_PoItemsRef_PoUuid] ON [dbo].[PoItemsRef]
 (
 	[PoUuid] ASC

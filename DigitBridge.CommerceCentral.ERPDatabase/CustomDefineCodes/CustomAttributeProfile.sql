@@ -27,15 +27,18 @@
     CONSTRAINT [PK_CustomAttributeProfile] PRIMARY KEY CLUSTERED ([AttributeNum])
 );
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomAttributeProfile]') AND name = N'UK_CustomAttributeProfile')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomAttributeProfile]') AND name = N'UK_CustomAttributeProfile')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_CustomAttributeProfile] ON [dbo].[CustomAttributeProfile]
 (
 	[AttributeUuid] ASC
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomAttributeProfile]') AND name = N'UI_CustomAttributeProfile_Type')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomAttributeProfile_Type] ON [dbo].[CustomAttributeProfile]
 (
+    [MasterAccountNum] ASC,
+    [ProfileNum] ASC,
 	[AttributeFor] ASC,
 	[AttributeName] ASC
 ) ON [PRIMARY]

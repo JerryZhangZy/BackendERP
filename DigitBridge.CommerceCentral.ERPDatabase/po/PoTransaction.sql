@@ -52,21 +52,21 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'UI_PoTransaction_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'UK_PoTransaction_TransUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PoTransaction_TransUuid] ON [dbo].[PoTransaction]
 (
 	[TransUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'IX_PoTransaction_InvoiceNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'FK_PoTransaction_PoUuid')
 CREATE NONCLUSTERED INDEX [FK_PoTransaction_PoUuid] ON [dbo].[PoTransaction]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'IX_PoTransaction_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'IX_PoTransaction_TransNum')
 CREATE NONCLUSTERED INDEX [IX_PoTransaction_TransNum] ON [dbo].[PoTransaction]
 (
 	[VendorUuid] ASC,
@@ -74,7 +74,7 @@ CREATE NONCLUSTERED INDEX [IX_PoTransaction_TransNum] ON [dbo].[PoTransaction]
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'UI_PoTransaction_ProfileNum_VendorCode_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'UI_PoTransaction_ProfileNum_VendorCode_TransNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_PoTransaction_ProfileNum_VendorCode_TransNum] ON [dbo].[PoTransaction]
 (
 	[ProfileNum] ASC,

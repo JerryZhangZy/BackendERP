@@ -41,21 +41,21 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'UK_MiscInvoiceTransaction_TransId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'UK_MiscInvoiceTransaction_TransUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_MiscInvoiceTransaction_TransUuid] ON [dbo].[MiscInvoiceTransaction]
 (
 	[TransUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'FK_MiscInvoiceTransaction_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'FK_MiscInvoiceTransaction_MiscInvoiceUuid')
 CREATE NONCLUSTERED INDEX [FK_MiscInvoiceTransaction_MiscInvoiceUuid] ON [dbo].[MiscInvoiceTransaction]
 (
 	[MiscInvoiceUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'UI_MiscInvoiceTransaction_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'UI_MiscInvoiceTransaction_TransNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_MiscInvoiceTransaction_TransNum] ON [dbo].[MiscInvoiceTransaction]
 (
 	[ProfileNum] ASC,
@@ -64,8 +64,11 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_MiscInvoiceTransaction_TransNum] ON [dbo].[
 ) 
 GO
 
-CREATE NONCLUSTERED INDEX [IK_MiscInvoiceTransaction_AuthCode] ON [dbo].[MiscInvoiceTransaction]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'IX_MiscInvoiceTransaction_AuthCode')
+CREATE NONCLUSTERED INDEX [IX_MiscInvoiceTransaction_AuthCode] ON [dbo].[MiscInvoiceTransaction]
 (
+	[ProfileNum] ASC,
+	[MiscInvoiceNumber] ASC,
 	[AuthCode] ASC
 ) 
 GO

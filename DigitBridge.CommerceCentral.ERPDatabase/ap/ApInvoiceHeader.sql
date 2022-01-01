@@ -43,53 +43,57 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeader]') AND name = N'UK_ApInvoiceHeader_ApInvoiceUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceHeader_ApInvoiceUuid] ON [dbo].[ApInvoiceHeader]
 (
 	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeader_ApInvoiceNum] ON [dbo].[ApInvoiceHeader]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[ApInvoiceNum] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceNum')
-CREATE NONCLUSTERED INDEX [UI_ApInvoiceHeader_VendorUuid] ON [dbo].[ApInvoiceHeader]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_ApInvoiceHeader]') AND name = N'IX_ApInvoiceHeader_VendorUuid')
+CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_VendorUuid] ON [dbo].[ApInvoiceHeader]
 (
 	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_PoUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_ApInvoiceHeader_PoUuid')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_PoUuid] ON [dbo].[ApInvoiceHeader]
 (
 	[PoUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_PoNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_ApInvoiceHeader_PoNum')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_PoNum] ON [dbo].[ApInvoiceHeader]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[PoNum] ASC
 ) 
 GO
 
-
-
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_TransUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_ApInvoiceHeader_TransUuid')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_TransUuid] ON [dbo].[ApInvoiceHeader]
 (
 	[TransUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_ApInvoiceHeader_TransNum')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_TransNum] ON [dbo].[ApInvoiceHeader]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[TransNum] ASC
 ) 
 GO

@@ -11,13 +11,14 @@
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryAttributes]') AND name = N'UK_InventoryAttributes_InventoryUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryAttributes]') AND name = N'UK_InventoryAttributes_InventoryUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InventoryAttributes_InventoryUuid] ON [dbo].[InventoryAttributes]
 (
 	[InventoryUuid] ASC
 )
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryAttributes]') AND name = N'FK_InventoryAttributes_ProductUuid')
 CREATE NONCLUSTERED INDEX [FK_InventoryAttributes_ProductUuid] ON [dbo].[InventoryAttributes]
 (
 	[ProductUuid] ASC

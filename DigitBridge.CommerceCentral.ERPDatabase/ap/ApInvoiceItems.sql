@@ -30,14 +30,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceItems]') AND name = N'UI_ApInvoiceItems_ApInvoiceItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceItems]') AND name = N'UK_ApInvoiceItems_ApInvoiceItemsUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceItems_ApInvoiceItemsUuid] ON [dbo].[ApInvoiceItems]
 (
 	[ApInvoiceItemsUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceItems]') AND name = N'IX_ApInvoiceItems_ApInvoiceId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceItems]') AND name = N'IX_ApInvoiceItems_ApInvoiceUuid_Seq')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceItems_ApInvoiceUuid_Seq] ON [dbo].[ApInvoiceItems]
 (
 	[ApInvoiceUuid] ASC,

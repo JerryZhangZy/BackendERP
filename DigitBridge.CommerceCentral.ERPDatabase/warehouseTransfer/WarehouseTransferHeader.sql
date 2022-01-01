@@ -35,14 +35,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferHeader]') AND name = N'UK_WarehouseTransferHeader_WarehouseTransferId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferHeader]') AND name = N'UK_WarehouseTransferHeader')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_WarehouseTransferHeader] ON [dbo].[WarehouseTransferHeader]
 (
 	[WarehouseTransferUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferHeader]') AND name = N'UI_WarehouseTransferHeader_BatchNumber')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferHeader]') AND name = N'UI_WarehouseTransferHeader_BatchNumber')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_WarehouseTransferHeader_BatchNumber] ON [dbo].[WarehouseTransferHeader]
 (
 	[MasterAccountNum] ASC,
