@@ -48,14 +48,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'UK_WarehouseTransferItems_WarehouseTransferItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'UK_WarehouseTransferItems_WarehouseTransferItemsUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_WarehouseTransferItems_WarehouseTransferItemsUuid] ON [dbo].[WarehouseTransferItems]
 (
 	[WarehouseTransferItemsUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'FK_WarehouseTransferItems_OrderId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'FK_WarehouseTransferItems_WarehouseTransferUuid_Seq')
 CREATE NONCLUSTERED INDEX [FK_WarehouseTransferItems_WarehouseTransferUuid_Seq] ON [dbo].[WarehouseTransferItems]
 (
 	[WarehouseTransferUuid] ASC,
@@ -63,28 +63,36 @@ CREATE NONCLUSTERED INDEX [FK_WarehouseTransferItems_WarehouseTransferUuid_Seq] 
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'BLK_WarehouseTransferItems_OrderId_Seq')
-CREATE NONCLUSTERED INDEX [BLK_WarehouseTransferItems_WarehouseTransferUuid_Seq] ON [dbo].[WarehouseTransferItems]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_WarehouseTransferUuid_Sku')
+CREATE NONCLUSTERED INDEX [IX_WarehouseTransferItems_WarehouseTransferUuid_Sku] ON [dbo].[WarehouseTransferItems]
+(
+	[WarehouseTransferUuid] ASC,
+	[SKU] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'BLK_WarehouseTransferItems_SKU')
+CREATE NONCLUSTERED INDEX [BLK_WarehouseTransferItems_SKU] ON [dbo].[WarehouseTransferItems]
 (
 	[SKU] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_ProductUuid')
 CREATE NONCLUSTERED INDEX [IX_WarehouseTransferItems_ProductUuid] ON [dbo].[WarehouseTransferItems]
 (
 	[ProductUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_InventoryId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_FromInventoryUuid')
 CREATE NONCLUSTERED INDEX [IX_WarehouseTransferItems_FromInventoryUuid] ON [dbo].[WarehouseTransferItems]
 (
 	[FromInventoryUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_InventoryId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[WarehouseTransferItems]') AND name = N'IX_WarehouseTransferItems_ToInventoryUuid')
 CREATE NONCLUSTERED INDEX [IX_WarehouseTransferItems_ToInventoryUuid] ON [dbo].[WarehouseTransferItems]
 (
 	[ToInventoryUuid] ASC

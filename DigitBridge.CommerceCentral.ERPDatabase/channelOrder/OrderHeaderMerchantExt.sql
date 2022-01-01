@@ -134,14 +134,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UK_OrderHeaderMerchantExt')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UK_OrderHeaderMerchantExt')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderHeaderMerchantExt] ON [dbo].[OrderHeaderMerchantExt]
 (
 	[CentralOrderUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_OrderHeaderMerchantExt_CentralOrderNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_OrderHeaderMerchantExt_CentralOrderNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderHeaderMerchantExt_CentralOrderNum] ON [dbo].[OrderHeaderMerchantExt]
 (
 	[DatabaseNum] ASC,

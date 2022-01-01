@@ -25,6 +25,7 @@
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksConnectionInfo]') AND name = N'UK_QuickBooksConnectionInfo_OrderShipmentUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksConnectionInfo_OrderShipmentUuid] ON [dbo].[QuickBooksConnectionInfo]
 (
     [ConnectionUuid] ASC

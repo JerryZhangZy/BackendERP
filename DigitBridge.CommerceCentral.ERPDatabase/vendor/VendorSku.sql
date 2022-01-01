@@ -29,7 +29,15 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UK_VendorSku')
+CREATE NONCLUSTERED INDEX [UK_VendorSku] ON [dbo].[VendorSku]
+(
+	[VendorSkuUuid] ASC
+) ON [PRIMARY]
+GO
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorUuid_SKU')
 CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_SKU] ON [dbo].[VendorSku]
 (
 	[VendorUuid] ASC,
@@ -37,7 +45,7 @@ CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_SKU] ON [dbo].[VendorSku]
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorUuid_VendorSKU')
 CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_VendorSKU] ON [dbo].[VendorSku]
 (
 	[VendorUuid] ASC,

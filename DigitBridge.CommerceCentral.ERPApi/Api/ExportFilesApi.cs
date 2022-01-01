@@ -251,7 +251,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ImportExportFilesPayloadUpdate), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
         public static async Task<JsonNetResponse<ImportExportFilesPayload>> UpdateExportStatus(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/Status")] HttpRequest req)
         {
             var payload = await req.GetParameters<ImportExportFilesPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

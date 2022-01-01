@@ -43,21 +43,21 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UI_ApInvoiceTransaction_ApInvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UK_ApInvoiceTransaction_TransUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceTransaction_TransUuid] ON [dbo].[ApInvoiceTransaction]
 (
 	[TransUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UI_ApInvoiceTransaction_ApInvoiceNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'FK_ApInvoiceTransaction_ApInvoiceUuid')
 CREATE NONCLUSTERED INDEX [FK_ApInvoiceTransaction_ApInvoiceUuid] ON [dbo].[ApInvoiceTransaction]
 (
 	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UI_ApInvoiceTransaction_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'IX_ApInvoiceTransaction_TransNum')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_TransNum] ON [dbo].[ApInvoiceTransaction]
 (
 	[ApInvoiceUuid] ASC,
@@ -65,3 +65,18 @@ CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_TransNum] ON [dbo].[ApInvoice
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'IX_ApInvoiceTransaction_PaymentNumber')
+CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_PaymentNumber] ON [dbo].[ApInvoiceTransaction]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[PaymentNumber] ASC
+) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'IX_ApInvoiceTransaction_PaymentUuid')
+CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_PaymentUuid] ON [dbo].[ApInvoiceTransaction]
+(
+	[PaymentUuid] ASC
+) ON [PRIMARY]
+GO

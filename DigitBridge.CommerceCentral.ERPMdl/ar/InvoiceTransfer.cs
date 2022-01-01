@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             invoiceHeader.SalesOrderUuid = soHeader.SalesOrderUuid;
             invoiceHeader.OrderNumber = soHeader.OrderNumber;
-            invoiceHeader.InvoiceType = soHeader.OrderType; //(int)InvoiceType.Sales;
+            invoiceHeader.InvoiceType = (int)InvoiceType.Sales;
             invoiceHeader.InvoiceStatus = (int)InvoiceStatusEnum.New;
             invoiceHeader.InvoiceDate = _dtNowUtc;
             invoiceHeader.InvoiceTime = _dtNowUtc.TimeOfDay;

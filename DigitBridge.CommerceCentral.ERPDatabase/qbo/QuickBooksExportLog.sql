@@ -29,16 +29,18 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksExportLog]') AND name = N'UK_QuickBooksExportLog_QuickBooksExportLogUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksExportLog]') AND name = N'UK_QuickBooksExportLog_QuickBooksExportLogUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksExportLog_QuickBooksExportLogUuid] ON [dbo].[QuickBooksExportLog]
 (
 	[QuickBooksExportLogUuid] ASC
 ) 
 GO 
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksExportLog]') AND name = N'[IX_QuickBooksExportLog_DocNumber]')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksExportLog]') AND name = N'IX_QuickBooksExportLog_DocNumber')
 CREATE NONCLUSTERED INDEX [IX_QuickBooksExportLog_DocNumber] ON [dbo].[QuickBooksExportLog]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[DocNumber] ASC
 ) 
 GO

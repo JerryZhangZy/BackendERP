@@ -1,0 +1,272 @@
+[
+  {
+    "name": "AccountApiEndPoint",
+    "value": "https://digitbridgeappaccountapi-temp.azurewebsites.net/v1/",
+    "slotSetting": false
+  },
+  {
+    "name": "AccountApiSecurityCode",
+    "value": "WmDvwBs0E8upCer7eINx4am6fqEJjjrfbLfxFHtZuBbwcqwzRNBGXw==",
+    "slotSetting": false
+  },
+  {
+    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+    "value": "0a705d61-7441-4ae7-a553-103afab75b98",
+    "slotSetting": false
+  },
+  {
+    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+    "value": "InstrumentationKey=0a705d61-7441-4ae7-a553-103afab75b98",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureImportProductFileQueue",
+    "value": "import-product-addnew",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureTokenProviderConnectionString",
+    "value": "RunAs=App",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureUseManagedIdentity",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsExportProductFileLog",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbglog;AccountKey=hOz1/Kb50lRVRo3vAmaoxZIr8DQz6M1Po6WE7vDmukGWj4oGZ3bgY+f3jO8DEgagF2FSZk0SqHByIWylHxrYsA==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsqueue",
+    "value": "DefaultEndpointsProtocol=https;AccountName=digitbridgequeuestorge;AccountKey=PcKJ5eypIJ5h2jOO8GE99IK49keoBVt2HHiuC+47qZFeXbTvz7hLV5y6pcPeUn84eZ94AY1c953uazDw4TPNpQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgappwebapi;AccountKey=NC5WdatvN/cKYc9sE1Gblqr6s5QivFkPHVZ4u1Qne9o0wZFEtEpioOEM7DNkLLqStROBXgQUD2Ucy8+9a8trvQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "BackdoorMode",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "BackdoorModePassword",
+    "value": "Babalala168$",
+    "slotSetting": false
+  },
+  {
+    "name": "CentralDbTenantId",
+    "value": "",
+    "slotSetting": false
+  },
+  {
+    "name": "ChannelAccountTemplateBlobName",
+    "value": "channel-mapping-",
+    "slotSetting": false
+  },
+  {
+    "name": "ChannelMappingStorageConnString",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgvaultblob;AccountKey=3DrDlK2onZQDuLI/hXLLglsERNmMBhnT3UO+2OKRzuhRUaI266NqqHmlBhtp4HFqaisMHXJrwPmk1tW5MNM6PQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "ChannelStaticFileContainer",
+    "value": "ChannelStaticFileContainer",
+    "slotSetting": false
+  },
+  {
+    "name": "ChannelStaticFileContainerPath",
+    "value": "https://dbguploadblob.blob.core.windows.net/",
+    "slotSetting": false
+  },
+  {
+    "name": "DBConnectionString",
+    "value": "Server=tcp:digitbridgeproduction02.database.windows.net,1433;Initial Catalog=CommerceCentral-1003;",
+    "slotSetting": false
+  },
+  {
+    "name": "DefaultOrderTopCount",
+    "value": "100",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailBody",
+    "value": "This is invitation email , DigitBridge invites you to join us",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailSenderName",
+    "value": "DigitBridge Customer Service",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailSubject",
+    "value": "DigitBridge invites you to join us",
+    "slotSetting": false
+  },
+  {
+    "name": "ERP_Integration_Api_AuthCode",
+    "value": "",
+    "slotSetting": false
+  },
+  {
+    "name": "ERP_Integration_Api_BaseUrl",
+    "value": "",
+    "slotSetting": false
+  },
+  {
+    "name": "EventTopicEndpoint",
+    "value": "https://universal.centralus-1.eventgrid.azure.net/api/events",
+    "slotSetting": false
+  },
+  {
+    "name": "EventTopicKey",
+    "value": "/iNWuus8dlTd5o3sdg3DR3pPx7i0FDAboZJS2XqsdVU=",
+    "slotSetting": false
+  },
+  {
+    "name": "ExportFileBlobConnString",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbguploadblob;AccountKey=g4fGftMX46U6emCRUVRwTu2SbIL3U68DmJ9+Lgq1addLdvw/g28Ihn61KrQ/zAP27GIulSX+KRyMXT4YE01uVQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_EXTENSION_VERSION",
+    "value": "~3",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_WORKER_RUNTIME",
+    "value": "dotnet",
+    "slotSetting": false
+  },
+  {
+    "name": "ImportErrorLog",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbglog;AccountKey=hOz1/Kb50lRVRo3vAmaoxZIr8DQz6M1Po6WE7vDmukGWj4oGZ3bgY+f3jO8DEgagF2FSZk0SqHByIWylHxrYsA==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "ImportFileEachProcessCount",
+    "value": "5000",
+    "slotSetting": false
+  },
+  {
+    "name": "IntenalEmailBody",
+    "value": "has been activated. Please setup permissions for this user.",
+    "slotSetting": false
+  },
+  {
+    "name": "IntenalEmailSubject",
+    "value": "has activated",
+    "slotSetting": false
+  },
+  {
+    "name": "LogTableConnectionString",
+    "value": "DefaultEndpointsProtocol=https;AccountName=digitbridgequeuestorge;AccountKey=PcKJ5eypIJ5h2jOO8GE99IK49keoBVt2HHiuC+47qZFeXbTvz7hLV5y6pcPeUn84eZ94AY1c953uazDw4TPNpQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "MailjetAccountEmail",
+    "value": "no-reply@DigitBridge.com",
+    "slotSetting": false
+  },
+  {
+    "name": "MailjetApiKey",
+    "value": "6649a55194f0c1f5242d4365d09657ce",
+    "slotSetting": false
+  },
+  {
+    "name": "MailjetSecurityKey",
+    "value": "75f6c15ba47d8bce69f3e7edce1e4f12",
+    "slotSetting": false
+  },
+  {
+    "name": "MailjetTemplateID",
+    "value": "1606164",
+    "slotSetting": false
+  },
+  {
+    "name": "MaxOrderTopCount",
+    "value": "200",
+    "slotSetting": false
+  },
+  {
+    "name": "Queue",
+    "value": "DefaultEndpointsProtocol=https;AccountName=digitbridgequeuestorge;AccountKey=PcKJ5eypIJ5h2jOO8GE99IK49keoBVt2HHiuC+47qZFeXbTvz7hLV5y6pcPeUn84eZ94AY1c953uazDw4TPNpQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickbooksOnlineApiEndPoint",
+    "value": "https://digitbridge-quickbooksonline-integration-api.azurewebsites.net/api/",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickbooksOnlineApiSecurityCode",
+    "value": "32GPevLqjDX8bZpHFwjjis5Jml6UbqpAMHTQ4BJ77f7PHS8ion7EUQ==",
+    "slotSetting": false
+  },
+  {
+    "name": "ResourceId",
+    "value": "https://database.windows.net/",
+    "slotSetting": false
+  },
+  {
+    "name": "SentryDsn",
+    "value": "https://130c471855514397b7164e6a32b2fb26@o852268.ingest.sentry.io/5891647",
+    "slotSetting": false
+  },
+  {
+    "name": "SentryEnable",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "SeriEnable",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "UniversalEventEndpoint",
+    "value": "https://universal.centralus-1.eventgrid.azure.net/api/events",
+    "slotSetting": false
+  },
+  {
+    "name": "UniversalEventKey",
+    "value": "/iNWuus8dlTd5o3sdg3DR3pPx7i0FDAboZJS2XqsdVU=",
+    "slotSetting": false
+  },
+  {
+    "name": "UploadBlobContainerPrefix",
+    "value": "Upload",
+    "slotSetting": false
+  },
+  {
+    "name": "UploadStorageAccountConnString",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbguploadblob;AccountKey=g4fGftMX46U6emCRUVRwTu2SbIL3U68DmJ9+Lgq1addLdvw/g28Ihn61KrQ/zAP27GIulSX+KRyMXT4YE01uVQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgappwebapi;AccountKey=NC5WdatvN/cKYc9sE1Gblqr6s5QivFkPHVZ4u1Qne9o0wZFEtEpioOEM7DNkLLqStROBXgQUD2Ucy8+9a8trvQ==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_CONTENTSHARE",
+    "value": "digitbridgeappwebapia9d6",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_RUN_FROM_PACKAGE",
+    "value": "1",
+    "slotSetting": false
+  }
+]
+
+
+
+
+

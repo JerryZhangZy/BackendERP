@@ -1,0 +1,347 @@
+[
+  {
+    "name": "AccountApiCode",
+    "value": "KFxrn/51OpLqBDuIcUs7va2UXpn0NTzdQYQSdfyL4wxV3GkGejBEuQ==",
+    "slotSetting": false
+  },
+  {
+    "name": "AccountApiEndPoint",
+    "value": "https://digitbridgeappaccountapidev.azurewebsites.net/v1/",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureTokenProviderConnectionString",
+    "value": "RunAs=Developer;DeveloperTool=VisualStudio",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgerpintegrationapidev;AccountKey=AVy804YTnk+hlZvEX+D/6v7PB0Xbd/GxpobBX4A/7hRwR8vyqpXYuhf9gWG1uALEq0vcScUdDroImBgzxsbESA==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "BackdoorMode",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "BackdoorModeEmail",
+    "value": "abc@123.com",
+    "slotSetting": false
+  },
+  {
+    "name": "BackdoorModePassword",
+    "value": "blabla",
+    "slotSetting": false
+  },
+  {
+    "name": "DBConnectionString",
+    "value": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "slotSetting": false
+  },
+  {
+    "name": "DbTenantId",
+    "value": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    "slotSetting": false
+  },
+  {
+    "name": "DebugMode",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "DefaultCacheExpireSlidingMins",
+    "value": "2",
+    "slotSetting": false
+  },
+  {
+    "name": "ERP_Integration_Api_AuthCode",
+    "value": "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==",
+    "slotSetting": false
+  },
+  {
+    "name": "ERP_Integration_Api_BaseUrl",
+    "value": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPBlobConnectionString",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgerpblobdev;AccountKey=MhOAPgLvQmoegauK8llL1T4qrA2BI+KIlzZ/fJ0k6L1ZdU7+Ko/Hcm3tNfElqS4HmoyH6z4t0pxeAZ2uNuVLVg==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPCreateInvoiceByOrdershipmentQueueName",
+    "value": "erp-create-invoice-by-ordershipment",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPCreatePoReceiveByWMSQueueName",
+    "value": "erp-create-poreceive-by-wms",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPCreateSalesOrderByCentralorderQueueName",
+    "value": "erp-create-salesorder-by-centralorder",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPCreateShipmentByWMSQueueName",
+    "value": "erp-create-shipment-by-wms",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPExportContainerName",
+    "value": "erp-export",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportCustomerQueueName",
+    "value": "erp-export-customer",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportInventoryQueueName",
+    "value": "erp-export-inventory",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportInventoryUpdateQueueName",
+    "value": "erp-export-inventoryupdate",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportInvoicePaymentQueueName",
+    "value": "erp-export-invoicepayment",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportInvoiceQueueName",
+    "value": "erp-export-invoice",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportPoReceiveQueueName",
+    "value": "erp-export-poreceive",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportPurchaseOrderQueueName",
+    "value": "erp-export-purchaseorder",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportSalesOrderQueueName",
+    "value": "erp-export-salesorder",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportShipmentQueueName",
+    "value": "erp-export-shipment",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportVendorQueueName",
+    "value": "erp-export-vendor",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpExportWarehouseTransferQueue",
+    "value": "erp-export-warehousetransfer",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPImportContainerName",
+    "value": "erp-impot",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportCustomerQueueName",
+    "value": "erp-import-customer",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportInventoryQueueName",
+    "value": "erp-import-inventory",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportInventoryUpdateQueueName",
+    "value": "erp-import-inventoryupdate",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportInvoicePaymentQueueName",
+    "value": "erp-import-invoicepayment",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportInvoiceQueueName",
+    "value": "erp-import-invoice",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportPoReceiveQueueName",
+    "value": "erp-import-poreceive",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportPurchaseOrderQueueName",
+    "value": "erp-import-purchaseorder",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportSalesOrderQueueName",
+    "value": "erp-import-salesorder",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportShipmentQueueName",
+    "value": "erp-import-shipment",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportVendorQueueName",
+    "value": "erp-import-vendor",
+    "slotSetting": false
+  },
+  {
+    "name": "ErpImportWarehouseTransferQueue",
+    "value": "erp-import-warehousetransfer",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPInvoiceQueueName",
+    "value": "erp-invoice-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPSalesOrderQueueName",
+    "value": "erp-salesorder-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPSummaryTableConnectionString",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgerpeventapidev;AccountKey=DCDiLGxMy8m+efWvPjhG86HuDOtPME94nUaWmRtcAkB2ZD5xv/JbvW9MsDKKjKbtf13HsdCwtrqLz/pzS0iIyw==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPSummaryTableName",
+    "value": "ErpSummaryCache",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPSyncInventoryByWmsName",
+    "value": "erp-sync-inventory-by-wms",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPSyncInventoryByWmsQueueName",
+    "value": "erp-sync-inventory-by-wms",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPSyncProductQueueName",
+    "value": "erp-sync-product-from-productbasic-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "EventApi_AuthCode",
+    "value": "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==",
+    "slotSetting": false
+  },
+  {
+    "name": "EventApi_BaseUrl",
+    "value": "https://digitbridge-erp-event-api-dev.azurewebsites.net",
+    "slotSetting": false
+  },
+  {
+    "name": "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET",
+    "value": "ipy7Q~EkOwZBkO7.lFq5hX1WYygJYKP2wnoHt",
+    "slotSetting": true
+  },
+  {
+    "name": "OrchestrationDbConnString",
+    "value": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "slotSetting": false
+  },
+  {
+    "name": "OrchestrationDbTenantId",
+    "value": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_AppClientId",
+    "value": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_AppClientSecret",
+    "value": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=7cL7694TZ2OgF5Bv5LqT4XZX1c46Dj2ZcDIITh5p+vhbgq3+KgvzStbboOrEf0gk8+T2uEuzKfWQHxDRrquj6w==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_BaseUrl",
+    "value": "https://sandbox-quickbooks.api.intuit.com/",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_CryptKey",
+    "value": "ABCDEFGH",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_Environment",
+    "value": "sandbox",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_MinorVersion",
+    "value": "62",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_OAuthTableName",
+    "value": "QboIntegration",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_RedirectUrl",
+    "value": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
+    "slotSetting": false
+  },
+  {
+    "name": "QuickBooks_TokenReceiverReturnUrl",
+    "value": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
+    "slotSetting": false
+  },
+  {
+    "name": "SentryDsn",
+    "value": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    "slotSetting": false
+  },
+  {
+    "name": "SentryEnable",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "UseAzureManagedIdentity",
+    "value": "false",
+    "slotSetting": false
+  },
+  {
+    "name": "UseOrchestration",
+    "value": "false",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_RUN_FROM_PACKAGE",
+    "value": "1",
+    "slotSetting": false
+  }
+]

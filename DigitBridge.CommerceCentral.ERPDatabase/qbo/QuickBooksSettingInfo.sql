@@ -17,12 +17,16 @@
 ) ON [PRIMARY]
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksSettingInfo]') AND name = N'UK_QuickBooksSettingInfo_SettingUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksSettingInfo_SettingUuid] ON [dbo].[QuickBooksSettingInfo]
 (
     [SettingUuid] ASC
 ) 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksSettingInfo]') AND name = N'UK_QuickBooksSettingInfo_MasterAccountNum_ProfileNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksSettingInfo_MasterAccountNum_ProfileNum] ON [dbo].[QuickBooksSettingInfo]
 (
-	MasterAccountNum,ProfileNum
+	[MasterAccountNum] ASC,
+	[ProfileNum]
 ) 

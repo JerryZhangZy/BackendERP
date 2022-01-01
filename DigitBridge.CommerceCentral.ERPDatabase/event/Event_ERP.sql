@@ -23,14 +23,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Event_ERP]') AND name = N'UK_Event_ERP_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Event_ERP]') AND name = N'UK_Event_ERP')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_Event_ERP] ON [dbo].[Event_ERP]
 (
 	[EventUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Event_ERP]') AND name = N'IX_Event_ERP_ERPEventType')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Event_ERP]') AND name = N'IX_Event_ERP_ERPEventType')
 CREATE NONCLUSTERED INDEX [IX_Event_ERP_ERPEventType] ON [dbo].[Event_ERP]
 (
 	[ProfileNum] ASC,

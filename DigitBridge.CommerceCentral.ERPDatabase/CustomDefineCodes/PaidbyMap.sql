@@ -26,14 +26,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'UK_PaidbyMapUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'UK_PaidbyMapUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PaidbyMapUuid] ON [dbo].[PaidbyMap]
 (
 	[PaidbyMapUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'UI_ChannelNum_ChannelAccountNum_ChannelPaidBy')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'UI_ChannelNum_ChannelAccountNum_ChannelPaidBy')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_ChannelNum_ChannelAccountNum_ChannelPaidBy] ON [dbo].[PaidbyMap]
 (
 	[MasterAccountNum] ASC,
@@ -44,7 +44,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ChannelNum_ChannelAccountNum_ChannelPaidBy]
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'UI_ChannelPaidBy')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'IX_ChannelPaidBy')
 CREATE NONCLUSTERED INDEX [IX_ChannelPaidBy] ON [dbo].[PaidbyMap]
 (
 	[MasterAccountNum] ASC,
@@ -53,7 +53,7 @@ CREATE NONCLUSTERED INDEX [IX_ChannelPaidBy] ON [dbo].[PaidbyMap]
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'IX_PaidBy')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PaidbyMap]') AND name = N'IX_PaidBy')
 CREATE NONCLUSTERED INDEX [IX_PaidBy] ON [dbo].[PaidbyMap]
 (
 	[MasterAccountNum] ASC,
