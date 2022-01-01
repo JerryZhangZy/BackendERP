@@ -38,23 +38,23 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_AddressId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UK_VendorAddress_AddressUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_VendorAddress_AddressUuid] ON [dbo].[VendorAddress]
 (
 	[AddressUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorId_AddressCode')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_VendorAddress_VendorUuid_AddressCode] ON [dbo].[VendorAddress]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorUuid_AddressCode')
+CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_VendorUuid_AddressCode] ON [dbo].[VendorAddress]
 (
 	[VendorUuid] ASC,
 	[AddressCode] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorId')
-CREATE NONCLUSTERED INDEX [UK_VendorAddress_VendorUuid] ON [dbo].[VendorAddress]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'FK_VendorAddress_VendorUuid')
+CREATE NONCLUSTERED INDEX [FK_VendorAddress_VendorUuid] ON [dbo].[VendorAddress]
 (
 	[VendorUuid] ASC
 ) ON [PRIMARY]

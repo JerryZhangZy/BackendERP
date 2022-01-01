@@ -10,7 +10,7 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderAttributes]') AND name = N'UK_SalesOrderHeaderAttributes_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderAttributes]') AND name = N'UK_SalesOrderHeaderAttributes_SalesOrderUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeaderAttributes_SalesOrderUuid] ON [dbo].[SalesOrderHeaderAttributes]
 (
 	[SalesOrderUuid] ASC

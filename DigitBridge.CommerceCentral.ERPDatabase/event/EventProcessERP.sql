@@ -31,14 +31,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'UK_EventProcessERP_OrderId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'UK_EventProcessERP')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_EventProcessERP] ON [dbo].[EventProcessERP]
 (
 	[EventUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'UI_ERPEventProcessType_ProcessUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'UI_ERPEventProcessType_ProcessUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_ERPEventProcessType_ProcessUuid] ON [dbo].[EventProcessERP]
 (
 	[ERPEventProcessType] ASC,
@@ -46,7 +46,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ERPEventProcessType_ProcessUuid] ON [dbo].[
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_ERPEventProcessType')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_ERPEventProcessType')
 CREATE NONCLUSTERED INDEX [IX_EventProcessERP_ERPEventProcessType] ON [dbo].[EventProcessERP]
 (
 	[ProfileNum] ASC,
@@ -55,7 +55,7 @@ CREATE NONCLUSTERED INDEX [IX_EventProcessERP_ERPEventProcessType] ON [dbo].[Eve
 )  
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_LastUpdateDate')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_LastUpdateDate')
 CREATE NONCLUSTERED INDEX [IX_EventProcessERP_LastUpdateDate] ON [dbo].[EventProcessERP]
 (
 	[ProfileNum] ASC,
@@ -64,7 +64,7 @@ CREATE NONCLUSTERED INDEX [IX_EventProcessERP_LastUpdateDate] ON [dbo].[EventPro
 )  
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_Type_Process_Action')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_Type_Process_Action')
 CREATE NONCLUSTERED INDEX [IX_EventProcessERP_Type_Process_Action] ON [dbo].[EventProcessERP]
 (
 	[ERPEventProcessType] ASC,

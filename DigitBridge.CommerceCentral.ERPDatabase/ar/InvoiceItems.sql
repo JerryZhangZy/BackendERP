@@ -83,14 +83,14 @@
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'UK_InvoiceItems_InvoiceItemsId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'UK_InvoiceItems_InvoiceItemsUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceItems_InvoiceItemsUuid] ON [dbo].[InvoiceItems]
 (
 	[InvoiceItemsUuid] ASC
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'FK_InvoiceItems_InvoiceId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'FK_InvoiceItems_InvoiceUuid_Seq')
 CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceItems]
 (
 	[InvoiceUuid] ASC,
@@ -98,21 +98,21 @@ CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceIte
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'BLK_InvoiceItems_InvoiceId_Seq')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'BLK_InvoiceItems_InvoiceUuid_Seq')
 CREATE NONCLUSTERED INDEX [BLK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceItems]
 (
 	[SKU] ASC
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InvoiceUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InvoiceUuid] ON [dbo].[InvoiceItems]
 (
 	[InvoiceUuid] ASC
 )
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InventoryId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InventoryUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InventoryUuid] ON [dbo].[InvoiceItems]
 (
 	[InventoryUuid] ASC

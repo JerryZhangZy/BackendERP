@@ -47,30 +47,43 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeader]') AND name = N'UI_PoHeader_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeader]') AND name = N'UK_PoHeader_PoUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PoHeader_PoUuid] ON [dbo].[PoHeader]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeader]') AND name = N'UI_PoHeader_PoNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeader]') AND name = N'UI_PoHeader_PoNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeader_PoNum] ON [dbo].[PoHeader]
 (
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
 	[PoNum] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'UI_PoHeader_VendorID')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'IX_PoHeader_VendorUuid')
 CREATE NONCLUSTERED INDEX [IX_PoHeader_VendorUuid] ON [dbo].[PoHeader]
 (
 	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'UI_PoHeader_PoSourceCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'IX_PoHeader_VendorCode')
+CREATE NONCLUSTERED INDEX [IX_PoHeader_VendorCode] ON [dbo].[PoHeader]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+	[VendorCode] ASC
+) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'IX_PoHeader_PoSourceCode')
 CREATE NONCLUSTERED INDEX [IX_PoHeader_PoSourceCode] ON [dbo].[PoHeader]
 (
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
 	[PoSourceCode] ASC
 ) ON [PRIMARY]
 GO

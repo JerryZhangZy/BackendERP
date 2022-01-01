@@ -23,16 +23,18 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomDefineCodes]') AND name = N'UI_CustomDefineCodesId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomDefineCodes]') AND name = N'UI_CustomDefineCodesUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomDefineCodesUuid] ON [dbo].[CustomDefineCodes]
 (
 	[CustomDefineCodesUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomDefineCodes]') AND name = N'UI_CodeType_Code)
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomDefineCodes]') AND name = N'UI_CodeType_Code')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_CodeType_Code] ON [dbo].[CustomDefineCodes]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CodeType] ASC, 
 	[Code] ASC
 ) ON [PRIMARY]

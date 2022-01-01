@@ -48,23 +48,27 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'UI_Vendor_VendorId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'UK_Vendor_VendorUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_Vendor_VendorUuid] ON [dbo].[Vendor]
 (
 	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'UI_Vendor_VendorCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'UK_Vendor_VendorCode')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_Vendor_VendorCode] ON [dbo].[Vendor]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[VendorCode] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'IX_Vendor_VendorID')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'IX_Vendor_VendorName')
 CREATE NONCLUSTERED INDEX [IX_Vendor_VendorName] ON [dbo].[Vendor]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[VendorName] ASC
 ) ON [PRIMARY]
 GO

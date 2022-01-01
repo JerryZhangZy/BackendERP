@@ -21,14 +21,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[BusinessType]') AND name = N'UK_BusinessTypeUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[BusinessType]') AND name = N'UK_BusinessTypeUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_BusinessTypeUuid] ON [dbo].[BusinessType]
 (
 	[BusinessTypeUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[BusinessType]') AND name = N'UI_BusinessType')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[BusinessType]') AND name = N'UI_BusinessType')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_BusinessType] ON [dbo].[BusinessType]
 (
 	[MasterAccountNum] ASC,
