@@ -99,5 +99,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public JArray OrderHeaderJson { get; set; }
 
         public JArray OrderLineJson { get; set; }
+
+        public string MerchantDivision { get; set; }
+        public string SalesDivision { get; set; }
     }
 }
