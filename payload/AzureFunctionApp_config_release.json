@@ -37,7 +37,7 @@
   },
   {
     "name": "BackdoorMode",
-    "value": "false",
+    "value": "true",
     "slotSetting": false
   },
   {
@@ -47,7 +47,7 @@
   },
   {
     "name": "BackdoorModePassword",
-    "value": "blabla",
+    "value": "Babalala168$",
     "slotSetting": false
   },
   {
@@ -82,13 +82,13 @@
   },
   {
     "name": "UseAzureManagedIdentity",
-    "value": "false",
-    "slotSetting": true
+    "value": "true",
+    "slotSetting": false
   },
   {
     "name": "UseOrchestration",
-    "value": "false",
-    "slotSetting": true
+    "value": "true",
+    "slotSetting": false
   },
   {
     "name": "DBConnectionString",
