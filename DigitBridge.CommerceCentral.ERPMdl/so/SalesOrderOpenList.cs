@@ -170,7 +170,7 @@ ordi.BillToNightPhone as 'BillToNightPhone',
 
     WHERE ordl.SalesOrderUuid = ord.SalesOrderUuid 
     FOR JSON PATH
-) AS OrderLineList,
+) AS OrderLineList
 
 --(
 --     --TODO select columns where wms need.
