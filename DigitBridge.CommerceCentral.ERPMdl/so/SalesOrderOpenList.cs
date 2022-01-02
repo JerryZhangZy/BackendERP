@@ -131,7 +131,7 @@ ord.SalesOrderUuid as 'SalesOrderUuid'
     ,ordl.MiscAmount as 'LineGiftAmount'
     ,ordl.MiscTaxAmount as 'LineGiftTaxAmount'
     ,ordl.DiscountAmount as 'LinePromotionAmount'
-    ,--ordl.BundleItemFulfilmentLineNum as 'BundleItemFulfilmentLineNum'
+    --,ordl.BundleItemFulfilmentLineNum as 'BundleItemFulfilmentLineNum'
     ,ordl.EnterDateUtc as 'EnterDate'
 
     ,prd.CentralProductNum as 'CentralProductNum'
