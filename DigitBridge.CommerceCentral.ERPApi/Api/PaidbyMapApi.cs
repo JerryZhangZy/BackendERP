@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     public static class PaidbyMapApi
     {

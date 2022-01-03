@@ -12,7 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     [ApiFilter(typeof(QboPaymentApi))]
     public static class QboPaymentApi

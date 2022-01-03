@@ -768,7 +768,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 )).ToLong();
         }
 
-        public async Task<bool> GetVendorByVendorUuidAsync(CustomerPayload payload, string vendorUuid)
+        public async Task<bool> GetVendorByVendorUuidAsync(VendorPayload payload, string vendorUuid)
         {
             if (string.IsNullOrEmpty(vendorUuid))
                 return false;

@@ -71,6 +71,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
+
+        protected QueryFilter<string> _VendorCode = new QueryFilter<string>("VendorCode", "VendorCode", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorCode => _VendorCode;
+
+
         protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorName => _VendorName;
 
@@ -102,6 +107,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public PoReceiveQuery() : base(TranSactionPREFIX)
         {
+            AddFilter(_VendorCode);
             AddFilter(_VendorName);
             AddFilter(_TransUuid);
             AddFilter(_TransNum);
