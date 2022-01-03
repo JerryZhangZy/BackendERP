@@ -274,6 +274,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await VendorIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+
+        public async Task<VendorDataDto> ImportVendorAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var vendorDtos = await ImportAllColumnsAsync(stream);
+            if (vendorDtos == null && vendorDtos.Count == 0)
+            {
+                AddError("Get Vendor Faild");
+                return null;
+            }
+
+            var vendor = vendorDtos[0];
+            if (!string.IsNullOrWhiteSpace(vendor.Vendor.VendorUuid))
+            {
+                if (await VendorService.GetVendorByVendorUuidAsync(new VendorPayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, vendor.Vendor.VendorUuid))
+                {
+                    VendorService.FromDto(vendor);
+                    vendor = VendorService.ToDto();
+                }
+            }
+
+            return vendor;
+
+
+        }
         #endregion import 
 
         #region export
