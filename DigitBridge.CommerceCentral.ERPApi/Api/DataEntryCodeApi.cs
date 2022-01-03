@@ -15,7 +15,7 @@ using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.YoPoco;
 using System.Net;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     [ApiFilter(typeof(DataEntryCodeApi))]
     public static class DataEntryCodeApi

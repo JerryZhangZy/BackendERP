@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     [ApiFilter(typeof(QuickBooksIntegrationSettingApi))]
     public static class QuickBooksIntegrationSettingApi
