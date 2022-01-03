@@ -24,14 +24,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ShippingCodes]') AND name = N'UK_ShippingCodesUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ShippingCodes]') AND name = N'UK_ShippingCodesUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_ShippingCodesUuid] ON [dbo].[ShippingCodes]
 (
 	[ShippingCodesUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ShippingCodes]') AND name = N'UI_ShippingCode')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ShippingCodes]') AND name = N'UI_ShippingCode')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_ShippingCode] ON [dbo].[ShippingCodes]
 (
 	[MasterAccountNum] ASC,
@@ -40,7 +40,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ShippingCode] ON [dbo].[ShippingCodes]
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ShippingCodes]') AND name = N'IX_ShippingCarrier_ShippingClass')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ShippingCodes]') AND name = N'IX_ShippingCarrier_ShippingClass')
 CREATE NONCLUSTERED INDEX [IX_ShippingCarrier_ShippingClass] ON [dbo].[ShippingCodes]
 (
 	[MasterAccountNum] ASC,

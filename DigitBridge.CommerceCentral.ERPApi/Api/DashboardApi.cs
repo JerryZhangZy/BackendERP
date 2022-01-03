@@ -262,6 +262,40 @@ namespace DigitBridge.CommerceCentral.ERPApi
             await srv.GetCompanySummaryAsync(payload);
             return new JsonNetResponse<CompanySummaryPayload>(payload);
         }
+
+        [FunctionName(nameof(GetInventoryLogSummary))]
+        #region open api definition
+        [OpenApiOperation(operationId: "GetInventoryLogSummary", tags: new[] { "DashBoards" }, Summary = "Load inventory log Summary Inquiry")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "dateFrom", In = ParameterLocation.Query, Type = typeof(DateTime), Summary = "Date From", Description = "Date From", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "dateTo", In = ParameterLocation.Query, Type = typeof(DateTime), Summary = "Date To", Description = "Date To", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Type = typeof(string), Summary = "Query Name", Description = "Query Name", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Query, Type = typeof(string), Summary = "Customer Code", Description = "Customer Code", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "SalesCode", In = ParameterLocation.Query, Type = typeof(string), Summary = "SalesCode", Description = "SalesCode", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CompanySummaryPayload))]
+        #endregion
+        public static async Task<JsonNetResponse<CompanySummaryPayload>> GetInventoryLogSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "dashboards/inventoryLog")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CompanySummaryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            DateTime dateFrom = req.GetData("dateFrom", ParameterLocation.Query).ToDateTime();
+            DateTime dateTo = req.GetData("dateTo", ParameterLocation.Query).ToDateTime();
+            var filter = new SummaryInquiryFilter(payload)
+            {
+                Name = string.Empty,
+                CustomerCode = string.Empty,
+                SalesCode = string.Empty,
+                DateFrom = dateFrom == SqlQuery._SqlMinDateTime ? new DateTime(DateTime.UtcNow.Date.Year, 1, 1) : dateFrom,
+                DateTo = dateTo == SqlQuery._SqlMinDateTime ? DateTime.UtcNow.Date : dateTo
+            };
+            payload.Filters = filter;
+            var srv = new InventoryLogInquiry(dbFactory, new InventoryLogSummaryQuery());
+            await srv.GetCompanySummaryAsync(payload);
+            return new JsonNetResponse<CompanySummaryPayload>(payload);
+        }
     }
 }
 

@@ -11,14 +11,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsAttributes]') AND name = N'UI_PoItemsAttributes_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsAttributes]') AND name = N'UK_PoItemsAttributes_PoItemUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_PoItemsAttributes_PoItemUuid] ON [dbo].[PoItemsAttributes]
 (
 	[PoItemUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsAttributes]') AND name = N'UI_PoItemsAttributes_PoId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsAttributes]') AND name = N'UI_PoItemsAttributes_PoUuid')
 CREATE NONCLUSTERED INDEX [UI_PoItemsAttributes_PoUuid] ON [dbo].[PoItemsAttributes]
 (
 	[PoUuid] ASC

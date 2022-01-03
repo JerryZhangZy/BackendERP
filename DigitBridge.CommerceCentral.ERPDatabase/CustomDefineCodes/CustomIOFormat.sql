@@ -21,14 +21,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomIOFormat]') AND name = N'UI_CustomIOFormatId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomIOFormat]') AND name = N'UK_CustomIOFormatUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_CustomIOFormatUuid] ON [dbo].[CustomIOFormat]
 (
 	[CustomIOFormatUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomIOFormat]') AND name = N'IX_CustomIOFormat_FormatType_FormatNumber)
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomIOFormat]') AND name = N'UI_CustomIOFormat_FormatType_FormatNumber')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomIOFormat_FormatType_FormatNumber] ON [dbo].[CustomIOFormat]
 (
 	[MasterAccountNum] ASC,
@@ -38,7 +38,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomIOFormat_FormatType_FormatNumber] ON 
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomIOFormat]') AND name = N'IX_CustomIOFormat_FormatType)
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomIOFormat]') AND name = N'IX_CustomIOFormat_FormatType')
 CREATE NONCLUSTERED INDEX [IX_CustomIOFormat_FormatType] ON [dbo].[CustomIOFormat]
 (
 	[MasterAccountNum] ASC,

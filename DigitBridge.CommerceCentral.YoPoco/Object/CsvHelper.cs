@@ -346,6 +346,40 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var ds = DataTableOperator.TranslateExcelToDataSet(stream);
             return ds;
         }
+
+        public virtual IEnumerable<T> ImportExcel(DataSet ds)
+        {
+            if (ds == null || ds.Tables.Count == 0) return null;
+            var table = ds.Tables[0];
+            IList<T> data = new List<T>();
+            IList<string> names = new List<string>();
+
+            foreach (var ln in table.Rows)
+            {
+                if (ln == null) continue;
+
+            }
+            return data;
+        }
+
+        public virtual TData ImportRow<TData>(TData data, DataRow dataRow) where TData: class, new()
+        {
+            if (dataRow == null) return data;
+            var parent = Format.GetParentObject(typeof(TData));
+            if (parent == null || parent.Disable) return data;
+
+            foreach (DataColumn column in dataRow.Table.Columns)
+            {
+                //var objectProperty = GetTargetProperty<T>(column.ColumnName);
+                //if (objectProperty != null)
+                //{
+                //    var dataValue = dataRow[column.ColumnName];
+                //    objectProperty.SetValue(item, DBNull.Value.Equals(dataValue) ? null : dataValue);
+                //}
+            }
+            return data;
+        }
+
         #endregion excel import 
 
         #region message

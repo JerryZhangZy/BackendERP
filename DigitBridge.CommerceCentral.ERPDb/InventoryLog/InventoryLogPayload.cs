@@ -104,6 +104,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeInventoryLogListCount() => HasInventoryLogListCount;
 
         #endregion list service
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InventoryLogSummary { get; set; }
+        [JsonIgnore] public virtual bool HasInventoryLogSummary => InventoryLogSummary != null;
+        public bool ShouldSerializeSalesOrderSummary() => HasInventoryLogSummary;
+        #endregion
     }
 }
 

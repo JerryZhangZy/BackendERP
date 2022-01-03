@@ -471,15 +471,67 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
         }
 
-        public List<Inventory> GetInventoriesBySkus(IList<string> skus, string warehouseCode)
+        #region get inventory table record
+
+        /// <summary>
+        /// Get row num by Sku and Warehouse 
+        /// </summary>
+        public virtual long GetInventoryRowNumBySkuWarehouse(InventoryFindClass find)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = [SKU]))",
-                warehouseCode.ToSqlParameter("WarehouseCode"), skus.ToParameter<string>("SKU")).ToList();
+            if (find == null)
+                return 0;
+
+            var sql = $@"
+                SELECT TOP 1 RowNum FROM Inventory WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND SKU=@2 AND WarehouseCode=@3
+            ";
+            return (dbFactory.Db.ExecuteScalar<long>(
+                    sql,
+                    find.MasterAccountNum,      //0
+                    find.ProfileNum,            //1
+                    find.SKU,                   //2
+                    find.WarehouseCode          //3
+                )).ToLong();
         }
-        public Inventory GetInventoryBySku(string sku, string warehouseCode)
+
+        /// <summary>
+        /// Get Inventory table by RowNum
+        /// </summary>
+        public virtual Inventory GetInventoryByRowNum(long rowNum)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1",
-                warehouseCode.ToSqlParameter("WarehouseCode"), sku.ToSqlParameter("SKU")).FirstOrDefault();
+            if (rowNum <= 0)
+                return null;
+            return dbFactory.Get<Inventory>(rowNum);
+        }
+
+
+        public List<Inventory> GetInventoriesBySkus(IList<string> skus, string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = [SKU])) AND MasterAccountNum=@2 AND ProfileNum=@3",
+                warehouseCode.ToSqlParameter("WarehouseCode"), 
+                skus.ToParameter<string>("SKU"),
+                masterAccountNum.ToParameter("MasterAccountNum"),
+                profileNum.ToParameter("ProfileNum")
+            ).ToList();
+        }
+        public Inventory GetInventoryBySku(string sku, string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1 AND MasterAccountNum=@2 AND ProfileNum=@3",
+                warehouseCode, 
+                sku,
+                masterAccountNum,
+                profileNum
+            ).FirstOrDefault();
+        }
+        public Inventory GetInventoryBySkuWarehouse(string sku, string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            var rowNum = GetInventoryRowNumBySkuWarehouse(new InventoryFindClass()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                SKU = sku,
+                WarehouseCode = warehouseCode,
+            });
+            return GetInventoryByRowNum(rowNum);
         }
 
         public Inventory GetInventoryBySkuWithWarehouseUuid(string sku, string warehouseUuid)
@@ -520,6 +572,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return inventory;
         }
 
+
+        #endregion get inventory table record
+
+        #region update qty or cost in inventory table
         public async Task<bool> SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(InventoryPayload payload)
         {
             try
@@ -690,6 +746,7 @@ ON inv.inventoryuuid=poi.inventoryuuid
             await dbFactory.Db.ExecuteAsync(command.ToString());
         }
 
+        #endregion update qty in inventory table
 
         public virtual async Task<IList<InventoryFindClass>> FindNotExistSkuWarehouseAsync(IList<InventoryFindClass> list, int masterAccountNum, int profileNum)
         {

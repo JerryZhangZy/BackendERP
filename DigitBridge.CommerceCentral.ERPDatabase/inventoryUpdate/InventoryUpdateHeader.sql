@@ -40,14 +40,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateHeader]') AND name = N'UK_InventoryUpdateHeader_InventoryUpdateId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateHeader]') AND name = N'UK_InventoryUpdateHeader')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InventoryUpdateHeader] ON [dbo].[InventoryUpdateHeader]
 (
 	[InventoryUpdateUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateHeader]') AND name = N'UI_InventoryUpdateHeader_BatchNumber')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateHeader]') AND name = N'UI_InventoryUpdateHeader_BatchNumber')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_InventoryUpdateHeader_BatchNumber] ON [dbo].[InventoryUpdateHeader]
 (
 	[MasterAccountNum] ASC,

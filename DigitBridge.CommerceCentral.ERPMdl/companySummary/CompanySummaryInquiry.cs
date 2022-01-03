@@ -15,6 +15,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected InvoiceSummaryInquiry InvoiceSummaryService;
         protected InvoicePaymentSummaryInquiry InvoicePaymentSummaryService;
         protected InvoiceReturnSummaryInquiry InvoiceReturnSummaryService;
+        protected InventoryLogInquiry InventoryLogSummaryService;
 
         protected IDataBaseFactory dbFactory;
 
@@ -28,6 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             InvoiceSummaryService = new InvoiceSummaryInquiry(dataBaseFactory, new InvoiceSummaryQuery());
             InvoicePaymentSummaryService = new InvoicePaymentSummaryInquiry(dataBaseFactory, new InvoicePaymentSummaryQuery());
             InvoiceReturnSummaryService = new InvoiceReturnSummaryInquiry(dataBaseFactory, new InvoiceReturnSummaryQuery());
+            InventoryLogSummaryService = new InventoryLogInquiry(dataBaseFactory, new InventoryLogSummaryQuery());
         }
 
         public async Task GetCompaySummaryAsync(CompanySummaryPayload payload)
@@ -39,6 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await InvoiceReturnSummaryService.GetCompanySummaryAsync(payload);
             await SalesOrderSummaryService.GetCompanySummaryAsync(payload);
             await ShipmentSummaryService.GetCompanySummaryAsync(payload);
+            await InventoryLogSummaryService.GetCompanySummaryAsync(payload);
         }
     }
 }

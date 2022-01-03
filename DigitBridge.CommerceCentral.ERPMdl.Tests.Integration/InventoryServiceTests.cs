@@ -378,6 +378,64 @@ WHERE itm.cnt > 0
             });
             Assert.True(result);
         }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void GetInventoryBySku_Test()
+        {
+            var masterAccountNum = 10002;
+            var profileNum = 10004;
+            var sku = "LV115178-913RAINMAN-36-32";
+            var warehouseCode = "TestAccount-Warehouse";
+            
+            Inventory result;
+            Inventory result2;
+            var srv = new InventoryService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("GetInventoryBySku_Test"))
+                {
+                    result2 = srv.GetInventoryBySku(sku, warehouseCode, masterAccountNum, profileNum);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void GetInventoryBySkuWarehouse_Test()
+        {
+            var masterAccountNum = 10002;
+            var profileNum = 10004;
+            var sku = "LV115178-913RAINMAN-36-32";
+            var warehouseCode = "TestAccount-Warehouse";
+
+            Inventory result;
+            Inventory result2;
+            var srv = new InventoryService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("GetInventoryBySkuWarehouse_Test"))
+                {
+                    result = srv.GetInventoryBySkuWarehouse(sku, warehouseCode, masterAccountNum, profileNum);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+
     }
 }
 

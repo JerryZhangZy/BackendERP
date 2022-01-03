@@ -22,14 +22,14 @@
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemCodes]') AND name = N'UI_SystemCodesId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemCodes]') AND name = N'UK_SystemCodesUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SystemCodesUuid] ON [dbo].[SystemCodes]
 (
 	[SystemCodeUuid] ASC
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemCodes]') AND name = N'UI_SystemCodeName')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemCodes]') AND name = N'UI_SystemCodeName')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_SystemCodeName] ON [dbo].[SystemCodes]
 (
 	[MasterAccountNum] ASC,

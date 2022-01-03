@@ -58,14 +58,14 @@
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UK_InvoiceTransaction_TransId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UK_InvoiceTransaction_TransUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceTransaction_TransUuid] ON [dbo].[InvoiceTransaction]
 (
 	[TransUuid] ASC
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'FK_InvoiceTransaction_InvoiceId')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'FK_InvoiceTransaction_InvoiceUuid')
 CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceUuid] ON [dbo].[InvoiceTransaction]
 (
 	[InvoiceUuid] ASC,
@@ -73,7 +73,7 @@ CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceUuid] ON [dbo].[InvoiceT
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UI_InvoiceTransaction_TransNum')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UI_InvoiceTransaction_TransNum')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_InvoiceTransaction_TransNum] ON [dbo].[InvoiceTransaction]
 (
 	[ProfileNum] ASC,
@@ -82,7 +82,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_InvoiceTransaction_TransNum] ON [dbo].[Invo
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_PaymentUuid')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_PaymentUuid')
 CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_PaymentUuid] ON [dbo].[InvoiceTransaction]
 (
 	[MasterAccountNum] ASC,
@@ -91,7 +91,7 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_PaymentUuid] ON [dbo].[InvoiceT
 ) 
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_PaymentNumber')
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_PaymentNumber')
 CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_PaymentNumber] ON [dbo].[InvoiceTransaction]
 (
 	[MasterAccountNum] ASC,

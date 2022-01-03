@@ -141,5 +141,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public int SoldProductCount { get; set; }
 
         public int NonSalesProductCount { get; set; }
+
+        public int InventoryLogCount { get; set; }
+        public int TotalInQty { get; set; }
+        public int TotalOutQty { get; set; }
+        public int InventoryLogCountOfInvoice { get; set; }
+        public int InventoryLogCountOfInvoiceReturn { get; set; }
+        public int InventoryLogCountOfShipment { get; set; }
+        public int InventoryLogCountOfAdjust { get; set; }
+        public int InventoryLogCountOfDamage { get; set; }
+        public int InventoryLogCountOfCount { get; set; }
+        public int InventoryLogCountOfToWarehouse { get; set; }
+        public int InventoryLogCountOfFromWarehouse { get; set; }
+        public int InventoryLogCountOfAssemble { get; set; }
+        public int InventoryLogCountOfDisassemble { get; set; }
+        public int InventoryLogCountOfPoReceive { get; set; }
+        public int InventoryLogCountOfPoReturn { get; set; }
     }
 }
