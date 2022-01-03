@@ -60,11 +60,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = 10001,
             };
 
+            DataBaseFactory.DatabaseNum = 1;
             var srv = new InitNumbersService(DataBaseFactory);
+            var defaultList = srv.GetDefaultInitNumbers(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
             await srv.GetAllInitNumbersAsync(payload);
-            payload.InitNumbers[0].InitNumbers.MaxNumber += 1;
-            payload.InitNumbers[1].InitNumbers.MaxNumber += 2;
-            payload.InitNumbers[2].InitNumbers.MaxNumber += 3;
+            foreach (var dto in payload.InitNumbers)
+            {
+                var obj = defaultList.FirstOrDefault(x => x.Type.EqualsIgnoreSpace(dto.InitNumbers.Type));
+                if (obj == null) continue;
+                dto.InitNumbers.Number = obj.Number;
+                dto.InitNumbers.MaxNumber = obj.MaxNumber + 1;
+                dto.InitNumbers.EndNumber = obj.EndNumber;
+            }
 
             try
             {
@@ -92,6 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 MasterAccountNum = 10001,
                 ProfileNum = 10001,
             };
+            DataBaseFactory.DatabaseNum = 1;
             var srv = new InitNumbersService(DataBaseFactory);
             try
             {

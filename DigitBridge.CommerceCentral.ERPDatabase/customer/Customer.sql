@@ -45,7 +45,7 @@
 	[ClassCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer Class. <br> Title: Class, Display: true, Editable: true
 	[DepartmentCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer Department. <br> Title: Department, Display: true, Editable: true
 	[DivisionCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer Division. <br> Title: Division, Display: true, Editable: true
-	[SourceCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer Source. <br> Title: Source, Display: true, Editable: true
+	[SourceCode] VARCHAR(100) NOT NULL DEFAULT '', --Customer Source. <br> Title: Source, Display: true, Editable: true
 
 	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms. <br> Title: Terms, Display: true, Editable: true
 	[TermsDays] INT NOT NULL DEFAULT 0, --Payment terms days. <br> Title: Days, Display: true, Editable: true
@@ -177,3 +177,11 @@ CREATE NONCLUSTERED INDEX [IX_Customer_SalesRep1234] ON [dbo].[Customer]
 ) 
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_SourceCode')
+CREATE NONCLUSTERED INDEX [IX_Customer_SourceCode] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[SourceCode] ASC
+) 
+GO

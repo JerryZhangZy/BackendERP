@@ -447,7 +447,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             long rowNum =await GetRowNumAsync(payload.MasterAccountNum, payload.ProfileNum,customerUuid);
             if (rowNum <= 0) return false;
             return await GetDataAsync(rowNum);
- 
+         
         }
 
         public virtual async Task<long> GetRowNumAsync(int masterAccountNum, int profileNum, string customerUuid)

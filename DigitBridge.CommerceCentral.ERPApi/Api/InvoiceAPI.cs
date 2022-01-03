@@ -33,10 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "InvoiceUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "InvoiceUuid", Description = "InvoiceUuid", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadGetSingle), Description = "Request Body in json format")]
+ 
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
         public static async Task<FileContentResult> ExportInvoice(
-[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export/{InvoiceUuid}")] HttpRequest req, string InvoiceUuid = null)
+[HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/export/{InvoiceUuid}")] HttpRequest req, string InvoiceUuid = null)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

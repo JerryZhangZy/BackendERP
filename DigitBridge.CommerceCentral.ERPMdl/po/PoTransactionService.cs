@@ -633,7 +633,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 VendorUuid = poHeader.VendorUuid,
                 Currency = poHeader.Currency,
                 TaxRate = poHeader.TaxRate.ToDecimal(),
-                DiscountRate=poHeader.DiscountRate.ToDecimal()
+                DiscountRate=poHeader.DiscountRate.ToDecimal(),
+                TransDate=DateTime.UtcNow,
+                VendorInvoiceDate= DateTime.UtcNow
             };
         }
         protected void CopyPoItemsToReceiveItems()

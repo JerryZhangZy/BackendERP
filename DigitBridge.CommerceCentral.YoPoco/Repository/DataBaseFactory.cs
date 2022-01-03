@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using DigitBridge.Base.Utility;
-using Azure.Identity;
+//using Azure.Identity;
 using Azure.Core;
 using System.Threading;
+using Microsoft.Azure.Services.AppAuthentication;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -277,6 +278,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         protected async Task<string> GetAzureTokenAsync()
         {
+            var tokenProvider = new AzureServiceTokenProvider(TokenProviderConnectionString);
+            return await tokenProvider.GetAccessTokenAsync(AzureDatabaseTokenUrl, this.TenantId);
+
             var now = DateTime.UtcNow;
             if (!string.IsNullOrWhiteSpace(_accessToken.Token) && now < _accessToken.ExpiresOn)
                 return _accessToken.Token;
@@ -284,7 +288,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             try
             {
                 //var tokenProvider = new AzureServiceTokenProvider(TokenProviderConnectionString);
-                //sqlConn.AccessToken = tokenProvider.GetAccessTokenAsync(AzureDatabaseTokenUrl, TenantId).Result;
+                //sqlConn.AccessToken = tokenProvider.GetAccessTokenAsync(AzureDatabaseTokenUrl, this.TenantId).Result;
 
                 //var tokenCredential = new DefaultAzureCredential(
                 //    new DefaultAzureCredentialOptions
@@ -302,32 +306,35 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 //    }
                 //);
 
-                var tokenCredential = new VisualStudioCredential(
-                    new VisualStudioCredentialOptions()
-                    {
-                        TenantId = this.TenantId
-                    }
-                );
+                //var tokenCredential = new VisualStudioCredential(
+                //    new VisualStudioCredentialOptions()
+                //    {
+                //        TenantId = this.TenantId
+                //    }
+                //);
 
                 //var tokenCredential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
                 //{
                 //    VisualStudioTenantId = this.TenantId,
 
-                //    ExcludeEnvironmentCredential = true,
-                //    ExcludeManagedIdentityCredential = true,
-                //    ExcludeSharedTokenCacheCredential = true,
+                //    //ExcludeEnvironmentCredential = true,
+                //    //ExcludeManagedIdentityCredential = true,
+                //    //ExcludeSharedTokenCacheCredential = true,
                 //    ExcludeInteractiveBrowserCredential = true,
                 //    //ExcludeAzureCliCredential = true,
                 //    //ExcludeVisualStudioCredential = true,
                 //    ExcludeVisualStudioCodeCredential = true,
-                //    ExcludeAzurePowerShellCredential = true
+                //    //ExcludeAzurePowerShellCredential = true
                 //});
 
-                _accessToken = await tokenCredential.GetTokenAsync(new TokenRequestContext(AzureDatabaseTokenScopes), CancellationToken.None);
+                //Console.WriteLine($"TenantId = {this.TenantId}");
+                //_accessToken = await tokenCredential.GetTokenAsync(new TokenRequestContext(AzureDatabaseTokenScopes), CancellationToken.None);
+
                 return _accessToken.Token;
             }
-            catch (AuthenticationFailedException ex)
+            catch (Exception ex)
             {
+                Console.WriteLine($"ex = {ex.ToString()}");
                 throw;
             }
         }

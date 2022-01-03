@@ -33,10 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "WarehouseTransferUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "WarehouseTransferUuid", Description = "WarehouseTransferUuid", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetSingle), Description = "Request Body in json format")]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetSingle), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
         public static async Task<FileContentResult> ExportPurchaseOrder(
-[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "purchaseOrder/export/{PurchaseOrderUuid}")] HttpRequest req, string PurchaseOrderUuid = null)
+[HttpTrigger(AuthorizationLevel.Function, "GET", Route = "purchaseOrder/export/{PurchaseOrderUuid}")] HttpRequest req, string PurchaseOrderUuid = null)
         {
             var payload = await req.GetParameters<PurchaseOrderPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

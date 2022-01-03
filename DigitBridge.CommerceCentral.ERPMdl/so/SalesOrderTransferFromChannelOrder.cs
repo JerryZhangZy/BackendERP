@@ -101,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //soHeader.OrderNumber = coHeader.DatabaseNum + "-" + coHeader.CentralOrderNum + "-" + dcHeader.OrderDCAssignmentNum;
             soHeader.OrderNumber = coHeader.CentralOrderNum + "-" + dcHeader.OrderDCAssignmentNum;
             soHeader.OrderType = (int)SalesOrderType.EcommerceOrder;
-            soHeader.OrderStatus = (int)SalesOrderStatus.New;
+            soHeader.OrderStatus = (int)SalesOrderStatus.ReadyToShip;
             soHeader.OrderDate = coHeader.OriginalOrderDateUtc;
             soHeader.OrderTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
             soHeader.ShipDate = coHeader.EstimatedShipDateUtc.IsZero() ? _dtNowUtc : coHeader.EstimatedShipDateUtc;
@@ -216,7 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //soItem.SalesOrderUuid = _soUuid;
                 soItem.Seq = itemSeq++;
                 soItem.OrderItemType = (int)SalesOrderType.EcommerceOrder;
-                soItem.SalesOrderItemstatus = (int)SalesOrderStatus.New;
+                soItem.SalesOrderItemstatus = (int)SalesOrderStatus.ReadyToShip;
                 soItem.ItemDate = coHeader.OriginalOrderDateUtc;
                 soItem.ItemTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
                 soItem.ShipDate = _initNowUtc;

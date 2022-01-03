@@ -120,7 +120,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Init number, real number will be more than init number and not exist number
 		/// </summary>
 		[OpenApiPropertyDescription("Init number, real number will be more than init number and not exist number")]
-        public int? Number { get; set; }
+        public long? Number { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasNumber => Number != null;
@@ -133,6 +133,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMaxNumber => MaxNumber != null;
+
+		/// <summary>
+		/// End number, real number will be less than end number and not exist number
+		/// </summary>
+		[OpenApiPropertyDescription("End number, real number will be less than end number and not exist number")]
+        public long? EndNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasEndNumber => EndNumber != null;
 
 		/// <summary>
 		/// Prefix append to Init number
