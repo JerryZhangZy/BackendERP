@@ -31,11 +31,6 @@
     "slotSetting": false
   },
   {
-    "name": "WEBSITE_RUN_FROM_PACKAGE",
-    "value": "1",
-    "slotSetting": false
-  },
-  {
     "name": "BackdoorMode",
     "value": "true",
     "slotSetting": false
@@ -355,4 +350,36 @@
     "value": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
     "slotSetting": false
   },
+  
+  {
+    "name": "ERPQuickBooksInvoiceQueueName",
+    "value": "erp-quickbooks-invoice-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPQuickBooksInvoiceVoidQueueName",
+    "value": "erp-quickbooks-invoice-void-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPQuickBooksPaymentDeleteQueueName",
+    "value": "erp-quickbooks-payment-delete-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPQuickBooksPaymentQueueName",
+    "value": "erp-quickbooks-payment-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPQuickBooksReturnDeleteQueueName",
+    "value": "erp-quickbooks-return-delete-queue",
+    "slotSetting": false
+  },
+  {
+    "name": "ERPQuickBooksReturnQueueName",
+    "value": "erp-quickbooks-return-queue",
+    "slotSetting": false
+  }
+  
 ]
