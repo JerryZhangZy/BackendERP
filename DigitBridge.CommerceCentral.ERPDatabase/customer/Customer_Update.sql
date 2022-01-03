@@ -155,3 +155,9 @@ BEGIN
     ALTER TABLE Customer ADD [ItemMiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
 END					
 
+
+-- 1/2/2022 By Jerry
+IF COL_LENGTH('customer', 'SourceCode') < 100
+BEGIN					
+	ALTER TABLE [dbo].[customer] ALTER COLUMN [SourceCode] VARCHAR(100) NOT NULL
+END					
