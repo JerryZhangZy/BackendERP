@@ -270,6 +270,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await CustomerIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+
+        public async Task<CustomerDataDto> ImportCustomerAsync(int masterAccountNum,int profileNum, Stream stream)
+        {
+            var customerDtos = await ImportAllColumnsAsync(stream);
+            if (customerDtos == null && customerDtos.Count == 0)
+            {
+                AddError("Get Customer Faild");
+                return null;
+            }
+
+            var customer = customerDtos[0];
+            if (!string.IsNullOrWhiteSpace(customer.Customer.CustomerUuid))
+            {
+                if (await CustomerService.GetCustomerByCustomerUuidAsync(new CustomerPayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, customer.Customer.CustomerUuid))
+                {
+                    CustomerService.FromDto(customer);
+                    customer = CustomerService.ToDto();
+                }
+            }
+
+            return customer;
+
+
+        }
         #endregion import 
 
         #region export

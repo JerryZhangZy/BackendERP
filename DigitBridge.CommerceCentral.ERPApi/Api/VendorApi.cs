@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportVendor(
    [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "vendors/export/{VendorUuid}")] HttpRequest req, string VendorUuid = null)
         {
-            var payload = await req.GetParameters<CustomerPayload>(true);
+            var payload = await req.GetParameters<VendorPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var vendorIOManager = new VendorIOManager(dbFactory);
             var vendorService = new VendorService(dbFactory);
@@ -68,12 +68,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<VendorPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
-            var svc = new VendorManager(dbFactory);
+            
             var vendorIOManager = new VendorIOManager(dbFactory);
-            var vendorDtos = await vendorIOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
-            payload.Vendor = vendorDtos[0];
-            payload.Success = true;
-            payload.Messages = svc.Messages;
+            payload.Vendor = await vendorIOManager.ImportVendorAsync(payload.MasterAccountNum, payload.ProfileNum, files[0].OpenReadStream());
+            payload.Success = payload.Vendor != null;
+            payload.Messages = vendorIOManager.Messages;
             return payload;
         }
 
