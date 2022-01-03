@@ -17,7 +17,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.ERPApi.OpenApiModel;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     /// <summary>
     /// Process InitNumberApi

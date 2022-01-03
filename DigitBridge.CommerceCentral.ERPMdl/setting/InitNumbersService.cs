@@ -251,131 +251,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasInitNumberss)
                 return false;
 
-            var dataList = await GetAllInitNumbersAsync(payload.MasterAccountNum, payload.ProfileNum);
-            if (dataList == null || dataList.Count == 0)
-            {
-                dataList = await InitNumbersAsync(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var masterAccountNum = payload.MasterAccountNum;
+            var profileNum = payload.ProfileNum;
 
-            foreach (var initNumberDto in payload.InitNumbers)
+            foreach (var dto in payload.InitNumbers)
             {
-                var dto = initNumberDto.InitNumbers;
-                var existData = dataList.FirstOrDefault(x => x.Type.EqualsIgnoreSpace(dto.Type));
-                if (existData == null) continue;
-                if (
-                    dto.CustomerUuid == existData.CustomerUuid &&
-                    dto.InActive == existData.InActive &&
-                    dto.Type == existData.Type &&
-                    dto.CurrentNumber == existData.CurrentNumber &&
-                    dto.MaxNumber == existData.MaxNumber &&
-                    dto.Number == existData.Number &&
-                    dto.Prefix == existData.Prefix &&
-                    dto.Suffix == existData.Suffix
-                ) continue;
+                await ValidateAsync(dto);
+                dto.InitNumbers.DatabaseNum = dbFactory.DatabaseNum;
+                dto.InitNumbers.MasterAccountNum = payload.MasterAccountNum;
+                dto.InitNumbers.ProfileNum = payload.ProfileNum;
 
-                dto.RowNum = existData.RowNum;
-                dto.DatabaseNum = existData.DatabaseNum;
-                dto.MasterAccountNum = existData.MasterAccountNum;
-                dto.ProfileNum = existData.ProfileNum;
-                dto.InitNumbersUuid = existData.InitNumbersUuid;
-                await UpdateAsync(initNumberDto);
+                var rowNum = await this.GetRowNumByTypeAsync(masterAccountNum, profileNum, dto.InitNumbers.Type);
+                if (rowNum.IsZero() || !(await this.EditAsync(rowNum)))
+                {
+                    await this.AddAsync(dto);
+                }
+                else if (
+                    dto.InitNumbers.Number != this.Data.InitNumbers.Number ||
+                    dto.InitNumbers.MaxNumber != this.Data.InitNumbers.MaxNumber ||
+                    dto.InitNumbers.EndNumber != this.Data.InitNumbers.EndNumber
+                )
+                {
+                    await UpdateAsync(dto);
+                }
             }
 
             return await GetAllInitNumbersAsync(payload);
         }
-
-        /// <summary>
-        ///  get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> GetDataAsync(InitNumbersPayload payload, string orderNumber)
-        {
-            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-        }
-
-        /// <summary>
-        /// get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool GetData(InitNumbersPayload payload, string orderNumber)
-        {
-            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-        }
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(InitNumbersPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            if (success)
-            {
-                await DeleteDataAsync();
-            }
- 
-            return false;
-        }
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool DeleteByNumber(InitNumbersPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            if (success)
-            {
-                if (DeleteData())
-                {
-                     
-                    return true;
-
-                }
-            }
-
-            return false;
-        }
-
-
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByInitNumbersUuidAsync(InitNumbersPayload payload, string initNumbersUuid)
-        {
-                if (string.IsNullOrEmpty(initNumbersUuid))
-                    return false;
-                //set delete mode
-                Delete();
-                //load data
-                var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
-            if (success)
-            {
-                return await DeleteDataAsync();
-                
-            }
-            return false;
-        }
-
 
         private  int GetCurrentNumber(string fullStrNumber, string prefix, string suffix)
         {
@@ -393,33 +295,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-
-        public virtual async Task<bool> InitNumbersAsync(InitNumbersPayload payload)
-        {
-            await InitNumbersAsync(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
-            return true;
-        }
-
-        public virtual async Task<IList<InitNumbers>> InitNumbersAsync(int databaseNum, int masterAccountNum, int profileNum)
-        {
-            var types = new List<string>()
-            {
-                ((int)ActivityLogType.SalesOrder).ToString(),
-                ((int)ActivityLogType.Invoice).ToString(),
-                ((int)ActivityLogType.Invoice).ToString(),
-                ((int)ActivityLogType.Invoice).ToString(),
-                ((int)ActivityLogType.Vendor).ToString(),
-                ((int)ActivityLogType.Customer).ToString()
-            };
-
-            foreach (var aType in types)
-            {
-                if ((await ExistInitNumberAsync(masterAccountNum, profileNum, aType))) continue;
-                await this.AddAsync(GetInitNumbers(databaseNum, masterAccountNum, profileNum, aType));
-            }
-            return await GetAllInitNumbersAsync(masterAccountNum, profileNum);
-        }
-
         public virtual async Task<IList<InitNumbers>> GetAllInitNumbersAsync(int masterAccountNum, int profileNum)
         {
             var sql = @"WHERE MasterAccountNum=@0 AND ProfileNum=@1";
@@ -428,10 +303,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> GetAllInitNumbersAsync(InitNumbersPayload payload)
         {
+            var databaseNum = dbFactory.DatabaseNum;
+            var masterAccountNum = payload.MasterAccountNum;
+            var profileNum = payload.ProfileNum;
+
             var lst = await GetAllInitNumbersAsync(payload.MasterAccountNum, payload.ProfileNum);
-            if (lst == null || lst.Count == 0)
+            if (lst == null || lst.Count == 0 || lst.Count != GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum).Count)
             {
-                lst = await InitNumbersAsync(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
+                await this.AddDefaultInitNumbersAsync(databaseNum, masterAccountNum, profileNum);
+                lst = await GetAllInitNumbersAsync(payload.MasterAccountNum, payload.ProfileNum);
             }
 
             var dataList = new List<InitNumbersData>();
@@ -444,25 +324,82 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual InitNumbersDataDto GetInitNumbers(int databaseNum, int masterAccountNum, int profileNum, string type)
-        {
-            return new InitNumbersDataDto()
-            {
-                InitNumbers = new InitNumbersDto()
-                {
-                    DatabaseNum = databaseNum,
-                    MasterAccountNum = masterAccountNum,
-                    ProfileNum = profileNum,
-                    InActive = true,
-                    Type = type,
-                    InitNumbersUuid = System.Guid.NewGuid().ToString(),
-                    CustomerUuid = string.Empty,
-                    Number = 10000,
-                    MaxNumber = 0,
-                    EnterBy = string.Empty,
-                    UpdateBy = string.Empty
 
+        /// <summary>
+        /// Get row num by type 
+        /// </summary>
+        public virtual async Task<long> GetRowNumByTypeAsync(int masterAccountNum, int profileNum, string type)
+        {
+            var sql = $@"SELECT TOP 1 RowNum FROM InitNumbers WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Type=@2 AND CustomerUuid='' ";
+            return (await dbFactory.Db.ExecuteScalarAsync<long?>(
+                    sql,
+                    masterAccountNum,   //0
+                    profileNum,         //1
+                    type                //2
+                )).ToLong();
+        }
+
+        /// <summary>
+        /// Set init number to default by year
+        /// </summary>
+        public virtual async Task<bool> AddDefaultInitNumbersAsync(int databaseNum, int masterAccountNum, int profileNum, bool resetAll = false)
+        {
+            var defaultInitNumbers = GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum);
+            foreach (var item in defaultInitNumbers)
+            {
+                var rowNum = await this.GetRowNumByTypeAsync(masterAccountNum, profileNum, item.Type);
+                if (await this.EditAsync(rowNum))
+                {
+                    if (!resetAll) continue;
+                    this.Data.InitNumbers.Number = item.Number;
+                    this.Data.InitNumbers.MaxNumber = item.MaxNumber;
+                    this.Data.InitNumbers.EndNumber = item.EndNumber;
                 }
+                else
+                {
+                    this.Add();
+                    this.Data.InitNumbers = item;
+                }
+                await this.SaveDataAsync();
+            }
+            return true;
+        }
+
+        public virtual IList<InitNumbers> GetDefaultInitNumbers(int databaseNum, int masterAccountNum, int profileNum)
+        {
+            return new List<InitNumbers>()
+            {
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.Customer).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.SalesOrder).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.Invoice).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.MiscInvoice).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.Shipment).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.InventoryUpdate).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.WarehouseTransfer).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.Vendor).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.PurchaseOrder).ToString()),
+                GetDefaultInitNumbers(databaseNum, masterAccountNum, profileNum, ((int)ActivityLogType.ApInvoice).ToString()),
+            };
+        }
+
+        protected virtual InitNumbers GetDefaultInitNumbers(int databaseNum, int masterAccountNum, int profileNum, string type)
+        {
+            var year = DateTime.Today.Year;
+            return new InitNumbers()
+            {
+                RowNum = 0,
+                DatabaseNum = databaseNum,
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                InActive = false,
+                Type = type,
+                InitNumbersUuid = System.Guid.NewGuid().ToString(),
+                CustomerUuid = string.Empty,
+                Number = $"{year}{(long)Math.Pow(10, 8)}".ToLong(),
+                MaxNumber = $"{year}{(long)Math.Pow(10, 8)}".ToLong() + 1,
+                EndNumber = $"{year}{(long)Math.Pow(10, 9) - 1}".ToLong(),
+                EnterBy = "SYSTEM",
+                UpdateBy = "SYSTEM"
             };
         }
         public virtual async Task<bool> ExistInitNumberAsync(int masterAccountNum, int profileNum, string type)

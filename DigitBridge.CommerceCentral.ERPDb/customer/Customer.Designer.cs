@@ -891,7 +891,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_sourceCode = value.TruncateTo(50); 
+				_sourceCode = value.TruncateTo(100); 
 				OnPropertyChanged("SourceCode", value);
             }
         }

@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     [ApiFilter(typeof(CustomerApi))]
     public static class CustomIOFormatApi
