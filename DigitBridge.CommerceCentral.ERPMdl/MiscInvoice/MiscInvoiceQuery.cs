@@ -38,12 +38,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _MiscInvoiceDateTo = new QueryFilter<DateTime>("MiscInvoiceDateTo", "MiscInvoiceDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> MiscInvoiceDateTo => _MiscInvoiceDateTo;
 
-        protected QueryFilter<DateTime> _DueDateFrom = new QueryFilter<DateTime>("DueDateFrom", "DueDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
-        public QueryFilter<DateTime> DueDateFrom => _DueDateFrom;
-
-        protected QueryFilter<DateTime> _DueDateTo = new QueryFilter<DateTime>("DueDateTo", "DueDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
-        public QueryFilter<DateTime> DueDateTo => _DueDateTo;
-
         protected EnumQueryFilter<MiscInvoiceType> _MiscInvoiceType = new EnumQueryFilter<MiscInvoiceType>("MiscInvoiceType", "MiscInvoiceType", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<MiscInvoiceType> MiscInvoiceType => _MiscInvoiceType;
 
@@ -88,8 +82,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             AddFilter(_MiscInvoiceNumberFrom);
             AddFilter(_MiscInvoiceNumberTo);
-            AddFilter(_DueDateFrom);
-            AddFilter(_DueDateTo);
 
             AddFilter(_BankAccountUuid);
             AddFilter(_BankAccountCode);
