@@ -975,7 +975,7 @@ AND OrderStatus !=@2
         }
 
 
-        public async Task<bool> GetSalesOrderUuidAsync(SalesOrderPayload payload, string salesOrderUuid)
+        public async Task<bool> GetSalesOrderByUuidAsync(SalesOrderPayload payload, string salesOrderUuid)
         {
             if (string.IsNullOrEmpty(salesOrderUuid))
                 return false;

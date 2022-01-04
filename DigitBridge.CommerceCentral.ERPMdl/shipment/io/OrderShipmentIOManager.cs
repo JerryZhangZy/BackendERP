@@ -204,6 +204,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result.ToList();
         }
 
+        public async Task<OrderShipmentDataDto> ImportOrderShipmentAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var orderShipmentDtos = await ImportAllColumnsAsync(stream);
+            if (orderShipmentDtos == null && orderShipmentDtos.Count == 0)
+            {
+                AddError("Get OrderShipment Faild");
+                return null;
+            }
+
+            var orderShipment = orderShipmentDtos[0];
+            if (!string.IsNullOrWhiteSpace(orderShipment.OrderShipmentHeader.OrderShipmentUuid))
+            {
+                if (await OrderShipmentService.GetOrderShipmentByUuidAsync(new OrderShipmentPayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, orderShipment.OrderShipmentHeader.OrderShipmentUuid))
+                {
+                    OrderShipmentService.FromDto(orderShipment);
+                    orderShipment = OrderShipmentService.ToDto();
+                }
+            }
+
+            return orderShipment;
+
+
+        }
+
+
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>

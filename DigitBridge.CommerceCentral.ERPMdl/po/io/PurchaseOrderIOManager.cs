@@ -276,6 +276,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await PurchaseOrderIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+
+        public async Task<PurchaseOrderDataDto> ImportPurchaseOrderAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var purchaseOrderDtos = await ImportAllColumnsAsync(stream);
+            if (purchaseOrderDtos == null && purchaseOrderDtos.Count == 0)
+            {
+                AddError("Get PurchaseOrder Faild");
+                return null;
+            }
+
+            var purchaseOrder = purchaseOrderDtos[0];
+            if (!string.IsNullOrWhiteSpace(purchaseOrder.PoHeader.PoUuid))
+            {
+                if (await PurchaseOrderService.GetPurchaseOrderByUuidAsync(new PurchaseOrderPayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, purchaseOrder.PoHeader.PoUuid))
+                {
+                    PurchaseOrderService.FromDto(purchaseOrder);
+                    purchaseOrder = PurchaseOrderService.ToDto();
+                }
+            }
+
+            return purchaseOrder;
+
+
+        }
+
         #endregion import 
 
         #region export
