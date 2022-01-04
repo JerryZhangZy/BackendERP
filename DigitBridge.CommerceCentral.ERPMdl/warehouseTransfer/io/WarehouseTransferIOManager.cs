@@ -276,6 +276,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await WarehouseTransferIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+        public async Task<WarehouseTransferDataDto> ImportWarehouseTransferAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var warehouseTransferDtos = await ImportAllColumnsAsync(stream);
+            if (warehouseTransferDtos == null && warehouseTransferDtos.Count == 0)
+            {
+                AddError("Get WarehouseTransfer Faild");
+                return null;
+            }
+
+            var warehouseTransfer = warehouseTransferDtos[0];
+            if (!string.IsNullOrWhiteSpace(warehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid))
+            {
+                if (await WarehouseTransferService.GetWarehouseTransferByUuidAsync(new WarehouseTransferPayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, warehouseTransfer.WarehouseTransferHeader.WarehouseTransferUuid))
+                {
+                    WarehouseTransferService.FromDto(warehouseTransfer);
+                    warehouseTransfer = WarehouseTransferService.ToDto();
+                }
+            }
+
+            return warehouseTransfer;
+
+
+        }
         #endregion import 
 
         #region export
