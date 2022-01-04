@@ -295,8 +295,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await InvoiceIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+        public async Task<InvoiceDataDto> ImportInvoiceAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var invoiceDtos = await ImportAllColumnsAsync(stream);
+            if (invoiceDtos == null && invoiceDtos.Count == 0)
+            {
+                AddError("Get Invoice Faild");
+                return null;
+            }
 
-       
+            var invoice = invoiceDtos[0];
+            if (!string.IsNullOrWhiteSpace(invoice.InvoiceHeader.InvoiceUuid))
+            {
+                if (await InvoiceService.GetInvoiceByUuidAsync(new InvoicePayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, invoice.InvoiceHeader.InvoiceUuid))
+                {
+                    InvoiceService.FromDto(invoice);
+                    invoice = InvoiceService.ToDto();
+                }
+            }
+
+            return invoice;
+        }
+
 
         /// <summary>
         /// Export Dto list to csv file stream, expot all columns

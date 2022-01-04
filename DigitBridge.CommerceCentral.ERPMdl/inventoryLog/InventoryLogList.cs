@@ -40,6 +40,39 @@ SELECT
             return this.SQL_Select;
         }
 
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+{Helper.InventoryLogUuid()},
+{Helper.ProductUuid()},
+{Helper.InventoryUuid()},
+{Helper.BatchNum()},
+{Helper.LogType()},
+{Helper.LogUuid()},
+{Helper.LogNumber()},
+{Helper.LogItemUuid()},
+{Helper.LogStatus()},
+{Helper.LogDate()},
+{Helper.LogTime()},
+{Helper.LogBy()},
+{Helper.SKU()},
+{Helper.Description()},
+{Helper.WarehouseCode()},
+{Helper.LotNum()},
+{Helper.LotInDate()},
+{Helper.LotExpDate()},
+{Helper.StyleCode()},
+{Helper.ColorPatternCode()},
+{Helper.WidthCode()},
+{Helper.LengthCode()},
+{Helper.UOM()},
+{Helper.LogQty()},
+{Helper.BeforeInstock()}
+";
+            return this.SQL_SelectSummary;
+        }
+
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
@@ -57,9 +90,31 @@ SELECT
 
             return paramList.ToArray();
         }
-        
+
         #endregion override methods
-        
+
+        public virtual async Task GetInventoryLogSummaryAsync(InventoryLogPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryLogPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.InventoryLogSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.InventoryLogListCount = 0;
+                payload.InventoryLogSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
+
         public virtual InventoryLogPayload GetInventoryLogList(InventoryLogPayload payload)
         {
             if (payload == null)

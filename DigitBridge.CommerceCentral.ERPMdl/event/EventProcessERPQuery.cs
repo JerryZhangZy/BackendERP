@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _ActionDateTo = new QueryFilter<DateTime>("ActionDateTo", "ActionDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> ActionDateTo => _ActionDateTo;
 
-        protected QueryFilter<int> _ActionStatus = new QueryFilter<int>("ActionStatus", "ActionStatus", PREFIX, FilterBy.eq, 0);
+        protected QueryFilter<int> _ActionStatus = new QueryFilter<int>("ActionStatus", "ActionStatus", PREFIX, FilterBy.eq, -1);
         public QueryFilter<int> ActionStatus => _ActionStatus;
 
         protected EnumQueryFilter<ErpEventType> _ERPEventProcessType = new EnumQueryFilter<ErpEventType>("ERPEventProcessType", "ERPEventProcessType", PREFIX, FilterBy.eq, -0);

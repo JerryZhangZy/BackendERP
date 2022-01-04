@@ -10,7 +10,6 @@
   <ItemGroup>
     <Compile Remove="Api\ApiDemo.cs" />
     <Compile Remove="Api\ApiStandardDemo.cs" />
-    <Compile Remove="Api\InventoryLogApi.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />

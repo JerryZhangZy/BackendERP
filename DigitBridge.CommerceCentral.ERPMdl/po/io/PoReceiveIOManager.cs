@@ -286,6 +286,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await PoTransactionIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+
+        public async Task<PoTransactionDataDto> ImportCustomerAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var poTransactionDtos = await ImportAllColumnsAsync(stream);
+            if (poTransactionDtos == null && poTransactionDtos.Count == 0)
+            {
+                AddError("Get PoTransaction Faild");
+                return null;
+            }
+
+            var poTransaction = poTransactionDtos[0];
+            if (!string.IsNullOrWhiteSpace(poTransaction.PoTransaction.TransUuid))
+            {
+                if (await PoReceiveService.GetPoReceiveByUuidAsync(new PoReceivePayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, poTransaction.PoTransaction.TransUuid))
+                {
+                    PoReceiveService.FromDto(poTransaction);
+                    poTransaction = PoReceiveService.ToDto();
+                }
+            }
+
+            return poTransaction;
+
+
+        }
+
         #endregion import 
 
         #region export

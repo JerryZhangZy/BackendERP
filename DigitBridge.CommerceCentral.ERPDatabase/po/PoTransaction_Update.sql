@@ -1,4 +1,4 @@
-﻿IF COL_LENGTH('PoTransaction', 'VendorCode') IS NULL
+IF COL_LENGTH('PoTransaction', 'VendorCode') IS NULL
     BEGIN
         ALTER TABLE PoTransaction ADD [VendorCode] varchar(50) NOT NULL DEFAULT ''
     END

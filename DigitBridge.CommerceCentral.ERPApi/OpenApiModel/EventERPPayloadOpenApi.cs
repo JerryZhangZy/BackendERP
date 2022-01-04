@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -135,7 +136,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class EventERPFilter
     {
-        //public string City { get; set; }
+        public DateTime ActionDateFrom { get; set; }
+        public DateTime ActionDateTo { get; set; }
+        public int ActionStatus { get; set; }
+        public ErpEventType ErpEventType { get; set; }
 
         public static Faker<EventERPFilter> GetFaker()
         {

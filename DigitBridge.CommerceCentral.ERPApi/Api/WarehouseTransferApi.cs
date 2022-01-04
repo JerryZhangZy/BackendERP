@@ -69,12 +69,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<WarehouseTransferPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
-            var svc = new WarehouseTransferManager(dbFactory);
+            
             var iOManager = new WarehouseTransferIOManager(dbFactory);
-            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
-            payload.WarehouseTransfer = dtos[0];
-            payload.Success = true;
-            payload.Messages = svc.Messages;
+            var dtos = await iOManager.ImportWarehouseTransferAsync(payload.MasterAccountNum,payload.ProfileNum,files[0].OpenReadStream());
+            payload.WarehouseTransfer = dtos;
+            payload.Success = dtos!=null;
+            payload.Messages = iOManager.Messages;
             return payload;
         }
 

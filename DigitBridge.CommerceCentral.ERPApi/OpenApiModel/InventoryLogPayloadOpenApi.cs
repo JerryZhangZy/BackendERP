@@ -117,26 +117,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class InventoryLogFilter
     {
-
-        public string ProductUuid { get; set; }
-
+        public DateTime LogDateFrom { get; set; }
+        public DateTime LogDateTo { get; set; }
+        public string LogType { get; set; }
+        public string LogNumber { get; set; }
         public string SKU { get; set; }
-
-        public string Brand { get; set; }
-
-        public string Manufacturer { get; set; }
-
-        public string ProductTitle { get; set; }
-
-        public string FNSku { get; set; }
-
-        public string UPC { get; set; }
-
         public string WarehouseCode { get; set; }
-
-        public string LotNum { get; set; }
-
-        public string LpnNum { get; set; }
+        public string StyleCode { get; set; }
+        public string ColorPatternCode { get; set; }
+        public string SizeCode { get; set; }
+        public string WidthCode { get; set; }
+        public string LengthCode { get; set; }
     }
 
 }

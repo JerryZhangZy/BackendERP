@@ -114,8 +114,7 @@ SELECT
                 result = await ExcuteJsonAsync(sb);
                 if (result)
                 {
-                    if (payload.MiscInvoiceListCount == 0)
-                        payload.ReturnError("No data be found");
+                    payload.Success = true;
                     payload.MiscInvoiceList = sb;
                 }
             }
