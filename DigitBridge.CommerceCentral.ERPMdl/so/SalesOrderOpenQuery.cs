@@ -42,6 +42,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<SalesOrderStatus> _OrderStatus_Hold = new EnumQueryFilter<SalesOrderStatus>("OrderStatus_Hold", "OrderStatus", PREFIX, FilterBy.ne, -1);
         public EnumQueryFilter<SalesOrderStatus> OrderStatus_Hold => _OrderStatus_Hold;
 
+
+        protected EnumQueryFilter<SalesOrderStatus> _OrderStatus_Pending = new EnumQueryFilter<SalesOrderStatus>("OrderStatus_Pending", "OrderStatus", PREFIX, FilterBy.ne, -1);
+        public EnumQueryFilter<SalesOrderStatus> OrderStatus_Pending => _OrderStatus_Pending;
         #endregion 
 
         public SalesOrderOpenQuery() : base(PREFIX_Event)
@@ -53,6 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ERPEventProcessType);
             AddFilter(_OrderStatus_Cancelled);
             AddFilter(_OrderStatus_Hold);
+            AddFilter(_OrderStatus_Pending);
         }
 
         public override void InitQueryFilter()
@@ -63,6 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.SalesOrderToWMS;
             _OrderStatus_Hold.FilterValue = (int)SalesOrderStatus.Hold;
             _OrderStatus_Cancelled.FilterValue = (int)SalesOrderStatus.Cancelled;
+            _OrderStatus_Pending.FilterValue = (int)SalesOrderStatus.Pending;
         }
     }
 }
