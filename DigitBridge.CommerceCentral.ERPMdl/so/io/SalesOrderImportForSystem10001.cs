@@ -11,13 +11,8 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
-{
-    interface Import<T> where T : class
-    {
-        Task PrePareData(T dto);
-    }
-
-    public class SalesOrderImportForSystem10001 : IMessage, Import<SalesOrderDataDto>
+{ 
+    public class SalesOrderImportForSystem10001 : IMessage, IImport<SalesOrderDataDto>
     {
 
         public SalesOrderImportForSystem10001(IDataBaseFactory dbFactory)
