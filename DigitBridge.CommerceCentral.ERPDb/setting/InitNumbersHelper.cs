@@ -48,6 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string CurrentNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CurrentNumber AS {name ?? "CurrentNumber".ToCamelCase(camelCase)} ";
         public static string Number(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Number AS {name ?? "Number".ToCamelCase(camelCase)} ";
         public static string MaxNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MaxNumber AS {name ?? "MaxNumber".ToCamelCase(camelCase)} ";
+        public static string EndNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EndNumber AS {name ?? "EndNumber".ToCamelCase(camelCase)} ";
         public static string Prefix(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Prefix) AS {name ?? "Prefix".ToCamelCase(camelCase)} ";
         public static string Suffix(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Suffix) AS {name ?? "Suffix".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
@@ -73,6 +74,7 @@ RTRIM({allies}Type) AS Type,
 {allies}CurrentNumber AS CurrentNumber,
 {allies}Number AS Number,
 {allies}MaxNumber AS MaxNumber,
+{allies}EndNumber AS EndNumber,
 RTRIM({allies}Prefix) AS Prefix,
 RTRIM({allies}Suffix) AS Suffix,
 {allies}EnterDateUtc AS EnterDateUtc,

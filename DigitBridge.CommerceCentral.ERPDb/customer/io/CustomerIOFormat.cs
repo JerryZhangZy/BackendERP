@@ -108,6 +108,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("CommissionRate2", "", idx++, FormatType.Rate, false),
 				new CsvFormatColumn("CommissionRate3", "", idx++, FormatType.Rate, false),
 				new CsvFormatColumn("CommissionRate4", "", idx++, FormatType.Rate, false),
+				new CsvFormatColumn("OrderMiscAmount", "", idx++, FormatType.Amount, false),
+				new CsvFormatColumn("ItemMiscAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("UpdateDateUtc", "", idx++, FormatType.Date, false),
 				new CsvFormatColumn("EnterBy", "", idx++, null, false),
 				new CsvFormatColumn("UpdateBy", "", idx++, null, false),

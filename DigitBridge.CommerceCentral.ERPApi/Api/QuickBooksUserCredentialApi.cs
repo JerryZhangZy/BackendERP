@@ -13,7 +13,7 @@ using System.Net;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.CommerceCentral.ERPApi.Api
+namespace DigitBridge.CommerceCentral.ERPApi
 {
     [ApiFilter(typeof(QuickBooksUserCredentialApi))]
     public static class QuickBooksUserCredentialApi

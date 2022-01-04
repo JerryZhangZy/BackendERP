@@ -435,7 +435,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Customer Source. <br> Title: Source, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Customer Source. <br> Title: Source, Display: true, Editable: true")]
-        [StringLength(50, ErrorMessage = "The SourceCode value cannot exceed 50 characters. ")]
+        [StringLength(100, ErrorMessage = "The SourceCode value cannot exceed 100 characters. ")]
         public string SourceCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

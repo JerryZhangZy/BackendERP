@@ -66,11 +66,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CurrentNumber",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _currentNumber;
 
-        [Column("Number",SqlDbType.Int,NotNull=true,IsDefault=true)]
-        private int _number;
+        [Column("Number",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _number;
 
         [Column("MaxNumber",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _maxNumber;
+
+        [Column("EndNumber",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _endNumber;
 
         [Column("Prefix",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _prefix;
@@ -228,7 +231,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Init number, real number will be more than init number and not exist number
 		/// </summary>
-        public virtual int Number
+        public virtual long Number
         {
             get
             {
@@ -254,6 +257,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_maxNumber = value; 
 				OnPropertyChanged("MaxNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// End number, real number will be less than end number and not exist number
+		/// </summary>
+        public virtual long EndNumber
+        {
+            get
+            {
+				return _endNumber; 
+            }
+            set
+            {
+				_endNumber = value; 
+				OnPropertyChanged("EndNumber", value);
             }
         }
 
@@ -378,8 +397,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_inActive = default(byte); 
 			_type = String.Empty; 
 			_currentNumber = default(int); 
-			_number = default(int); 
+			_number = default(long); 
 			_maxNumber = default(long); 
+			_endNumber = default(long); 
 			_prefix = String.Empty; 
 			_suffix = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
