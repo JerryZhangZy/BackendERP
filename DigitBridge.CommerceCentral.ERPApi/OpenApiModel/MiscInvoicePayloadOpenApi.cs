@@ -142,8 +142,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string MiscInvoiceNumberTo { get; set; }
         public DateTime MiscInvoiceDateFrom { get; set; }
         public DateTime MiscInvoiceDateTo { get; set; }
-        public DateTime DueDateFrom { get; set; }
-        public DateTime DueDateTo { get; set; }
         public int MiscInvoiceType { get; set; }
         public int MiscInvoiceStatus { get; set; }
         public string CustomerCode { get; set; }
