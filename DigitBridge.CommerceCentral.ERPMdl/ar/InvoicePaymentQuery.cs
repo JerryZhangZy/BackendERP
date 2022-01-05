@@ -18,8 +18,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected QueryFilter<int> _TransNum = new QueryFilter<int>("TransNum", "TransNum", PREFIX, FilterBy.eq, 0);
         //public QueryFilter<int> TransNum => _TransNum;
 
-        //protected QueryFilter<string> _InvoiceNumber = new QueryFilter<string>("InvoiceNumber", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        //public QueryFilter<string> InvoiceNumber => _InvoiceNumber;
+        protected QueryFilter<string> _OrderNumber = new QueryFilter<string>("OrderNumber", "OrderNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> OrderNumber => _OrderNumber;
 
         protected QueryFilter<string> _TransUuid = new QueryFilter<string>("TransUuid", "TransUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> TransUuid => _TransUuid;
@@ -117,7 +117,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoicePaymentQuery() : base(PREFIX)
         {
             //AddFilter(_TransNum);
-            //AddFilter(_InvoiceNumber);
+            AddFilter(_OrderNumber);
             AddFilter(_TransUuid);
             AddFilter(_TransDateFrom);
             AddFilter(_TransDateTo);
