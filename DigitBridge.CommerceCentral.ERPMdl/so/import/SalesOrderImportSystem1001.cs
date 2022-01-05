@@ -289,7 +289,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 + dto.SalesOrderItems.Sum(i => i.TaxAmount)
                 + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
 
-            dto.SalesOrderHeader.OriginalTotalAmount = originalTotalAmount;
+            //dto.SalesOrderHeader.OriginalTotalAmount = originalTotalAmount;
         }
 
         protected void CalculateSummary(SalesOrderDataDto dto)
@@ -299,7 +299,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var taxAmount = dto.SalesOrderItems.Where(i => i.Taxable.ToBool()).Sum(j => j.TaxAmount);
             var taxableAmount = dto.SalesOrderItems.Where(i => i.Taxable.ToBool()).Sum(j => j.TaxableAmount);
-            dto.SalesOrderHeader.TaxRate = (taxAmount / taxableAmount).ToDecimal();
+            dto.SalesOrderHeader.TaxRate = taxableAmount.IsZero() ? 0 : (taxAmount / taxableAmount).ToDecimal();
 
             dto.SalesOrderHeader.ShippingAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount).ToDecimal();
             dto.SalesOrderHeader.ShippingCost = dto.SalesOrderItems.Sum(i => i.ShippingCost).ToDecimal();
