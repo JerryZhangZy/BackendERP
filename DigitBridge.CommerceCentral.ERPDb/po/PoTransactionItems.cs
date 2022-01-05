@@ -17,6 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class PoTransactionItems
     {
+        private PoItems poItem;
         public virtual async Task<List<PoTransactionItems>> GetPoTransactionItemsItems(List<string> transUuids)
         {
             if (transUuids == null || transUuids.Count == 0) return null;
@@ -24,25 +25,50 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return (await dbFactory.FindAsync<PoTransactionItems>(sql)).ToList();
         }
 
-        public virtual  decimal GetPoQty(string poItemUuid)
+        public virtual  PoItems GetPoItem(string poItemUuid)
         {
-            var sql = $"SELECT PoQty FROM PoItems where PoItemUuid =@0";
-            return  dbFactory.Db.ExecuteScalar<decimal>(sql,poItemUuid.ToSqlParameter("@0"));
+            if (poItem != null) return poItem;
+            if (poItemUuid == null ) return new PoItems();
+            var sql = $"SELECT * FROM PoItems  where PoItemUuid =@0 ";
+            var poitems= ( dbFactory.Find<PoItems>(sql, poItemUuid.ToSqlParameter("@0"))).ToList();
+            if (poitems == null || poitems.Count == 0) return new PoItems();
+            poItem = poitems[0];
+            return poItem;
         }
+
+        //public virtual  decimal GetPoQty(string poItemUuid)
+        //{
+        //    var sql = $"SELECT PoQty FROM PoItems where PoItemUuid =@0";
+        //    return  dbFactory.Db.ExecuteScalar<decimal>(sql,poItemUuid.ToSqlParameter("@0"));
+        //}
+
+        //public virtual decimal GetReceivedQty(string poItemUuid)
+        //{
+        //    var sql = $"SELECT ReceivedQty FROM PoItems where PoItemUuid =@0";
+        //    return dbFactory.Db.ExecuteScalar<decimal>(sql, poItemUuid.ToSqlParameter("@0"));
+        //}
+
+        //public virtual decimal GetCancelledQtyQty(string poItemUuid)
+        //{
+        //    var sql = $"SELECT CancelledQty FROM PoItems where PoItemUuid =@0";
+        //    return dbFactory.Db.ExecuteScalar<decimal>(sql, poItemUuid.ToSqlParameter("@0"));
+        //}
+
+
 
         /// <summary>
         /// po item po Qty
         /// </summary>
-        public virtual decimal PoQty => ( GetPoQty(this.PoItemUuid)).ToQty();
+        public virtual decimal PoQty => ( GetPoItem(this.PoItemUuid).PoQty).ToQty();
 
         /// <summary>
         /// Same po same PoItemUuid total returned qty
         /// </summary>
-        public virtual decimal ReceivedQty =>(this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.ReceivedQty).ToQty();
+        public virtual decimal ReceivedQty => (GetPoItem(this.PoItemUuid).ReceivedQty).ToQty();
         /// <summary>
         /// Same po same PoItemUuid total CancelledQty
         /// </summary>
-        public virtual decimal CancelledQty => (this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.CancelledQty).ToQty();
+        public virtual decimal CancelledQty =>(GetPoItem(this.PoItemUuid).CancelledQty).ToQty();
 
         /// <summary>
         /// OpenQty => po item po Qty - po item  total received qty;
