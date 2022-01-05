@@ -12,15 +12,21 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class SalesOrderImportForSystem10001 : IMessage, IImport<SalesOrderDataDto>
+    public class SalesOrderImportSystem10001 : IPrepare<SalesOrderService, SalesOrderData, SalesOrderDataDto>
     {
-
-        public SalesOrderImportForSystem10001(IDataBaseFactory dbFactory)
+        protected SalesOrderService _salesOrderService;
+        protected SalesOrderService Service
         {
-            this.dbFactory = dbFactory;
+            get => _salesOrderService;
         }
-
-        protected IDataBaseFactory dbFactory { get; set; }
+        protected IDataBaseFactory dbFactory
+        {
+            get => Service.dbFactory;
+        }
+        public SalesOrderImportSystem10001(SalesOrderService salesOrderService)
+        {
+            _salesOrderService = salesOrderService;
+        }
 
         #region Service Property
 
@@ -61,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
-        public async Task PrePareData(SalesOrderDataDto dto)
+        public virtual async Task<bool> PrepareDtoAsync(SalesOrderDataDto dto)
         {
             SetOriginalTotalAmount(dto);
 
@@ -74,6 +80,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await SetInventoryAsync(dto);
 
             await SetShippingCodeAsync(dto);
+
+            return true;
         }
 
         #region Load customer
