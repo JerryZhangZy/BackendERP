@@ -719,7 +719,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #endregion Children - Generated 
 
+        #region for import
+
         public string MerchantSku { get; set; }
+
+        public decimal ShippingCost { get; set; }
+
+        #endregion
 
     }
 }

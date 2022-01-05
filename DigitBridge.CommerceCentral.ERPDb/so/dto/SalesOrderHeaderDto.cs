@@ -636,6 +636,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public string Merchant { get; set; }
         public string SalesDivision { get; set; }
+        public decimal? OriginalTotalAmount { get; set; }
 
         #endregion
 

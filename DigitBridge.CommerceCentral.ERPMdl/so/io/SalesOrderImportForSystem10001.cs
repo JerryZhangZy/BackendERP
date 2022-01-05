@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
-{ 
+{
     public class SalesOrderImportForSystem10001 : IMessage, IImport<SalesOrderDataDto>
     {
 
@@ -36,6 +36,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        private ShippingCodesService _shippingCodesService;
+        protected ShippingCodesService shippingCodesService
+        {
+            get
+            {
+                if (_shippingCodesService is null)
+                    _shippingCodesService = new ShippingCodesService(dbFactory);
+                return _shippingCodesService;
+            }
+        }
+
         private InventoryService _inventoryService;
 
         protected InventoryService inventoryService
@@ -52,6 +63,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task PrePareData(SalesOrderDataDto dto)
         {
+            SetOriginalTotalAmount(dto);
+
             CalculatDetail(dto);
 
             CalculateSummary(dto);
@@ -59,6 +72,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await SetCustomerInfoAsync(dto);
 
             await SetInventoryAsync(dto);
+
+            await SetShippingCodeAsync(dto);
         }
 
         #region Load customer
@@ -115,7 +130,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var customer = await customerService.GetCustomerBySourceCodeAsync(header.MasterAccountNum.ToInt(), header.ProfileNum.ToInt(), sourceCode);
             if (customer == null)
             {
-                //Add cusotmer;
+                customer = await AddCustomerAsync(dto);
             }
             return customer;
         }
@@ -256,6 +271,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Calculate logic
 
+        /// <summary>
+        /// Record the import total amount 
+        /// </summary>
+        /// <param name="dto"></param>
+        protected void SetOriginalTotalAmount(SalesOrderDataDto dto)
+        {
+            var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShipAmount)
+                + dto.SalesOrderItems.Sum(i => i.TaxAmount)
+                + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
+
+            dto.SalesOrderHeader.OriginalTotalAmount = originalTotalAmount;
+        }
+
         protected void CalculateSummary(SalesOrderDataDto dto)
         {
             if (!dto.SalesOrderHeader.TaxRate.IsZero())
@@ -264,11 +292,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var taxAmount = dto.SalesOrderItems.Where(i => i.Taxable.ToBool()).Sum(j => j.TaxAmount);
             var taxableAmount = dto.SalesOrderItems.Where(i => i.Taxable.ToBool()).Sum(j => j.TaxableAmount);
             dto.SalesOrderHeader.TaxRate = (taxAmount / taxableAmount).ToDecimal();
-            var diffAmount = taxAmount - dto.SalesOrderHeader.TaxRate * taxableAmount;
-            dto.SalesOrderHeader.MiscAmount += diffAmount;
 
-            dto.SalesOrderHeader.ShippingAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount);
-            //dto.SalesOrderHeader.ShippingCost = dto.SalesOrderItems.Sum(i => i.ShippingCost);
+            dto.SalesOrderHeader.ShippingAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount).ToDecimal();
+            dto.SalesOrderHeader.ShippingCost = dto.SalesOrderItems.Sum(i => i.ShippingCost).ToDecimal();
+
 
         }
 
@@ -280,14 +307,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.OrderQty = item.OrderQty.ToDecimal();
                 item.Price = (item.ItemTotalAmount / item.OrderQty).ToDecimal();
 
-                var diffAmount = item.ItemTotalAmount - item.Price * item.OrderQty;
-                dto.SalesOrderHeader.MiscAmount += diffAmount;
-
                 item.TaxAmount = item.TaxAmount.ToDecimal();
                 item.Taxable = !item.TaxAmount.IsZero();
                 item.TaxableAmount = item.Taxable.ToBool() ? item.Price * item.OrderQty : 0;
             }
 
+        }
+
+        #endregion
+
+
+        #region Load shipping code
+        protected async Task SetShippingCodeAsync(SalesOrderDataDto dto)
+        {
+            var info = dto.SalesOrderHeaderInfo;
+
+            var shippingCodes = shippingCodesService.GetShippingCodes(dto.SalesOrderHeader.MasterAccountNum.ToInt(), dto.SalesOrderHeader.ProfileNum.ToInt());
+            var foundItem = shippingCodes.Where(i => i.ShippingCode == info.ShippingCode).FirstOrDefault();
+            if (foundItem == null)
+            {
+                info.ShippingClass = info.ShippingCode.IsZero() ? info.ShippingClass : info.ShippingCode;
+            }
+            else
+            {
+                dto.SalesOrderHeaderInfo.ShippingClass = foundItem.ShippingClass;
+                dto.SalesOrderHeaderInfo.ShippingCarrier = foundItem.ShippingCarrier;
+            }
         }
 
         #endregion
