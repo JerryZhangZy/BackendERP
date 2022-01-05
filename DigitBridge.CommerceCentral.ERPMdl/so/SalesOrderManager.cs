@@ -280,6 +280,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Get CentralOrder by uuid
             var channelOrderSrv = new ChannelOrderService(dbFactory);
 
+            // reset CentralOrderUuid
+            await channelOrderSrv.ResetCentralOrderUuidAsync(centralOrderUuid);
+
             if (!(await channelOrderSrv.GetDataByIdAsync(centralOrderUuid)))
                 return null;
             return channelOrderSrv.Data;
@@ -293,6 +296,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<IList<DCAssignmentData>> GetDCAssignmentAsync(string centralOrderUuid)
         {
             var dcAssignmentSrv = new DCAssignmentService(dbFactory);
+
+            // reset CentralOrderUuid
+            await dcAssignmentSrv.ResetCentralOrderUuidAsync(centralOrderUuid);
+
             return await dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
         }
 
