@@ -134,6 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class InvoicePaymentFilter
     {
+        public string OrderNumber { get; set; }
         public string TransUuid { get; set; }
         public DateTime TransDateFrom { get; set; }
         public DateTime TransDateTo { get; set; }

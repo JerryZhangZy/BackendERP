@@ -136,6 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class InvoceReturnFilter
     {
+        public string OrderNumber { get; set; }
         public string TransUuid { get; set; }
         public DateTime TransDateFrom { get; set; }
         public DateTime TransDateTo { get; set; }
