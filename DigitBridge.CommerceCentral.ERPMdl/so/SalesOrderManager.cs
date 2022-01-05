@@ -501,7 +501,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region import salesorder
 
-        public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos)
+        public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos, int formatNumber = 0)
         {
             if (dtos == null || dtos.Count == 0)
             {
@@ -520,8 +520,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     }
                     salesOrderService.DetachData(null);
                     salesOrderService.NewData();
-                    var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
-                    if (!(await prepare.PrepareDtoAsync(dto))) continue;
+                    //var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
+                    //if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                    var prepare = ImportPrepareFactory.GetSalesOrderImportInstance(salesOrderService, formatNumber);
+                    if (!await prepare.PrepareDtoAsync(dto)) continue;  
 
                     if (!await salesOrderService.AddWithoutValidateAsync(dto))
                     {

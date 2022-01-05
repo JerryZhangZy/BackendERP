@@ -690,6 +690,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #endregion Children - Generated 
 
+        #region added for import
+        public string ShippingCode { get; set; }
+
+        #endregion
+
     }
 }
 
