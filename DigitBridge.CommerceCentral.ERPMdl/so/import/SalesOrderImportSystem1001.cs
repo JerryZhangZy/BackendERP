@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class SalesOrderImportSystem10001 : IPrepare<SalesOrderService, SalesOrderData, SalesOrderDataDto>
+    public class SalesOrderImportSystem1001 : IPrepare<SalesOrderService, SalesOrderData, SalesOrderDataDto>
     {
         protected SalesOrderService _salesOrderService;
         protected SalesOrderService Service
@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             get => Service.dbFactory;
         }
-        public SalesOrderImportSystem10001(SalesOrderService salesOrderService)
+        public SalesOrderImportSystem1001(SalesOrderService salesOrderService)
         {
             _salesOrderService = salesOrderService;
         }

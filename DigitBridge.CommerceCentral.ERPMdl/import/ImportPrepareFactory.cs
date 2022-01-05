@@ -13,8 +13,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             switch (formatNum)
             {
-                case 10001:
-                    return new SalesOrderImportSystem10001(service);
+                case 1001:
+                    return new SalesOrderImportSystem1001(service);
                 default:
                     return new SalesOrderImportDefault(service);
             }
