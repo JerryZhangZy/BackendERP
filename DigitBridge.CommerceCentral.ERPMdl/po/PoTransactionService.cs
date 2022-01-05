@@ -367,7 +367,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data 
             if (!await GetDataAsync(payload.PoTransaction.PoTransaction.RowNum.ToLong()))
             {
-                AddError($@"RowNum {RowNum}");
+                AddError($@"RowNum {payload.PoTransaction.PoTransaction.RowNum} data is not found!");
+                return false;
             }
 
             // load data from dto
