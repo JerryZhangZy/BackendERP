@@ -634,9 +634,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Manual Added
 
+        [JsonIgnore, XmlIgnore]
         public string Merchant { get; set; }
+        [JsonIgnore, XmlIgnore]
         public string SalesDivision { get; set; }
-        public decimal? OriginalTotalAmount { get; set; }
 
         #endregion
 

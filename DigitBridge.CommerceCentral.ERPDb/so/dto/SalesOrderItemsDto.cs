@@ -721,8 +721,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region for import
 
+        [JsonIgnore, XmlIgnore]
         public string MerchantSku { get; set; }
-
+        [JsonIgnore, XmlIgnore]
         public decimal ShippingCost { get; set; }
 
         #endregion
