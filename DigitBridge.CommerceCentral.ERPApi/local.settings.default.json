@@ -87,6 +87,8 @@
     //#region ERP Azure Table Setting
     "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpeventapidev;AccountKey=DCDiLGxMy8m+efWvPjhG86HuDOtPME94nUaWmRtcAkB2ZD5xv/JbvW9MsDKKjKbtf13HsdCwtrqLz/pzS0iIyw==;EndpointSuffix=core.windows.net",
     "ERPSummaryTableName": "ErpSummaryCache",
+    "ERPImportExportTableName": "ERPImportExportTableName",
+    "ERPImportExportTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
     //#endregion ERP Broker Queue Name Setting
 
     //#region ERP API URL

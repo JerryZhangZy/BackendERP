@@ -56,7 +56,10 @@ namespace DigitBridge.Base.Utility
 
 
         public static string ERPSummaryTableName => GetValueByName("ERPSummaryTableName");
+
         public static string ERPSummaryTableConnectionString => GetValueByName("ERPSummaryTableConnectionString");
+        public static string ERPImportExportTableName => GetValueByName("ERPImportExportTableName");
+        public static string ERPImportExportTableConnectionString => GetValueByName("ERPImportExportTableConnectionString");
 
         public static string ERPImportContainerName => GetValueByName("ERPImportContainerName");
         public static string ERPExportContainerName => GetValueByName("ERPExportContainerName");
