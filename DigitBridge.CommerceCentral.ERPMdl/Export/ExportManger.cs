@@ -1,5 +1,6 @@
 ﻿using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.AzureStorage;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Newtonsoft.Json;
@@ -37,9 +38,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.Messages.Add(queueService.Messages);
                 return false;
             }
-
+            //var srv = new ImportExport.ImportExportMemoryTableService();
+            //await srv.UpdateImportExportRecordAsync(payload);
+ 
             return true;
         }
+
+
+
+       
+
+
 
         #region Messages
         protected IList<MessageClass> _messages;
@@ -66,6 +75,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+
+
 
         public async Task<bool> FindExportProcessUuidsAsync(IDataBaseFactory dataBaseFactory, ImportExportFilesPayload payload)
         {

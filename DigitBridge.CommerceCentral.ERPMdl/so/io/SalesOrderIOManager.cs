@@ -230,7 +230,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Verify Dto and save dto to database
             var manager = SalesOrderManager;
-            if (!await manager.SaveImportDataAsync(dtoList))
+            if (!await manager.SaveImportDataAsync(dtoList, payload.Options.FormatNumber))
             {
                 this.Messages.Add(manager.Messages);
                 return false;

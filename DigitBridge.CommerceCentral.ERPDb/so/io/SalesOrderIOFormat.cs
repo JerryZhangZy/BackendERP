@@ -88,7 +88,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("TaxAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("DiscountRate", "", idx++, FormatType.Rate, false),
 				new CsvFormatColumn("DiscountAmount", "", idx++, FormatType.Amount, false),
-				new CsvFormatColumn("ShippingAmount", "", idx++, FormatType.Amount, false),
+				//new CsvFormatColumn("ShippingAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("ShippingTaxAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("MiscAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("MiscTaxAmount", "", idx++, FormatType.Amount, false),
@@ -118,6 +118,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("UpdateDateUtc", "", idx++, FormatType.Date, false),
 				new CsvFormatColumn("EnterBy", "", idx++, null, false),
 				new CsvFormatColumn("UpdateBy", "", idx++, null, false),
+				
+				new CsvFormatColumn("Merchant", "", idx++, null, false),
+				new CsvFormatColumn("SalesDivision", "", idx++, null, false),
+				
 			};
 		}
 
@@ -189,6 +193,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("Notes", "", idx++, null, false),
 				new CsvFormatColumn("OrderDCAssignmentNum", "", idx++, null, false),
 				new CsvFormatColumn("DBChannelOrderHeaderRowID", "", idx++, null, false),
+				new CsvFormatColumn("ShippingCode", "", idx++, null, false),
 			};
 		}
 
@@ -220,6 +225,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("SalesOrderItemstatus", "", idx++, null, false),
 				new CsvFormatColumn("ItemDate", "", idx++, FormatType.Date, false),
 				new CsvFormatColumn("ItemTime", "", idx++, FormatType.Time, false),
+				new CsvFormatColumn("MerchantSku", "", idx++, null, false),
 				new CsvFormatColumn("SKU", "", idx++, null, false),
 				new CsvFormatColumn("SKUTitle", "", idx++, null, false),
 				new CsvFormatColumn("ProductUuid", "", idx++, null, false),
@@ -254,11 +260,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				new CsvFormatColumn("IsProfit", "", idx++, null, false),
 				new CsvFormatColumn("LotInDate", "", idx++, FormatType.Date, false),
 				new CsvFormatColumn("LotExpDate", "", idx++, FormatType.Date, false),
-				new CsvFormatColumn("CentralOrderLineUuid", "", idx++, null, false),
-				new CsvFormatColumn("DBChannelOrderLineRowID", "", idx++, null, false),
-				new CsvFormatColumn("OrderDCAssignmentLineUuid", "", idx++, null, false),
-				new CsvFormatColumn("OrderDCAssignmentLineNum", "", idx++, null, false),
-				//new CsvFormatColumn("ShippingAmount","", idx++, null, false),
+                new CsvFormatColumn("CentralOrderLineUuid", "", idx++, null, false),
+                new CsvFormatColumn("DBChannelOrderLineRowID", "", idx++, null, false),
+                new CsvFormatColumn("OrderDCAssignmentLineUuid", "", idx++, null, false),
+                new CsvFormatColumn("OrderDCAssignmentLineNum", "", idx++, null, false),
+				new CsvFormatColumn("ShippingAmount", "", idx++, FormatType.Amount, false),
+				new CsvFormatColumn("ShippingCost", "", idx++, FormatType.Amount, false),
 				//new CsvFormatColumn("Currency", "", idx++, null, false),
 			};
 		}

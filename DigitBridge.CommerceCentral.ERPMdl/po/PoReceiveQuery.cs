@@ -40,10 +40,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> PoUuid => _PoUuid;
 
 
-        protected QueryFilter<string> _PoNumFrom = new QueryFilter<string>("PoNumFrom", "PoNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _PoNumFrom = new QueryFilter<string>("PoNumFrom", "PoNum", PREFIX, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> PoNumFrom => _PoNumFrom;
 
-        protected QueryFilter<string> _PoNumTo = new QueryFilter<string>("PoNumTo", "PoNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _PoNumTo = new QueryFilter<string>("PoNumTo", "PoNum", PREFIX, FilterBy.le, string.Empty, isNVarChar: true);
         public QueryFilter<string> PoNumTo => _PoNumTo;
 
 
