@@ -49,11 +49,7 @@ BEGIN
     ALTER TABLE PoTransaction ADD [WMSBatchNum] varchar(50) not null default ''
 END
 
--- 12/27/2021 By ZHENGJIA
-IF COL_LENGTH('PoTransaction', 'EnterDateUtc') IS NULL					
-BEGIN					
-    ALTER TABLE PoTransaction ADD [EnterDateUtc] DATETIME NOT NULL  DEFAULT (getutcdate())
-END
+ 
 
 --1/4/2022 By junxian
 ALTER TABLE [dbo].[PoTransaction] ADD  DEFAULT (getutcdate()) FOR [EnterDateUtc]
