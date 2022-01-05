@@ -25,10 +25,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        protected QueryFilter<DateTime> _OriginalOrderDateUtcFrom = new QueryFilter<DateTime>("OriginalOrderDateUtcFrom", "OriginalOrderDateUtc", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
+        protected QueryFilter<DateTime> _OriginalOrderDateUtcFrom = new QueryFilter<DateTime>("OriginalOrderDateUtcFrom", "OriginalOrderDateUtc", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> OriginalOrderDateUtcFrom => _OriginalOrderDateUtcFrom;
 
-        protected QueryFilter<DateTime> _OriginalOrderDateUtcTo = new QueryFilter<DateTime>("OriginalOrderDateUtcTo", "OriginalOrderDateUtc", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
+        protected QueryFilter<DateTime> _OriginalOrderDateUtcTo = new QueryFilter<DateTime>("OriginalOrderDateUtcTo", "OriginalOrderDateUtc", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> OriginalOrderDateUtcTo => _OriginalOrderDateUtcTo;
 
         protected QueryFilter<string> _OrderNumber = new QueryFilter<string>("OrderNumber", "OrderNumber", PREFIX, FilterBy.eq, string.Empty);
