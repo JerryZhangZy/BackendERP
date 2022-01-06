@@ -525,12 +525,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         continue;
                     }
-
+                    //TODO remove this test code
+                    //dto.SalesOrderHeader.OrderNumber = dto.SalesOrderHeader.OrderNumber + "-1";
                     salesOrderService.Add();
 
                     var prepare = ImportPrepareFactory.GetSalesOrderImportInstance(salesOrderService, formatNumber);
                     if (!await prepare.PrepareDtoAsync(dto)) continue;
 
+                    salesOrderService.FromDto(dto);
                     if (!await salesOrderService.SaveDataAsync())
                     {
                         success = false;
