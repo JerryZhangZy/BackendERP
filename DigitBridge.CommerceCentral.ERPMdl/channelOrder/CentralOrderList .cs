@@ -34,6 +34,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region override methods
+        protected override void AddDefaultOrderBy()
+        {
+            if (!QueryObject.HasOrderBy)
+                QueryObject.AddOrderBy("CentralOrderNum DESC");
+        }
 
         protected override string GetSQL_select()
         {
