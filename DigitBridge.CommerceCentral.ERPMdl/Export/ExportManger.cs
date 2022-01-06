@@ -83,8 +83,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             try
             {
-                payload.ExportUuids = await dataBaseFactory.Db.FetchAsync<string>(
-                    $"SELECT ProcessUuid FROM ExportFiles WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND Status=0");
+                payload.Result =await GetImportExportRecordAsync(payload.ExportUuid);
+                //payload.ExportUuids = await dataBaseFactory.Db.FetchAsync<string>(
+                //    $"SELECT ProcessUuid FROM ExportFiles WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND Status=0");
                 return true;
             }
             catch(Exception ex)
@@ -93,18 +94,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
         }
-        public async Task<bool> UpdateExportStatus(IDataBaseFactory dataBaseFactory, ImportExportFilesPayload payload)
+        public async Task<bool> SetExportCompleted( ImportExportFilesPayload payload)
         {
             try
             {
-                return await dataBaseFactory.Db.ExecuteAsync(
-                    $"UPDATE ExportFiles SET Status=1, UpdateDateUtc=GETUTCDATE() WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND ProcessUuid='{payload.ExportUuid}' AND Status=0") == 1;
+              var result= await GetImportExportRecordAsync(payload.ExportUuid);
+                if (result == null)
+                    return false;
+                payload.Result.FileCompletedCount += 1;
+                payload.Result.Completed = true;
+                await UpdateExportRecordAsync(payload);
             }
             catch (Exception ex)
             {
                 AddError(ex.Message);
                 return false;
             }
+
+            return true;
         }
 
 

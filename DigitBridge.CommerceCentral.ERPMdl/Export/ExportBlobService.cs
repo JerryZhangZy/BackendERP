@@ -181,6 +181,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return downfile;
         }
 
+        public async Task<bool> DetelteFileFromBlobAsync(ImportExportFilesPayload payload)
+        {
+            if (!payload.HasExportUuid)
+            {
+                AddError($"ExportUuid cannot be empty.");
+                return false;
+            }
+
+            var blobContainer = await GetBlobContainerAsync(payload.ExportUuid);
+            var fileList = blobContainer.GetBlobList();
+            if (fileList == null || fileList.Count == 0)
+            {
+                AddError($"Export files not found.");
+                return false;
+            }
+
+            payload.ExportFiles = new Dictionary<string, byte[]>();
+            foreach (var fileName in fileList)
+            {
+                if (string.IsNullOrWhiteSpace(fileName) ||
+                    fileName.EqualsIgnoreSpace(OPTIONS_NAME) ||
+                    fileName.EqualsIgnoreSpace(RESULT_NAME)
+                    ) continue;
+
+                try
+                {
+                    var exportData = await blobContainer.DeleteBlobAsync(fileName);
+                    
+                }
+                catch (Exception e)
+                {
+                    AddError($"Delete file {fileName} error. {e.Message}");
+                }
+            }
+
+            return true;
+        }
+
+
         protected async Task<bool> LoadFilesFromBlobAsync(ImportExportFilesPayload payload)
         {
             if (!payload.HasExportUuid)
