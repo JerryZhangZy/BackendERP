@@ -518,15 +518,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         continue;
                     }
-                    salesOrderService.DetachData(null);
-                    salesOrderService.NewData();
-                    //var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
-                    //if (!(await prepare.PrepareDtoAsync(dto))) continue;
+
+                    salesOrderService.Add();
 
                     var prepare = ImportPrepareFactory.GetSalesOrderImportInstance(salesOrderService, formatNumber);
-                    if (!await prepare.PrepareDtoAsync(dto)) continue;  
+                    if (!await prepare.PrepareDtoAsync(dto)) continue;
 
-                    if (!await salesOrderService.AddWithoutValidateAsync(dto))
+                    if (!await salesOrderService.SaveDataAsync())
                     {
                         success = false;
                         AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");

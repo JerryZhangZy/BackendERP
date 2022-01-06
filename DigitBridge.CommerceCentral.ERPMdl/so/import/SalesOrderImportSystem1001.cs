@@ -69,11 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> PrepareDtoAsync(SalesOrderDataDto dto)
         {
-            SetOriginalTotalAmount(dto);
-
-            CalculatDetail(dto);
-
-            CalculateSummary(dto);
+            Calculate(dto);
 
             await SetCustomerInfoAsync(dto);
 
@@ -279,17 +275,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Calculate logic
 
+        protected void Calculate(SalesOrderDataDto dto)
+        {
+            var originalTotalAmount = GetOriginalTotalAmount(dto);
+
+            CalculatDetail(dto);
+
+            CalculateSummary(dto); 
+
+            //calculate new totalAmount;
+            Service.FromDto(dto);
+            Service.Calculate();
+            // set the differnt amount of total to miscamount
+            dto.SalesOrderHeader.MiscAmount += originalTotalAmount - Service.Data.SalesOrderHeader.TotalAmount;
+        }
+
         /// <summary>
-        /// Record the import total amount 
+        /// calculate import total amount 
         /// </summary>
         /// <param name="dto"></param>
-        protected void SetOriginalTotalAmount(SalesOrderDataDto dto)
+        protected decimal? GetOriginalTotalAmount(SalesOrderDataDto dto)
         {
             var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShipAmount)
                 + dto.SalesOrderItems.Sum(i => i.TaxAmount)
                 + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
-
-            //dto.SalesOrderHeader.OriginalTotalAmount = originalTotalAmount;
+            return originalTotalAmount;
         }
 
         protected void CalculateSummary(SalesOrderDataDto dto)
