@@ -69,11 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> PrepareDtoAsync(SalesOrderDataDto dto)
         {
-            SetOriginalTotalAmount(dto);
-
-            CalculatDetail(dto);
-
-            CalculateSummary(dto);
+            Calculate(dto);
 
             await SetCustomerInfoAsync(dto);
 
@@ -146,8 +142,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<Customer> AddCustomerAsync(SalesOrderDataDto dto)
         {
             var header = dto.SalesOrderHeader;
-            customerService.NewData();
-            var newCustomer = customerService.Data;
+            customerService.Add();
+            var newCustomer = new CustomerDataDto();
+            newCustomer.Customer = new CustomerDto();
             newCustomer.Customer.MasterAccountNum = header.MasterAccountNum.ToInt();
             newCustomer.Customer.ProfileNum = header.ProfileNum.ToInt();
             newCustomer.Customer.DatabaseNum = header.DatabaseNum.ToInt();
@@ -160,7 +157,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             newCustomer.Customer.ChannelNum = dto.SalesOrderHeaderInfo.ChannelNum.ToInt();
             newCustomer.Customer.ChannelAccountNum = dto.SalesOrderHeaderInfo.ChannelAccountNum.ToInt();
             newCustomer.Customer.SourceCode = $"CommerceHub-{header.Merchant}-{header.SalesDivision}";
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newCustomer.CustomerAddress = new List<CustomerAddressDto>();
+            newCustomer.CustomerAddress.Add(new CustomerAddressDto()
             {
                 AddressCode = AddressCodeType.Ship,
                 Name = dto.SalesOrderHeaderInfo.ShipToName,
@@ -179,7 +177,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DaytimePhone = dto.SalesOrderHeaderInfo.ShipToDaytimePhone,
                 NightPhone = dto.SalesOrderHeaderInfo.ShipToNightPhone,
             });
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newCustomer.CustomerAddress.Add(new CustomerAddressDto()
             {
                 AddressCode = AddressCodeType.Bill,
                 Name = dto.SalesOrderHeaderInfo.BillToName,
@@ -198,7 +196,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DaytimePhone = dto.SalesOrderHeaderInfo.BillToDaytimePhone,
                 NightPhone = dto.SalesOrderHeaderInfo.BillToNightPhone,
             });
-            var success = await customerService.AddCustomerAsync(newCustomer);
+            customerService.FromDto(newCustomer);
+            var success = await customerService.SaveDataAsync();
             if (success)
             {
                 return customerService.Data.Customer;
@@ -279,17 +278,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Calculate logic
 
+        protected void Calculate(SalesOrderDataDto dto)
+        {
+            var originalTotalAmount = GetOriginalTotalAmount(dto);
+
+            CalculatDetail(dto);
+
+            CalculateSummary(dto);
+
+            //calculate new totalAmount;
+            Service.FromDto(dto);
+            Service.Calculate();
+            // set the differnt amount of total to miscamount
+            dto.SalesOrderHeader.MiscAmount += originalTotalAmount - Service.Data.SalesOrderHeader.TotalAmount;
+        }
+
         /// <summary>
-        /// Record the import total amount 
+        /// calculate import total amount 
         /// </summary>
         /// <param name="dto"></param>
-        protected void SetOriginalTotalAmount(SalesOrderDataDto dto)
+        protected decimal? GetOriginalTotalAmount(SalesOrderDataDto dto)
         {
             var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShipAmount)
                 + dto.SalesOrderItems.Sum(i => i.TaxAmount)
                 + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
-
-            //dto.SalesOrderHeader.OriginalTotalAmount = originalTotalAmount;
+            return originalTotalAmount;
         }
 
         protected void CalculateSummary(SalesOrderDataDto dto)
