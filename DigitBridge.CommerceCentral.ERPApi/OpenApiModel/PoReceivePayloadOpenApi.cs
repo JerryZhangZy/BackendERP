@@ -169,6 +169,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     .RuleFor(u => u.PoUuid, f => string.Empty)
                     .RuleFor(u => u.VendorName, f => string.Empty)
                      .RuleFor(u => u.VendorCode, f => string.Empty)
+                     .RuleFor(u => u.VendorInvoiceNumFrom, f => string.Empty)
+                        .RuleFor(u => u.VendorInvoiceNumTo, f => string.Empty)
                     .RuleFor(u => u.PoNumFrom, f => string.Empty)
                     .RuleFor(u => u.PoNumTo, f => string.Empty)
                     .RuleFor(u => u.TransDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))

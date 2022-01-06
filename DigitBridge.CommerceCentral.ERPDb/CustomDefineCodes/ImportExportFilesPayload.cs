@@ -229,6 +229,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         public int DataCount { get; set; }
 
+        public int FileCompletedCount { get; set; }
+        public bool Completed { get; set; }
+
         /// <summary>
         /// (Response Data) List result which load filter and paging.
         /// </summary>

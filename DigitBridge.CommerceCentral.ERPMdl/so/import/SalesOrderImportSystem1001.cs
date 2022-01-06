@@ -326,7 +326,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 item.ItemTotalAmount = item.ItemTotalAmount.ToDecimal();
                 item.OrderQty = item.OrderQty.ToDecimal();
-                item.Price = (item.ItemTotalAmount / item.OrderQty).ToDecimal();
+                item.Price = item.OrderQty.IsZero() ? 0 : (item.ItemTotalAmount / item.OrderQty).ToDecimal();
 
                 item.TaxAmount = item.TaxAmount.ToDecimal();
                 item.Taxable = !item.TaxAmount.IsZero();

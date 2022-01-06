@@ -1,5 +1,6 @@
 ﻿using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.AzureStorage;
 using DigitBridge.CommerceCentral.ERPDb;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -38,10 +39,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //var srv = new ImportExport.ImportExportMemoryTableService();
             //await srv.UpdateImportExportRecordAsync(payload);
-
+            await UpdateImportRecordAsync(payload);
             return true;
         }
 
+        private TableUniversal<ImportExportResult> tableUniversal;
+
+        protected async Task<TableUniversal<ImportExportResult>> GetTableUniversalAsync()
+        {
+            if (tableUniversal == null)
+            {
+                tableUniversal = await TableUniversal<ImportExportResult>.CreateAsync(MySingletonAppSetting.ERPImportExportTableName, MySingletonAppSetting.ERPImportExportTableConnectionString);
+            }
+            return tableUniversal;
+        }
+
+
+        public async Task UpdateImportRecordAsync(ImportExportFilesPayload payload)
+        {
+
+            string rowKey = string.Empty;
+            if (string.IsNullOrWhiteSpace(payload.ExportUuid))
+                rowKey = payload.ImportUuid;
+            else
+                rowKey = payload.ExportUuid;
+            var universal = await GetTableUniversalAsync();
+
+            await universal.UpSertEntityAsync(payload.Result, "Import", rowKey);
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rowKey">import Or ExportUuid</param>
+        /// <returns></returns>
+        public async Task<ImportExportResult> GetExportRecordAsync(string rowKey)
+        {
+            var universal = await GetTableUniversalAsync();
+            return await universal.GetEntityAsync(rowKey, "Import");
+        }
         #region Messages
         protected IList<MessageClass> _messages;
         [XmlIgnore, JsonIgnore]

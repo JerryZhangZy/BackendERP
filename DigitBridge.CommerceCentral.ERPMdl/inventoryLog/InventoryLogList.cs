@@ -43,32 +43,50 @@ SELECT
         protected override string GetSQL_select_summary()
         {
             this.SQL_SelectSummary = $@"
-SELECT 
-{Helper.InventoryLogUuid()},
-{Helper.ProductUuid()},
-{Helper.InventoryUuid()},
-{Helper.BatchNum()},
-{Helper.LogType()},
-{Helper.LogUuid()},
-{Helper.LogNumber()},
-{Helper.LogItemUuid()},
-{Helper.LogStatus()},
-{Helper.LogDate()},
-{Helper.LogTime()},
-{Helper.LogBy()},
-{Helper.SKU()},
-{Helper.Description()},
-{Helper.WarehouseCode()},
-{Helper.LotNum()},
-{Helper.LotInDate()},
-{Helper.LotExpDate()},
-{Helper.StyleCode()},
-{Helper.ColorPatternCode()},
-{Helper.WidthCode()},
-{Helper.LengthCode()},
-{Helper.UOM()},
-{Helper.LogQty()},
-{Helper.BeforeInstock()}
+SELECT  
+COUNT(1) as [Count],
+SUM(
+    CASE WHEN RTRIM(COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0)) > 0 THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as TotalInQty,
+SUM(
+    CASE WHEN RTRIM(COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0)) < 0 THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as TotalOutQty,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Invoice') THEN 1 ELSE 0 END
+) as InvoiceCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('InvoiceReturn') THEN 1 ELSE 0 END
+) as InvoiceReturnCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Shipment') THEN 1 ELSE 0 END
+) as ShipmentCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Adjust') THEN 1 ELSE 0 END
+) as AdjustCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Damage') THEN 1 ELSE 0 END
+) as DamageCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Count') THEN 1 ELSE 0 END
+) as CountTypeCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('ToWarehouse') THEN 1 ELSE 0 END
+) as ToWarehouseCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('FromWarehouse') THEN 1 ELSE 0 END
+) as FromWarehouseCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Assemble') THEN 1 ELSE 0 END
+) as AssembleCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Disassemble') THEN 1 ELSE 0 END
+) as DisassembleCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('POReceive') THEN 1 ELSE 0 END
+) as POReceiveCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('POReturn') THEN 1 ELSE 0 END
+) as POReturnCount
 ";
             return this.SQL_SelectSummary;
         }
