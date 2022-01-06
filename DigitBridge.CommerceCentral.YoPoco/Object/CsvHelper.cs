@@ -321,6 +321,28 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
+        protected virtual IDictionary<string, string> GetKeyField(DataRow dataRow)
+        {
+            if (string.IsNullOrEmpty(Format.KeyName))
+                return null;
+            var result = new Dictionary<string, string>();
+            try
+            {
+                var keyList = Format.KeyName.Split(",");
+                foreach (var key in keyList)
+                {
+                    if (string.IsNullOrEmpty(key)) continue;
+                    result.Add(key, dataRow[key].ToString());
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                return null;
+                //throw;
+            }
+        }
+
         public virtual async Task<IEnumerable<T>> ImportAllColumnsAsync(Stream stream)
         {
             Format.EnableAllColumns();
@@ -335,47 +357,58 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #endregion import 
 
         #region excel import 
-        public virtual DataSet ImportExcel(string fileName)
+        public virtual IList<T> ImportExcel(string fileName)
         {
             using (var reader = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 return ImportExcel(reader);
         }
 
-        public virtual DataSet ImportExcel(Stream stream)
+        public virtual IList<T> ImportExcel(Stream stream)
         {
             var ds = DataTableOperator.TranslateExcelToDataSet(stream);
-            return ds;
-        }
-
-        public virtual IEnumerable<T> ImportExcel(DataSet ds)
-        {
-            if (ds == null || ds.Tables.Count == 0) return null;
-            var table = ds.Tables[0];
             IList<T> data = new List<T>();
-            IList<string> names = new List<string>();
-
-            foreach (var ln in table.Rows)
-            {
-                if (ln == null) continue;
-
-            }
+            ReadDataSet(ds, data);
             return data;
         }
 
-        public virtual TData ImportRow<TData>(TData data, DataRow dataRow) where TData: class, new()
+        public virtual void ReadDataSet(DataSet ds, IList<T> data)
         {
-            if (dataRow == null) return data;
-            var parent = Format.GetParentObject(typeof(TData));
-            if (parent == null || parent.Disable) return data;
+        }
 
-            foreach (DataColumn column in dataRow.Table.Columns)
+        public virtual TData ReadDataRow<TData>(DataRow dataRow, TData data = null) where TData: class, new()
+        {
+            if (dataRow == null) return null;
+            var parent = Format.GetParentObject(typeof(TData));
+            if (parent == null || parent.Disable) return null;
+            if (data == null)
+                data = new TData();
+
+            var cols = parent.FindColumnsByDataColumnName(dataRow);
+            if (cols == null || cols.Count == 0) return null;
+
+            var schema = ObjectSchema.ForType(typeof(TData));
+
+            foreach (var item in cols)
             {
-                //var objectProperty = GetTargetProperty<T>(column.ColumnName);
-                //if (objectProperty != null)
-                //{
-                //    var dataValue = dataRow[column.ColumnName];
-                //    objectProperty.SetValue(item, DBNull.Value.Equals(dataValue) ? null : dataValue);
-                //}
+                var headerName = item.Key;
+                var col = item.Value;
+                if (string.IsNullOrWhiteSpace(headerName)) continue;
+                if (col == null || col.Disable || col.Ignore) continue;
+
+                var name = col.Name;
+                var value = dataRow[headerName].ToString();
+                if (value.EqualsIgnoreSpace("N/A"))
+                    value = null;
+
+                // set default from format
+                if (value == null && !col.DefaultValue.IsZero())
+                    value = col.DefaultValue.ToString();
+
+                // set constant from format
+                if (!col.ConstantValue.IsZero())
+                    value = col.ConstantValue.ToString();
+
+                schema.SetPropertyValues(data, name, value);
             }
             return data;
         }
