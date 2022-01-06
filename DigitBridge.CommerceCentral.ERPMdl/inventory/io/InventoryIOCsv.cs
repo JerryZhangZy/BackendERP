@@ -20,6 +20,7 @@ using System.Linq;
 using DigitBridge.CommerceCentral.ERPDb;
 using CsvHelper.Configuration;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -254,6 +255,114 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion export
+
+
+        #region import Excel
+        /// <summary>
+        /// Read whole DataSet content to Dto IList, use Format setting
+        /// </summary>
+        public override void ReadDataSet(DataSet ds, IList<InventoryDataDto> data)
+        {
+            if (ds == null || ds.Tables.Count == 0) return;
+            var table = ds.Tables[0];
+            IList<string> names = new List<string>();
+
+            var hasReadSummary = false;
+            var dto = new InventoryDataDto().NewData();
+            // store the last key values, if key values changed, need create new Dto object
+            IDictionary<string, string> currentKeyValues = null;
+
+            foreach (DataRow dataRow in table.Rows)
+            {
+                if (dataRow == null) continue;
+
+                // if not define KeyName, read all line to same Dto object
+                if (string.IsNullOrEmpty(Format.KeyName))
+                {
+                    if (!hasReadSummary)
+                    {
+                        ReadSummaryRecord(dataRow, dto);
+                        hasReadSummary = true;
+                    }
+                    ReadDetailRecord(dataRow, dto);
+                }
+                // if defined KeyName, create new Dto object depend on key values, and read lines to same key 
+                else
+                {
+                    // get this line key values 
+                    var keyValues = GetKeyField(dataRow);
+                    if (keyValues != null)
+                    {
+                        // if this line key values is not same as saved key values
+                        if (!keyValues.IsEqualTo(currentKeyValues))
+                        {
+                            // save current key values
+                            currentKeyValues = keyValues.Clone();
+                            // if already read summary data, need add current data to list and create new data object
+                            if (hasReadSummary)
+                            {
+                                data.Add(dto);
+                                dto = new InventoryDataDto().NewData();
+                                hasReadSummary = false;
+                            }
+                        }
+                        // Dto summary object will repeat in multiple csv lines, it only need read once
+                        if (!hasReadSummary)
+                        {
+                            ReadSummaryRecord(dataRow, dto);
+                            hasReadSummary = true;
+                        }
+                        // read each detail lines
+                        ReadDetailRecord(dataRow, dto);
+                    }
+
+                }
+            }
+            if (dto != null)
+                data.Add(dto);
+        }
+
+        /// <summary>
+        /// Read CSV line and set value to Dto summary object depend on property name
+        /// </summary>
+        protected virtual bool ReadSummaryRecord(DataRow dataRow, InventoryDataDto dto)
+        {
+            try
+            {
+                //dto.ProductBasic = csv.GetRecord<ProductBasicDto>();
+                //dto.ProductExt = csv.GetRecord<ProductExtDto>();
+                //dto.ProductExtAttributes = csv.GetRecord<ProductExtAttributesDto>();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+                //throw;
+            }
+        }
+
+        /// <summary>
+        /// Read CSV line and set value to Dto item object depend on property name
+        /// And add item to Dto items list
+        /// </summary>
+        protected virtual bool ReadDetailRecord(DataRow dataRow, InventoryDataDto dto)
+        {
+            try
+            {
+                //var ln = csv.GetRecord<InventoryDto>();
+                //if (ln == null)
+                //    return false;
+                //dto.Inventory.Add(ln);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+                //throw;
+            }
+        }
+        #endregion import
+
     }
 }
 

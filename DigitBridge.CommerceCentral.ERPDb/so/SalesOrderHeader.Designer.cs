@@ -153,6 +153,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChannelAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _channelAmount;
 
+        [Column("ShippingCost",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _shippingCost;
+
         [Column("PaidAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _paidAmount;
 
@@ -858,6 +861,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) wms shipment shipping cost. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual decimal ShippingCost
+        {
+            get
+            {
+				return _shippingCost; 
+            }
+            set
+            {
+				_shippingCost = value; 
+				OnPropertyChanged("ShippingCost", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore) Total Paid amount. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal PaidAmount
@@ -1311,6 +1330,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_miscTaxAmount = default(decimal); 
 			_chargeAndAllowanceAmount = default(decimal); 
 			_channelAmount = default(decimal); 
+			_shippingCost = default(decimal); 
 			_paidAmount = default(decimal); 
 			_creditAmount = default(decimal); 
 			_balance = default(decimal); 

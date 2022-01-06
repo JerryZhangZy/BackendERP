@@ -280,6 +280,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Get CentralOrder by uuid
             var channelOrderSrv = new ChannelOrderService(dbFactory);
 
+            // reset CentralOrderUuid
+            await channelOrderSrv.ResetCentralOrderUuidAsync(centralOrderUuid);
+
             if (!(await channelOrderSrv.GetDataByIdAsync(centralOrderUuid)))
                 return null;
             return channelOrderSrv.Data;
@@ -293,6 +296,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<IList<DCAssignmentData>> GetDCAssignmentAsync(string centralOrderUuid)
         {
             var dcAssignmentSrv = new DCAssignmentService(dbFactory);
+
+            // reset CentralOrderUuid
+            await dcAssignmentSrv.ResetCentralOrderUuidAsync(centralOrderUuid);
+
             return await dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
         }
 
@@ -501,7 +508,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region import salesorder
 
-        public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos)
+        public async Task<bool> SaveImportDataAsync(IList<SalesOrderDataDto> dtos, int formatNumber = 0)
         {
             if (dtos == null || dtos.Count == 0)
             {
@@ -518,12 +525,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         continue;
                     }
-                    salesOrderService.DetachData(null);
-                    salesOrderService.NewData();
-                    var prepare = new SalesOrderDtoPrepareDefault(salesOrderService);
-                    if (!(await prepare.PrepareDtoAsync(dto))) continue;
 
-                    if (!await salesOrderService.AddWithoutValidateAsync(dto))
+                    salesOrderService.Add();
+
+                    var prepare = ImportPrepareFactory.GetSalesOrderImportInstance(salesOrderService, formatNumber);
+                    if (!await prepare.PrepareDtoAsync(dto)) continue;
+
+                    if (!await salesOrderService.SaveDataAsync())
                     {
                         success = false;
                         AddError($"Add salesorder failed, ordernumber{dto.SalesOrderHeader.OrderNumber}");

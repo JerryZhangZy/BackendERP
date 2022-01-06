@@ -11,16 +11,22 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
-{ 
-    public class SalesOrderImportForSystem10001 : IMessage, IImport<SalesOrderDataDto>
+{
+    public class SalesOrderImportSystem1001 : IPrepare<SalesOrderService, SalesOrderData, SalesOrderDataDto>
     {
-
-        public SalesOrderImportForSystem10001(IDataBaseFactory dbFactory)
+        protected SalesOrderService _salesOrderService;
+        protected SalesOrderService Service
         {
-            this.dbFactory = dbFactory;
+            get => _salesOrderService;
         }
-
-        protected IDataBaseFactory dbFactory { get; set; }
+        protected IDataBaseFactory dbFactory
+        {
+            get => Service.dbFactory;
+        }
+        public SalesOrderImportSystem1001(SalesOrderService salesOrderService)
+        {
+            _salesOrderService = salesOrderService;
+        }
 
         #region Service Property
 
@@ -33,6 +39,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (_customerService is null)
                     _customerService = new CustomerService(dbFactory);
                 return _customerService;
+            }
+        }
+
+        private ShippingCodesService _shippingCodesService;
+        protected ShippingCodesService shippingCodesService
+        {
+            get
+            {
+                if (_shippingCodesService is null)
+                    _shippingCodesService = new ShippingCodesService(dbFactory);
+                return _shippingCodesService;
             }
         }
 
@@ -50,15 +67,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
-        public async Task PrePareData(SalesOrderDataDto dto)
+        public virtual async Task<bool> PrepareDtoAsync(SalesOrderDataDto dto)
         {
-            CalculatDetail(dto);
-
-            CalculateSummary(dto);
+            Calculate(dto);
 
             await SetCustomerInfoAsync(dto);
 
             await SetInventoryAsync(dto);
+
+            await SetShippingCodeAsync(dto);
+
+            return true;
         }
 
         #region Load customer
@@ -115,7 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var customer = await customerService.GetCustomerBySourceCodeAsync(header.MasterAccountNum.ToInt(), header.ProfileNum.ToInt(), sourceCode);
             if (customer == null)
             {
-                //Add cusotmer;
+                customer = await AddCustomerAsync(dto);
             }
             return customer;
         }
@@ -123,8 +142,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<Customer> AddCustomerAsync(SalesOrderDataDto dto)
         {
             var header = dto.SalesOrderHeader;
-            customerService.NewData();
-            var newCustomer = customerService.Data;
+            customerService.Add();
+            var newCustomer = new CustomerDataDto();
+            newCustomer.Customer = new CustomerDto();
             newCustomer.Customer.MasterAccountNum = header.MasterAccountNum.ToInt();
             newCustomer.Customer.ProfileNum = header.ProfileNum.ToInt();
             newCustomer.Customer.DatabaseNum = header.DatabaseNum.ToInt();
@@ -137,7 +157,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             newCustomer.Customer.ChannelNum = dto.SalesOrderHeaderInfo.ChannelNum.ToInt();
             newCustomer.Customer.ChannelAccountNum = dto.SalesOrderHeaderInfo.ChannelAccountNum.ToInt();
             newCustomer.Customer.SourceCode = $"CommerceHub-{header.Merchant}-{header.SalesDivision}";
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newCustomer.CustomerAddress = new List<CustomerAddressDto>();
+            newCustomer.CustomerAddress.Add(new CustomerAddressDto()
             {
                 AddressCode = AddressCodeType.Ship,
                 Name = dto.SalesOrderHeaderInfo.ShipToName,
@@ -156,7 +177,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DaytimePhone = dto.SalesOrderHeaderInfo.ShipToDaytimePhone,
                 NightPhone = dto.SalesOrderHeaderInfo.ShipToNightPhone,
             });
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newCustomer.CustomerAddress.Add(new CustomerAddressDto()
             {
                 AddressCode = AddressCodeType.Bill,
                 Name = dto.SalesOrderHeaderInfo.BillToName,
@@ -175,7 +196,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DaytimePhone = dto.SalesOrderHeaderInfo.BillToDaytimePhone,
                 NightPhone = dto.SalesOrderHeaderInfo.BillToNightPhone,
             });
-            var success = await customerService.AddCustomerAsync(newCustomer);
+            customerService.FromDto(newCustomer);
+            var success = await customerService.SaveDataAsync();
             if (success)
             {
                 return customerService.Data.Customer;
@@ -256,6 +278,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Calculate logic
 
+        protected void Calculate(SalesOrderDataDto dto)
+        {
+            var originalTotalAmount = GetOriginalTotalAmount(dto);
+
+            CalculatDetail(dto);
+
+            CalculateSummary(dto);
+
+            //calculate new totalAmount;
+            Service.FromDto(dto);
+            Service.Calculate();
+            // set the differnt amount of total to miscamount
+            dto.SalesOrderHeader.MiscAmount += originalTotalAmount - Service.Data.SalesOrderHeader.TotalAmount;
+        }
+
+        /// <summary>
+        /// calculate import total amount 
+        /// </summary>
+        /// <param name="dto"></param>
+        protected decimal? GetOriginalTotalAmount(SalesOrderDataDto dto)
+        {
+            var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShipAmount)
+                + dto.SalesOrderItems.Sum(i => i.TaxAmount)
+                + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
+            return originalTotalAmount;
+        }
+
         protected void CalculateSummary(SalesOrderDataDto dto)
         {
             if (!dto.SalesOrderHeader.TaxRate.IsZero())
@@ -263,12 +312,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var taxAmount = dto.SalesOrderItems.Where(i => i.Taxable.ToBool()).Sum(j => j.TaxAmount);
             var taxableAmount = dto.SalesOrderItems.Where(i => i.Taxable.ToBool()).Sum(j => j.TaxableAmount);
-            dto.SalesOrderHeader.TaxRate = (taxAmount / taxableAmount).ToDecimal();
-            var diffAmount = taxAmount - dto.SalesOrderHeader.TaxRate * taxableAmount;
-            dto.SalesOrderHeader.MiscAmount += diffAmount;
+            dto.SalesOrderHeader.TaxRate = taxableAmount.IsZero() ? 0 : (taxAmount / taxableAmount).ToDecimal();
 
-            dto.SalesOrderHeader.ShippingAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount);
-            //dto.SalesOrderHeader.ShippingCost = dto.SalesOrderItems.Sum(i => i.ShippingCost);
+            dto.SalesOrderHeader.ShippingAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount).ToDecimal();
+            dto.SalesOrderHeader.ShippingCost = dto.SalesOrderItems.Sum(i => i.ShippingCost).ToDecimal();
+
 
         }
 
@@ -280,14 +328,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.OrderQty = item.OrderQty.ToDecimal();
                 item.Price = (item.ItemTotalAmount / item.OrderQty).ToDecimal();
 
-                var diffAmount = item.ItemTotalAmount - item.Price * item.OrderQty;
-                dto.SalesOrderHeader.MiscAmount += diffAmount;
-
                 item.TaxAmount = item.TaxAmount.ToDecimal();
                 item.Taxable = !item.TaxAmount.IsZero();
                 item.TaxableAmount = item.Taxable.ToBool() ? item.Price * item.OrderQty : 0;
             }
 
+        }
+
+        #endregion
+
+
+        #region Load shipping code
+        protected async Task SetShippingCodeAsync(SalesOrderDataDto dto)
+        {
+            var info = dto.SalesOrderHeaderInfo;
+
+            var shippingCodes = shippingCodesService.GetShippingCodes(dto.SalesOrderHeader.MasterAccountNum.ToInt(), dto.SalesOrderHeader.ProfileNum.ToInt());
+            var foundItem = shippingCodes.Where(i => i.ShippingCode == info.ShippingCode).FirstOrDefault();
+            if (foundItem == null)
+            {
+                info.ShippingClass = info.ShippingCode.IsZero() ? info.ShippingClass : info.ShippingCode;
+            }
+            else
+            {
+                dto.SalesOrderHeaderInfo.ShippingClass = foundItem.ShippingClass;
+                dto.SalesOrderHeaderInfo.ShippingCarrier = foundItem.ShippingCarrier;
+            }
         }
 
         #endregion

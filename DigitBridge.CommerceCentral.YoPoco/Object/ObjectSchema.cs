@@ -503,7 +503,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-        public void SetPropertieValues(object A, string name, object value)
+        public void SetPropertyValues(object A, string name, object value)
         {
             if (A == null || string.IsNullOrWhiteSpace(name)) return;
             try
@@ -692,7 +692,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             // get obj Schema
             var schema = ObjectSchema.ForType(obj.GetType());
-            return schema.SetByPropertyName(name, value);
+            schema.SetPropertyValues(obj, name, value);
+            return obj;
         }
 
     }

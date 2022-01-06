@@ -17,6 +17,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string TranSactionPREFIX = ERPDb.InvoiceTransactionHelper.TableAllies;
         // Filter fields 
 
+        protected QueryFilter<string> _OrderNumber = new QueryFilter<string>("OrderNumber", "OrderNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> OrderNumber => _OrderNumber;
+
         protected QueryFilter<string> _TransUuid = new QueryFilter<string>("TransUuid", "TransUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> TransUuid => _TransUuid;
 
@@ -105,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoiceReturnQuery() : base(TranSactionPREFIX)
         {
             //AddFilter(_TransNum);
-            //AddFilter(_InvoiceNumber);
+            AddFilter(_OrderNumber);
             AddFilter(_TransUuid);
             AddFilter(_TransDateFrom);
             AddFilter(_TransDateTo);

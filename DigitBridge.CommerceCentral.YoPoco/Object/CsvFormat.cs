@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 using DigitBridge.Base.Utility;
 using CsvHelper;
+using System.Data;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -197,6 +198,20 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 idx++;
             }
         }
+
+        public virtual IDictionary<string, CsvFormatColumn> FindColumnsByDataColumnName(DataRow dataRow)
+        {
+            if (dataRow == null) return null;
+            var cols = new Dictionary<string, CsvFormatColumn>();
+            foreach (DataColumn column in dataRow.Table.Columns)
+            {
+                var col = Columns.FindByHeaderName(column.ColumnName);
+                if (col == null) continue;
+                cols.Add(column.ColumnName, col);
+            }
+            return cols;
+        }
+
 
     }
 
@@ -439,7 +454,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name) && x.Name.EqualsIgnoreSpace(name));
 
         public static CsvFormatColumn FindByHeaderName(this IList<CsvFormatColumn> list, string headerName)
-            => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => !string.IsNullOrEmpty(x.HeaderName) && x.HeaderName.EqualsIgnoreSpace(headerName));
+            => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => !string.IsNullOrEmpty(x.HeaderName) && x.HeaderName.EqualsIgnoreSpaceMultiple(headerName));
 
         public static CsvFormatColumn FindByIndex(this IList<CsvFormatColumn> list, int index)
             => (list == null || list.Count == 0) ? null : list.FirstOrDefault(x => x.Index == index);

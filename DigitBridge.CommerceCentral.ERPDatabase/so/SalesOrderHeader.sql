@@ -43,6 +43,7 @@
 	[MiscTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) tax amount for handling charge. <br> Title: Handling Tax, Display: true, Editable: false
 	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Order other Charg and Allowance Amount. Positive is charge, Negative is Allowance. <br> Title: Charge&Allowance, Display: true, Editable: true
 	[ChannelAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) Amount from Channel Order. <br> Display: false, Editable: false
+	[ShippingCost] DECIMAL(24, 6) NOT NULL DEFAULT 0,--(Readonly) wms shipment shipping cost. <br> Display: false, Editable: false
 
 	[PaidAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Total Paid amount. <br> Display: false, Editable: false
 	[CreditAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Total Credit amount. <br> Display: false, Editable: false
