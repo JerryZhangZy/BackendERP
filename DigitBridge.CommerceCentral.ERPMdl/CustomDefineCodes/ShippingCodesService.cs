@@ -491,6 +491,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public List<ShippingCodes> GetShippingCodes(int masterAccountNum, int profileNum)
         {
+            List();
             return Data.GetShippingCodes(masterAccountNum, profileNum);
         }
     }
