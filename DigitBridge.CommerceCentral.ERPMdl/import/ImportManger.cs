@@ -36,6 +36,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
+            //var srv = new ImportExport.ImportExportMemoryTableService();
+            //await srv.UpdateImportExportRecordAsync(payload);
+
             return true;
         }
 

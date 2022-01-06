@@ -33,9 +33,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         Task<IEnumerable<T>> ImportAsync(Stream stream);
         Task ReadEntitiesAsync(CsvReader reader, IList<T> data);
 
-        DataSet ImportExcel(string fileName);
 
-        DataSet ImportExcel(Stream stream);
-
+        IList<T> ImportExcel(string fileName);
+        IList<T> ImportExcel(Stream stream);
+        void ReadDataSet(DataSet ds, IList<T> data);
+        TData ReadDataRow<TData>(DataRow dataRow, TData data = null) where TData : class, new();
     }
 }

@@ -240,7 +240,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-     }
+
+        /// <summary>
+        /// Reset CentralOrderUuid from OrderHeader if CentralOrderUuid is different
+        /// </summary>
+        public virtual async Task ResetCentralOrderUuidAsync(string centralOrderUuid)
+        {
+            var sql = $@"
+UPDATE oln 
+SET CentralOrderUuid = ohd.CentralOrderUuid
+FROM OrderHeader ohd
+INNER JOIN OrderLine oln ON (oln.CentralOrderNum = ohd.CentralOrderNum)
+WHERE ohd.CentralOrderUuid != '' AND ohd.CentralOrderUuid != oln.CentralOrderUuid AND 
+ohd.CentralOrderUuid = @0
+";
+            await dbFactory.Db.ExecuteAsync(sql,
+                centralOrderUuid.ToSqlParameter("@0")
+            );
+        }
+
+    }
 }
 
 

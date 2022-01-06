@@ -929,27 +929,7 @@ AND OrderStatus !=@2
         public string GetNextNumber(int masterAccountNum, int profileNum)
         {
             return initNumbersService.GetNextNumber(masterAccountNum, profileNum, ActivityLogType.SalesOrder);
-        }
-
-        #region ImportSalesOrder
-
-        /// <summary>
-        /// Add new data from Dto object
-        /// </summary>
-        public virtual async Task<bool> AddWithoutValidateAsync(SalesOrderDataDto dto)
-        {
-            if (dto is null)
-                return false;
-            // set Add mode and clear data
-            Add();
-
-            // load data from dto
-            FromDto(dto);
-
-            return await SaveDataAsync();
-        }
-
-        #endregion
+        } 
 
         public async Task<IList<SalesOrderDataDto>> GetSalesOrderDtosAsync(IList<long> rownums)
         {
@@ -975,7 +955,7 @@ AND OrderStatus !=@2
         }
 
 
-        public async Task<bool> GetSalesOrderUuidAsync(SalesOrderPayload payload, string salesOrderUuid)
+        public async Task<bool> GetSalesOrderByUuidAsync(SalesOrderPayload payload, string salesOrderUuid)
         {
             if (string.IsNullOrEmpty(salesOrderUuid))
                 return false;

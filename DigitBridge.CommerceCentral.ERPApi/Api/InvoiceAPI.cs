@@ -71,12 +71,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
-            var svc = new InvoiceManager(dbFactory);
             var iOManager = new InvoiceIOManager(dbFactory);
-            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
-            payload.Invoice = dtos[0];
-            payload.Success = true;
-            payload.Messages = svc.Messages;
+            payload.Invoice = await iOManager.ImportInvoiceAsync(payload.MasterAccountNum,payload.ProfileNum,files[0].OpenReadStream());
+            payload.Success = payload.Invoice!=null;
+            payload.Messages = iOManager.Messages;
             return payload;
         }
 

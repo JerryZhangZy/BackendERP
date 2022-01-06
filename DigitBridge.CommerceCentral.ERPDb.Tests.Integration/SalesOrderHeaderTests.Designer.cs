@@ -72,6 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ChannelAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShippingCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.PaidAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.CreditAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Balance, f => f.Random.Decimal(1, 1000, 6))

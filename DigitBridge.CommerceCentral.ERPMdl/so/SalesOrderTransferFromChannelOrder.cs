@@ -140,8 +140,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.UpdateDateUtc = _dtNowUtc;
             soHeader.EnterBy = _userId;
             soHeader.SignatureFlag = !string.IsNullOrEmpty(coHeader.SignatureFlag);
-            soHeader.LatestShipDate = coData.OrderHeaderMerchantExt.CancelAfterDateUtc;
-            soHeader.EarliestShipDate = coData.OrderHeaderMerchantExt.RequiredShipDateUtc;
+            if (coData.OrderHeaderMerchantExt != null)
+            {
+                soHeader.LatestShipDate = coData.OrderHeaderMerchantExt?.CancelAfterDateUtc;
+                soHeader.EarliestShipDate = coData.OrderHeaderMerchantExt?.RequiredShipDateUtc;
+            }
             //UpdateBy
             //EnterDateUtc
             //DigitBridgeGuid
@@ -285,9 +288,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 soItem.SalesOrderItemsAttributes.RowNum = string.IsNullOrEmpty(soItem.SalesOrderItemsAttributes.JsonFields) ? 1 : 0; //1: not add, 0: add
 
                 //soItemList.Add(soItem);
-
-                var coMerchantEx = coData.OrderLineMerchantExt.FirstOrDefault(p => p.CentralOrderLineUuid == dcLine.CentralOrderLineUuid);
-                soItem.EarliestShipDate = coMerchantEx?.RequiredShipDateUtc;
+                if (coData.OrderLineMerchantExt != null)
+                {
+                    var coMerchantEx = coData.OrderLineMerchantExt?.FirstOrDefault(p => p?.CentralOrderLineUuid == dcLine?.CentralOrderLineUuid);
+                    soItem.EarliestShipDate = coMerchantEx?.RequiredShipDateUtc;
+                }
                 //soItem.LatestShipDate = coMerchantEx?.CancelAfterDateUtc;
             }
 

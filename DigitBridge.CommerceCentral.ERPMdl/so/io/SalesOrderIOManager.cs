@@ -230,7 +230,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Verify Dto and save dto to database
             var manager = SalesOrderManager;
-            if (!await manager.SaveImportDataAsync(dtoList))
+            if (!await manager.SaveImportDataAsync(dtoList, payload.Options.FormatNumber))
             {
                 this.Messages.Add(manager.Messages);
                 return false;
@@ -286,7 +286,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await SalesOrderIOCsv.ImportAllColumnsAsync(stream);
             return result.ToList();
         }
+        public async Task<SalesOrderDataDto> ImportSalesOrderAsync(int masterAccountNum, int profileNum, Stream stream)
+        {
+            var salesOrderDtos = await ImportAllColumnsAsync(stream);
+            if (salesOrderDtos == null && salesOrderDtos.Count == 0)
+            {
+                AddError("Get SalesOrder Faild");
+                return null;
+            }
 
+            var salesOrder = salesOrderDtos[0];
+            if (!string.IsNullOrWhiteSpace(salesOrder.SalesOrderHeader.SalesOrderUuid))
+            {
+                if (await SalesOrderService.GetSalesOrderByUuidAsync(new SalesOrderPayload() { MasterAccountNum = masterAccountNum, ProfileNum = profileNum }, salesOrder.SalesOrderHeader.SalesOrderUuid))
+                {
+                    SalesOrderService.FromDto(salesOrder);
+                    salesOrder = SalesOrderService.ToDto();
+                }
+            }
+
+            return salesOrder;
+
+
+        }
         /// <summary>
         /// Export Dto list to csv file stream, depend on format setting
         /// </summary>

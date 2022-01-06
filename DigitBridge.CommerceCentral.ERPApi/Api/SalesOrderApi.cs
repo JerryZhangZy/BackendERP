@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var iOManager = new SalesOrderIOManager(dbFactory);
             var service = new SalesOrderService(dbFactory);
 
-            if (!await service.GetSalesOrderUuidAsync(payload, SalesOrderUuid))
+            if (!await service.GetSalesOrderByUuidAsync(payload, SalesOrderUuid))
             {
                 service.AddError("Get SalesOrder datas error");
                 return null;
@@ -68,15 +68,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<SalesOrderPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
-            var svc = new SalesOrderManager(dbFactory);
+
             var iOManager = new SalesOrderIOManager(dbFactory);
-            var dtos = await iOManager.ImportAllColumnsAsync(files[0].OpenReadStream());
-            payload.SalesOrder = dtos[0];
-            payload.Success = true;
-            payload.Messages = svc.Messages;
+            payload.SalesOrder = await iOManager.ImportSalesOrderAsync(payload.MasterAccountNum, payload.ProfileNum, files[0].OpenReadStream()); ;
+            payload.Success = payload.SalesOrder!=null;
+            payload.Messages = iOManager.Messages;
             return payload;
         }
-
+  
 
         /// <summary>
         /// exam an sales order number whether been used

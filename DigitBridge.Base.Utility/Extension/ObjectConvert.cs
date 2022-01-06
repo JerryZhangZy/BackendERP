@@ -310,6 +310,19 @@ namespace DigitBridge.Base.Utility
                 ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
         }
 
+        public static bool EqualsIgnoreSpaceMultiple(this string source, string target, bool ignoreLeadingSpace = true, bool ignoreCase = true)
+        {
+            if (!source.Contains(","))
+                return source.EqualsIgnoreSpace(target, ignoreLeadingSpace, ignoreCase);
+            var sourceList = source.SplitTo<string>(',');
+            foreach (var item in sourceList)
+            {
+                if (item.EqualsIgnoreSpace(target))
+                    return true;
+            }
+            return false;
+        }
+
         public static object ConvertObject(this object value, Type type, object context = null) =>
             ObjectConvert.ConvertObject(value, type, context);
 
