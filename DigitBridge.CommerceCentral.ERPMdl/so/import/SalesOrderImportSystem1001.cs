@@ -142,8 +142,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<Customer> AddCustomerAsync(SalesOrderDataDto dto)
         {
             var header = dto.SalesOrderHeader;
-            customerService.NewData();
-            var newCustomer = customerService.Data;
+            customerService.Add();
+            var newCustomer = new CustomerDataDto();
+            newCustomer.Customer = new CustomerDto();
             newCustomer.Customer.MasterAccountNum = header.MasterAccountNum.ToInt();
             newCustomer.Customer.ProfileNum = header.ProfileNum.ToInt();
             newCustomer.Customer.DatabaseNum = header.DatabaseNum.ToInt();
@@ -156,7 +157,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             newCustomer.Customer.ChannelNum = dto.SalesOrderHeaderInfo.ChannelNum.ToInt();
             newCustomer.Customer.ChannelAccountNum = dto.SalesOrderHeaderInfo.ChannelAccountNum.ToInt();
             newCustomer.Customer.SourceCode = $"CommerceHub-{header.Merchant}-{header.SalesDivision}";
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newCustomer.CustomerAddress = new List<CustomerAddressDto>();
+            newCustomer.CustomerAddress.Add(new CustomerAddressDto()
             {
                 AddressCode = AddressCodeType.Ship,
                 Name = dto.SalesOrderHeaderInfo.ShipToName,
@@ -175,7 +177,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DaytimePhone = dto.SalesOrderHeaderInfo.ShipToDaytimePhone,
                 NightPhone = dto.SalesOrderHeaderInfo.ShipToNightPhone,
             });
-            newCustomer.AddCustomerAddress(new CustomerAddress()
+            newCustomer.CustomerAddress.Add(new CustomerAddressDto()
             {
                 AddressCode = AddressCodeType.Bill,
                 Name = dto.SalesOrderHeaderInfo.BillToName,
@@ -194,7 +196,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DaytimePhone = dto.SalesOrderHeaderInfo.BillToDaytimePhone,
                 NightPhone = dto.SalesOrderHeaderInfo.BillToNightPhone,
             });
-            var success = await customerService.AddCustomerAsync(newCustomer);
+            customerService.FromDto(newCustomer);
+            var success = await customerService.SaveDataAsync();
             if (success)
             {
                 return customerService.Data.Customer;
@@ -281,7 +284,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             CalculatDetail(dto);
 
-            CalculateSummary(dto); 
+            CalculateSummary(dto);
 
             //calculate new totalAmount;
             Service.FromDto(dto);
