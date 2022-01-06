@@ -243,23 +243,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<ImportExportFilesPayload>(payload);
         }
 
-        [FunctionName(nameof(UpdateExportStatus))]
-        [OpenApiOperation(operationId: "UpdateExportStatus", tags: new[] { "ExportFiles" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ImportExportFilesPayloadUpdate), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
-        public static async Task<JsonNetResponse<ImportExportFilesPayload>> UpdateExportStatus(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/Status")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<ImportExportFilesPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new ExportManger();
-            payload.Success = await srv.UpdateExportStatus(dataBaseFactory, payload);
-            payload.Messages = srv.Messages;
-            return new JsonNetResponse<ImportExportFilesPayload>(payload);
-        }
+        //[FunctionName(nameof(UpdateExportStatus))]
+        //[OpenApiOperation(operationId: "UpdateExportStatus", tags: new[] { "ExportFiles" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ImportExportFilesPayloadUpdate), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImportExportFilesPayload))]
+        //public static async Task<JsonNetResponse<ImportExportFilesPayload>> UpdateExportStatus(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "exportFiles/Status")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<ImportExportFilesPayload>();
+        //    var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var srv = new ExportManger();
+        //    payload.Success = await srv.UpdateExportStatus(dataBaseFactory, payload);
+        //    payload.Messages = srv.Messages;
+        //    return new JsonNetResponse<ImportExportFilesPayload>(payload);
+        //}
 
         [FunctionName(nameof(GetExportFiles))]
         #region swagger Doc
@@ -277,7 +277,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.ExportUuid = processUuid;
 
             var svc = new ExportBlobService();
-            return await svc.DownloadFileFromBlobAsync(payload);
+            var export = new ExportManger();
+            
+            var file= await svc.DownloadFileFromBlobAsync(payload);
+            await export.SetExportCompleted(payload);
+            return file;
         }
     }
 }

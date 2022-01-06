@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             //var srv = new ImportExport.ImportExportMemoryTableService();
             //await srv.UpdateImportExportRecordAsync(payload);
- 
+            await UpdateExportRecordAsync(payload);
             return true;
         }
 
@@ -83,8 +83,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             try
             {
-                payload.ExportUuids = await dataBaseFactory.Db.FetchAsync<string>(
-                    $"SELECT ProcessUuid FROM ExportFiles WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND Status=0");
+                payload.Result =await GetImportExportRecordAsync(payload.ExportUuid);
+                //payload.ExportUuids = await dataBaseFactory.Db.FetchAsync<string>(
+                //    $"SELECT ProcessUuid FROM ExportFiles WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND Status=0");
                 return true;
             }
             catch(Exception ex)
@@ -93,18 +94,62 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
         }
-        public async Task<bool> UpdateExportStatus(IDataBaseFactory dataBaseFactory, ImportExportFilesPayload payload)
+        public async Task<bool> SetExportCompleted( ImportExportFilesPayload payload)
         {
             try
             {
-                return await dataBaseFactory.Db.ExecuteAsync(
-                    $"UPDATE ExportFiles SET Status=1, UpdateDateUtc=GETUTCDATE() WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND ProcessUuid='{payload.ExportUuid}' AND Status=0") == 1;
+              var result= await GetImportExportRecordAsync(payload.ExportUuid);
+                if (result == null)
+                    return false;
+                payload.Result.FileCompletedCount += 1;
+                payload.Result.Completed = true;
+                await UpdateExportRecordAsync(payload);
             }
             catch (Exception ex)
             {
                 AddError(ex.Message);
                 return false;
             }
+
+            return true;
+        }
+
+
+        private TableUniversal<ImportExportResult> tableUniversal;
+
+        protected async Task<TableUniversal<ImportExportResult>> GetTableUniversalAsync()
+        {
+            if (tableUniversal == null)
+            {
+                tableUniversal = await TableUniversal<ImportExportResult>.CreateAsync(MySingletonAppSetting.ERPImportExportTableName, MySingletonAppSetting.ERPImportExportTableConnectionString);
+            }
+            return tableUniversal;
+        }
+
+
+        public async Task UpdateExportRecordAsync(ImportExportFilesPayload payload)
+        {
+
+            string rowKey = string.Empty;
+            if (string.IsNullOrWhiteSpace(payload.ExportUuid))
+                rowKey = payload.ImportUuid;
+            else
+                rowKey = payload.ExportUuid;
+            var universal = await GetTableUniversalAsync();
+
+            await universal.UpSertEntityAsync(payload.Result, "Export", rowKey);
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rowKey">import Or ExportUuid</param>
+        /// <returns></returns>
+        public async Task<ImportExportResult> GetImportExportRecordAsync(string rowKey)
+        {
+            var universal = await GetTableUniversalAsync();
+            return await universal.GetEntityAsync(rowKey, "Export");
         }
     }
 }

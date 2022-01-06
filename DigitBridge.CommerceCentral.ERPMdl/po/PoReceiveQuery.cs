@@ -80,10 +80,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> VendorName => _VendorName;
 
 
-        protected QueryFilter<string> _VendorInvoiceNumFrom = new QueryFilter<string>("_PoNumFrom", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _VendorInvoiceNumFrom = new QueryFilter<string>("VendorInvoiceNumFrom", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorInvoiceNumFrom => _VendorInvoiceNumFrom;
 
-        protected QueryFilter<string> _VendorInvoiceNumTo = new QueryFilter<string>("_VendorInvoiceNumTo", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _VendorInvoiceNumTo = new QueryFilter<string>("VendorInvoiceNumTo", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorInvoiceNumTo => _VendorInvoiceNumTo;
 
 
