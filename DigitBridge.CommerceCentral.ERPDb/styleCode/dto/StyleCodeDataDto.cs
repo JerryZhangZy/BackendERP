@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public StyleCodeDataDto NewData()
         {
             StyleCode = new StyleCodeDto();
-
+             
             StyleCodeAttributes = new StyleCodeAttributesDto();
 
             return this;
