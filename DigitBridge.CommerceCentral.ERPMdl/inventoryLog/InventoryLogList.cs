@@ -55,38 +55,74 @@ SUM(
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Invoice') THEN 1 ELSE 0 END
 ) as InvoiceCount,
 SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Invoice') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as InvoiceQty,
+SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('InvoiceReturn') THEN 1 ELSE 0 END
 ) as InvoiceReturnCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('InvoiceReturn') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as InvoiceReturnQty,
 SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Shipment') THEN 1 ELSE 0 END
 ) as ShipmentCount,
 SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Shipment') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as ShipmentQty,
+SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Adjust') THEN 1 ELSE 0 END
 ) as AdjustCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Adjust') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as AdjustQty,
 SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Damage') THEN 1 ELSE 0 END
 ) as DamageCount,
 SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Damage') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as DamageQty,
+SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Count') THEN 1 ELSE 0 END
 ) as CountTypeCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Count') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as CountTypeQty,
 SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('ToWarehouse') THEN 1 ELSE 0 END
 ) as ToWarehouseCount,
 SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('ToWarehouse') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as ToWarehouseQty,
+SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('FromWarehouse') THEN 1 ELSE 0 END
 ) as FromWarehouseCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('FromWarehouse') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as FromWarehouseQty,
 SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Assemble') THEN 1 ELSE 0 END
 ) as AssembleCount,
 SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Assemble') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as AssembleQty,
+SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Disassemble') THEN 1 ELSE 0 END
 ) as DisassembleCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('Disassemble') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as DisassembleQty,
 SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('POReceive') THEN 1 ELSE 0 END
 ) as POReceiveCount,
 SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('POReceive') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as POReceiveQty,
+SUM( 
 	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('POReturn') THEN 1 ELSE 0 END
-) as POReturnCount
+) as POReturnCount,
+SUM( 
+	CASE WHEN RTRIM(COALESCE({InventoryLogHelper.TableAllies}.LogType, '')) = RTRIM('POReturn') THEN COALESCE(CAST({InventoryLogHelper.TableAllies}.LogQty AS INT), 0) ELSE 0 END
+) as POReturnQty
 ";
             return this.SQL_SelectSummary;
         }

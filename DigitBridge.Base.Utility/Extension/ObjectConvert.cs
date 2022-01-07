@@ -720,7 +720,7 @@ namespace DigitBridge.Base.Utility
         public static bool IsZero(this DateTime input) => input <= ObjectConvert.SystemMinDatatime;
         public static bool IsZero(this DateTime? input) => (input is null) ? true : input.ToDateTime().IsZero();
 
-        public static bool IsZero(this TimeSpan input) => input < ObjectConvert.MinTime || input > ObjectConvert.MaxTime;
+        public static bool IsZero(this TimeSpan input) => input <= ObjectConvert.MinTime || input >= ObjectConvert.MaxTime;
         public static bool IsZero(this TimeSpan? input) => (input is null) ? true : input.ToTimeSpan().IsZero();
 
 
