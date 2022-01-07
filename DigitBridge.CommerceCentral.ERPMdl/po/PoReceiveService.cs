@@ -576,6 +576,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 VendorUuid = list[0].PoTransaction.VendorUuid,
                 Currency = list[0].PoTransaction.Currency,
                 Description = list[0].PoTransaction.Description,
+                TransDate = DateTime.UtcNow,
+                VendorInvoiceDate = DateTime.UtcNow
             };
 
             if (ProcessMode == ProcessingMode.Add)
