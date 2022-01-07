@@ -6,7 +6,7 @@
 	[ProfileNum] INT NOT NULL, --(Readonly) Login user profile. <br> Display: false, Editable: false.
 
     [StyleCodeUuid] VARCHAR(50) NOT NULL, --(Readonly) Product StyleCode uuid. load from ProductBasic data. <br> Display: false, Editable: false
-	[StyleCode] Varchar(100) NOT NULL DEFAULT '', --Product style code use to group multiple SKU. load from ProductExt data. <br> Title: Style Code, Display: true, Editable: true
+	[ProductStyleCode] Varchar(100) NOT NULL DEFAULT '', --Product style code use to group multiple SKU. load from ProductExt data. <br> Title: Style Code, Display: true, Editable: true
 
 	[VariationSet] Varchar(50) NOT NULL DEFAULT '', --Product Default VariationSet. <br> Title: Variation Set, Display: true, Editable: true
 	[VariationSetUuid] Varchar(50) NOT NULL DEFAULT '', --Product Default VariationSetUuid. <br> Display: false, Editable: false

@@ -86,11 +86,11 @@
 //SettingForShippingCodes
 //SettingForBusinessType
 #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForStyleCode.ttinclude" #>
 <#
     var dtoSuf = "";
     //var GenerateNewName = string.Empty;
-    var GenerateNewName = "_NEW";
+    var GenerateNewName = "";
     
     var overridesetting = false;
     //rewrite setting config
