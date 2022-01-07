@@ -303,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="dto"></param>
         protected decimal? GetOriginalTotalAmount(SalesOrderDataDto dto)
         {
-            var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShipAmount)
+            var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount)
                 + dto.SalesOrderItems.Sum(i => i.TaxAmount)
                 + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
             return originalTotalAmount;
@@ -334,7 +334,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 item.TaxAmount = item.TaxAmount.ToDecimal();
                 item.Taxable = !item.TaxAmount.IsZero();
-                item.TaxableAmount = item.Taxable.ToBool() ? item.Price * item.OrderQty : 0;
+                item.TaxableAmount = item.Taxable.ToBool() ? item.ItemTotalAmount : 0;
             }
 
         }
