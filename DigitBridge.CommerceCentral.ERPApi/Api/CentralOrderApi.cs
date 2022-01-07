@@ -31,12 +31,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="centralOrderNumber"></param>
         [FunctionName(nameof(CentralOrderReference))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "CentralOrderReference", tags: new[] { "CentralOrders" }, Summary = "Get  CentralOrders info")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "centralOrderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "centralOrderNumber", Description = "centralOrderNumber. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CentralOrderReferencePayload))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<CentralOrderReferencePayload>> CentralOrderReference(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "centralOrders/Trace/{centralOrderNumber}")] HttpRequest req,
             long centralOrderNumber)
@@ -51,12 +53,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(CentralOrdersList))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "CentralOrdersList", tags: new[] { "CentralOrders" }, Summary = "Load central order list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CentralOrderPayloadFind))]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ChannelOrderPayload))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<ChannelOrderPayload>> CentralOrdersList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "centralOrders/find")] HttpRequest req)
         {
@@ -69,6 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
 
         [FunctionName(nameof(ResendCentralOrderToErp))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "ResendCentralOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Resend central order list to erp by centralorderuuid")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -77,6 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CentralOrderPayloadResendRequest), Required = true, Description = "Array of centraluuid.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
         bodyType: typeof(CentralOrderPayloadResendResponse))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendCentralOrderToErp(
         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendCentralOrderToErp")]
             HttpRequest req)
@@ -89,6 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(ResendAllCentralOrderToErp))]
+        #region Swagger Docs
         [OpenApiOperation(operationId: "ResendAllCentralOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Resend ChannelOrder to erp by search criteria")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -97,6 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ChannelOrderPayloadFind))]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
         bodyType: typeof(CentralOrderPayloadResendAllResponse))]
+        #endregion Swagger Docs
         public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendAllCentralOrderToErp(
         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendAllCentralOrderToErp")]
             HttpRequest req)
