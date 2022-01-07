@@ -242,12 +242,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var channelSkus = await GetChannelSkusAsync(masterAccountNum, profileNum, dto.SalesOrderHeaderInfo.ChannelNum.ToInt());
             foreach (var soitem in dto.SalesOrderItems)
             {
+                if (soitem.MerchantSku.IsZero()) continue;
+
                 if (soitem.WarehouseCode.IsZero()) soitem.WarehouseCode = string.Empty;//TODO set default warehousecode.
                 if (soitem == null) continue;
                 var foundChannelSku = channelSkus.Where(i => i.MerchantSku == soitem.MerchantSku).FirstOrDefault();
-                if (foundChannelSku.SKU.IsZero()) continue;
 
-                soitem.SKU = foundChannelSku.SKU;
+                if (foundChannelSku.SKU.IsZero())
+                    soitem.SKU = soitem.MerchantSku;
+                else
+                    soitem.SKU = foundChannelSku.SKU;
             }
 
             // find inventory data
@@ -299,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="dto"></param>
         protected decimal? GetOriginalTotalAmount(SalesOrderDataDto dto)
         {
-            var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShipAmount)
+            var originalTotalAmount = dto.SalesOrderItems.Sum(i => i.ShippingAmount)
                 + dto.SalesOrderItems.Sum(i => i.TaxAmount)
                 + dto.SalesOrderItems.Sum(i => i.ItemTotalAmount);
             return originalTotalAmount;
@@ -330,7 +334,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 item.TaxAmount = item.TaxAmount.ToDecimal();
                 item.Taxable = !item.TaxAmount.IsZero();
-                item.TaxableAmount = item.Taxable.ToBool() ? item.Price * item.OrderQty : 0;
+                item.TaxableAmount = item.Taxable.ToBool() ? item.ItemTotalAmount : 0;
             }
 
         }

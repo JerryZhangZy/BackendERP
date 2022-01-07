@@ -158,7 +158,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 var ln = csv.GetRecord<SalesOrderItemsDto>();
-                if (ln == null || (!ln.HasSKU && !ln.HasSKUTitle))
+                if (ln == null || (!ln.HasSKU && !ln.HasSKUTitle && ln.MerchantSku.IsZero()))
                     return false;
                 dto.SalesOrderItems.Add(ln);
                 return true;
@@ -198,7 +198,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // export header and value lines
             return await ExportAsync(lines, headers);
         }
-        
+
         /// <summary>
         /// Build header text list by Format define, this will combine multiple object to one line
         /// </summary>

@@ -266,6 +266,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 new CsvFormatColumn("OrderDCAssignmentLineNum", "", idx++, null, false),
 				new CsvFormatColumn("ItemShippingAmount", "", idx++, FormatType.Amount, false),
 				new CsvFormatColumn("ShippingCost", "", idx++, FormatType.Amount, false),
+				new CsvFormatColumn("ItemTaxAmount", "", idx++, FormatType.Amount, false),
 				//new CsvFormatColumn("Currency", "", idx++, null, false),
 			};
 		}

@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         [JsonIgnore]
         public virtual bool IsEnable
         {
-            get => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(HeaderName) && !Ignore && !Disable;
+            get => !string.IsNullOrEmpty(Name) && (!string.IsNullOrEmpty(HeaderName) || !ConstantValue.IsZero()) && !Ignore && !Disable;
         }
 
         public CsvFormatColumn() { }
@@ -216,7 +216,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     }
 
     public class CsvFormat
-    { 
+    {
         public virtual string CultureName { get; set; }
         public virtual int FormatNum { get; set; }
         public virtual string FormatName { get; set; }

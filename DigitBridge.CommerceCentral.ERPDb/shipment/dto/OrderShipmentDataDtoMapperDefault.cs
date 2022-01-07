@@ -401,7 +401,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.WarehouseCode = data.WarehouseCode;
             dto.ShipmentType = data.ShipmentType;
             dto.ShipmentReferenceID = data.ShipmentReferenceID;
-            dto.ShipmentDateUtc = data.ShipmentDateUtc;
+            if (!data.ShipmentDateUtc.IsZero())
+                dto.ShipmentDateUtc = data.ShipmentDateUtc;
             dto.ShippingCarrier = data.ShippingCarrier;
             dto.ShippingClass = data.ShippingClass;
             dto.ShippingCost = data.ShippingCost;

@@ -732,13 +732,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-                return this.ShipAmount;
+                return this.ShippingAmount;
             }
             set
             {
-                this.ShipAmount = value;
+                this.ShippingAmount = value;
             }
         }
+
+        [JsonIgnore, XmlIgnore]
+        public decimal? ItemTaxAmount
+        {
+            get
+            {
+                return this.TaxAmount;
+            }
+            set
+            {
+                this.TaxAmount = value;
+            }
+        } 
         #endregion
 
     }
