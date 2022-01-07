@@ -1,0 +1,425 @@
+<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ include file="ParseSqlFile.ttinclude" #>
+<#
+/*
+    T4 template to generate service, repository, data structure and tester for specify aspect 
+    This template load database define file (*.sql) and parse database table create sql script to get data table define and relationship.
+    Data table create script:
+        1. column must start with [
+        2. comment of column must not include [ or ] 
+            for example: 
+            	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee])
+            this will not get correct table and columns info. must remove [ or ]
+
+        3. Primary key - reqired, PK must be BIGINT
+            PK_ and PRIMARY KEY define the PRIMARY KEY
+            The primary key field should be named [RowNum]
+            for example: CONSTRAINT [PK_PoHeader] PRIMARY KEY ([RowNum])
+            this will generate PK in repository
+
+        4. Unique key - reqired, UK must be VARCHAR(50), this is a GUID string
+            UK_ and UNIQUE define the Unique KEY
+            for example: CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeader] ON [dbo].[InvoiceHeader]
+            this will generate Unique Id in repository
+
+        5. Foreign key - optional, FK must include unique key of other table, this is a GUID string
+            FK_ and INDEX define the Foreign KEY
+            for example: CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceId_Seq] ON [dbo].[InvoiceItems]
+            this will generate code to load multiple records for one to many relationship.
+            for example: InvoiceHeader has multiple InvoiceItems, this will load all InvoiceItems by one InvoiceId
+
+        6. Empty key - optional
+            BLK_ and INDEX define the Empty KEY
+            for example: CREATE NONCLUSTERED INDEX [BLK_InvoiceItems_InvoiceId_Seq] ON [dbo].[InvoiceItems]
+            Empty key use to check current record is empty.
+            this will generate code to check record is empty. 
+            If all key fields is empty then current record will treat as empty.
+
+        7. TINYINT 
+            If column define as TINYINT type.
+            this column will generate a bool property. 
+            1 = true, 0 = false
+        8. Type length
+           Length follows type without any space. eg. VARCHAR(50)
+           for example: VARCHAR (50) which will be failed to generate code
+           
+
+    Generated code module:
+        1. Generated file will name as *.Designer.cs, this will overwrie each time generate.
+        2. Partial class file will generate when file not exist. will not overwrite.
+        3. table repository - will generate repository class for each table.
+        4. table repository tester - will generate tester class for each table repository.
+        5. structure repository - will generate structure repository class which include all children table repository.
+        6. structure repository Tester - will generate structure repository tester class.
+        6. Service Class - will generate srevice class.
+        7. Service Class Tester - will generate srevice class tester.
+*/
+#>
+<#
+//SettingForChannelOrder
+//SettingForCustomer
+//SettingForInventory
+//SettingForInventoryLog
+//SettingForInvoice
+//SettingForInvoiceTransaction
+//SettingForSalesOrder
+//SettingForShipment
+//SettingForDistributionCenter
+//SettingForOrderDCAssignment
+//SettingForPurchaseOrder
+//SettingForInventoryUpdate
+//SettingForWarehouseTransfer
+//SettingForQuickBooksExportLog
+//SettingForQuickBooksConnectionInfo
+//SettingForQuickBooksSetting
+//SettingForEventERP
+//SettingForApInvoice
+//SettingForPoTransaction
+//SettingForApTransaction
+//SettingForEventProcessERP
+//SettingForPaidbyMap
+//SettingForShippingCodes
+//SettingForBusinessType
+#>
+<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#
+    var dtoSuf = "";
+    //var GenerateNewName = string.Empty;
+    var GenerateNewName = "_NEW";
+    
+    var overridesetting = false;
+    //rewrite setting config
+    if(overridesetting)
+    {
+        generateModel = false;
+        generateDto = false;
+        generateModelHelper = false;
+
+        // generate tester class for each table repository
+        generateTester = false;
+
+        // generate structure repository class contain multiple table
+        generateStructureRepository = false;
+        generateStructureTester = false;
+
+        // generate structure Dto class
+        generateStructureDto = false;
+        generateStructureDtoCsv = false;
+        generateStructureDtoTester = false;
+
+        // generate service class
+        generateService = false;
+        generateStructureFindList = false;
+
+        generateServiceTester = false;
+   }
+#>
+<#      
+    // Generate model output
+	if (tables.Count>0)
+	{
+        foreach(var table in tables.Values)
+        {
+#>              
+<#          // Generate model output
+	        if (generateModel)
+	        {
+#>              
+<#@ include file="GenerateRepository.ttinclude" #>
+<# 
+                dir = Path.Combine(path,ModelFolder);
+                SaveOutput(dir, $"{table.Name}.Designer.cs");
+            }
+#>
+<#          // Generate model output
+	        if (generateModel)
+	        {
+#>              
+<#@ include file="GenerateRepositoryPartialClass.ttinclude" #>
+<# 
+                dir = Path.Combine(path,ModelFolder);
+                SaveOutputNotExists(dir, $"{table.Name}.cs", GenerateNewName);
+            }
+#>
+<#          // Generate model SQL helper output
+	        if (generateModelHelper)
+	        {
+#>              
+<#@ include file="GenerateRepositoryHelper.ttinclude" #>
+<# 
+                dir = Path.Combine(path,ModelFolder);
+                SaveOutputNotExists(dir, $"{table.Name}Helper.cs", GenerateNewName);
+            }
+#>
+<#          // Generate model SQL helper output
+	        if (generateModelHelper)
+	        {
+#>              
+<#@ include file="GenerateRepositoryHelperTest.ttinclude" #>
+<# 
+                dir = Path.Combine(path,TesterFolder);
+                SaveOutputNotExists(dir, $"{table.Name}HelperTests.cs", null);
+            }
+#>
+<#          // Generate tester class
+	        if (generateTester)
+	        {
+#>              
+<#@ include file="GenerateRepositoryTest.ttinclude" #>
+<# 
+                dir = Path.Combine(path,TesterFolder);
+                SaveOutput(dir, $"{table.Name}Tests.Designer.cs");
+            }
+#>
+<#          // Generate tester class
+	        if (generateTester)
+	        {
+#>              
+<#@ include file="GenerateRepositoryTestPartial.ttinclude" #>
+<# 
+                dir = Path.Combine(path,TesterFolder);
+                SaveOutputNotExists(dir, $"{table.Name}Tests.cs", null);
+            }
+#>
+<#          // Generate tester class
+	        if (generateDto)
+	        {
+#>              
+<#@ include file="GenerateRepositoryDto.ttinclude" #>
+<# 
+                dir = Path.Combine(path, DtoFolder);
+                SaveOutputNotExists(dir, $"{table.DtoName}.cs", GenerateNewName);
+            }
+#>
+<# 
+        }
+    }
+#>
+<#      
+    // Generate structure repository class
+	if (generateStructureRepository && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructure.ttinclude" #>
+<# 
+        dir = Path.Combine(path,StructureFolder);
+        SaveOutput(dir, $"{StructureClass.ClassName}.Designer.cs");
+#>
+<#@ include file="GenerateStructurePartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,StructureFolder);
+        SaveOutputNotExists(dir, $"{StructureClass.ClassName}.cs", GenerateNewName);
+#>
+<# } #>
+<#@ include file="GenerateServicePayload.ttinclude" #>
+<# 
+        dir = Path.Combine(path,StructureFolder);
+        SaveOutputNotExists(dir, $"{PayloadName}.cs", null);
+#>
+<#@ include file="GenerateServicePayloadOpenApi.ttinclude" #>
+<# 
+        dir = Path.Combine(path,OpenApiPayloadFolder);
+        SaveOutputNotExists(dir, $"{OpenApiPayloadName}.cs", null);
+#>
+<#      
+    // Generate structure repository class
+	if (generateStructureTester && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,TesterFolder);
+        SaveOutput(dir, $"{StructureClass.ClassName}Tests.Designer.cs");
+#>
+<#@ include file="GenerateStructureTestPartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,TesterFolder);
+        SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs", null);
+#>
+<# } #>
+<#  // Generate StructureDto class
+	if (generateStructureDto && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureDto.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateStructureDtoMapper.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault.cs", GenerateNewName);
+#>
+<#@ include file="GenerateStructureDtoExtension.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}Extension.cs", GenerateNewName);
+#>
+<# } #>
+<#  // Generate StructureDto class
+	if (generateStructureDtoCsv && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureDtoCsv.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}Csv.cs", GenerateNewName);
+#>
+<# } #>
+<#      
+    // Generate service tester class
+	if (generateStructureDtoTester)
+	{
+#>              
+<#@ include file="GenerateStructureDtoTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,TesterFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}Tests.cs", null);
+#>
+<# } #>
+<#  // Generate StructureDto class
+	if (generateStructureFindList && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureQuery.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"{processName}Query.cs", null);
+#>
+<#@ include file="GenerateStructureQueryList.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"{processName}List.cs", null);
+#>
+<#@ include file="GenerateServiceManagerInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"I{processName}Manager.cs", null);
+#>
+<#@ include file="GenerateServiceManager.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"{processName}Manager.cs", null);
+#>
+<# } #>
+<#      
+    // Generate structure repository class
+	if (generateService && ServiceName != null)
+	{
+#>              
+<#@ include file="GenerateService.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutput(dir, $"{ServiceName}.Designer.cs");
+#>
+<#@ include file="GenerateServicePartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateServiceHelper.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceHelperName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateServiceInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"I{ServiceName}.cs", null);
+#>
+<#@ include file="GenerateServiceCalculator.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}CalculatorDefault.cs", GenerateNewName);
+#>
+<#@ include file="GenerateServiceValidator.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault.cs", GenerateNewName);
+#>
+<# } #>
+<#      
+    // Generate service tester class
+	if (generateServiceTester && ServiceName != null)
+	{
+#>              
+<#@ include file="GenerateServiceTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutput(dir, $"{ServiceName}Tests.Designer.cs");
+#>
+<#@ include file="GenerateServiceTestPartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}Tests.cs", null);
+#>
+<#@ include file="GenerateServiceHelperTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{ServiceHelperName}Tests.cs", null);
+#>
+<# } #>
+<#      
+    // Generate IO format and IOCsv class
+	if (generateIO && IOFormatName != null)
+	{
+#>              
+<#@ include file="GenerateIOFormat.ttinclude" #>
+<# 
+        dir = Path.Combine(path,DbIOFolder);
+        SaveOutputNotExists(dir, $"{IOFormatName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOCsv.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOCsvHelperName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManager.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"{IOServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManagerInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path,IOFolder);
+        SaveOutputNotExists(dir, $"I{IOServiceName}.cs", GenerateNewName);
+#>
+<#@ include file="GenerateIOManagerTester.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{IOServiceName}Tests.cs", GenerateNewName);
+#>
+<# } #>
+
+<#+
+    public void SaveOutput(string destinationFolder, string outputFileName)
+    {
+        // Write to destination folder
+        //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(destinationFolder, outputFileName);
+        File.Delete(outputFilePath);
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+ 
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+
+    public void SaveOutputNotExists(string destinationFolder, string outputFileName, string GenerateNewName)
+    {
+        if (!string.IsNullOrEmpty(GenerateNewName))
+            outputFileName = outputFileName + GenerateNewName;
+        // Write to destination folder
+        //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(destinationFolder, outputFileName);
+        if (!File.Exists(outputFilePath)) 
+            File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+#>

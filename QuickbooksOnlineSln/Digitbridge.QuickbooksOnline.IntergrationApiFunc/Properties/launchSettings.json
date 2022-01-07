@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Digitbridge.QuickbooksOnline.IntegrationApiFunc": {
+      //"commandName": "Project",
+      //"commandLineArgs": "host start --port 7074 --nodeDebugPort 5860"
+      "commandName": "Executable",
+      "executablePath": "%LocalAppData%\\AzureFunctionsTools\\Releases\\3.23.5\\cli\\func.exe",
+      "commandLineArgs": "host start --verbose --port 7074 --nodeDebugPort 5860",
+      "workingDirectory": "$(TargetDir)",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Dev"
+      }
+    }
+  }
+}

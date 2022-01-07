@@ -1,0 +1,112 @@
+﻿<# 
+    // one to one grand children read method
+    if (child.Table.HasOneToOneChildren)
+    {
+        foreach(var gradeChildTable in child.Table.oneToOneChildren)
+        { 
+            if (gradeChildTable == null) continue;
+            WriteLine($"{new String('\t',indent)}protected virtual void Read{gradeChildTable.Name}({gradeChildTable.Name} data, {gradeChildTable.DtoName} dto)");
+            WriteLine($"{new String('\t',indent)}{{");
+            WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+            WriteLine($"{new String('\t',indent+2)}return;");
+
+            // generate all properties
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#region read all not null properties");
+            WriteLine($"");
+            foreach(var col in gradeChildTable.Columns)
+            { 
+                if (col.ignoreGenerate) continue;
+                if (col.IsPrimaryKey) continue;
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.jsonDictionaryName}) data.{col.jsonDictionaryName}.LoadJson(dto.{col.jsonDictionaryName});");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+                }
+            }
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#endregion read properties");
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}data.CheckIntegrity();");
+
+            WriteLine($"{new String('\t',indent+1)}return;");
+            WriteLine($"{new String('\t',indent)}}}");
+        }
+    }
+
+    // one to many grand children write method
+    if (child.Table.HasOneToManyChildren)
+    {
+        foreach(var gradeChildTable in child.Table.oneToManyChildren)
+        { 
+            if (gradeChildTable == null) continue;
+
+            // read single object
+            WriteLine($"{new String('\t',indent)}protected virtual void Read{gradeChildTable.Name}({gradeChildTable.Name} data, {gradeChildTable.DtoName} dto)");
+            WriteLine($"{new String('\t',indent)}{{");
+            WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+            WriteLine($"{new String('\t',indent+2)}return;");
+
+            // generate all properties
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#region read all not null properties");
+            WriteLine($"");
+            foreach(var col in gradeChildTable.Columns)
+            { 
+                if (col.ignoreGenerate) continue;
+                if (col.IsPrimaryKey) continue;
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.jsonDictionaryName}) data.{col.jsonDictionaryName}.LoadJson(dto.{col.jsonDictionaryName});");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+                }
+            }
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#endregion read properties");
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}data.CheckIntegrity();");
+
+            WriteLine($"{new String('\t',indent+1)}return;");
+            WriteLine($"{new String('\t',indent)}}}");
+
+
+            // read list children
+            WriteLine($"{new String('\t',indent)}protected virtual IList<{gradeChildTable.Name}> Read{gradeChildTable.Name}(IList<{gradeChildTable.Name}> data, IList<{gradeChildTable.DtoName}> dto)");
+            WriteLine($"{new String('\t',indent)}{{");
+            WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+            WriteLine($"{new String('\t',indent+2)}return data;");
+            WriteLine($"");
+
+            WriteLine($"{new String('\t',indent+1)}var lstOrig = new List<{gradeChildTable.Name}>(data.Where(x => x != null));");
+            WriteLine($"{new String('\t',indent+1)}data.Clear();");
+            WriteLine($"{new String('\t',indent+1)}foreach (var itemDto in dto)");
+            WriteLine($"{new String('\t',indent+1)}{{");
+            WriteLine($"{new String('\t',indent+2)}if (itemDto == null) continue;");
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+2)}var obj = itemDto.RowNum > 0");
+            WriteLine($"{new String('\t',indent+3)}? lstOrig.FirstOrDefault(x => x.RowNum == itemDto.RowNum)");
+            WriteLine($"{new String('\t',indent+3)}: lstOrig.FirstOrDefault(x => x.{child.Table.UniqueKey} == itemDto.{child.Table.UniqueKey});");
+            WriteLine($"{new String('\t',indent+2)}if (obj is null)");
+            WriteLine($"{new String('\t',indent+3)}obj = new {gradeChildTable.Name}().SetAllowNull(false);");
+            WriteLine($"{new String('\t',indent+2)}else");
+            WriteLine($"{new String('\t',indent+3)}lstOrig.Remove(obj);");
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+2)}data.Add(obj);");
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+2)}Read{gradeChildTable.Name}(obj, itemDto);");
+            WriteLine($"");
+
+            WriteLine($"{new String('\t',indent+1)}}}");
+            WriteLine($"");
+
+            WriteLine($"{new String('\t',indent+1)}return lstOrig;");
+            WriteLine($"{new String('\t',indent)}}}");
+        }
+    }
+#>

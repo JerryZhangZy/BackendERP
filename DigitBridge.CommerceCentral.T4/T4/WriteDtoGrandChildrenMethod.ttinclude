@@ -1,0 +1,98 @@
+﻿<# 
+    // one to one grand children write method
+    if (child.Table.HasOneToOneChildren)
+    {
+        foreach(var gradeChildTable in child.Table.oneToOneChildren)
+        { 
+            if (gradeChildTable == null) continue;
+            WriteLine($"{new String('\t',indent)}protected virtual void Write{gradeChildTable.Name}({gradeChildTable.Name} data, {gradeChildTable.DtoName} dto)");
+            WriteLine($"{new String('\t',indent)}{{");
+            WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+            WriteLine($"{new String('\t',indent+2)}return;");
+
+            // generate all properties
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#region write all properties with null");
+            WriteLine($"");
+
+            foreach(var col in gradeChildTable.Columns)
+            { 
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent+1)}dto.{col.jsonDictionaryName} = data.{col.jsonDictionaryName}.ToJson();");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent+1)}dto.{col.propertyName} = data.{col.propertyName}{col.ConvertPropertyTypeDataToDto};");
+                }
+            }
+
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#endregion read properties");
+            WriteLine($"");
+
+            WriteLine($"{new String('\t',indent+1)}return;");
+            WriteLine($"{new String('\t',indent)}}}");
+        }
+    }
+
+    // one to many grand children write method
+    if (child.Table.HasOneToManyChildren)
+    {
+        foreach(var gradeChildTable in child.Table.oneToManyChildren)
+        { 
+            if (gradeChildTable == null) continue;
+
+            // generate single object write method
+            WriteLine($"{new String('\t',indent)}protected virtual void Write{gradeChildTable.Name}({gradeChildTable.Name} data, {gradeChildTable.DtoName} dto)");
+            WriteLine($"{new String('\t',indent)}{{");
+            WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+            WriteLine($"{new String('\t',indent+2)}return;");
+
+            // generate all properties
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#region write all properties with null");
+            WriteLine($"");
+
+            foreach(var col in gradeChildTable.Columns)
+            { 
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent+1)}dto.{col.jsonDictionaryName} = data.{col.jsonDictionaryName}.ToJson();");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent+1)}dto.{col.propertyName} = data.{col.propertyName}{col.ConvertPropertyTypeDataToDto};");
+                }
+            }
+
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#endregion read properties");
+            WriteLine($"");
+
+            WriteLine($"{new String('\t',indent+1)}return;");
+            WriteLine($"{new String('\t',indent)}}}");
+
+
+            // generate list object write method
+            WriteLine($"{new String('\t',indent)}protected virtual void Write{gradeChildTable.Name}(IList<{gradeChildTable.Name}> data, IList<{gradeChildTable.DtoName}> dto)");
+            WriteLine($"{new String('\t',indent)}{{");
+            WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+            WriteLine($"{new String('\t',indent+2)}return;");
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}dto.Clear();");
+            WriteLine($"");
+            
+            WriteLine($"{new String('\t',indent+1)}foreach (var itemData in data)");
+            WriteLine($"{new String('\t',indent+1)}{{");
+            WriteLine($"{new String('\t',indent+2)}if (itemData is null) continue;");
+            WriteLine($"{new String('\t',indent+2)}var obj = new {gradeChildTable.DtoName}();");
+            WriteLine($"{new String('\t',indent+2)}dto.Add(obj);");
+            WriteLine($"{new String('\t',indent+2)}Write{gradeChildTable.Name}(itemData, obj);");
+            WriteLine($"{new String('\t',indent+1)}}}");
+
+            WriteLine($"{new String('\t',indent+1)}return;");
+            WriteLine($"{new String('\t',indent)}}}");
+        }
+    }
+#>

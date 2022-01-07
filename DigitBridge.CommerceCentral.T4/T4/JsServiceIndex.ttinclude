@@ -1,0 +1,7 @@
+﻿export { 
+    <#= ServiceName #>,
+ } from "./<#= ServicePropertyName #>";
+
+export { 
+    useService as use<#= ServiceName #>, 
+} from "./use<#= ServiceName #>";

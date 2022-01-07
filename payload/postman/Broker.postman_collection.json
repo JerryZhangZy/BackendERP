@@ -1,0 +1,395 @@
+{
+	"info": {
+		"_postman_id": "06095d42-d72a-420e-9821-81ac378a8db7",
+		"name": "Broker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "S/O",
+			"item": [
+				{
+					"name": "open list",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"$top\": 10,\n  \"$skip\": 0,\n  \"$count\": true,\n  \"$sortBy\": \"\",\n  \"$loadAll\": false,\n  \"$filter\": { \n     \"UpdateDateUtc\": \"2011-11-9\", \n     \"WarehouseCode\":\"Warehouse-NEW-0907-075130364\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/wms/salesOrders/find?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"wms",
+								"salesOrders",
+								"find"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AckRecevice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"processUuids\": [\n    \"15082ed6-b62f-4faf-9491-dc182d7bd4a9\",\n    \"bcca2727-1467-459d-ad2a-9c8c3cb07f74\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/wms/salesOrders/AckReceive?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"wms",
+								"salesOrders",
+								"AckReceive"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AckProcess",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \n   \"processResults\": [\n    {\n      \"processUuid\": \"15082ed6-b62f-4faf-9491-dc182d7bd4a9\",\n      \"processStatus\":1,\n      \"processData\": {}\n    },\n    {\n      \"processUuid\": \"bcca2727-1467-459d-ad2a-9c8c3cb07f74\",\n      \"processStatus\":2,\n      \"processData\": {\"error\":\"ack process test.\"}\n    }\n  ],\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/wms/salesOrders/AckProcess?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"wms",
+								"salesOrders",
+								"AckProcess"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shipment",
+			"item": [
+				{
+					"name": "Add single",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ShipmentHeader\":{\n        \"ChannelAccountNum\":111,\n        \"ShipmentID\":\"{{$guid}}}\",\n        \"ShippingCarrier\":\"\",\n        \"ShippingClass\":\"\",\n        \"ShippingCost\":0,\n        \"MainTrackingNumber\":\"{{$guid}}}\",\n        \"MainReturnTrackingNumber\":\"\",\n        \"BillOfLadingID\":\"\",\n        \"TotalPackages\":0,\n        \"TotalHandlingFee\":0,\n        \"TotalShippedQty\":0,\n        \"TotalCanceledQty\":0,\n        \"TotalWeight\":0,\n        \"TotalVolume\":0,\n        \"WeightUnit\":0,\n        \"LengthUnit\":0,\n        \"VolumeUnit\":0,\n        \"InvoiceNumber\":\"\",\n        \"OrderDCAssignmentNum\":0,\n        \"CentralOrderNum\":0,\n        \"ChannelOrderID\":\"48\",\n        \"ShipmentType\":0,\n        \"ShipmentReferenceID\":null,\n        \"ShipmentDateUtc\":\"0001-01-01T00:00:00\",\n        \"ShipmentStatus\":0\n    },\n    \"PackageItems\":[\n        {\n            \"ShipmentPackage\":{\n                \"PackageID\":\"b7b1f601-63af-40a8-ac32-dec6d363fe0e\",\n                \"PackageType\":0,\n                \"PackagePatternNum\":0,\n                \"PackageTrackingNumber\":\"{{$guid}}}\",\n                \"PackageReturnTrackingNumber\":\"\",\n                \"PackageWeight\":0,\n                \"PackageLength\":0,\n                \"PackageWidth\":0,\n                \"PackageHeight\":0,\n                \"PackageVolume\":0,\n                \"PackageQty\":11,\n                \"ParentPackageNum\":0,\n                \"HasChildPackage\":false\n            },\n            \"ShippedItems\":[\n                {\n                    \"CentralOrderLineNum\":27,\n                    \"OrderDCAssignmentLineNum\":0,\n                    \"SKU\":\"e4040ea3-8661-49c3-8372-bddda9fcafb0\",\n                    \"UnitHandlingFee\":0,\n                    \"ShippedQty\":75,\n                    \"LineHandlingFee\":0,\n                    \"EnterDateUtc\":\"2021-11-06T00:33:36.4523637Z\"\n                }\n            ]\n        }\n    ],\n    \"CanceledItems\":\n    [{\n        \"CanceledQty\":10,\n    }]\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/wms/shipments/single?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"wms",
+								"shipments",
+								"single"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add list",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							},
+							{
+								"key": "x-functions-key",
+								"value": "qPFIt1dSCo46yCwCpm3N6sBBJsSTzsWOViwmKr4mqpHaGyBfyUfmuw==",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"ShipmentHeader\":{\n            \"ChannelAccountNum\":111,\n            \"ShipmentID\":\"{{$guid}}\",\n            \"ShippingCarrier\":\"\",\n            \"ShippingClass\":\"\",\n            \"ShippingCost\":0,\n            \"MainTrackingNumber\":\"{{$guid}}\",\n            \"MainReturnTrackingNumber\":\"\",\n            \"BillOfLadingID\":\"\",\n            \"TotalPackages\":0,\n            \"TotalHandlingFee\":0,\n            \"TotalShippedQty\":0,\n            \"TotalCanceledQty\":0,\n            \"TotalWeight\":0,\n            \"TotalVolume\":0,\n            \"WeightUnit\":0,\n            \"LengthUnit\":0,\n            \"VolumeUnit\":0,\n            \"InvoiceNumber\":\"\",\n            \"OrderDCAssignmentNum\":0,\n            \"CentralOrderNum\":0,\n            \"ChannelOrderID\":\"48\",\n            \"ShipmentType\":0,\n            \"ShipmentReferenceID\":null,\n            \"ShipmentDateUtc\":\"0001-01-01T00:00:00\",\n            \"ShipmentStatus\":0\n        },\n        \"PackageItems\":[\n            {\n                \"ShipmentPackage\":{\n                    \"PackageID\":\"b7b1f601-63af-40a8-ac32-dec6d363fe0e\",\n                    \"PackageType\":0,\n                    \"PackagePatternNum\":0,\n                    \"PackageTrackingNumber\":\"{{$guid}}\",\n                    \"PackageReturnTrackingNumber\":\"\",\n                    \"PackageWeight\":0,\n                    \"PackageLength\":0,\n                    \"PackageWidth\":0,\n                    \"PackageHeight\":0,\n                    \"PackageVolume\":0,\n                    \"PackageQty\":11,\n                    \"ParentPackageNum\":0,\n                    \"HasChildPackage\":false\n                },\n                \"ShippedItems\":[\n                    {\n                        \"CentralOrderLineNum\":27,\n                        \"OrderDCAssignmentLineNum\":0,\n                        \"SKU\":\"e4040ea3-8661-49c3-8372-bddda9fcafb0\",\n                        \"UnitHandlingFee\":0,\n                        \"ShippedQty\":75,\n                        \"LineHandlingFee\":0,\n                        \"EnterDateUtc\":\"2021-11-06T00:33:36.4523637Z\"\n                    }\n                ]\n            }\n        ],\n        \"CanceledItems\":[\n            {\n                \"CanceledQty\":10\n            }\n        ]\n    },\n    {\n        \"ShipmentHeader\":{\n            \"ChannelAccountNum\":111,\n            \"ShipmentID\":\"{{$guid}}\",\n            \"ShippingCarrier\":\"\",\n            \"ShippingClass\":\"\",\n            \"ShippingCost\":0,\n            \"MainTrackingNumber\":\"{{$guid}}\",\n            \"MainReturnTrackingNumber\":\"\",\n            \"BillOfLadingID\":\"\",\n            \"TotalPackages\":0,\n            \"TotalHandlingFee\":0,\n            \"TotalShippedQty\":0,\n            \"TotalCanceledQty\":0,\n            \"TotalWeight\":0,\n            \"TotalVolume\":0,\n            \"WeightUnit\":0,\n            \"LengthUnit\":0,\n            \"VolumeUnit\":0,\n            \"InvoiceNumber\":\"\",\n            \"OrderDCAssignmentNum\":0,\n            \"CentralOrderNum\":0,\n            \"ChannelOrderID\":\"48\",\n            \"ShipmentType\":0,\n            \"ShipmentReferenceID\":null,\n            \"ShipmentDateUtc\":\"0001-01-01T00:00:00\",\n            \"ShipmentStatus\":0\n        },\n        \"PackageItems\":[\n            {\n                \"ShipmentPackage\":{\n                    \"PackageID\":\"b7b1f601-63af-40a8-ac32-dec6d363fe0e\",\n                    \"PackageType\":0,\n                    \"PackagePatternNum\":0,\n                    \"PackageTrackingNumber\":\"{{$guid}}\",\n                    \"PackageReturnTrackingNumber\":\"\",\n                    \"PackageWeight\":0,\n                    \"PackageLength\":0,\n                    \"PackageWidth\":0,\n                    \"PackageHeight\":0,\n                    \"PackageVolume\":0,\n                    \"PackageQty\":11,\n                    \"ParentPackageNum\":0,\n                    \"HasChildPackage\":false\n                },\n                \"ShippedItems\":[\n                    {\n                        \"CentralOrderLineNum\":27,\n                        \"OrderDCAssignmentLineNum\":0,\n                        \"SKU\":\"e4040ea3-8661-49c3-8372-bddda9fcafb0\",\n                        \"UnitHandlingFee\":0,\n                        \"ShippedQty\":75,\n                        \"LineHandlingFee\":0,\n                        \"EnterDateUtc\":\"2021-11-06T00:33:36.4523637Z\"\n                    }\n                ]\n            }\n        ],\n        \"CanceledItems\":[\n            {\n                \"CanceledQty\":10\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/wms/shipments/?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"wms",
+								"shipments",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoice",
+			"item": [
+				{
+					"name": "invoice unprocess list",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"$top\": 20,\n  \"$skip\": 0,\n  \"$count\": true,\n  \"$sortBy\": \"\",\n  \"$loadAll\": false,\n  \"$filter\": {\n    //Flowing is the filter.\n    // \"ChannelNum\":13, \n     //\"ChannelAccountNum\":39, \n  }\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/commercecentral/invoices/list/unprocess?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"commercecentral",
+								"invoices",
+								"list",
+								"unprocess"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AckRecevice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"processUuids\": [\n    \"904a2588-fb4c-4746-b840-b9c955907553\",\n    \"a7ec5df2-9de6-42b1-b2c1-6ed8a7b4e33e\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/commercecentral/invoices/AckReceive?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"commercecentral",
+								"invoices",
+								"AckReceive"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AckProcess",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \n   \"processResults\": [\n    {\n      \"processUuid\": \"904a2588-fb4c-4746-b840-b9c955907553\",\n      \"processStatus\":1,\n      \"processData\": {}\n    },\n    {\n      \"processUuid\": \"a7ec5df2-9de6-42b1-b2c1-6ed8a7b4e33e\",\n      \"processStatus\":2,\n      \"processData\": {\"error\":\"ack process test.\"}\n    }\n  ],\n}"
+						},
+						"url": {
+							"raw": "{{Integration_Url}}/commercecentral/invoices/AckProcess?code={{Integration_Code}}",
+							"host": [
+								"{{Integration_Url}}"
+							],
+							"path": [
+								"commercecentral",
+								"invoices",
+								"AckProcess"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Integration_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EventProcess",
+			"item": []
+		}
+	]
+}

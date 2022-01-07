@@ -1,0 +1,470 @@
+using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPMdl;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
+using DigitBridge.Base.Utility;
+namespace DigitBridge.CommerceCentral.ERPApi
+{
+
+    /// <summary>
+    /// Process salesorder
+    /// </summary> 
+    [ApiFilter(typeof(SalesOrderApi))]
+    public static class SalesOrderApi
+    {
+
+
+        [FunctionName(nameof(ExportSalesOrder))]
+        [OpenApiOperation(operationId: "ExportSalesOrder", tags: new[] { "SalesOrders" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "SalesOrderUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SalesOrderUuid", Description = "SalesOrderUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetSingle), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportSalesOrder(
+[HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders/export/{SalesOrderUuid}")] HttpRequest req, string SalesOrderUuid = null)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var iOManager = new SalesOrderIOManager(dbFactory);
+            var service = new SalesOrderService(dbFactory);
+
+            if (!await service.GetSalesOrderByUuidAsync(payload, SalesOrderUuid))
+            {
+                service.AddError("Get SalesOrder datas error");
+                return null;
+            }
+            var dtos = new List<SalesOrderDataDto>();
+            dtos.Add(service.ToDto());
+            var fileBytes = await iOManager.ExportAllColumnsAsync(dtos);
+            var downfile = new FileContentResult(fileBytes, "text/csv");
+            downfile.FileDownloadName = "export-salesOrder.csv";
+            return downfile;
+        }
+
+
+
+        [FunctionName(nameof(ImportSalesOrder))]
+        [OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        public static async Task<SalesOrderPayload> ImportSalesOrder(
+     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+
+            var iOManager = new SalesOrderIOManager(dbFactory);
+            payload.SalesOrder = await iOManager.ImportSalesOrderAsync(payload.MasterAccountNum, payload.ProfileNum, files[0].OpenReadStream()); ;
+            payload.Success = payload.SalesOrder!=null;
+            payload.Messages = iOManager.Messages;
+            return payload;
+        }
+  
+
+        /// <summary>
+        /// exam an sales order number whether been used
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CheckOrderNumberExist))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "CheckOrderNumberExist", tags: new[] { "SalesOrders" }, Summary = "exam an sales order number whether been used")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(bool))]
+        #endregion swagger Doc
+        public static async Task<bool> CheckOrderNumberExist(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders/existOrderNumber/{orderNumber}")] HttpRequest req,
+            string orderNumber)
+        {
+            int masterAccountNum = req.Headers["masterAccountNum"].ToInt();
+            int profileNum = req.Headers["profileNum"].ToInt();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var srv = new SalesOrderService(dataBaseFactory);
+
+            return await srv.ExistOrderNumberAsync(orderNumber, masterAccountNum, profileNum);
+        }
+
+        /// <summary>
+        /// Get one sales order by orderNumber
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="orderNumber"></param>
+        [FunctionName(nameof(GetSalesOrder))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "GetSalesOrder", tags: new[] { "SalesOrders" }, Summary = "Get one sales order")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetSingle))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrder(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders/{orderNumber}")] HttpRequest req,
+            string orderNumber)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+            payload.Success = await srv.GetDataAsync(payload, orderNumber);
+            if (payload.Success)
+                payload.SalesOrder = srv.ToDto(srv.Data);
+            else
+                payload.Messages = srv.Messages;
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Get sales order list by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(GetSalesOrderList))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "GetSalesOrderList", tags: new[] { "SalesOrders" }, Summary = "Get sales order list")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumbers", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "orderNumbers", Description = "Array of order numbers.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetMultiple), Description = "Result is List<SalesOrderDataDto>")]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrderList(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+
+            await srv.GetListByOrderNumbersAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Delete salesorder 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        [FunctionName("DeleteSalesOrders")]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "DeleteSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Delete one sales order")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadDelete))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> DeleteSalesOrders(
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "salesOrders/{orderNumber}")]
+            HttpRequest req,
+            string orderNumber)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+            payload.Success = await srv.DeleteByNumberAsync(payload, orderNumber);
+            if (!payload.Success)
+                payload.Messages = srv.Messages;
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        ///  Update salesorder 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(UpdateSalesOrders))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Update one sales order")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadUpdate), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadUpdate))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> UpdateSalesOrders(
+            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesOrders")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+            payload.Success = await srv.UpdateAsync(payload);
+            payload.SalesOrder = srv.ToDto();
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Add sales order
+        /// </summary>
+        [FunctionName(nameof(AddSalesOrders))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Add one sales order")]
+        [OpenApiParameter(name: Consts.MasterAccountNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: Consts.ProfileNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> AddSalesOrders(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+            payload.Success = await srv.AddAsync(payload);
+            if (!payload.Success)
+                payload.ReturnError(srv.Messages);
+            payload.SalesOrder = srv.ToDto();
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load sales order list
+        /// </summary>
+        [FunctionName(nameof(SalesOrdersList))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "SalesOrdersList", tags: new[] { "SalesOrders" }, Summary = "Load sales order list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
+            await srv.GetSalesOrderListAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load sales order list
+        /// </summary>
+        [FunctionName(nameof(SalesOrdersListSummary))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "SalesOrdersListSummary", tags: new[] { "SalesOrders" }, Summary = "Load sales order list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersListSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find/summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
+            await srv.GetSalesOrderListSummaryAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load sales order list
+        /// </summary>
+        [FunctionName(nameof(SalesOrderDataList))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "SalesOrderDataList", tags: new[] { "SalesOrders" }, Summary = "Load sales order data list")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrderDataList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/finddata")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
+            await srv.GetExportJsonListAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Add sales order
+        /// </summary>
+        [FunctionName(nameof(Sample_SalesOrders_Post))]
+        #region swagger Doc
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "SalesOrdersSample", tags: new[] { "Sample" }, Summary = "Get new sample of sales order")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayloadAdd>> Sample_SalesOrders_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/salesOrders")] HttpRequest req)
+        {
+            return new JsonNetResponse<SalesOrderPayloadAdd>(SalesOrderPayloadAdd.GetSampleData());
+        }
+
+        [FunctionName(nameof(Sample_SalesOrder_Find))]
+        #region swagger Doc
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "SalesOrderFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of salesorder find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayloadFind>> Sample_SalesOrder_Find(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/salesOrders/find")] HttpRequest req)
+        {
+            return new JsonNetResponse<SalesOrderPayloadFind>(SalesOrderPayloadFind.GetSampleData());
+        }
+
+        //[FunctionName(nameof(ExportSalesOrder))]
+        //#region swagger Doc
+        //[OpenApiOperation(operationId: "ExportSalesOrder", tags: new[] { "SalesOrders" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        //#endregion swagger Doc
+        //public static async Task<FileContentResult> ExportSalesOrder(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/export")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<SalesOrderPayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new SalesOrderManager(dbFactory);
+
+        //    var exportData = await svc.ExportAsync(payload);
+        //    var downfile = new FileContentResult(exportData, "text/csv");
+        //    downfile.FileDownloadName = "export-salesorders.csv";
+        //    return downfile;
+        //}
+
+        //[FunctionName(nameof(ImportSalesOrder))]
+        //#region swagger Doc
+        //[OpenApiOperation(operationId: "ImportSalesOrder", tags: new[] { "SalesOrders" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        //#endregion swagger Doc
+        //public static async Task<SalesOrderPayload> ImportSalesOrder(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/import")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<SalesOrderPayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var files = req.Form.Files;
+        //    var svc = new SalesOrderManager(dbFactory);
+
+        //    await svc.ImportAsync(payload, files);
+        //    payload.Success = true;
+        //    payload.Messages = svc.Messages;
+        //    return payload;
+        //}
+
+        /// <summary>
+        /// Create SalesOrder by CentralOrderUuid
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CreateSalesOrderByCentralOrderUuid))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "CreateSalesOrderByCentralOrderUuid", tags: new[] { "SalesOrders" }, Summary = "Create SalesOrder by CentralOrderUuid")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid))]
+        #endregion swagger Doc
+        public static async Task<SalesOrderPayload> CreateSalesOrderByCentralOrderUuid(
+            [HttpTrigger(AuthorizationLevel.Function, "POST"
+            , Route = "salesOrders/createsalesorderbycentralorderuuid")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new SalesOrderManager(dbFactory);
+
+            string bodyString = await req.GetBodyStringAsync();
+            var crtPayLoad = bodyString.StringToObject<SalesOrderPayloadCreateByCentralOrderUuid>();
+            (bool ret, List<string> salesOrderUuids) = await svc.CreateSalesOrderByChannelOrderIdAsync(crtPayLoad.CentralOrderUuid);
+            if (ret)
+            {
+                crtPayLoad.Success = true;
+                crtPayLoad.SalesOrderUuids = salesOrderUuids;
+            }
+            else
+            {
+                crtPayLoad.Success = false;
+                crtPayLoad.SalesOrderUuids = new List<string>();
+            }
+            crtPayLoad.Messages = svc.Messages;
+            return crtPayLoad;
+        }
+
+
+        /// <summary>
+        /// Get sales order summary by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(SalesOrderSummary))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "SalesOrderSummary", tags: new[] { "SalesOrders" }, Summary = "Get sales order summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetMultiple), Description = "Result is List<SalesOrderDataDto>")]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrderSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/Summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderSummaryInquiry(dataBaseFactory, new SalesOrderSummaryQuery());
+            await srv.SalesOrderSummaryAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Add sales order prepayment 
+        /// </summary>
+        [FunctionName(nameof(AddPrepayment))]
+        #region swagger Doc
+        [OpenApiOperation(operationId: "AddPrepayment", tags: new[] { "SalesOrders" }, Summary = "Add pre payment amount to salesorder")]
+        [OpenApiParameter(name: Consts.MasterAccountNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: Consts.ProfileNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "amount", In = ParameterLocation.Path, Required = true, Type = typeof(decimal), Summary = "pre sales amount", Description = "pre sales amount. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        #endregion swagger Doc
+        public static async Task<JsonNetResponse<SalesOrderPayload>> AddPrepayment(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/prepayment/{orderNumber}/{amount}")] HttpRequest req,
+           string orderNumber, decimal amount)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+            payload.Success = await srv.AddPrepaymentAsync(payload, orderNumber, amount);
+            if (!payload.Success)
+                payload.Messages = srv.Messages;
+            payload.SalesOrder = srv.ToDto();
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+    }
+}
+

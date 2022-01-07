@@ -1,0 +1,39 @@
+﻿<# 
+    indent = 1;
+    WriteLine($"/**");
+    WriteLine($" * init data of {structureName} ");
+    WriteLine($" */ ");
+    WriteLine($"export const {structurePropertyName}Init = {{");
+    WriteLine($"{new String('\t',indent)}dataVersion: dataVersionInit,");
+
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+
+        var table = child.Table;
+        // generate one child object
+        if (child.OneToOne)
+        {
+            WriteLine($"{new String('\t',indent)}{table.JsPropertyName}: {{");
+#>
+<#@ include file="JsRepositoryModelInitData.ttinclude" #>
+<# 
+            WriteLine($"{new String('\t',indent)}}},");
+        } 
+        // generate child list
+        else
+        {
+            WriteLine($"{new String('\t',indent)}{table.JsPropertyName}: [{{");
+
+#>
+<#@ include file="JsRepositoryModelInitData.ttinclude" #>
+<#
+            WriteLine($"{new String('\t',indent)}}}], ");
+        } 
+    }
+    WriteLine($"}};");
+#>
+
+

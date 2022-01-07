@@ -1,0 +1,105 @@
+﻿<# 
+    
+    WriteLine($" // link to Dto data type");
+    WriteLine($" /**");
+    WriteLine($" * @typedef {{ import('./{StructureDtoName}') }} {StructureDtoName}");
+    WriteLine($" */");
+    WriteLine($" ");
+    WriteLine($" ");
+
+    WriteLine($" // Filter Object Type");
+    WriteLine($" /**");
+    WriteLine($" * @typedef {{Object}} FilterObject");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{string}} value ");
+    WriteLine($" * - filter value ");
+    WriteLine(" * ");
+    WriteLine($" * @property {{number}} operator ");
+    WriteLine($" * - Integer ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - filter match operator ");
+    WriteLine($" * - 1 = equal ");
+    WriteLine($" * - 2 = not equal ");
+    WriteLine($" * - 3 = less than ");
+    WriteLine($" * - 4 = less or equal ");
+    WriteLine($" * - 5 = greater ");
+    WriteLine($" * - 6 = greater or equal ");
+    WriteLine($" * - 7 = begin with ");
+    WriteLine($" * - 8 = not begin ");
+    WriteLine($" * - 9 = ends with ");
+    WriteLine($" * - 10 = not end ");
+    WriteLine($" * - 11 = contains ");
+    WriteLine($" * - 12 = not contain ");
+    WriteLine(" * ");
+
+    WriteLine($" */");
+    WriteLine($" ");
+    WriteLine($" ");
+
+
+    WriteLine($" // Query Filter Type");
+    WriteLine($" /**");
+    WriteLine($" * @typedef {{Object}} {PayloadName}QueryFilter");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{FilterObject}} DateFrom - {{@link FilterObject}}");
+    WriteLine($" * - Date from ");
+    WriteLine(" * ");
+
+    WriteLine($" */");
+    WriteLine($" ");
+    WriteLine($" ");
+
+
+    WriteLine($" // Payload Type");
+    WriteLine($" /**");
+    WriteLine($" * @typedef {{Object}} {PayloadName}");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{number}} $top ");
+    WriteLine($" * - Integer ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - Page size ");
+    WriteLine($" * - Default value is 100 ");
+    WriteLine($" * - Maximum value is 500 ");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{number}} $skip ");
+    WriteLine($" * - Integer ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - Records to skip ");
+    WriteLine($" * - Default value is 0 ");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{bool}} $count ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - true: query totalcount and paging data");
+    WriteLine($" * - false: only query paging data ");
+    WriteLine($" * - Default value is true ");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{string}} $sortBy ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - Sort by fields. (multiple fields use comma delimited)");
+    WriteLine($" * - Suffix ASC and DESC control sorting direction ");
+    WriteLine($" * - For Example: 'OrderDate DESC, OrderNumber ASC' ");
+    WriteLine($" * - Default value is set by backend ");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{bool}} $loadAll ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - true: load all query result ");
+    WriteLine($" * - false: only only load paging data ");
+    WriteLine($" * - Default value is false ");
+    WriteLine(" * ");
+
+    WriteLine($" * @property {{{PayloadName}QueryFilter}} $filter - {{@link {PayloadName}QueryFilter}} ");
+    WriteLine($" * - Optional ");
+    WriteLine($" * - Filter json object ");
+    WriteLine(" * ");
+
+    WriteLine($" */");
+#>
+
+

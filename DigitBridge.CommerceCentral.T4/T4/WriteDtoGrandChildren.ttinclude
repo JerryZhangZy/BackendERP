@@ -1,0 +1,45 @@
+﻿<#
+        // generate all grand children
+        if(child.Table.HasOneToOneChildren || child.Table.HasOneToManyChildren)
+        {
+            WriteLine($"{new String('\t',indent+1)}#region write all grand children object");
+            WriteLine($"");
+        }
+
+        // Generate object grand children
+        if(child.Table.HasOneToOneChildren)
+        {
+            foreach(var gradeChildTable in child.Table.oneToOneChildren)
+            { 
+                if (gradeChildTable == null) continue;
+                WriteLine($"{new String('\t',indent+1)}if (data.{gradeChildTable.Name} != null)");
+                WriteLine($"{new String('\t',indent+1)}{{");
+                WriteLine($"{new String('\t',indent+2)}dto.{gradeChildTable.Name} = new {gradeChildTable.DtoName}();");
+                WriteLine($"{new String('\t',indent+2)}Write{gradeChildTable.Name}(data.{gradeChildTable.Name}, dto.{gradeChildTable.Name});");
+                WriteLine($"{new String('\t',indent+1)}}}");
+            }
+        }
+
+        // Generate List grand children
+        if(child.Table.HasOneToManyChildren)
+        {
+            foreach(var gradeChildTable in child.Table.oneToManyChildren)
+            { 
+                if (gradeChildTable == null) continue;
+                WriteLine($"{new String('\t',indent+1)}if (data.{gradeChildTable.Name} != null)");
+                WriteLine($"{new String('\t',indent+1)}{{");
+                WriteLine($"{new String('\t',indent+2)}dto.{gradeChildTable.Name} = new List<{gradeChildTable.DtoName}>();");
+                WriteLine($"{new String('\t',indent+2)}Write{gradeChildTable.Name}(data.{gradeChildTable.Name}, dto.{gradeChildTable.Name});");
+                WriteLine($"{new String('\t',indent+1)}}}");
+            }
+        }
+
+        if(child.Table.HasOneToOneChildren || child.Table.HasOneToManyChildren)
+        {
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#endregion write all grand children object");
+            WriteLine($"");
+        }
+        //end generate all grand children
+
+#>

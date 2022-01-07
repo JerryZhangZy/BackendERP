@@ -1,0 +1,20 @@
+﻿<# 
+    indent = 1;
+    var uiNames = new List<string>();
+    WriteLine($"{new String('\t',indent)}ui: {{");
+
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+        if (!child.OneToOne) continue;
+
+        var table = child.Table;
+#>
+<#@ include file="JsRepositoryUi.ttinclude" #>
+<# 
+    } 
+    indent = 1;
+    WriteLine($"{new String('\t',indent)}}},");
+#>

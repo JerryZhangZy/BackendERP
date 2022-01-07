@@ -1,0 +1,20 @@
+﻿<#  if (StructureClass.DetailTable != null) 
+    { 
+#>
+            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
+SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
+FROM <#= StructureClass.MainTable.Name #> ins 
+INNER JOIN (
+    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
+) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
+WHERE itm.cnt > 0
+");
+<# } #>
+<# else 
+    { 
+#>
+            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
+SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
+FROM <#= StructureClass.MainTable.Name #> ins 
+");
+<# } #>

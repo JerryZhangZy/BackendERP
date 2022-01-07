@@ -1,0 +1,73 @@
+﻿<# 
+    indent = 1;
+
+    WriteLine($"/**");
+    WriteLine($" * data model of DataVersion");
+    WriteLine($" */");
+    WriteLine($"const DataVersion = types");
+    WriteLine($"{new String('\t',indent)}.model('DataVersion', {{");
+    WriteLine($"{new String('\t',indent+1)}data: types.optional(types.number, 0),");
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+
+        // generate one child object
+        if (!child.OneToOne)
+        {
+            WriteLine($"{new String('\t',indent+1)}{child.Table.JsPropertyName}: types.optional(types.number, 0),");
+        } 
+    }
+    WriteLine($"{new String('\t',indent)}}})");
+    WriteLine($"{new String('\t',indent)}.actions((self) => {{");
+    WriteLine($"{new String('\t',indent+1)}return createModelActions(self);");
+    WriteLine($"{new String('\t',indent)}}});");
+
+
+    WriteLine($"const dataVersionInit = {{");
+    WriteLine($"{new String('\t',indent)}data: 0,");
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+
+        // generate one child object
+        if (!child.OneToOne)
+        {
+            WriteLine($"{new String('\t',indent)}{child.Table.JsPropertyName}: 0,");
+        } 
+    }
+    WriteLine($"}};");
+    WriteLine($"");
+
+
+    WriteLine($"export const {structureName}Model = types");
+    WriteLine($"{new String('\t',indent)}.model('{structureName}', {{");
+    WriteLine($"{new String('\t',indent+1)}dataVersion: types.optional(DataVersion, dataVersionInit),");
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+
+        // generate one child object
+        if (child.OneToOne)
+        {
+            WriteLine($"{new String('\t',indent+1)}{child.Table.JsPropertyName}: types.optional({child.Table.Name}, {{}}),");
+        } 
+        // generate child list
+        else
+        {
+            WriteLine($"{new String('\t',indent+1)}{child.Table.JsPropertyName}: types.array({child.Table.Name}),");
+        } 
+    }
+
+    WriteLine($"{new String('\t',indent)}}})");
+    WriteLine($"{new String('\t',indent)}.actions((self) => {{");
+    WriteLine($"{new String('\t',indent+1)}return createModelActions(self);");
+    WriteLine($"{new String('\t',indent)}}});");
+#>
+
+

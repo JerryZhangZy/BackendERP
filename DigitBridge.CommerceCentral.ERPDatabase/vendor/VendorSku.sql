@@ -1,0 +1,55 @@
+﻿CREATE TABLE [dbo].[VendorSku]
+(
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
+    [VendorSkuUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor Sku
+
+    [VendorUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor
+	[ProductUuid] Varchar(50) NOT NULL DEFAULT '',--Our Product SKU 
+	[SKU] Varchar(100) NOT NULL,--Our Product SKU 
+	[VendorSKU] Varchar(100) NULL,--Vendor Product SKU 
+
+	[PackType] Varchar(50) NULL,--Product SKU Qty pack type, for example: Case, Box, Each 
+	[PackQty] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty each per pack. 
+
+	[PriceRule] VARCHAR(50) NOT NULL DEFAULT '', --Item Invoice price rule. 
+	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Vendor SKU reserved price 
+	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --Vendor SKU reserved discount 
+	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for Invoice items. 
+	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice total Charg Allowance Amount
+
+	[EffectStartDate] DATE NULL, --Reserve price start date
+	[EffectEndDate] DATE NULL, --Reserve price start date
+
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
+    [UpdateDateUtc] DATETIME NULL,
+    [EnterBy] Varchar(100) NOT NULL,
+    [UpdateBy] Varchar(100) NOT NULL,
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    CONSTRAINT [PK_VendorSku] PRIMARY KEY ([RowNum]), 
+) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UK_VendorSku')
+CREATE NONCLUSTERED INDEX [UK_VendorSku] ON [dbo].[VendorSku]
+(
+	[VendorSkuUuid] ASC
+) ON [PRIMARY]
+GO
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorUuid_SKU')
+CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_SKU] ON [dbo].[VendorSku]
+(
+	[VendorUuid] ASC,
+	[SKU] ASC
+) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorUuid_VendorSKU')
+CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_VendorSKU] ON [dbo].[VendorSku]
+(
+	[VendorUuid] ASC,
+	[VendorSKU] ASC
+) ON [PRIMARY]
+GO
+

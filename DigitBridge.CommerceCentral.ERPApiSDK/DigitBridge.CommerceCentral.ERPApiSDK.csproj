@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>1.0.2.9</Version>
+    <AssemblyVersion>1.0.1.8</AssemblyVersion>
+    <FileVersion>1.0.1.8</FileVersion>
+    <Description>Add MerchantDivision,SalesDivision to wms order payload</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ApiClient\CommerceCentralFaultInvoiceClient.cs" />
+    <Compile Remove="ApiClient\ErpEventClientHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
+  </ItemGroup>
+
+</Project>

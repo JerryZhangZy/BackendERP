@@ -1,0 +1,1213 @@
+{
+	"info": {
+		"_postman_id": "be94f526-df4e-443e-ad1b-3f55d02f4b18",
+		"name": "Add data",
+		"description": "HTTP APIs that run on Azure Functions using OpenAPI specification.\n\nContact Support:\n Name: Jerry Zhang\n Email: jerry.zhang@DigitBridge.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Customer Used Sample Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json=pm.response.json();",
+							"pm.environment.set('CustomerCode',json.customer.customer.customerCode);",
+							"pm.environment.set('RowNum',json.customer.customer.rowNum);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const erprequest = {",
+							"  url: pm.environment.get('baseUrl')+'/sample/POST/customers?code='+pm.environment.get('code'),",
+							"  method: 'GET',",
+							"  header: {",
+							"      'masterAccountNum':pm.environment.get('masterAccountNum'),",
+							"      'profileNum':pm.environment.get('profileNum')",
+							"  }, ",
+							"};",
+							"pm.sendRequest(erprequest, function (err, response) {",
+							"    var json=response.json();",
+							"    json.customer.customer.customerCode=\"Customer\"+pm.variables.get('NewCode');",
+							"    json.customer.customerAddress[0].addressCode=\"BILL\";",
+							"    json.customer.customerAddress[1].addressCode=\"DELIVERY\";",
+							"    json.customer.customerAddress[2].addressCode=\"SHIP\";",
+							"    pm.variables.set('RequestData',JSON.stringify(json));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{RequestData}}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/customers?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"customers"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add Customer Used Sample Data",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{RequestData}}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customers?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get Product 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json =pm.response.json();\r",
+							"pm.environment.set(\"SKU1\",json.inventory.inventory[0].sku);\r",
+							"pm.environment.set(\"WarehouseCode1\",json.inventory.inventory[0].warehouseCode);\r",
+							"pm.environment.set(\"InventoryUuid1\",json.inventory.inventory[0].inventoryUuid);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/productExts/:SKU?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"productExts",
+						":SKU"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					],
+					"variable": [
+						{
+							"key": "SKU",
+							"value": "11054216-HGREYBLACK-5XL-STD",
+							"description": "(Required) SKU"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Product Ext",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/productExts/:SKU?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"productExts",
+								":SKU"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "SKU",
+									"value": "{{SKU}}",
+									"description": "(Required) SKU"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get Product 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json =pm.response.json();\r",
+							"pm.environment.set(\"SKU2\",json.inventory.inventory[0].sku);\r",
+							"pm.environment.set(\"WarehouseCode2\",json.inventory.inventory[0].warehouseCode);\r",
+							"pm.environment.set(\"InventoryUuid2\",json.inventory.inventory[0].inventoryUuid);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/productExts/:SKU?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"productExts",
+						":SKU"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					],
+					"variable": [
+						{
+							"key": "SKU",
+							"value": "11050401-LTGR-S-STD",
+							"description": "(Required) SKU"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Product Ext",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/productExts/:SKU?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"productExts",
+								":SKU"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "SKU",
+									"value": "{{SKU}}",
+									"description": "(Required) SKU"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get Product 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json =pm.response.json();\r",
+							"pm.environment.set(\"SKU3\",json.inventory.inventory[0].sku);\r",
+							"pm.environment.set(\"WarehouseCode3\",json.inventory.inventory[0].warehouseCode);\r",
+							"pm.environment.set(\"InventoryUuid3\",json.inventory.inventory[0].inventoryUuid);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/productExts/:SKU?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"productExts",
+						":SKU"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					],
+					"variable": [
+						{
+							"key": "SKU",
+							"value": "11054217-BLACKGREY-6XL-STD",
+							"description": "(Required) SKU"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Product Ext",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/productExts/:SKU?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"productExts",
+								":SKU"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "SKU",
+									"value": "{{SKU}}",
+									"description": "(Required) SKU"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Add salesorder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json=pm.response.json();",
+							"pm.environment.set('OrderNumber',json.salesOrder.salesOrderHeader.orderNumber);",
+							"pm.environment.set('RowNum',json.salesOrder.salesOrderHeader.rowNum);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"salesOrder\": {\n        \"salesOrderHeader\": {\n            // \"orderNumber\": \"SalesOrder{{NewCode}}\",\n            \"orderType\": 0,\n            \"orderStatus\": 0,\n            // \"orderDate\": \"{{dateto}}\",\n            // \"orderTime\": \"{{dateto}}\",\n            // \"billDate\": \"2021-09-01T00:00:00+08:00\",\n            // \"customerUuid\": \"{{$guid}}\",\n            \"customerCode\": \"{{CustomerCode}}\",\n            // \"customerName\": \"{{$randomCompanyName}}\",\n            \"terms\": \"{{$randomInt}}\",\n            \"termsDays\": {{$randomInt}},\n            \"currency\": \"{{$randomCurrencyName}}\",\n            \"subTotalAmount\": {{$randomInt}},\n            \"salesAmount\": {{$randomPrice}},\n            \"totalAmount\": {{$randomPrice}},\n            \"taxableAmount\": {{$randomPrice}},\n            \"nonTaxableAmount\": {{$randomPrice}},\n            \"taxRate\": 0.22,\n            \"taxAmount\": {{$randomPrice}},\n            \"discountRate\": 0.32,\n            \"discountAmount\": {{$randomInt}},\n            \"shippingAmount\": {{$randomInt}},\n            \"shippingTaxAmount\": {{$randomInt}},\n            \"miscAmount\": {{$randomInt}},\n            // \"miscTaxAmount\": 0,\n            \"chargeAndAllowanceAmount\": {{$randomInt}},\n            \"paidAmount\": {{$randomInt}},\n            \"creditAmount\": {{$randomInt}},\n            \"balance\": {{$randomInt}},\n            \"unitCost\": {{$randomPrice}},\n            \"avgCost\": {{$randomPrice}},\n            \"lotCost\": {{$randomPrice}}\n        },\n        \"salesOrderHeaderInfo\": {\n            // \"salesOrderUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"shippingCarrier\": \"Fedex\",\n            \"shippingClass\": \"Fedex\",\n            \"distributionCenterNum\": {{$randomInt}},\n            \"centralOrderNum\": {{$randomInt}},\n            \"channelNum\": {{$randomInt}},\n            \"channelAccountNum\": {{$randomInt}},\n            \"channelOrderID\": \"{{$guid}}\",\n            \"secondaryChannelOrderID\": \"{{$guid}}\",\n            \"shippingAccount\": \"{{$randomBankAccount}}\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"At deleniti ipsum nemo ipsum et.\",\n            \"customerPoNum\": \"Nam vero commodi fugit iste error odio consequatur consequatur possimus.\",\n            \"endBuyerUserID\": \"924e612f-cd38-7c12-4fb2-b8eba949d5a3\",\n            \"endBuyerName\": \"Tyrique Powlowski\",\n            \"endBuyerEmail\": \"Mckayla.Bogisich25@yahoo.com\",\n            \"shipToName\": \"Icie Feil\",\n            \"shipToFirstName\": \"Brenna\",\n            \"shipToLastName\": \"Beier\",\n            \"shipToSuffix\": \"and Sons\",\n            \"shipToCompany\": \"Von, Kozey and Marquardt\",\n            \"shipToCompanyJobTitle\": \"Blanditiis quaerat id veritatis suscipit maiores nobis asperiores assumenda at.\",\n            \"shipToAttention\": \"Autem sit commodi.\",\n            \"shipToAddressLine1\": \"6697 Roberts Spurs\",\n            \"shipToAddressLine2\": \"Suite 823\",\n            \"shipToAddressLine3\": \"Alias ut distinctio praesentium ullam dolorum.\",\n            \"shipToCity\": \"Dannieport\",\n            \"shipToState\": \"VT\",\n            \"shipToStateFullName\": \"Maine\",\n            \"shipToPostalCode\": \"00112-6974\",\n            \"shipToPostalCodeExt\": \"voluptas\",\n            \"shipToCounty\": \"Bedfordshire\",\n            \"shipToCountry\": \"Chile\",\n            \"shipToEmail\": \"Sydni_Flatley@hotmail.com\",\n            \"shipToDaytimePhone\": \"(362) 292-1547 x83973\",\n            \"shipToNightPhone\": \"775.642.3591\",\n            \"billToName\": \"Eldora Kuhic\",\n            \"billToFirstName\": \"Okey\",\n            \"billToLastName\": \"Huel\",\n            \"billToSuffix\": \"III\",\n            \"billToCompany\": \"Price LLC\",\n            \"billToCompanyJobTitle\": \"Enim voluptatibus omnis aut delectus maiores expedita voluptatem.\",\n            \"billToAttention\": \"Tenetur aperiam eos excepturi.\",\n            \"billToAddressLine1\": \"9496 Marc Squares\",\n            \"billToAddressLine2\": \"Apt. 289\",\n            \"billToAddressLine3\": \"Et aut sit aut cumque iure eaque quasi.\",\n            \"billToCity\": \"Port Janymouth\",\n            \"billToState\": \"NH\",\n            \"billToStateFullName\": \"Tennessee\",\n            \"billToPostalCode\": \"16927\",\n            \"billToPostalCodeExt\": \"optio\",\n            \"billToCounty\": \"Bedfordshire\",\n            \"billToCountry\": \"British Indian Ocean Territory (Chagos Archipelago)\",\n            \"billToEmail\": \"Corine74@hotmail.com\",\n            \"billToDaytimePhone\": \"920-528-0813 x4473\",\n            \"billToNightPhone\": \"345.284.3351\",\n            \"notes\": \"Ut aut dolorum.\"\n        },\n        \"salesOrderHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"salesOrderUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"lz7af8d7qaz0bhmtbzyq\",\n                \"DepartmentCode\": \"i5blv5k6qv9b28jc96a2\",\n                \"ClassInt\": 1,\n                \"ClassDecimal\": 994.6259\n            }\n        },\n        \"salesOrderItems\": [\n            {\n                \"seq\": {{$randomInt}},\n                \"orderItemType\": {{$randomInt}},\n                \"salesOrderItemstatus\": {{$randomInt}},\n                \"sku\": \"{{SKU1}}\",\n                // \"productUuid\": \"51a1785e-6772-c46a-8633-6de5f1edb370\",\n                \"inventoryUuid\": \"{{InventoryUuid1}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode1}}\",\n                // \"lotNum\": \"Ut sunt tenetur quam voluptatem quisquam aliquid eligendi quos officia.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                \"uom\": \"BX\",\n                \"packType\": \"EA\",\n                \"packQty\":  {{$randomInt}},\n                \"orderPack\":  {{$randomInt}},\n                \"shipPack\":  {{$randomInt}},\n                \"cancelledPack\":  {{$randomInt}},\n                \"openPack\":  {{$randomInt}},\n                \"orderQty\":  {{$randomInt}},\n                \"shipQty\":  {{$randomInt}},\n                \"cancelledQty\":  {{$randomInt}},\n                \"openQty\":  {{$randomInt}},\n                \"priceRule\": \"{{$randomInt}}\",\n                \"price\":  {{$randomPrice}},\n                \"discountRate\": 0.34,\n                \"discountAmount\":{{$randomInt}},\n                \"discountPrice\": {{$randomPrice}},\n                // \"extAmount\": 334.55,\n                // \"taxableAmount\": 707.99,\n                // \"nonTaxableAmount\": 366.74,\n                \"taxRate\": 0.11,\n                \"taxAmount\": 106.68,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 275.87,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 793.71,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 138.74,\n                \"shipAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": 375.86,\n                \"avgCost\": 589.65,\n                \"lotCost\": 306.11,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"96578a5b-3784-1091-f64a-60f02be3a9b1\",\n                \"dbChannelOrderLineRowID\": \"93b97228-cccf-66e5-befa-702f6cfcd783\",\n                \"orderDCAssignmentLineUuid\": \"76615111-6a13-e706-25d1-95a71c74f2ba\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"90e50f80-3a55-f456-33e0-271d1688c2ab\",\n                    \"fields\": {\n                        \"ClassCode\": \"dey9vyke84gi4v1p825y\",\n                        \"DepartmentCode\": \"za8fh650wjwuyqo83at9\",\n                        \"ClassInt\": 44,\n                        \"ClassDecimal\": 169.517\n                    }\n                }\n            },\n            {\n                \"seq\": {{$randomInt}},\n                \"orderItemType\": {{$randomInt}},\n                \"salesOrderItemstatus\": {{$randomInt}},\n                \"sku\": \"{{SKU2}}\",\n                // \"productUuid\": \"51a1785e-6772-c46a-8633-6de5f1edb370\",\n                \"inventoryUuid\": \"{{InventoryUuid2}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode2}}\",\n                // \"lotNum\": \"Ut sunt tenetur quam voluptatem quisquam aliquid eligendi quos officia.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                \"uom\": \"BX\",\n                \"packType\": \"EA\",\n                \"packQty\":  {{$randomInt}},\n                \"orderPack\":  {{$randomInt}},\n                \"shipPack\":  {{$randomInt}},\n                \"cancelledPack\":  {{$randomInt}},\n                \"openPack\":  {{$randomInt}},\n                \"orderQty\":  {{$randomInt}},\n                \"shipQty\":  {{$randomInt}},\n                \"cancelledQty\":  {{$randomInt}},\n                \"openQty\":  {{$randomInt}},\n                \"priceRule\": \"{{$randomInt}}\",\n                \"price\":  {{$randomPrice}},\n                \"discountRate\": 0,\n                \"discountAmount\":{{$randomInt}},\n                \"discountPrice\": {{$randomPrice}},\n                // \"extAmount\": 334.55,\n                // \"taxableAmount\": 707.99,\n                // \"nonTaxableAmount\": 366.74,\n                \"taxRate\": 0.11,\n                \"taxAmount\": 106.68,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 275.87,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 793.71,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 138.74,\n                \"shipAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": 375.86,\n                \"avgCost\": 589.65,\n                \"lotCost\": 306.11,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"96578a5b-3784-1091-f64a-60f02be3a9b1\",\n                \"dbChannelOrderLineRowID\": \"93b97228-cccf-66e5-befa-702f6cfcd783\",\n                \"orderDCAssignmentLineUuid\": \"76615111-6a13-e706-25d1-95a71c74f2ba\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"90e50f80-3a55-f456-33e0-271d1688c2ab\",\n                    \"fields\": {\n                        \"ClassCode\": \"dey9vyke84gi4v1p825y\",\n                        \"DepartmentCode\": \"za8fh650wjwuyqo83at9\",\n                        \"ClassInt\": 44,\n                        \"ClassDecimal\": 169.517\n                    }\n                }\n            },\n            {\n                \"seq\": {{$randomInt}},\n                \"orderItemType\": {{$randomInt}},\n                \"salesOrderItemstatus\": {{$randomInt}},\n                \"sku\": \"{{SKU3}}\",\n                // \"productUuid\": \"51a1785e-6772-c46a-8633-6de5f1edb370\",\n                \"inventoryUuid\": \"{{InventoryUuid3}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode3}}\",\n                // \"lotNum\": \"Ut sunt tenetur quam voluptatem quisquam aliquid eligendi quos officia.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                \"uom\": \"BX\",\n                \"packType\": \"EA\",\n                \"packQty\":  {{$randomInt}},\n                \"orderPack\":  {{$randomInt}},\n                \"shipPack\":  {{$randomInt}},\n                \"cancelledPack\":  {{$randomInt}},\n                \"openPack\":  {{$randomInt}},\n                \"orderQty\":  {{$randomInt}},\n                \"shipQty\":  {{$randomInt}},\n                \"cancelledQty\":  {{$randomInt}},\n                \"openQty\":  {{$randomInt}},\n                \"priceRule\": \"{{$randomInt}}\",\n                \"price\":  {{$randomPrice}},\n                \"discountRate\": 0.34,\n                \"discountAmount\":{{$randomInt}},\n                \"discountPrice\": {{$randomPrice}},\n                // \"extAmount\": 334.55,\n                // \"taxableAmount\": 707.99,\n                // \"nonTaxableAmount\": 366.74,\n                \"taxRate\": 0.11,\n                \"taxAmount\": 106.68,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 275.87,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 793.71,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 138.74,\n                \"shipAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"96578a5b-3784-1091-f64a-60f02be3a9b1\",\n                \"dbChannelOrderLineRowID\": \"93b97228-cccf-66e5-befa-702f6cfcd783\",\n                \"orderDCAssignmentLineUuid\": \"76615111-6a13-e706-25d1-95a71c74f2ba\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"90e50f80-3a55-f456-33e0-271d1688c2ab\",\n                    \"fields\": {\n                        \"ClassCode\": \"dey9vyke84gi4v1p825y\",\n                        \"DepartmentCode\": \"za8fh650wjwuyqo83at9\",\n                        \"ClassInt\": 44,\n                        \"ClassDecimal\": 169.517\n                    }\n                }\n            },\n            {\n                \"seq\": {{$randomInt}},\n                \"orderItemType\": {{$randomInt}},\n                \"salesOrderItemstatus\": {{$randomInt}},\n                \"sku\": \"{{SKU3}}\",\n                // \"productUuid\": \"51a1785e-6772-c46a-8633-6de5f1edb370\",\n                \"inventoryUuid\": \"{{InventoryUuid3}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                // \"lotNum\": \"Ut sunt tenetur quam voluptatem quisquam aliquid eligendi quos officia.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                \"uom\": \"BX\",\n                \"packType\": \"EA\",\n                \"packQty\":  {{$randomInt}},\n                \"orderPack\":  {{$randomInt}},\n                \"shipPack\":  {{$randomInt}},\n                \"cancelledPack\":  {{$randomInt}},\n                \"openPack\":  {{$randomInt}},\n                \"orderQty\":  {{$randomInt}},\n                \"shipQty\":  {{$randomInt}},\n                \"cancelledQty\":  {{$randomInt}},\n                \"openQty\":  {{$randomInt}},\n                \"priceRule\": \"{{$randomInt}}\",\n                \"price\":  {{$randomPrice}},\n                \"discountRate\": 0,\n                \"discountAmount\":{{$randomInt}},\n                \"discountPrice\": {{$randomPrice}},\n                // \"extAmount\": 334.55,\n                // \"taxableAmount\": 707.99,\n                // \"nonTaxableAmount\": 366.74,\n                \"taxRate\": 0.11,\n                \"taxAmount\": 106.68,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 275.87,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 793.71,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 138.74,\n                \"shipAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": 375.86,\n                \"avgCost\": 589.65,\n                \"lotCost\": 306.11,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"96578a5b-3784-1091-f64a-60f02be3a9b1\",\n                \"dbChannelOrderLineRowID\": \"93b97228-cccf-66e5-befa-702f6cfcd783\",\n                \"orderDCAssignmentLineUuid\": \"76615111-6a13-e706-25d1-95a71c74f2ba\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"90e50f80-3a55-f456-33e0-271d1688c2ab\",\n                    \"fields\": {\n                        \"ClassCode\": \"dey9vyke84gi4v1p825y\",\n                        \"DepartmentCode\": \"za8fh650wjwuyqo83at9\",\n                        \"ClassInt\": 44,\n                        \"ClassDecimal\": 169.517\n                    }\n                }\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/salesOrders?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"salesOrders"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add one sales order",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"salesOrder\": {\n        \"salesOrderHeader\": {\n            \"orderNumber\": \"SalesOrder{{NewCode}}\",\n            \"orderType\": 88,\n            \"orderStatus\": 74,\n            \"orderDate\": \"{{dateto}}\",\n            \"orderTime\": \"{{dateto}}\",\n            \"billDate\": \"2021-09-01T00:00:00+08:00\",\n            \"customerUuid\": \"1ec95f6e-eafc-8825-db36-835a0371fee6\",\n            \"customerCode\": \"aliquam\",\n            \"customerName\": \"Ally Mayert\",\n            \"terms\": \"4u8qafy66neh99yv881mb5mhalfjagssbxi7nnty3b9sn34fro\",\n            \"termsDays\": 20,\n            \"currency\": \"Sed ea mag\",\n            \"subTotalAmount\": 6.83,\n            \"salesAmount\": 418.5,\n            \"totalAmount\": 883.49,\n            \"taxableAmount\": 728.82,\n            \"nonTaxableAmount\": 856.07,\n            \"taxRate\": 0.62,\n            \"taxAmount\": 140.15,\n            \"discountRate\": 0.32,\n            \"discountAmount\": 749.68,\n            \"shippingAmount\": 753.04,\n            \"shippingTaxAmount\": 229.43,\n            \"miscAmount\": 575.98,\n            \"miscTaxAmount\": 406.59,\n            \"chargeAndAllowanceAmount\": 86.99,\n            \"paidAmount\": 538.34,\n            \"creditAmount\": 991.58,\n            \"balance\": 875.93,\n            \"unitCost\": 850.4,\n            \"avgCost\": 831.37,\n            \"lotCost\": 193.72\n        },\n        \"salesOrderHeaderInfo\": {\n            \"salesOrderUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"shippingCarrier\": \"hzrl93kxoj0w85yogjx1yto0gma4v94cw860nahr17m7qbc84u\",\n            \"shippingClass\": \"jcxs8nar5nsg2fen0zyy1625zr6g9591z0psf40jpv5tyk57t3\",\n            \"distributionCenterNum\": 32,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 35,\n            \"channelAccountNum\": 28,\n            \"channelOrderID\": \"03cb197d-f62a-83d7-38a4-4a31d2f61bef\",\n            \"secondaryChannelOrderID\": \"0baf491b-794b-ebf2-b208-33c6530e106a\",\n            \"shippingAccount\": \"Omnis consequatur adipisci nisi sint nam quia unde et officiis.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"At deleniti ipsum nemo ipsum et.\",\n            \"customerPoNum\": \"Nam vero commodi fugit iste error odio consequatur consequatur possimus.\",\n            \"endBuyerUserID\": \"924e612f-cd38-7c12-4fb2-b8eba949d5a3\",\n            \"endBuyerName\": \"Tyrique Powlowski\",\n            \"endBuyerEmail\": \"Mckayla.Bogisich25@yahoo.com\",\n            \"shipToName\": \"Icie Feil\",\n            \"shipToFirstName\": \"Brenna\",\n            \"shipToLastName\": \"Beier\",\n            \"shipToSuffix\": \"and Sons\",\n            \"shipToCompany\": \"Von, Kozey and Marquardt\",\n            \"shipToCompanyJobTitle\": \"Blanditiis quaerat id veritatis suscipit maiores nobis asperiores assumenda at.\",\n            \"shipToAttention\": \"Autem sit commodi.\",\n            \"shipToAddressLine1\": \"6697 Roberts Spurs\",\n            \"shipToAddressLine2\": \"Suite 823\",\n            \"shipToAddressLine3\": \"Alias ut distinctio praesentium ullam dolorum.\",\n            \"shipToCity\": \"Dannieport\",\n            \"shipToState\": \"VT\",\n            \"shipToStateFullName\": \"Maine\",\n            \"shipToPostalCode\": \"00112-6974\",\n            \"shipToPostalCodeExt\": \"voluptas\",\n            \"shipToCounty\": \"Bedfordshire\",\n            \"shipToCountry\": \"Chile\",\n            \"shipToEmail\": \"Sydni_Flatley@hotmail.com\",\n            \"shipToDaytimePhone\": \"(362) 292-1547 x83973\",\n            \"shipToNightPhone\": \"775.642.3591\",\n            \"billToName\": \"Eldora Kuhic\",\n            \"billToFirstName\": \"Okey\",\n            \"billToLastName\": \"Huel\",\n            \"billToSuffix\": \"III\",\n            \"billToCompany\": \"Price LLC\",\n            \"billToCompanyJobTitle\": \"Enim voluptatibus omnis aut delectus maiores expedita voluptatem.\",\n            \"billToAttention\": \"Tenetur aperiam eos excepturi.\",\n            \"billToAddressLine1\": \"9496 Marc Squares\",\n            \"billToAddressLine2\": \"Apt. 289\",\n            \"billToAddressLine3\": \"Et aut sit aut cumque iure eaque quasi.\",\n            \"billToCity\": \"Port Janymouth\",\n            \"billToState\": \"NH\",\n            \"billToStateFullName\": \"Tennessee\",\n            \"billToPostalCode\": \"16927\",\n            \"billToPostalCodeExt\": \"optio\",\n            \"billToCounty\": \"Bedfordshire\",\n            \"billToCountry\": \"British Indian Ocean Territory (Chagos Archipelago)\",\n            \"billToEmail\": \"Corine74@hotmail.com\",\n            \"billToDaytimePhone\": \"920-528-0813 x4473\",\n            \"billToNightPhone\": \"345.284.3351\",\n            \"notes\": \"Ut aut dolorum.\"\n        },\n        \"salesOrderHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"salesOrderUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"lz7af8d7qaz0bhmtbzyq\",\n                \"DepartmentCode\": \"i5blv5k6qv9b28jc96a2\",\n                \"ClassInt\": 1,\n                \"ClassDecimal\": 994.6259\n            }\n        },\n        \"salesOrderItems\": [\n            {\n                \"seq\": 32,\n                \"orderItemType\": 12,\n                \"salesOrderItemstatus\": 61,\n                \"sku\": \"Chicken\",\n                \"productUuid\": \"51a1785e-6772-c46a-8633-6de5f1edb370\",\n                \"inventoryUuid\": \"29a0c695-8fde-e5a3-110e-c1e6243e7b99\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Ut sunt tenetur quam voluptatem quisquam aliquid eligendi quos officia.\",\n                \"description\": \"Awesome Granite Tuna\",\n                \"notes\": \"Ullam aut optio molestiae dolorem vel.\",\n                \"currency\": \"Odit rerum\",\n                \"uom\": \"BX\",\n                \"packType\": \"EA\",\n                \"packQty\": 39.39,\n                \"orderPack\": 112.74,\n                \"shipPack\": 891.62,\n                \"cancelledPack\": 717.75,\n                \"openPack\": 79.77,\n                \"orderQty\": 879.88,\n                \"shipQty\": 307.88,\n                \"cancelledQty\": 868.82,\n                \"openQty\": 31.22,\n                \"priceRule\": \"3\",\n                \"price\": 546,\n                \"discountRate\": 0.54,\n                \"discountAmount\": 205.09,\n                \"discountPrice\": 27.48,\n                \"extAmount\": 334.55,\n                \"taxableAmount\": 707.99,\n                \"nonTaxableAmount\": 366.74,\n                \"taxRate\": 0.11,\n                \"taxAmount\": 106.68,\n                \"shippingAmount\": 639.02,\n                \"shippingTaxAmount\": 275.87,\n                \"miscAmount\": 9.46,\n                \"miscTaxAmount\": 793.71,\n                \"chargeAndAllowanceAmount\": 145,\n                \"itemTotalAmount\": 138.74,\n                \"shipAmount\": 835.24,\n                \"cancelledAmount\": 250.91,\n                \"openAmount\": 347.16,\n                \"stockable\": false,\n                \"isAr\": true,\n                \"taxable\": false,\n                \"costable\": false,\n                \"isProfit\": true,\n                \"unitCost\": 375.86,\n                \"avgCost\": 589.65,\n                \"lotCost\": 306.11,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"96578a5b-3784-1091-f64a-60f02be3a9b1\",\n                \"dbChannelOrderLineRowID\": \"93b97228-cccf-66e5-befa-702f6cfcd783\",\n                \"orderDCAssignmentLineUuid\": \"76615111-6a13-e706-25d1-95a71c74f2ba\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"90e50f80-3a55-f456-33e0-271d1688c2ab\",\n                    \"fields\": {\n                        \"ClassCode\": \"dey9vyke84gi4v1p825y\",\n                        \"DepartmentCode\": \"za8fh650wjwuyqo83at9\",\n                        \"ClassInt\": 44,\n                        \"ClassDecimal\": 169.517\n                    }\n                }\n            },\n            {\n                \"seq\": 73,\n                \"orderItemType\": 45,\n                \"salesOrderItemstatus\": 55,\n                \"sku\": \"Shirt\",\n                \"productUuid\": \"8ad8f0a4-61c6-f9a3-73dd-dfda82339ebe\",\n                \"inventoryUuid\": \"fd6ed26b-3e36-494a-08b6-2194cba6cc38\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Et nihil expedita.\",\n                \"description\": \"Tasty Rubber Tuna\",\n                \"notes\": \"Dolore incidunt ut ut aperiam ut natus ut aperiam quisquam.\",\n                \"currency\": \"Nobis veri\",\n                \"uom\": \"CA\",\n                \"packType\": \"BX\",\n                \"packQty\": 782.67,\n                \"orderPack\": 885.49,\n                \"shipPack\": 319.12,\n                \"cancelledPack\": 362.77,\n                \"openPack\": 474.32,\n                \"orderQty\": 874.14,\n                \"shipQty\": 679.56,\n                \"cancelledQty\": 824.18,\n                \"openQty\": 72.38,\n                \"priceRule\": \"2\",\n                \"price\": 249.12,\n                \"discountRate\": 0.34,\n                \"discountAmount\": 982.85,\n                \"discountPrice\": 361.65,\n                \"extAmount\": 523.61,\n                \"taxableAmount\": 973.84,\n                \"nonTaxableAmount\": 663.87,\n                \"taxRate\": 0.34,\n                \"taxAmount\": 813.07,\n                \"shippingAmount\": 172.46,\n                \"shippingTaxAmount\": 54.16,\n                \"miscAmount\": 900.49,\n                \"miscTaxAmount\": 635.6,\n                \"chargeAndAllowanceAmount\": 376.89,\n                \"itemTotalAmount\": 322.61,\n                \"shipAmount\": 991.97,\n                \"cancelledAmount\": 232.14,\n                \"openAmount\": 152.83,\n                \"stockable\": false,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": true,\n                \"unitCost\": 940.35,\n                \"avgCost\": 215.92,\n                \"lotCost\": 701.96,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"fa9390da-d6b2-29ea-d932-36f6ff2af5a3\",\n                \"dbChannelOrderLineRowID\": \"a22db025-c6dd-f5b4-cc9f-120db40d24bb\",\n                \"orderDCAssignmentLineUuid\": \"6a27e20e-897b-976b-7d04-14095183bd1b\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"926ea921-7312-ac9f-e308-52f6d8ddaec8\",\n                    \"fields\": {\n                        \"ClassCode\": \"sptjio7mjd6tlx9wjtmv\",\n                        \"DepartmentCode\": \"jdd7seel6t4l3ki4gvny\",\n                        \"ClassInt\": 14,\n                        \"ClassDecimal\": 255.5316\n                    }\n                }\n            },\n            {\n                \"seq\": 68,\n                \"orderItemType\": 46,\n                \"salesOrderItemstatus\": 28,\n                \"sku\": \"Ball\",\n                \"productUuid\": \"132e9ddb-dcc3-cc74-0e7a-e81d038a279c\",\n                \"inventoryUuid\": \"d8259544-aab1-49a4-e1f6-2d25714f2b55\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Iure et cupiditate ratione placeat.\",\n                \"description\": \"Tasty Rubber Mouse\",\n                \"notes\": \"Esse reiciendis voluptate et in occaecati vero est.\",\n                \"currency\": \"Debitis eu\",\n                \"uom\": \"EA\",\n                \"packType\": \"BX\",\n                \"packQty\": 190.09,\n                \"orderPack\": 845.9,\n                \"shipPack\": 955.73,\n                \"cancelledPack\": 776.99,\n                \"openPack\": 16.78,\n                \"orderQty\": 508.93,\n                \"shipQty\": 424.06,\n                \"cancelledQty\": 568.72,\n                \"openQty\": 699,\n                \"priceRule\": \"4\",\n                \"price\": 527.59,\n                \"discountRate\": 0.79,\n                \"discountAmount\": 648.7,\n                \"discountPrice\": 153.54,\n                \"extAmount\": 569.95,\n                \"taxableAmount\": 243.07,\n                \"nonTaxableAmount\": 281.24,\n                \"taxRate\": 0.48,\n                \"taxAmount\": 691.15,\n                \"shippingAmount\": 262.8,\n                \"shippingTaxAmount\": 36.03,\n                \"miscAmount\": 61.39,\n                \"miscTaxAmount\": 447.89,\n                \"chargeAndAllowanceAmount\": 844.32,\n                \"itemTotalAmount\": 179.39,\n                \"shipAmount\": 538.37,\n                \"cancelledAmount\": 581.22,\n                \"openAmount\": 729.6,\n                \"stockable\": false,\n                \"isAr\": false,\n                \"taxable\": false,\n                \"costable\": true,\n                \"isProfit\": false,\n                \"unitCost\": 77.86,\n                \"avgCost\": 2.8,\n                \"lotCost\": 868.61,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"1efde792-b9d1-9e3f-64ca-c6bb94077971\",\n                \"dbChannelOrderLineRowID\": \"b59aa646-9d7f-1db3-f7b3-a2b6dbb83f36\",\n                \"orderDCAssignmentLineUuid\": \"06ae1b16-683f-ee36-e9bb-bbf4dc7d7994\",\n                \"salesOrderItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"\",\n                    \"salesOrderUuid\": \"ab1c40c6-a909-2935-070c-50765a82fa40\",\n                    \"fields\": {\n                        \"ClassCode\": \"r4algp9lp1e4fn6oqaty\",\n                        \"DepartmentCode\": \"gch6ke6b4tk4sv3injsu\",\n                        \"ClassInt\": 17,\n                        \"ClassDecimal\": 155.2889\n                    }\n                }\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/salesOrders?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"salesOrders"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.21.2"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 06 Sep 2021 23:21:25 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "10156"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"salesOrder\": {\n        \"salesOrderHeader\": {\n            \"rowNum\": 20317,\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n            \"orderNumber\": \"SalesOrder-NEW-0907-072124903\",\n            \"orderType\": 88,\n            \"orderStatus\": 74,\n            \"orderDate\": \"2021-09-07T00:00:00\",\n            \"orderTime\": \"2021-09-07T07:21:24+08:00\",\n            \"shipDate\": \"1753-01-01T00:00:00\",\n            \"dueDate\": \"1753-01-01T00:00:00\",\n            \"billDate\": \"2021-09-01T00:00:00+08:00\",\n            \"customerUuid\": \"\",\n            \"customerCode\": \"aliquam\",\n            \"customerName\": \"\",\n            \"terms\": \"4u8qafy66neh99yv881mb5mhalfjagssbxi7nnty3b9sn34fro\",\n            \"termsDays\": 20,\n            \"currency\": \"Sed ea mag\",\n            \"subTotalAmount\": 6.83,\n            \"salesAmount\": 418.5,\n            \"totalAmount\": 883.49,\n            \"taxableAmount\": 728.82,\n            \"nonTaxableAmount\": 856.07,\n            \"taxRate\": 0.62,\n            \"taxAmount\": 140.15,\n            \"discountRate\": 0.32,\n            \"discountAmount\": 749.68,\n            \"shippingAmount\": 753.04,\n            \"shippingTaxAmount\": 229.43,\n            \"miscAmount\": 575.98,\n            \"miscTaxAmount\": 406.59,\n            \"chargeAndAllowanceAmount\": 86.99,\n            \"paidAmount\": 538.34,\n            \"creditAmount\": 991.58,\n            \"balance\": 875.93,\n            \"unitCost\": 850.4,\n            \"avgCost\": 831.37,\n            \"lotCost\": 193.72,\n            \"orderSourceCode\": \"\",\n            \"updateDateUtc\": \"2021-09-07T00:00:00+08:00\",\n            \"enterBy\": \"\",\n            \"updateBy\": \"\"\n        },\n        \"salesOrderHeaderInfo\": {\n            \"rowNum\": 20317,\n            \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n            \"centralFulfillmentNum\": 0,\n            \"shippingCarrier\": \"hzrl93kxoj0w85yogjx1yto0gma4v94cw860nahr17m7qbc84u\",\n            \"shippingClass\": \"jcxs8nar5nsg2fen0zyy1625zr6g9591z0psf40jpv5tyk57t3\",\n            \"distributionCenterNum\": 32,\n            \"centralOrderNum\": 0,\n            \"centralOrderUuid\": \"\",\n            \"channelNum\": 35,\n            \"channelAccountNum\": 28,\n            \"channelOrderID\": \"03cb197d-f62a-83d7-38a4-4a31d2f61bef\",\n            \"secondaryChannelOrderID\": \"0baf491b-794b-ebf2-b208-33c6530e106a\",\n            \"shippingAccount\": \"Omnis consequatur adipisci nisi sint nam quia unde et officiis.\",\n            \"warehouseUuid\": \"b08339a0-3728-43c3-83d4-4b87655840b9\",\n            \"warehouseCode\": \"Warehouse-NEW-0907-071919801\",\n            \"refNum\": \"At deleniti ipsum nemo ipsum et.\",\n            \"customerPoNum\": \"Nam vero commodi fugit iste error odio consequatur consequatur possimus.\",\n            \"endBuyerUserID\": \"924e612f-cd38-7c12-4fb2-b8eba949d5a3\",\n            \"endBuyerName\": \"Tyrique Powlowski\",\n            \"endBuyerEmail\": \"Mckayla.Bogisich25@yahoo.com\",\n            \"shipToName\": \"Icie Feil\",\n            \"shipToFirstName\": \"Brenna\",\n            \"shipToLastName\": \"Beier\",\n            \"shipToSuffix\": \"and Sons\",\n            \"shipToCompany\": \"Von, Kozey and Marquardt\",\n            \"shipToCompanyJobTitle\": \"Blanditiis quaerat id veritatis suscipit maiores nobis asperiores assumenda at.\",\n            \"shipToAttention\": \"Autem sit commodi.\",\n            \"shipToAddressLine1\": \"6697 Roberts Spurs\",\n            \"shipToAddressLine2\": \"Suite 823\",\n            \"shipToAddressLine3\": \"Alias ut distinctio praesentium ullam dolorum.\",\n            \"shipToCity\": \"Dannieport\",\n            \"shipToState\": \"VT\",\n            \"shipToStateFullName\": \"Maine\",\n            \"shipToPostalCode\": \"00112-6974\",\n            \"shipToPostalCodeExt\": \"voluptas\",\n            \"shipToCounty\": \"Bedfordshire\",\n            \"shipToCountry\": \"Chile\",\n            \"shipToEmail\": \"Sydni_Flatley@hotmail.com\",\n            \"shipToDaytimePhone\": \"(362) 292-1547 x83973\",\n            \"shipToNightPhone\": \"775.642.3591\",\n            \"billToName\": \"Eldora Kuhic\",\n            \"billToFirstName\": \"Okey\",\n            \"billToLastName\": \"Huel\",\n            \"billToSuffix\": \"III\",\n            \"billToCompany\": \"Price LLC\",\n            \"billToCompanyJobTitle\": \"Enim voluptatibus omnis aut delectus maiores expedita voluptatem.\",\n            \"billToAttention\": \"Tenetur aperiam eos excepturi.\",\n            \"billToAddressLine1\": \"9496 Marc Squares\",\n            \"billToAddressLine2\": \"Apt. 289\",\n            \"billToAddressLine3\": \"Et aut sit aut cumque iure eaque quasi.\",\n            \"billToCity\": \"Port Janymouth\",\n            \"billToState\": \"NH\",\n            \"billToStateFullName\": \"Tennessee\",\n            \"billToPostalCode\": \"16927\",\n            \"billToPostalCodeExt\": \"optio\",\n            \"billToCounty\": \"Bedfordshire\",\n            \"billToCountry\": \"British Indian Ocean Territory (Chagos Archipelago)\",\n            \"billToEmail\": \"Corine74@hotmail.com\",\n            \"billToDaytimePhone\": \"920-528-0813 x4473\",\n            \"billToNightPhone\": \"345.284.3351\",\n            \"notes\": \"Ut aut dolorum.\",\n            \"updateDateUtc\": \"1753-01-01T00:00:00\",\n            \"enterBy\": \"\",\n            \"updateBy\": \"\"\n        },\n        \"salesOrderHeaderAttributes\": {\n            \"rowNum\": 20317,\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n            \"fields\": {\n                \"schema\": {},\n                \"values\": {\n                    \"ClassCode\": \"lz7af8d7qaz0bhmtbzyq\",\n                    \"DepartmentCode\": \"i5blv5k6qv9b28jc96a2\",\n                    \"ClassInt\": 1,\n                    \"ClassDecimal\": 994.6259\n                }\n            }\n        },\n        \"salesOrderItems\": [\n            {\n                \"rowNum\": 12311,\n                \"salesOrderItemsUuid\": \"792d0674-17e6-43f8-96e1-a6359110b0c0\",\n                \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n                \"seq\": 1,\n                \"orderItemType\": 12,\n                \"salesOrderItemstatus\": 61,\n                \"itemDate\": \"2021-09-07T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-07T07:21:25.1830185+08:00\",\n                \"shipDate\": \"1753-01-01T00:00:00\",\n                \"etaArrivalDate\": \"1753-01-01T00:00:00\",\n                \"sku\": \"Chicken\",\n                \"productUuid\": \"d268d7e5-c721-4692-a183-d4235f2ad542\",\n                \"inventoryUuid\": \"\",\n                \"warehouseUuid\": \"\",\n                \"warehouseCode\": \"\",\n                \"lotNum\": \"\",\n                \"description\": \"Awesome Granite Tuna\",\n                \"notes\": \"Ullam aut optio molestiae dolorem vel.\",\n                \"currency\": \"\",\n                \"uom\": \"\",\n                \"packType\": \"EA\",\n                \"packQty\": 39.39,\n                \"orderPack\": 112.74,\n                \"shipPack\": 891.62,\n                \"cancelledPack\": 717.75,\n                \"openPack\": 79.77,\n                \"orderQty\": 879.88,\n                \"shipQty\": 307.88,\n                \"cancelledQty\": 868.82,\n                \"openQty\": 31.22,\n                \"priceRule\": \"3\",\n                \"price\": 546,\n                \"discountRate\": 0.54,\n                \"discountAmount\": 205.09,\n                \"discountPrice\": 27.48,\n                \"extAmount\": 334.55,\n                \"taxableAmount\": 707.99,\n                \"nonTaxableAmount\": 366.74,\n                \"taxRate\": 0.11,\n                \"taxAmount\": 106.68,\n                \"shippingAmount\": 639.02,\n                \"shippingTaxAmount\": 275.87,\n                \"miscAmount\": 9.46,\n                \"miscTaxAmount\": 793.71,\n                \"chargeAndAllowanceAmount\": 145,\n                \"itemTotalAmount\": 138.74,\n                \"shipAmount\": 835.24,\n                \"cancelledAmount\": 250.91,\n                \"openAmount\": 347.16,\n                \"stockable\": false,\n                \"isAr\": true,\n                \"taxable\": false,\n                \"costable\": false,\n                \"isProfit\": true,\n                \"unitCost\": 375.86,\n                \"avgCost\": 589.65,\n                \"lotCost\": 306.11,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"96578a5b-3784-1091-f64a-60f02be3a9b1\",\n                \"dbChannelOrderLineRowID\": \"93b97228-cccf-66e5-befa-702f6cfcd783\",\n                \"orderDCAssignmentLineUuid\": \"76615111-6a13-e706-25d1-95a71c74f2ba\",\n                \"updateDateUtc\": \"2021-09-07T00:00:00+08:00\",\n                \"enterBy\": \"\",\n                \"updateBy\": \"\",\n                \"salesOrderItemsAttributes\": {\n                    \"rowNum\": 12311,\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"792d0674-17e6-43f8-96e1-a6359110b0c0\",\n                    \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n                    \"fields\": {\n                        \"schema\": {},\n                        \"values\": {\n                            \"ClassCode\": \"dey9vyke84gi4v1p825y\",\n                            \"DepartmentCode\": \"za8fh650wjwuyqo83at9\",\n                            \"ClassInt\": 44,\n                            \"ClassDecimal\": 169.517\n                        }\n                    }\n                }\n            },\n            {\n                \"rowNum\": 12312,\n                \"salesOrderItemsUuid\": \"20652f4b-9a47-4a74-a885-5a4b4ec75e14\",\n                \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n                \"seq\": 2,\n                \"orderItemType\": 45,\n                \"salesOrderItemstatus\": 55,\n                \"itemDate\": \"2021-09-07T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-07T07:21:25.1830185+08:00\",\n                \"shipDate\": \"1753-01-01T00:00:00\",\n                \"etaArrivalDate\": \"1753-01-01T00:00:00\",\n                \"sku\": \"Shirt\",\n                \"productUuid\": \"2942fefe-482b-4152-a505-bcce17593711\",\n                \"inventoryUuid\": \"\",\n                \"warehouseUuid\": \"\",\n                \"warehouseCode\": \"\",\n                \"lotNum\": \"\",\n                \"description\": \"Tasty Rubber Tuna\",\n                \"notes\": \"Dolore incidunt ut ut aperiam ut natus ut aperiam quisquam.\",\n                \"currency\": \"\",\n                \"uom\": \"\",\n                \"packType\": \"BX\",\n                \"packQty\": 782.67,\n                \"orderPack\": 885.49,\n                \"shipPack\": 319.12,\n                \"cancelledPack\": 362.77,\n                \"openPack\": 474.32,\n                \"orderQty\": 874.14,\n                \"shipQty\": 679.56,\n                \"cancelledQty\": 824.18,\n                \"openQty\": 72.38,\n                \"priceRule\": \"2\",\n                \"price\": 249.12,\n                \"discountRate\": 0.34,\n                \"discountAmount\": 982.85,\n                \"discountPrice\": 361.65,\n                \"extAmount\": 523.61,\n                \"taxableAmount\": 973.84,\n                \"nonTaxableAmount\": 663.87,\n                \"taxRate\": 0.34,\n                \"taxAmount\": 813.07,\n                \"shippingAmount\": 172.46,\n                \"shippingTaxAmount\": 54.16,\n                \"miscAmount\": 900.49,\n                \"miscTaxAmount\": 635.6,\n                \"chargeAndAllowanceAmount\": 376.89,\n                \"itemTotalAmount\": 322.61,\n                \"shipAmount\": 991.97,\n                \"cancelledAmount\": 232.14,\n                \"openAmount\": 152.83,\n                \"stockable\": false,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": true,\n                \"unitCost\": 940.35,\n                \"avgCost\": 215.92,\n                \"lotCost\": 701.96,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"fa9390da-d6b2-29ea-d932-36f6ff2af5a3\",\n                \"dbChannelOrderLineRowID\": \"a22db025-c6dd-f5b4-cc9f-120db40d24bb\",\n                \"orderDCAssignmentLineUuid\": \"6a27e20e-897b-976b-7d04-14095183bd1b\",\n                \"updateDateUtc\": \"2021-09-07T00:00:00+08:00\",\n                \"enterBy\": \"\",\n                \"updateBy\": \"\",\n                \"salesOrderItemsAttributes\": {\n                    \"rowNum\": 12312,\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"20652f4b-9a47-4a74-a885-5a4b4ec75e14\",\n                    \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n                    \"fields\": {\n                        \"schema\": {},\n                        \"values\": {\n                            \"ClassCode\": \"sptjio7mjd6tlx9wjtmv\",\n                            \"DepartmentCode\": \"jdd7seel6t4l3ki4gvny\",\n                            \"ClassInt\": 14,\n                            \"ClassDecimal\": 255.5316\n                        }\n                    }\n                }\n            },\n            {\n                \"rowNum\": 12313,\n                \"salesOrderItemsUuid\": \"fb9aca46-f570-4c15-968b-4d52835866d1\",\n                \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n                \"seq\": 3,\n                \"orderItemType\": 46,\n                \"salesOrderItemstatus\": 28,\n                \"itemDate\": \"2021-09-07T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-07T07:21:25.1830185+08:00\",\n                \"shipDate\": \"1753-01-01T00:00:00\",\n                \"etaArrivalDate\": \"1753-01-01T00:00:00\",\n                \"sku\": \"Ball\",\n                \"productUuid\": \"4c319d98-3b7f-4907-a9bc-b8bbb0692892\",\n                \"inventoryUuid\": \"\",\n                \"warehouseUuid\": \"\",\n                \"warehouseCode\": \"\",\n                \"lotNum\": \"\",\n                \"description\": \"Tasty Rubber Mouse\",\n                \"notes\": \"Esse reiciendis voluptate et in occaecati vero est.\",\n                \"currency\": \"\",\n                \"uom\": \"\",\n                \"packType\": \"BX\",\n                \"packQty\": 190.09,\n                \"orderPack\": 845.9,\n                \"shipPack\": 955.73,\n                \"cancelledPack\": 776.99,\n                \"openPack\": 16.78,\n                \"orderQty\": 508.93,\n                \"shipQty\": 424.06,\n                \"cancelledQty\": 568.72,\n                \"openQty\": 699,\n                \"priceRule\": \"4\",\n                \"price\": 527.59,\n                \"discountRate\": 0.79,\n                \"discountAmount\": 648.7,\n                \"discountPrice\": 153.54,\n                \"extAmount\": 569.95,\n                \"taxableAmount\": 243.07,\n                \"nonTaxableAmount\": 281.24,\n                \"taxRate\": 0.48,\n                \"taxAmount\": 691.15,\n                \"shippingAmount\": 262.8,\n                \"shippingTaxAmount\": 36.03,\n                \"miscAmount\": 61.39,\n                \"miscTaxAmount\": 447.89,\n                \"chargeAndAllowanceAmount\": 844.32,\n                \"itemTotalAmount\": 179.39,\n                \"shipAmount\": 538.37,\n                \"cancelledAmount\": 581.22,\n                \"openAmount\": 729.6,\n                \"stockable\": false,\n                \"isAr\": false,\n                \"taxable\": false,\n                \"costable\": true,\n                \"isProfit\": false,\n                \"unitCost\": 77.86,\n                \"avgCost\": 2.8,\n                \"lotCost\": 868.61,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"centralOrderLineUuid\": \"1efde792-b9d1-9e3f-64ca-c6bb94077971\",\n                \"dbChannelOrderLineRowID\": \"b59aa646-9d7f-1db3-f7b3-a2b6dbb83f36\",\n                \"orderDCAssignmentLineUuid\": \"06ae1b16-683f-ee36-e9bb-bbf4dc7d7994\",\n                \"updateDateUtc\": \"2021-09-07T00:00:00+08:00\",\n                \"enterBy\": \"\",\n                \"updateBy\": \"\",\n                \"salesOrderItemsAttributes\": {\n                    \"rowNum\": 12313,\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"salesOrderItemsUuid\": \"fb9aca46-f570-4c15-968b-4d52835866d1\",\n                    \"salesOrderUuid\": \"6099f715-65e0-4e39-8a51-180d36867d93\",\n                    \"fields\": {\n                        \"schema\": {},\n                        \"values\": {\n                            \"ClassCode\": \"r4algp9lp1e4fn6oqaty\",\n                            \"DepartmentCode\": \"gch6ke6b4tk4sv3injsu\",\n                            \"ClassInt\": 17,\n                            \"ClassDecimal\": 155.2889\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"$top\": 1,\n    \"$skip\": 0,\n    \"$count\": true,\n    \"$loadAll\": false,\n    \"success\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "Add one invoice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json=pm.response.json();",
+							"pm.environment.set('InvoiceNumber',json.invoice.invoiceHeader.invoiceNumber);",
+							"pm.environment.set('RowNum',json.invoice.invoiceHeader.rowNum);",
+							"pm.environment.set('InvoiceItemsUuid0',json.invoice.invoiceItems[0].InvoiceItemsUuid);",
+							"pm.environment.set('InvoiceItemsUuid1',json.invoice.invoiceItems[1].InvoiceItemsUuid);",
+							"pm.environment.set('InvoiceItemsUuid2',json.invoice.invoiceItems[2].InvoiceItemsUuid);",
+							"pm.environment.set('InvoiceUuid',json.invoice.invoiceHeader.InvoiceUuid);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            // \"invoiceNumber\": \"Invoice{{NewCode}}\", \n            // \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"{{OrderNumber}}\",\n            \"invoiceType\": {{$randomInt}},\n            \"invoiceStatus\": {{$randomInt}},\n            // \"invoiceDate\": \"{{dateto}}\",\n            // \"invoiceTime\":\"{{dateto}}\",\n            // \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"{{CustomerCode}}\",\n            // \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"{{$randomWord}}\",\n            \"termsDays\": {{$randomInt}},\n            \"currency\": \"{{$randomCurrencyName}}\",\n            // \"subTotalAmount\": 825.13,\n            // \"salesAmount\": 127.16,\n            // \"totalAmount\": 795.91,\n            // \"taxableAmount\": 5.19,\n            // \"nonTaxableAmount\": 6.85,\n            \"taxRate\": \"0.1\", \n            \"discountRate\": 0.2,\n            \"discountAmount\":{{$randomInt}} ,\n            \"shippingAmount\": {{$randomInt}} ,\n            // \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": {{$randomInt}} ,\n            // \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": {{$randomInt}} ,\n            \"paidAmount\": {{$randomInt}},\n            \"creditAmount\": {{$randomInt}},\n            // \"balance\": 997.93,\n            \"unitCost\":{{$randomPrice}},\n            \"avgCost\":{{$randomPrice}},\n            \"lotCost\": {{$randomPrice}},\n            \"invoiceSourceCode\": \"{{$randomWord}}\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {  \n                \"invoiceItemType\": {{$randomInt}},\n                \"invoiceItemStatus\": {{$randomInt}}, \n                \"shipDate\":\"{{dateto}}\",\n                \"etaArrivalDate\": \"{{dateto}}\",\n                \"sku\": \"{{SKU1}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid1}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode1}}\",\n                // \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\":\"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": {{$randomInt}},\n                \"orderPack\": {{$randomInt}},\n                \"shipPack\": {{$randomInt}},\n                \"cancelledPack\": {{$randomInt}},\n                \"openPack\": 25.36,\n                \"orderQty\": {{$randomInt}},\n                \"shipQty\": {{$randomInt}},\n                \"cancelledQty\": {{$randomInt}},\n                \"openQty\": {{$randomInt}},\n                \"priceRule\": \"3\",\n                \"price\": {{$randomPrice}},\n                \"discountRate\": 0.1,\n                \"discountAmount\": {{$randomInt}},\n                // \"discountPrice\": 632.3,\n                // \"extAmount\": 286.53, \n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 699.17,\n                \"orderAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            },\n            {  \n                \"invoiceItemType\": {{$randomInt}},\n                \"invoiceItemStatus\": {{$randomInt}}, \n                \"shipDate\":\"{{dateto}}\",\n                \"etaArrivalDate\": \"{{dateto}}\",\n                \"sku\": \"{{SKU2}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid2}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode2}}\",\n                // \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": {{$randomInt}},\n                \"orderPack\": {{$randomInt}},\n                \"shipPack\": {{$randomInt}},\n                \"cancelledPack\": {{$randomInt}},\n                \"openPack\": 25.36,\n                \"orderQty\": {{$randomInt}},\n                \"shipQty\":1500, //{{$randomInt}},\n                \"cancelledQty\": {{$randomInt}},\n                \"openQty\": {{$randomInt}},\n                \"priceRule\": \"3\",\n                \"price\": {{$randomPrice}},\n                \"discountRate\": 0.2,\n                \"discountAmount\": {{$randomInt}},\n                // \"discountPrice\": 632.3,\n                // \"extAmount\": 286.53, \n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 699.17,\n                \"orderAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            },\n            {  \n                \"invoiceItemType\": {{$randomInt}},\n                \"invoiceItemStatus\": {{$randomInt}}, \n                \"shipDate\":\"{{dateto}}\",\n                \"etaArrivalDate\": \"{{dateto}}\",\n                \"sku\": \"{{SKU3}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid3}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode3}}\",\n                // \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\":\"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": {{$randomInt}},\n                \"orderPack\": {{$randomInt}},\n                \"shipPack\": {{$randomInt}},\n                \"cancelledPack\": {{$randomInt}},\n                \"openPack\": 25.36,\n                \"orderQty\": {{$randomInt}},\n                \"shipQty\": 2000,//{{$randomInt}},\n                \"cancelledQty\": {{$randomInt}},\n                \"openQty\": {{$randomInt}},\n                \"priceRule\": \"3\",\n                \"price\": {{$randomPrice}},\n                \"discountRate\": 0,\n                \"discountAmount\": {{$randomInt}},\n                // \"discountPrice\": 632.3,\n                // \"extAmount\": 286.53, \n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 699.17,\n                \"orderAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/invoices?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add one invoice",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Add one invoice payment ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// var json=pm.response.json();",
+							"// //pm.environment.set('InvoiceNumber',json.invoiceTransaction.invoiceTransaction.invoiceNumber);",
+							"// pm.environment.set('RowNum',json.invoiceTransaction.invoiceTransaction.rowNum);",
+							"// pm.environment.set('TransNum',json.invoiceTransaction.invoiceTransaction.transNum);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"invoiceTransaction\": {\n        \"invoiceTransaction\":{\n        \"invoiceNumber\": \"{{InvoiceNumber}}\",\n        \"transType\": 80,\n        \"transStatus\": 90,\n        //\"transDate\": \"{{dateto}}\",\n        //\"transTime\": \"{{dateto}}\",\n        \"description\": \"{{$randomDomainWord}}\",\n        \"notes\": \"{{$randomDomainWord}}\",\n        \"paidBy\":{{$randomInt}},\n        \"bankAccountUuid\": \"{{$guid}}\",\n        \"bankAccountCode\": \"{{$randomCreditCardMask}}\",\n        \"checkNum\": \"{{$randomBankAccountName}}\",\n        \"authCode\": \"autem\",\n        \"currency\": \"{{$randomCurrencyName}}\",\n        // \"exchangeRate\": 0.32,\n        // \"subTotalAmount\": 561.57,\n        // \"salesAmount\": 435.24,\n        \"totalAmount\": {{$randomPrice}},\n        // \"taxableAmount\": 814.04,\n        // \"nonTaxableAmount\": 805.68,\n        // \"taxRate\": 0.9,\n        // \"taxAmount\": 257.84,\n        // \"discountRate\": 0.07,\n        // \"discountAmount\": 373.56,\n        // \"shippingAmount\": 888.34,\n        // \"shippingTaxAmount\": 407.3,\n        // \"miscAmount\": 351.31,\n        // \"miscTaxAmount\": 115.11,\n        // \"chargeAndAllowanceAmount\": 731.53,\n        \"creditAccount\": {{$randomInt}},\n        \"debitAccount\": {{$randomInt}},\n        \"transSourceCode\": \"{{$randomDomainWord}}\"\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/invoicePayments?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoicePayments"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add one invoice payment ",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"invoiceTransaction\": {\n        \"invoiceTransaction\":{\n        \"invoiceNumber\": \"InvoicePayment{{NewCode}}\",\n        \"transType\": 80,\n        \"transStatus\": 90,\n        \"transDate\": \"{{dateto}}\",\n        \"transTime\": \"{{dateto}}\",\n        \"description\": \"test by apifox\",\n        \"notes\": \"tester used apifox.\",\n        \"paidBy\": 65,\n        \"bankAccountUuid\": \"e4a7458e-227f-7199-0cc0-666655cdf926\",\n        \"bankAccountCode\": \"pariatur\",\n        \"checkNum\": \"Consequatur architecto est dolores dolor minus deserunt nesciunt occaecati tenetur.\",\n        \"authCode\": \"autem\",\n        \"currency\": \"Voluptas d\",\n        \"exchangeRate\": 0.32,\n        \"subTotalAmount\": 561.57,\n        \"salesAmount\": 435.24,\n        \"totalAmount\": 10.25,\n        \"taxableAmount\": 814.04,\n        \"nonTaxableAmount\": 805.68,\n        \"taxRate\": 0.9,\n        \"taxAmount\": 257.84,\n        \"discountRate\": 0.07,\n        \"discountAmount\": 373.56,\n        \"shippingAmount\": 888.34,\n        \"shippingTaxAmount\": 407.3,\n        \"miscAmount\": 351.31,\n        \"miscTaxAmount\": 115.11,\n        \"chargeAndAllowanceAmount\": 731.53,\n        \"creditAccount\": 0,\n        \"debitAccount\": 0,\n        \"transSourceCode\": \"molestiae\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoicePayments?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoicePayments"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Add one invoice return ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// var json=pm.response.json();",
+							"// // pm.environment.set('InvoiceNumber',json.invoiceTransaction.invoiceTransaction.invoiceNumber);",
+							"// pm.environment.set('RowNum',json.invoiceTransaction.invoiceTransaction.rowNum);",
+							"// pm.environment.set('TransNum',json.invoiceTransaction.invoiceTransaction.transNum);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"invoiceTransaction\": {\n        \"invoiceTransaction\": {\n            \"invoiceNumber\": \"{{InvoiceNumber}}\",\n            \"transType\": 2,\n            \"transStatus\": {{$randomInt}},\n            \"transDate\": \"{{dateto}}\",\n            \"transTime\": \"{{dateto}}\",\n            \"description\": \"{{$randomWord}}\",\n            \"notes\": \"{{$randomWord}}\",\n            \"paidBy\": {{$randomInt}},\n            \"bankAccountUuid\": \"{{$guid}}\",\n            \"bankAccountCode\":\"{{$randomCreditCardMask}}\",\n            \"checkNum\": \"{{$randomBankAccountName}}\",\n            \"authCode\": \"qui\",\n            \"currency\": \"{{$randomCurrencyName}}\",\n            \"exchangeRate\": 0.22,\n            // \"subTotalAmount\": 218.02,\n            // \"salesAmount\": 271.85,\n            // \"totalAmount\": 896.24,\n            // \"taxableAmount\": 466.21,\n            // \"nonTaxableAmount\": 258.02,\n            \"taxRate\": 0.68,\n            // \"taxAmount\": 331.43,\n            // \"discountRate\": 0.83,\n            \"discountAmount\": {{$randomPrice}},\n            \"shippingAmount\": {{$randomPrice}},\n            // \"shippingTaxAmount\": 834.91,\n            \"miscAmount\": {{$randomPrice}},\n            // \"miscTaxAmount\": 916.32,\n            \"chargeAndAllowanceAmount\": {{$randomPrice}},\n            \"creditAccount\": {{$randomInt}},\n            \"debitAccount\": {{$randomInt}},\n            \"transSourceCode\": \"ea\"\n        },\n        \"invoiceReturnItems\": [\n            { \n                \"seq\": {{$randomInt}},\n                \"invoiceUuid\": \"{{InvoiceUuid}}\",\n                \"invoiceItemsUuid\": \"{{InvoiceItemsUuid0}}\",\n                \"returnItemType\": {{$randomInt}},\n                \"returnItemStatus\": {{$randomInt}},\n                \"returnDate\": \"{{dateto}}\",\n                \"returnTime\": \"{{dateto}}\",\n                \"sku\": \"{{SKU1}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid1}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode1}}\",\n                // \"lotNum\": \"Numquam eaque cumque veritatis sit fugiat.\",\n                \"reason\": \"{{$randomWord}}\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"PR\",\n                \"packType\": \"EA\",\n                \"packQty\": 742.19,\n                \"returnPack\": {{$randomInt}},\n                \"receivePack\": 987.88,\n                \"stockPack\": 406.4,\n                \"nonStockPack\": 711.29,\n                \"returnQty\": {{$randomInt}},\n                \"receiveQty\": 963.76,\n                \"stockQty\": 277.9,\n                \"nonStockQty\": 603.22,\n                \"putBackWarehouseUuid\": \"17c71b1a-eff9-0fe9-e31c-c5b74167a45f\",\n                \"putBackWarehouseCode\": \"similique\",\n                \"damageWarehouseUuid\": \"b040c8ac-00b1-40e8-cc52-048940e1f020\",\n                \"damageWarehouseCode\": \"placeat\",\n                // \"invoiceDiscountPrice\": {{$randomPrice}},\n                \"price\": {{$randomPrice}},\n                \"extAmount\": {{$randomPrice}},\n                \"taxableAmount\": {{$randomPrice}},\n                \"nonTaxableAmount\": {{$randomPrice}},\n                \"taxRate\": 0.45,\n                \"taxAmount\": {{$randomPrice}},\n                \"shippingAmount\": {{$randomPrice}},\n                \"shippingTaxAmount\": {{$randomPrice}},\n                \"miscAmount\": {{$randomPrice}},\n                \"miscTaxAmount\": {{$randomPrice}},\n                \"chargeAndAllowanceAmount\": 1,\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}}\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/invoiceReturns?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoiceReturns"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add one invoice return ",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"invoiceTransaction\": {\n        \"invoiceTransaction\": {\n            \"invoiceNumber\": \"InvoiceReturn{{NewCode}}\",\n            \"transType\": 2,\n            \"transStatus\": 47,\n            \"transDate\": \"{{dateto}}\",\n            \"transTime\": \"{{dateto}}\",\n            \"description\": \"Unbranded Concrete Pants\",\n            \"notes\": \"Facere aut veritatis quia ea.\",\n            \"paidBy\": 50,\n            \"bankAccountUuid\": \"7f100e85-7e5e-9aad-95be-3fe40b122ada\",\n            \"bankAccountCode\": \"quo\",\n            \"checkNum\": \"Rerum in eius aliquid ratione ab voluptas.\",\n            \"authCode\": \"qui\",\n            \"currency\": \"Doloremque\",\n            \"exchangeRate\": 0.22,\n            \"subTotalAmount\": 218.02,\n            \"salesAmount\": 271.85,\n            \"totalAmount\": 896.24,\n            \"taxableAmount\": 466.21,\n            \"nonTaxableAmount\": 258.02,\n            \"taxRate\": 0.68,\n            \"taxAmount\": 331.43,\n            \"discountRate\": 0.83,\n            \"discountAmount\": 338.67,\n            \"shippingAmount\": 583.59,\n            \"shippingTaxAmount\": 834.91,\n            \"miscAmount\": 592.43,\n            \"miscTaxAmount\": 916.32,\n            \"chargeAndAllowanceAmount\": 392.43,\n            \"creditAccount\": 0,\n            \"debitAccount\": 0,\n            \"transSourceCode\": \"ea\"\n        },\n        \"invoiceReturnItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 61,\n                \"invoiceUuid\": \"749c091a-2106-4074-850a-525b2a0c9daf\",\n                \"invoiceItemsUuid\": \"d0b76b79-f261-3427-1b25-ba83852230ce\",\n                \"returnItemType\": 63,\n                \"returnItemStatus\": 24,\n                \"returnDate\": \"{{dateto}}\",\n                \"returnTime\": \"{{dateto}}\",\n                \"sku\": \"Bike\",\n                \"productUuid\": \"0373d64c-1b82-b5f8-2994-659948a0c125\",\n                \"inventoryUuid\": \"5867e128-67e0-baf1-63da-83b9b2e46600\",\n                \"invoiceWarehouseUuid\": \"fa6a30fb-efee-19a4-226f-90ef1f88e82d\",\n                \"invoiceWarehouseCode\": \"corrupti\",\n                \"warehouseUuid\": \"4754ff52-5925-e5e5-b89f-a8973f03442d\",\n                \"warehouseCode\": \"dolore\",\n                \"lotNum\": \"Numquam eaque cumque veritatis sit fugiat.\",\n                \"reason\": \"Ipsa optio ea.\",\n                \"description\": \"Refined Fresh Cheese\",\n                \"notes\": \"Aliquid rerum dolore ratione doloremque modi quo.\",\n                \"currency\": \"Ex dolor s\",\n                \"uom\": \"PR\",\n                \"packType\": \"EA\",\n                \"packQty\": 742.19,\n                \"returnPack\": 288.07,\n                \"receivePack\": 987.88,\n                \"stockPack\": 406.4,\n                \"nonStockPack\": 711.29,\n                \"returnQty\": 858.97,\n                \"receiveQty\": 963.76,\n                \"stockQty\": 277.9,\n                \"nonStockQty\": 603.22,\n                \"putBackWarehouseUuid\": \"17c71b1a-eff9-0fe9-e31c-c5b74167a45f\",\n                \"putBackWarehouseCode\": \"similique\",\n                \"damageWarehouseUuid\": \"b040c8ac-00b1-40e8-cc52-048940e1f020\",\n                \"damageWarehouseCode\": \"placeat\",\n                \"invoiceDiscountPrice\": 99.76,\n                \"price\": 403.06,\n                \"extAmount\": 696.95,\n                \"taxableAmount\": 138.29,\n                \"nonTaxableAmount\": 825.21,\n                \"taxRate\": 0.45,\n                \"taxAmount\": 974.64,\n                \"shippingAmount\": 135.33,\n                \"shippingTaxAmount\": 760.04,\n                \"miscAmount\": 4.78,\n                \"miscTaxAmount\": 917.48,\n                \"chargeAndAllowanceAmount\": 163.59,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoiceReturns?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoiceReturns"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Add one invoice Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json=pm.response.json();",
+							"pm.environment.set('InvoiceNumber',json.invoice.invoiceHeader.invoiceNumber);",
+							"pm.environment.set('RowNum',json.invoice.invoiceHeader.rowNum);",
+							"pm.environment.set('InvoiceItemsUuid0',json.invoice.invoiceItems[0].InvoiceItemsUuid);",
+							"pm.environment.set('InvoiceItemsUuid1',json.invoice.invoiceItems[1].InvoiceItemsUuid);",
+							"pm.environment.set('InvoiceItemsUuid2',json.invoice.invoiceItems[2].InvoiceItemsUuid);",
+							"pm.environment.set('InvoiceUuid',json.invoice.invoiceHeader.InvoiceUuid);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            // \"invoiceNumber\": \"Invoice{{NewCode}}\", \n            // \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"{{OrderNumber}}\",\n            \"invoiceType\": {{$randomInt}},\n            \"invoiceStatus\": {{$randomInt}},\n            // \"invoiceDate\": \"{{dateto}}\",\n            // \"invoiceTime\":\"{{dateto}}\",\n            // \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"{{CustomerCode}}\",\n            // \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"{{$randomWord}}\",\n            \"termsDays\": {{$randomInt}},\n            \"currency\": \"{{$randomCurrencyName}}\",\n            // \"subTotalAmount\": 825.13,\n            // \"salesAmount\": 127.16,\n            // \"totalAmount\": 795.91,\n            // \"taxableAmount\": 5.19,\n            // \"nonTaxableAmount\": 6.85,\n            \"taxRate\": \"0.1\", \n            \"discountRate\": 0.2,\n            \"discountAmount\":{{$randomInt}} ,\n            \"shippingAmount\": {{$randomInt}} ,\n            // \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": {{$randomInt}} ,\n            // \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": {{$randomInt}} ,\n            \"paidAmount\": {{$randomInt}},\n            \"creditAmount\": {{$randomInt}},\n            // \"balance\": 997.93,\n            \"unitCost\":{{$randomPrice}},\n            \"avgCost\":{{$randomPrice}},\n            \"lotCost\": {{$randomPrice}},\n            \"invoiceSourceCode\": \"{{$randomWord}}\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {  \n                \"invoiceItemType\": {{$randomInt}},\n                \"invoiceItemStatus\": {{$randomInt}}, \n                \"shipDate\":\"{{dateto}}\",\n                \"etaArrivalDate\": \"{{dateto}}\",\n                \"sku\": \"{{SKU1}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid1}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode1}}\",\n                // \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\":\"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": {{$randomInt}},\n                \"orderPack\": {{$randomInt}},\n                \"shipPack\": {{$randomInt}},\n                \"cancelledPack\": {{$randomInt}},\n                \"openPack\": 25.36,\n                \"orderQty\": {{$randomInt}},\n                \"shipQty\": 1000,\n                \"cancelledQty\": {{$randomInt}},\n                \"openQty\": {{$randomInt}},\n                \"priceRule\": \"3\",\n                \"price\": {{$randomPrice}},\n                \"discountRate\": 0.1,\n                \"discountAmount\": {{$randomInt}},\n                // \"discountPrice\": 632.3,\n                // \"extAmount\": 286.53, \n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 699.17,\n                \"orderAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            },\n            {  \n                \"invoiceItemType\": {{$randomInt}},\n                \"invoiceItemStatus\": {{$randomInt}}, \n                \"shipDate\":\"{{dateto}}\",\n                \"etaArrivalDate\": \"{{dateto}}\",\n                \"sku\": \"{{SKU2}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid2}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode2}}\",\n                // \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": {{$randomInt}},\n                \"orderPack\": {{$randomInt}},\n                \"shipPack\": {{$randomInt}},\n                \"cancelledPack\": {{$randomInt}},\n                \"openPack\": 25.36,\n                \"orderQty\": {{$randomInt}},\n                \"shipQty\":1500, //{{$randomInt}},\n                \"cancelledQty\": {{$randomInt}},\n                \"openQty\": {{$randomInt}},\n                \"priceRule\": \"3\",\n                \"price\": {{$randomPrice}},\n                \"discountRate\": 0.2,\n                \"discountAmount\": {{$randomInt}},\n                // \"discountPrice\": 632.3,\n                // \"extAmount\": 286.53, \n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 699.17,\n                \"orderAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            },\n            {  \n                \"invoiceItemType\": {{$randomInt}},\n                \"invoiceItemStatus\": {{$randomInt}}, \n                \"shipDate\":\"{{dateto}}\",\n                \"etaArrivalDate\": \"{{dateto}}\",\n                \"sku\": \"{{SKU3}}\",\n                // \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                 \"inventoryUuid\": \"{{InventoryUuid3}}\",\n                // \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode3}}\",\n                // \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\":\"{{$randomWord}}\",\n                \"notes\": \"{{$randomWord}}\",\n                \"currency\": \"{{$randomCurrencyName}}\",\n                // \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": {{$randomInt}},\n                \"orderPack\": {{$randomInt}},\n                \"shipPack\": {{$randomInt}},\n                \"cancelledPack\": {{$randomInt}},\n                \"openPack\": 25.36,\n                \"orderQty\": {{$randomInt}},\n                \"shipQty\": 2000,//{{$randomInt}},\n                \"cancelledQty\": {{$randomInt}},\n                \"openQty\": {{$randomInt}},\n                \"priceRule\": \"3\",\n                \"price\": {{$randomPrice}},\n                \"discountRate\": 0,\n                \"discountAmount\": {{$randomInt}},\n                // \"discountPrice\": 632.3,\n                // \"extAmount\": 286.53, \n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": {{$randomPrice}},\n                // \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": {{$randomPrice}},\n                // \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": {{$randomPrice}},\n                // \"itemTotalAmount\": 699.17,\n                \"orderAmount\": {{$randomPrice}},\n                \"cancelledAmount\": {{$randomPrice}},\n                \"openAmount\": {{$randomPrice}},\n                \"stockable\": {{$randomBoolean}},\n                \"isAr\": {{$randomBoolean}},\n                \"taxable\": {{$randomBoolean}},\n                \"costable\": {{$randomBoolean}},\n                \"isProfit\": {{$randomBoolean}},\n                \"unitCost\": {{$randomPrice}},\n                \"avgCost\": {{$randomPrice}},\n                \"lotCost\": {{$randomPrice}},\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/invoices?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add one invoice",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Add Purchase Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json=pm.response.json();",
+							"pm.environment.set('PoNum',json.purchaseOrder.poHeader.poNum);",
+							"pm.environment.set('RowNum',json.purchaseOrder.poHeader.rowNum);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "masterAccountNum",
+						"value": "{{masterAccountNum}}",
+						"type": "text"
+					},
+					{
+						"key": "profileNum",
+						"value": "{{profileNum}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"purchaseOrder\": {\n        \"poHeader\": {\n            // \"poNum\": \"PurchaseOrder{{NewCode}}\",\n            \"poType\": 50,\n            \"poStatus\": 2,\n            // \"poDate\": \"{{dateto}}\",\n            // \"poTime\": \"{{dateto}}\",\n            \"vendorUuid\": \"362271f1-9c6c-854a-7be8-d0ae5bbd1dc7\",\n            \"vendorNum\": \"pktifrqiiu9qp893tjrg1oz9luff29wbswcwkrdayxbpr931k9\",\n            \"vendorName\": \"Ebert, Okuneva and Ferry\",\n            \"currency\": \"USD\",\n            \"subTotalAmount\": 168.3,\n            \"totalAmount\": 120.2,\n            \"taxRate\": 0.29,\n            \"taxAmount\": 546.63,\n            \"discountRate\": 0.92,\n            \"discountAmount\": 594.84,\n            \"shippingAmount\": 340.61,\n            \"shippingTaxAmount\": 288.62,\n            \"miscAmount\": 428.93,\n            \"miscTaxAmount\": 259.7,\n            \"chargeAndAllowanceAmount\": 932.52\n        } \n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/purchaseOrders?code={{code}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"purchaseOrders"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{code}}",
+							"description": "(Required) Azure Function App key"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add Purchase Order",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"purchaseOrder\": {\n        \"poHeader\": {\n            \"poNum\": \"PurchaseOrder{{NewCode}}\",\n            \"poType\": 50,\n            \"poStatus\": 2,\n            \"poDate\": \"{{dateto}}\",\n            \"poTime\": \"{{dateto}}\",\n            \"vendorUuid\": \"362271f1-9c6c-854a-7be8-d0ae5bbd1dc7\",\n            \"vendorNum\": \"pktifrqiiu9qp893tjrg1oz9luff29wbswcwkrdayxbpr931k9\",\n            \"vendorName\": \"Ebert, Okuneva and Ferry\",\n            \"currency\": \"USD\",\n            \"subTotalAmount\": 168.3,\n            \"totalAmount\": 120.2,\n            \"taxRate\": 0.29,\n            \"taxAmount\": 546.63,\n            \"discountRate\": 0.92,\n            \"discountAmount\": 594.84,\n            \"shippingAmount\": 340.61,\n            \"shippingTaxAmount\": 288.62,\n            \"miscAmount\": 428.93,\n            \"miscTaxAmount\": 259.7,\n            \"chargeAndAllowanceAmount\": 932.52\n        },\n        \"poHeaderInfo\": {\n            \"poUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"shippingCarrier\": \"Fedex\",\n            \"shippingClass\": \"Fedex\",\n            \"distributionCenterNum\": 95,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 95,\n            \"channelAccountNum\": 81,\n            \"channelOrderID\": \"52018d6b-1c43-44bf-b601-b874ca2c1545\",\n            \"secondaryChannelOrderID\": \"65769f28-112b-6bc0-c29d-77340059f001\",\n            \"shippingAccount\": \"Amazon\",\n            \"refNum\": \"3235360\",\n            \"customerPoNum\": \"2952993\",\n            \"warehouseUuid\": \"08956122-ad45-9bcd-b9ab-14ca2732865c\",\n            \"customerUuid\": \"af360a84-5a04-96cd-8fa5-a48a435d10b6\",\n            \"endBuyerUserID\": \"b40ab246-1fb0-c95a-978f-571556f87545\",\n            \"endBuyerName\": \"Terry and Sons\",\n            \"endBuyerEmail\": \"Katheryn58@yahoo.com\",\n            \"shipToName\": \"Leonard Kemmer\",\n            \"shipToFirstName\": \"Leonard\",\n            \"shipToLastName\": \"Kemmer\",\n            \"shipToSuffix\": \"and Sons\",\n            \"shipToCompany\": \"Brakus and Sons\",\n            \"shipToCompanyJobTitle\": \"LLC\",\n            \"shipToAttention\": \"Et doloribus qui lib\",\n            \"shipToAddressLine1\": \"14203 Shanel Fords\",\n            \"shipToAddressLine2\": \"Suite 902\",\n            \"shipToAddressLine3\": \"\",\n            \"shipToCity\": \"North Milanfurt\",\n            \"shipToState\": \"Pennsylvania\",\n            \"shipToStateFullName\": \"SC\",\n            \"shipToPostalCode\": \"42231-1533\",\n            \"shipToPostalCodeExt\": \"75846-2391\",\n            \"shipToCounty\": \"Bedfordshire\",\n            \"shipToCountry\": \"Ethiopia\",\n            \"shipToEmail\": \"Tyrell9@hotmail.com\",\n            \"shipToDaytimePhone\": \"(693) 388-0370\",\n            \"shipToNightPhone\": \"1-288-965-9417 x573\",\n            \"billToName\": \"Leonard Kemmer\",\n            \"billToFirstName\": \"Leonard\",\n            \"billToLastName\": \"Kemmer\",\n            \"billToSuffix\": \"Male\",\n            \"billToCompany\": \"Nikolaus, Little and Johnson\",\n            \"billToCompanyJobTitle\": \"LLC\",\n            \"billToAttention\": \"\",\n            \"billToAddressLine1\": \"0144 Annalise Coves\",\n            \"billToAddressLine2\": \"Suite 681\",\n            \"billToAddressLine3\": \"\",\n            \"billToCity\": \"Davisfort\",\n            \"billToState\": \"Utah\",\n            \"billToStateFullName\": \"Johnston and Sons\",\n            \"billToPostalCode\": \"37793\",\n            \"billToPostalCodeExt\": \"45613-6745\",\n            \"billToCounty\": \"Berkshire\",\n            \"billToCountry\": \"Albania\",\n            \"billToEmail\": \"Oral17@hotmail.com\",\n            \"billToDaytimePhone\": \"857-465-8410\",\n            \"billToNightPhone\": \"930-871-6877 x324\"\n        },\n        \"poHeaderAttributes\": {\n            \"poUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"dncudnlv6oyqs7t0tq7l\",\n                \"DepartmentCode\": \"bir5x1n3efbi05cy6z3h\",\n                \"ClassInt\": 43,\n                \"ClassDecimal\": 559.3047\n            }\n        },\n        \"poItems\": [\n            {\n                \"poItemUuid\": \"\",\n                \"poUuid\": \"64eafd43-876a-237e-b131-0c12d714defe\",\n                \"seq\": 93,\n                \"poItemType\": 34,\n                \"poItemStatus\": 99,\n                \"poDate\": \"{{dateto}}\",\n                \"poTime\": \"{{dateto}}\",\n                \"productUuid\": \"cdb61148-4a94-e1d6-dee0-4461a4b3b5d5\",\n                \"inventoryUuid\": \"32cdfc70-67a1-0aa3-9640-3d2219c67572\",\n                \"sku\": \"Chicken\",\n                \"description\": \"Unbranded Rubber Gloves\",\n                \"notes\": \"Asperiores repellat aut.\",\n                \"currency\": \"USD\",\n                \"poQty\": 339.59,\n                \"receivedQty\": 402.86,\n                \"cancelledQty\": 472.91,\n                \"priceRule\": \"3\",\n                \"price\": 119.39,\n                \"extAmount\": 206.24,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 327.69,\n                \"discountRate\": 0.28,\n                \"discountAmount\": 239.09,\n                \"shippingAmount\": 273.41,\n                \"shippingTaxAmount\": 878.17,\n                \"miscAmount\": 278.53,\n                \"miscTaxAmount\": 57.47,\n                \"chargeAndAllowanceAmount\": 44.94,\n                \"stockable\": true,\n                \"costable\": false,\n                \"taxable\": true,\n                \"isAp\": false,\n                \"poItemsAttributes\": {\n                    \"poItemUuid\": \"\",\n                    \"poUuid\": \"bfde0dd6-5baf-7f30-5083-9105a127f158\",\n                    \"fields\": {\n                        \"ClassCode\": \"35btv2xkx6kroex9awgu\",\n                        \"DepartmentCode\": \"d38o80w05xvxr7zv1mcm\",\n                        \"ClassInt\": 64,\n                        \"ClassDecimal\": 983.3887\n                    }\n                },\n                \"poItemsRef\": {\n                    \"poUuid\": \"d82e97d9-e85e-cee1-7762-46bc4a85c9b7\",\n                    \"poItemUuid\": \"\",\n                    \"centralFulfillmentNum\": 0,\n                    \"shippingCarrier\": \"qduxmdb3utbp5vsxh65pebj2k6mspnmalhm4za76xh347ih6vv\",\n                    \"shippingClass\": \"3rpshfusdfrid6703n9nx7yysx7eu2pfwtkulsz7a7xrff3wx6\",\n                    \"distributionCenterNum\": 41,\n                    \"centralOrderNum\": 0,\n                    \"channelNum\": 82,\n                    \"channelAccountNum\": 94,\n                    \"channelOrderID\": \"37005f0c-0718-1153-c161-6c3c25a516d9\",\n                    \"secondaryChannelOrderID\": \"29d1df5e-b55a-6f4a-f38d-0d8d6244f289\",\n                    \"shippingAccount\": \"Dolores nobis aut nobis architecto et dolor quam consequatur nulla.\",\n                    \"warehouseUuid\": \"7b905af7-7c1e-91d5-11c1-9de056159144\",\n                    \"customerUuid\": \"aec5f98b-6f7c-79e2-14fc-fd6fada73cbd\",\n                    \"endBuyerUserID\": \"1453cff4-1263-11ee-8cb2-e0c8252f5103\",\n                    \"endBuyerName\": \"Kshlerin LLC\",\n                    \"endBuyerEmail\": \"Margret.Bradtke97@gmail.com\",\n                    \"shipToName\": \"Francisco Ullrich\",\n                    \"shipToFirstName\": \"Francisco\",\n                    \"shipToLastName\": \"Ullrich\",\n                    \"shipToSuffix\": \"Male\",\n                    \"shipToCompany\": \"Harris Group\",\n                    \"shipToCompanyJobTitle\": \"LLC\",\n                    \"shipToAttention\": \"Quis dignissimos rerum voluptatum beatae ullam.\",\n                    \"shipToAddressLine1\": \"517 Ellie Locks\",\n                    \"shipToAddressLine2\": \"Suite 933\",\n                    \"shipToAddressLine3\": \"\",\n                    \"shipToCity\": \"Theresachester\",\n                    \"shipToState\": \"South Carolina\",\n                    \"shipToStateFullName\": \"West Virginia\",\n                    \"shipToPostalCode\": \"85093\",\n                    \"shipToPostalCodeExt\": \"48848-6251\",\n                    \"shipToCounty\": \"Cambridgeshire\",\n                    \"shipToCountry\": \"Cayman Islands\",\n                    \"shipToEmail\": \"Pinkie.Robel@hotmail.com\",\n                    \"shipToDaytimePhone\": \"1-837-891-7644 x5652\",\n                    \"shipToNightPhone\": \"586.476.9178 x287\",\n                    \"billToName\": \"Francisco Ullrich\",\n                    \"billToFirstName\": \"Francisco\",\n                    \"billToLastName\": \"Ullrich\",\n                    \"billToSuffix\": \"Male\",\n                    \"billToCompany\": \"Yundt, Douglas and King\",\n                    \"billToCompanyJobTitle\": \"LLC\",\n                    \"billToAttention\": \"\",\n                    \"billToAddressLine1\": \"56083 Vince Camp\",\n                    \"billToAddressLine2\": \"Apt. 685\",\n                    \"billToAddressLine3\": \"\",\n                    \"billToCity\": \"Kristianstad\",\n                    \"billToState\": \"Nebraska\",\n                    \"billToStateFullName\": \"Washington\",\n                    \"billToPostalCode\": \"40865\",\n                    \"billToPostalCodeExt\": \"73995-2107\",\n                    \"billToCounty\": \"Cambridgeshire\",\n                    \"billToCountry\": \"Honduras\",\n                    \"billToEmail\": \"Dannie_Goldner85@yahoo.com\",\n                    \"billToDaytimePhone\": \"296-211-1424 x1745\",\n                    \"billToNightPhone\": \"230.888.8588\"\n                }\n            },\n            {\n                \"poItemUuid\": \"\",\n                \"poUuid\": \"c8b30d53-6b17-b8d2-4297-5b04bf6d66d6\",\n                \"seq\": 99,\n                \"poItemType\": 93,\n                \"poItemStatus\": 72,\n                \"poDate\": \"2021-09-01T00:00:00+08:00\",\n                \"poTime\": \"2021-09-07T03:43:48.3315155+08:00\",\n                \"etaShipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"cancelDate\": \"2021-09-01T00:00:00+08:00\",\n                \"productUuid\": \"6ddd84a5-7a86-ea3a-2479-3b59a7621d8a\",\n                \"inventoryUuid\": \"b616c4fd-6f49-2a83-9d4b-70aec1721e6c\",\n                \"sku\": \"Chair\",\n                \"description\": \"Practical Frozen Soap\",\n                \"notes\": \"Accusantium quia voluptatibus libero voluptatem ipsa.\",\n                \"currency\": \"USD\",\n                \"poQty\": 27.44,\n                \"receivedQty\": 442.86,\n                \"cancelledQty\": 47.84,\n                \"priceRule\": \"5\",\n                \"price\": 809.61,\n                \"extAmount\": 696.92,\n                \"taxRate\": 0.05,\n                \"taxAmount\": 988.05,\n                \"discountRate\": 0.64,\n                \"discountAmount\": 21.75,\n                \"shippingAmount\": 381.08,\n                \"shippingTaxAmount\": 933.75,\n                \"miscAmount\": 718.72,\n                \"miscTaxAmount\": 617.23,\n                \"chargeAndAllowanceAmount\": 927.17,\n                \"stockable\": false,\n                \"costable\": false,\n                \"taxable\": false,\n                \"isAp\": false,\n                \"poItemsAttributes\": {\n                    \"poItemUuid\": \"\",\n                    \"poUuid\": \"15d3c2b0-8832-6478-04f4-636db0f9917d\",\n                    \"fields\": {\n                        \"ClassCode\": \"kv6we0anzhe27nkt7dtl\",\n                        \"DepartmentCode\": \"n0l8cy4askszzf2hgqk9\",\n                        \"ClassInt\": 36,\n                        \"ClassDecimal\": 370.9111\n                    }\n                },\n                \"poItemsRef\": {\n                    \"poUuid\": \"2c203f23-4a67-1a79-e65c-aebab8e9e116\",\n                    \"poItemUuid\": \"\",\n                    \"centralFulfillmentNum\": 0,\n                    \"shippingCarrier\": \"11ow1ev23gimzt7j5vdz05lbfhauu6s993rsuxrdb377l38dgz\",\n                    \"shippingClass\": \"r6qtqwfdgj407wn8cv2fo830nxydqb9wevfmjgcuchg89avakc\",\n                    \"distributionCenterNum\": 75,\n                    \"centralOrderNum\": 0,\n                    \"channelNum\": 38,\n                    \"channelAccountNum\": 32,\n                    \"channelOrderID\": \"4b03f46c-7653-189f-16c5-ad2ca0665088\",\n                    \"secondaryChannelOrderID\": \"b620a39d-cb76-0b9c-f327-71279849d911\",\n                    \"shippingAccount\": \"Culpa vel culpa necessitatibus ut autem quis ut non nemo.\",\n                    \"warehouseUuid\": \"df9be72e-0180-3293-6102-9625a058f757\",\n                    \"customerUuid\": \"8078042b-eccc-799b-1366-616d204b2a93\",\n                    \"endBuyerUserID\": \"246dd2b4-4857-25f0-0417-770e1c675f96\",\n                    \"endBuyerName\": \"Hayes Group\",\n                    \"endBuyerEmail\": \"Pablo65@yahoo.com\",\n                    \"shipToName\": \"Christy Jacobi\",\n                    \"shipToFirstName\": \"Christy\",\n                    \"shipToLastName\": \"Jacobi\",\n                    \"shipToSuffix\": \"Female\",\n                    \"shipToCompany\": \"Lakin Group\",\n                    \"shipToCompanyJobTitle\": \"Group\",\n                    \"shipToAttention\": \"Rem facilis in enim quia minima non sed error natus.\",\n                    \"shipToAddressLine1\": \"4483 Muller Glens\",\n                    \"shipToAddressLine2\": \"Apt. 529\",\n                    \"shipToAddressLine3\": \"\",\n                    \"shipToCity\": \"South Hollis\",\n                    \"shipToState\": \"Massachusetts\",\n                    \"shipToStateFullName\": \"Massachusetts\",\n                    \"shipToPostalCode\": \"63254-0669\",\n                    \"shipToPostalCodeExt\": \"86191-7920\",\n                    \"shipToCounty\": \"Cambridgeshire\",\n                    \"shipToCountry\": \"American Samoa\",\n                    \"shipToEmail\": \"Madeline.Leuschke20@hotmail.com\",\n                    \"shipToDaytimePhone\": \"288-817-9180 x3568\",\n                    \"shipToNightPhone\": \"(434) 538-7513 x479\",\n                    \"billToName\": \"Christy Jacobi\",\n                    \"billToFirstName\": \"Christy\",\n                    \"billToLastName\": \"Jacobi\",\n                    \"billToSuffix\": \"Female\",\n                    \"billToCompany\": \"Prosacco, O'Hara and Beer\",\n                    \"billToCompanyJobTitle\": \"Group\",\n                    \"billToAttention\": \"\",\n                    \"billToAddressLine1\": \"5399 Marina Walks\",\n                    \"billToAddressLine2\": \"Suite 995\",\n                    \"billToAddressLine3\": \"\",\n                    \"billToCity\": \"East Charles\",\n                    \"billToState\": \"Maine\",\n                    \"billToStateFullName\": \"Arkansas\",\n                    \"billToPostalCode\": \"98831-7569\",\n                    \"billToPostalCodeExt\": \"41436\",\n                    \"billToCounty\": \"Borders\",\n                    \"billToCountry\": \"Georgia\",\n                    \"billToEmail\": \"Lavada.Kuhlman35@yahoo.com\",\n                    \"billToDaytimePhone\": \"(827) 715-7361 x10219\",\n                    \"billToNightPhone\": \"1-539-957-5587 x88757\"\n                }\n            },\n            {\n                \"poItemUuid\": \"\",\n                \"poUuid\": \"ce5ab228-703a-8a3f-fc98-914e58d88f3c\",\n                \"seq\": 86,\n                \"poItemType\": 85,\n                \"poItemStatus\": 53,\n                \"poDate\": \"2021-09-01T00:00:00+08:00\",\n                \"poTime\": \"2021-09-05T22:09:15.8104469+08:00\",\n                \"etaShipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"cancelDate\": \"2021-09-01T00:00:00+08:00\",\n                \"productUuid\": \"ed02e69b-db90-f695-bdd1-482deb63d2be\",\n                \"inventoryUuid\": \"a4258bd5-82c2-5bdf-a6c4-bb3e20aff388\",\n                \"sku\": \"Towels\",\n                \"description\": \"Ergonomic Rubber Tuna\",\n                \"notes\": \"Ut fuga quisquam eos nesciunt velit.\",\n                \"currency\": \"USD\",\n                \"poQty\": 926.18,\n                \"receivedQty\": 319.9,\n                \"cancelledQty\": 82.23,\n                \"priceRule\": \"3\",\n                \"price\": 262.21,\n                \"extAmount\": 105.58,\n                \"taxRate\": 0.96,\n                \"taxAmount\": 650.79,\n                \"discountRate\": 0.62,\n                \"discountAmount\": 33.88,\n                \"shippingAmount\": 397.7,\n                \"shippingTaxAmount\": 505.53,\n                \"miscAmount\": 814.52,\n                \"miscTaxAmount\": 960.73,\n                \"chargeAndAllowanceAmount\": 87.37,\n                \"stockable\": true,\n                \"costable\": true,\n                \"taxable\": true,\n                \"isAp\": true,\n                \"poItemsAttributes\": {\n                    \"poItemUuid\": \"\",\n                    \"poUuid\": \"709d9322-fe90-b21d-cc01-d9a25a733531\",\n                    \"fields\": {\n                        \"ClassCode\": \"kgv0vfpf2rl2chtj8aro\",\n                        \"DepartmentCode\": \"zpyy9hkrtogi8j53ecit\",\n                        \"ClassInt\": 22,\n                        \"ClassDecimal\": 822.5225\n                    }\n                },\n                \"poItemsRef\": {\n                    \"poUuid\": \"3091a4c4-9d31-3fc7-b8e7-ebdd53cb50da\",\n                    \"poItemUuid\": \"\",\n                    \"centralFulfillmentNum\": 0,\n                    \"shippingCarrier\": \"5dn2uqda35nvfrxk1fbh9mffngyph89e8bof4iv25ngeuv1nbh\",\n                    \"shippingClass\": \"huu65jy7edsntuw9n42hgij8bl60lsfbezrej165gw4hahtlhk\",\n                    \"distributionCenterNum\": 23,\n                    \"centralOrderNum\": 0,\n                    \"channelNum\": 92,\n                    \"channelAccountNum\": 59,\n                    \"channelOrderID\": \"76940f3c-fde5-8b85-ca44-88491f2666a3\",\n                    \"secondaryChannelOrderID\": \"49b35af8-efe0-7f86-230b-64d09eb4dffc\",\n                    \"shippingAccount\": \"Est natus earum autem consequuntur rerum amet.\",\n                    \"warehouseUuid\": \"f3648628-745f-1fb1-96e0-c6a85802314d\",\n                    \"customerUuid\": \"d9531588-b499-16ec-658c-85f7d022bf0b\",\n                    \"endBuyerUserID\": \"5a21cddf-938a-ae1f-5a45-39beee36a3c1\",\n                    \"endBuyerName\": \"Rice and Sons\",\n                    \"endBuyerEmail\": \"Tatum85@gmail.com\",\n                    \"shipToName\": \"Willie Predovic\",\n                    \"shipToFirstName\": \"Willie\",\n                    \"shipToLastName\": \"Predovic\",\n                    \"shipToSuffix\": \"Male\",\n                    \"shipToCompany\": \"Funk, Ledner and Wiza\",\n                    \"shipToCompanyJobTitle\": \"LLC\",\n                    \"shipToAttention\": \"Velit dignissimos magnam ad placeat.\",\n                    \"shipToAddressLine1\": \"5151 Assunta Forge\",\n                    \"shipToAddressLine2\": \"Suite 456\",\n                    \"shipToAddressLine3\": \"\",\n                    \"shipToCity\": \"West Ashlyburgh\",\n                    \"shipToState\": \"Oregon\",\n                    \"shipToStateFullName\": \"New Jersey\",\n                    \"shipToPostalCode\": \"87385\",\n                    \"shipToPostalCodeExt\": \"46203-5562\",\n                    \"shipToCounty\": \"Buckinghamshire\",\n                    \"shipToCountry\": \"Afghanistan\",\n                    \"shipToEmail\": \"Bennie_Will@gmail.com\",\n                    \"shipToDaytimePhone\": \"968.583.1876 x19204\",\n                    \"shipToNightPhone\": \"1-452-313-9908 x502\",\n                    \"billToName\": \"Willie Predovic\",\n                    \"billToFirstName\": \"Willie\",\n                    \"billToLastName\": \"Predovic\",\n                    \"billToSuffix\": \"Male\",\n                    \"billToCompany\": \"Nikolaus - Olson\",\n                    \"billToCompanyJobTitle\": \"and Sons\",\n                    \"billToAttention\": \"\",\n                    \"billToAddressLine1\": \"5201 Stone Corners\",\n                    \"billToAddressLine2\": \"Suite 847\",\n                    \"billToAddressLine3\": \"\",\n                    \"billToCity\": \"Rempelport\",\n                    \"billToState\": \"Nevada\",\n                    \"billToStateFullName\": \"South Dakota\",\n                    \"billToPostalCode\": \"82865-6708\",\n                    \"billToPostalCodeExt\": \"61056\",\n                    \"billToCounty\": \"Borders\",\n                    \"billToCountry\": \"Poland\",\n                    \"billToEmail\": \"Leland.DuBuque@gmail.com\",\n                    \"billToDaytimePhone\": \"905.738.7568\",\n                    \"billToNightPhone\": \"887-272-3540 x55880\"\n                }\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/purchaseOrders?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"purchaseOrders"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var headers = pm.request.headers;",
+					"var environment=pm.environment;",
+					"var moment = require(\"moment\");",
+					"",
+					"pm.variables.set(\"datefrom\", moment().subtract(2,'months').format('YYYY-MM-DD HH:mm:ss'));",
+					"pm.variables.set(\"timefrom\", '00:00:00');",
+					"",
+					"pm.variables.set(\"dateto\", moment().format('YYYY-MM-DD HH:mm:ss'));",
+					"pm.variables.set(\"timeto\", moment().format('HH:mm:ss'));",
+					"",
+					"pm.variables.set(\"ModifyCode\", 'Modify-' + new moment().format('MMDD-HHmmssSSS'));",
+					"pm.variables.set(\"NewCode\", '-NEW-' + new moment().format('MMDD-HHmmssSSS'));",
+					"",
+					"",
+					"headers.upsert({",
+					"    key: 'masterAccountNum',",
+					"    value: environment.get('masterAccountNum')",
+					"});",
+					"headers.upsert({",
+					"    key: 'profileNum',",
+					"    value: environment.get('profileNum')",
+					"});",
+					"var querys = pm.request.url.query;",
+					"querys.upsert({",
+					"    key: 'code',",
+					"    value: environment.get('code')",
+					"});",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Response Status Code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"if(pm.response.code==200){",
+					"    if(pm.response.headers.get('Content-Type') == 'application/json; charset=utf-8'){",
+					"        var json=pm.response.json();",
+					"        if(!json.success){",
+					"            var msgs=JSON.stringify(json.messages);",
+					"            pm.test(msgs, function () {",
+					"            pm.expect(json.success).to.be.true;",
+					"            }); ",
+					"        }",
+					"    }else{",
+					"        pm.test(\"Content-Type is Csv File\", function () {",
+					"            pm.response.to.have.header(\"Content-Type\", \"text/csv\");",
+					"        });",
+					"    }",
+					"}"
+				]
+			}
+		}
+	]
+}

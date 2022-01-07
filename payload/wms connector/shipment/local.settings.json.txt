@@ -1,0 +1,7 @@
+{ 
+  "Values": { 
+    //Put keys to your config file 
+    "ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/",
+    "ERP_Integration_Api_AuthCode": "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==", 
+  }
+}

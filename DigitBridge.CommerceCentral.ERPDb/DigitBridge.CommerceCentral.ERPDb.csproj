@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>1.0.2.1</Version>
+    <AssemblyVersion>1.0.2.1</AssemblyVersion>
+    <FileVersion>1.0.2.1</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\DigitBridge.CommerceCentral.ERP\centralerp\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="inventory\InventoryData - Copy.Designer.cs" />
+    <Compile Remove="Model\RequestParameter.cs" />
+    <Compile Remove="shipment\CommerceCentralOrderShipmentInputType.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="33.0.2" />
+    <PackageReference Include="DigitBridge.Orchestration.DataType" Version="1.0.0.4" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="0.7.1-preview" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Attribute\" />
+    <Folder Include="CustomDefineCodes\dto\" />
+    <Folder Include="CustomDefineCodes\dto\" />
+    <Folder Include="CustomDefineCodes\io\" />
+    <Folder Include="DTO\" />
+    <Folder Include="eventProcess\" />
+    <Folder Include="shipment\io\" />
+    <Folder Include="vendor\dto\" />
+    <Folder Include="warehouseTransfer\dto\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.YoPoco\DigitBridge.CommerceCentral.YoPoco.csproj" />
+  </ItemGroup>
+
+</Project>

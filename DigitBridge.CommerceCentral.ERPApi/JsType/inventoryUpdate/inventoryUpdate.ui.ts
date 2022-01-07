@@ -1,0 +1,197 @@
+import { ScreenType, ProcessMode } from '../../types/enums';
+import { DbComponentEnums, Enums } from '../../types';
+import { IconNames } from '../../components/icon';
+import { btnSave, btnEdit, btnList, btnDelete } from '../default';
+import * as util from '../../util';
+
+import { inventoryUpdateItemsGrid } from './inventoryUpdateItems.grid';
+export const inventoryUpdateUi = { 
+    page: {
+        screenType: ScreenType.PROCESSING,
+        screenid: 1001,
+        processMode: ProcessMode.LIST,
+        processModeList: [Enums.ProcessMode.LIST],
+        title: 'InventoryUpdate',
+        subTitle: '',
+        readonly: false,
+    },
+    header: {
+        title: 'InventoryUpdate',
+    },
+    navbar: {},
+    section: {},
+    buttonGroup: {},
+    buttons: {
+        btnSave,
+        btnEdit, 
+        btnList, 
+        btnDelete,
+    },
+	ui: {
+		//#region UI control for InventoryUpdateHeader
+		batchNumber: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'batchNumber',
+			label: 'batchNumber',
+			placeholder: 'batchNumber',
+			maxLength: 50,
+			textStyle: {},
+		},
+		inventoryUpdateType: {
+			type: DbComponentEnums.inputTypeEnum.number,
+			parentName: 'inventoryUpdateHeader',
+			name: 'inventoryUpdateType',
+			label: 'inventoryUpdateType',
+			placeholder: 'inventoryUpdateType',
+			format: 'number',
+			textStyle: {},
+		},
+		inventoryUpdateStatus: {
+			type: DbComponentEnums.inputTypeEnum.number,
+			parentName: 'inventoryUpdateHeader',
+			name: 'inventoryUpdateStatus',
+			label: 'inventoryUpdateStatus',
+			placeholder: 'inventoryUpdateStatus',
+			format: 'number',
+			textStyle: {},
+		},
+		updateDate: {
+			type: DbComponentEnums.inputTypeEnum.date,
+			parentName: 'inventoryUpdateHeader',
+			name: 'updateDate',
+			label: 'updateDate',
+			placeholder: 'updateDate',
+			format: 'date',
+			textStyle: {},
+		},
+		updateTime: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'updateTime',
+			label: 'updateTime',
+			placeholder: 'updateTime',
+			format: 'time',
+			textStyle: {},
+		},
+		processor: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'processor',
+			label: 'processor',
+			placeholder: 'processor',
+			maxLength: 50,
+			textStyle: {},
+		},
+		warehouseCode: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'warehouseCode',
+			label: 'warehouseCode',
+			placeholder: 'warehouseCode',
+			maxLength: 50,
+			textStyle: {},
+		},
+		customerCode: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'customerCode',
+			label: 'customerCode',
+			placeholder: 'customerCode',
+			maxLength: 50,
+			textStyle: {},
+		},
+		customerName: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'customerName',
+			label: 'customerName',
+			placeholder: 'customerName',
+			maxLength: 200,
+			textStyle: {},
+		},
+		vendorCode: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'vendorCode',
+			label: 'vendorCode',
+			placeholder: 'vendorCode',
+			maxLength: 50,
+			textStyle: {},
+		},
+		vendorName: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'vendorName',
+			label: 'vendorName',
+			placeholder: 'vendorName',
+			maxLength: 200,
+			textStyle: {},
+		},
+		referenceType: {
+			type: DbComponentEnums.inputTypeEnum.number,
+			parentName: 'inventoryUpdateHeader',
+			name: 'referenceType',
+			label: 'referenceType',
+			placeholder: 'referenceType',
+			format: 'number',
+			textStyle: {},
+		},
+		referenceNum: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'referenceNum',
+			label: 'referenceNum',
+			placeholder: 'referenceNum',
+			maxLength: 50,
+			textStyle: {},
+		},
+		inventoryUpdateSourceCode: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'inventoryUpdateSourceCode',
+			label: 'inventoryUpdateSourceCode',
+			placeholder: 'inventoryUpdateSourceCode',
+			maxLength: 100,
+			textStyle: {},
+		},
+		updateDateUtc: {
+			type: DbComponentEnums.inputTypeEnum.date,
+			parentName: 'inventoryUpdateHeader',
+			name: 'updateDateUtc',
+			label: 'updateDateUtc',
+			placeholder: 'updateDateUtc',
+			format: 'date',
+			textStyle: {},
+		},
+		enterBy: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'enterBy',
+			label: 'enterBy',
+			placeholder: 'enterBy',
+			maxLength: 100,
+			textStyle: {},
+		},
+		updateBy: {
+			type: DbComponentEnums.inputTypeEnum.input,
+			parentName: 'inventoryUpdateHeader',
+			name: 'updateBy',
+			label: 'updateBy',
+			placeholder: 'updateBy',
+			maxLength: 100,
+			textStyle: {},
+		},
+		//#endregion UI control for InventoryUpdateHeader
+
+
+
+	},
+
+    grid: {
+		inventoryUpdateItems: inventoryUpdateItemsGrid,
+    },
+    modal: {},
+    menu: {},
+};
+

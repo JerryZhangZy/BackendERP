@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>DigitBridge.CommerceCentral.ERPDatabase</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{a2c75254-6bd6-442f-9a29-ae72d67989a4}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath />
+    <RootNamespace>DigitBridge.CommerceCentral.CommerceCentralDatabase</RootNamespace>
+    <AssemblyName>DigitBridge.CommerceCentral.CommerceCentralDatabase</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="ar" />
+    <Folder Include="ap" />
+    <Folder Include="inventory" />
+    <Folder Include="customer" />
+    <Folder Include="vendor" />
+    <Folder Include="CustomDefineCodes" />
+    <Folder Include="so" />
+    <Folder Include="shipment" />
+    <Folder Include="channelOrder" />
+    <Folder Include="dataType" />
+    <Folder Include="inventoryUpdate" />
+    <Folder Include="warehouseTransfer" />
+    <Folder Include="inventory\utility" />
+    <Folder Include="qbo" />
+    <Folder Include="event" />
+    <Folder Include="setting" />
+    <Folder Include="sql" />
+    <Folder Include="po\" />
+    <Folder Include="channel" />
+    <Folder Include="styleCode" />
+    <Folder Include="pricing" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="po\PoHeader.sql" />
+    <None Include="po\PoItems.sql" />
+    <None Include="po\PoItemsRef.sql" />
+    <None Include="po\PoHeaderAttributes.sql" />
+    <None Include="po\PoItemsAttributes.sql" />
+    <None Include="ar\InvoiceHeader.sql" />
+    <None Include="ar\InvoiceItems.sql" />
+    <None Include="ar\InvoiceHeaderInfo.sql" />
+    <None Include="ar\InvoiceReturnItems.sql" />
+    <None Include="ar\InvoiceHeaderAttributes.sql" />
+    <None Include="ar\InvoiceItemsAttributes.sql" />
+    <None Include="ap\ApInvoiceHeader.sql" />
+    <None Include="ap\ApInvoiceHeaderAttributes.sql" />
+    <None Include="ap\ApInvoiceHeaderInfo.sql" />
+    <None Include="ap\ApInvoiceItems.sql" />
+    <None Include="ap\ApInvoiceTransaction.sql" />
+    <None Include="po\PoHeaderInfo.sql" />
+    <None Include="po\PoTransactionItems.sql" />
+    <None Include="inventory\Inventory.sql" />
+    <None Include="customer\Customer.sql" />
+    <None Include="customer\CustomerAddress.sql" />
+    <None Include="customer\CustomerAttributes.sql" />
+    <None Include="customer\CustomerSku.sql" />
+    <None Include="po\PoTransaction_Update.sql" />
+    <None Include="vendor\Vendor.sql" />
+    <None Include="vendor\VendorAddress.sql" />
+    <None Include="vendor\VendorAttributes.sql" />
+    <None Include="vendor\VendorSku.sql" />
+    <None Include="ar\InvoiceTransaction.sql" />
+    <None Include="CustomDefineCodes\CustomDefineCodes.sql" />
+    <None Include="po\PoTransaction.sql" />
+    <None Include="inventory\Warehouse.sql" />
+    <None Include="po\PoHeader_Update.sql" />
+    <None Include="sql\clear data by shipmentid.sql" />
+    <None Include="sql\reset salesorder to pending.sql" />
+    <None Include="sql\check so download and shipment upload.sql" />
+    <None Include="ap\ApInvoiceTransaction_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\InventoryLog.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductBasic.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\CustomAttributeProfile.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductExt.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductExtAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\InventoryAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentCanceledItem.sql" />
+    <None Include="shipment\OrderShipmentHeader.sql" />
+    <None Include="shipment\OrderShipmentPackage.sql" />
+    <None Include="shipment\OrderShipmentShippedItem.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentPackage_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentShippedItem_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentCanceledItem_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductBasic_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeader.sql" />
+    <None Include="channelOrder\OrderLine.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeader.sql" />
+    <None Include="so\SalesOrderHeaderAttributes.sql" />
+    <None Include="so\SalesOrderHeaderInfo.sql" />
+    <None Include="so\SalesOrderItems.sql" />
+    <None Include="so\SalesOrderItemsAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dataType\ListTableType.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderLine_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeaderInfo_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventoryUpdate\InventoryUpdateHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventoryUpdate\InventoryUpdateItems.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\DistributionCenter.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\DistributionCenter_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderDCAssignmentHeader.sql" />
+    <None Include="channelOrder\OrderDCAssignmentLine.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderDCAssignmentHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderDCAssignmentLine_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderItems_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferItems.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="po\PoItems_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\utility\add_inventory_from_productBasic.sql" />
+    <None Include="inventory\utility\add_productExt_from_productBasic.sql" />
+    <None Include="inventory\utility\link_to_productBasic.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="qbo\QuickBooksConnectionInfo.sql" />
+    <None Include="qbo\QuickBooksExportLog.sql" />
+    <None Include="qbo\QuickBooksExportLog_Update.sql" />
+    <None Include="qbo\QuickBooksSettingInfo.sql" />
+    <None Include="ar\InvoiceReturnItems_Update.sql" />
+    <None Include="event\Event_ERP.sql" />
+    <None Include="event\Event_ERP_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceTransaction_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceHeaderInfo_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\Inventory_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductExt_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="customer\Customer_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\MiscInvoiceHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\MiscInvoiceTransaction.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\SystemCodes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ap\ApInvoiceHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeaderMerchantExt.sql" />
+    <None Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
+    <None Include="setting\SystemSetting.sql" />
+    <None Include="setting\InitNumbers.sql" />
+    <None Include="sql\get_min_number.sql" />
+    <None Include="event\EventProcessERP.sql" />
+    <None Include="sql\AddEventProcessFromInvocie.sql" />
+    <None Include="event\ActivityLog.sql" />
+    <None Include="sql\AddEventProcessFromSalesOrder.sql" />
+    <None Include="event\EventProcessERP_Update.sql" />
+    <None Include="sql\CentralOrderTansferToSalesOrder.sql" />
+    <None Include="channel\Setting_Channel.sql" />
+    <None Include="channel\Setting_ChannelAccount.sql" />
+    <None Include="channel\setting_Channel_setting_ChannelAccount_table_and_data.sql" />
+    <None Include="sql\check salesorder logic..sql" />
+    <None Include="sql\AddEventProcessFromPurchaseOrder.sql" />
+    <None Include="po\PoHeaderInfo_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeaderMerchantExt_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="po\PoTransactionItems_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sql\check wms shipment upload and transfer count.sql" />
+    <None Include="sql\check shipment data between wms and erp.sql" />
+    <None Include="sql\check shipment upload data.sql" />
+    <None Include="sql\debug_credit_payment.sql" />
+    <None Include="sql\debug_invoice_payment.sql" />
+    <None Include="sql\debug_event_erp.sql" />
+    <None Include="sql\debug_create_invoice_from_shipment.sql" />
+    <None Include="sql\debug_centralOrder_to_salesOrder.sql" />
+    <None Include="sql\calculate_invoice_balance_and_status.sql" />
+    <None Include="sql\check salesorder item.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="setting\InitNumbers_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\CustomIOFormat.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderLineMiscExt.sql" />
+    <None Include="channelOrder\OrderLineMiscExt_Update.sql" />
+    <None Include="ar\InvoiceItems_Update.sql" />
+    <None Include="setting\Setting_ShippingCarrier.sql" />
+    <None Include="setting\Setting_ShippingCarrierService.sql" />
+    <None Include="CustomDefineCodes\ShippingCodes.sql" />
+    <None Include="CustomDefineCodes\PaidbyMap.sql" />
+    <None Include="CustomDefineCodes\BusinessType.sql" />
+    <None Include="inventory\InventoryLog_Update.sql" />
+    <Build Include="ExportFiles.sql" />
+    <None Include="channelOrder\OrderLineMerchantExt.sql" />
+    <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="styleCode\StyleCode.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="styleCode\StyleCodeAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="styleCode\VariationSet.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pricing\PriceBook.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pricing\PriceCode.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pricing\PriceRule.sql" />
+  </ItemGroup>
+</Project>

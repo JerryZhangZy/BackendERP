@@ -1,0 +1,68 @@
+﻿
+
+-- 08/20/20201 By Jerry Z 
+IF COL_LENGTH('SalesOrderItems', 'CentralOrderLineUuid') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('SalesOrderItems', 'DBChannelOrderLineRowID') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('SalesOrderItems', 'OrderDCAssignmentLineUuid') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END		
+
+-- 08/31/20201 By Yunman
+IF COL_LENGTH('SalesOrderItems', 'OrderDCAssignmentLineNum') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [OrderDCAssignmentLineNum] bigint NOT NULL DEFAULT 0
+END	
+
+
+-- 11/16/20201 By Jerry
+IF COL_LENGTH('SalesOrderItems', 'EtaArrivalDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [EtaArrivalDate] DATE NULL
+END	
+
+IF COL_LENGTH('SalesOrderItems', 'EarliestShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [EarliestShipDate] DATE NULL
+END	
+
+-- 11/17/20201 By junxian
+IF COL_LENGTH('SalesOrderItems', 'LatestShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [LatestShipDate] DATE NULL
+END	
+
+
+IF COL_LENGTH('SalesOrderItems', 'SignatureFlag') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [SignatureFlag] TINYINT NOT NULL DEFAULT 0
+END	
+
+
+-- 12/11/20201 By jerry z
+IF COL_LENGTH('SalesOrderItems', 'CommissionRate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [CommissionRate] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END					
+
+IF COL_LENGTH('SalesOrderItems', 'CommissionAmount') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [CommissionAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END			
+
+
+--12/28/2021 By junxian
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'IX_SalesOrderItems_CentralOrderLineUuid')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderItems_CentralOrderLineUuid] ON [dbo].[SalesOrderItems]
+(
+	[CentralOrderLineUuid] ASC
+)  
+GO

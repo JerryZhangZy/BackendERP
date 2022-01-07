@@ -1,0 +1,103 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ output extension=".ts" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ include file="ParseSqlFile.ttinclude" #>
+<#@ include file="SettingForWarehouseTransfer.ttinclude" #>
+
+import { types, getRoot, destroy, SnapshotIn, cast } from "mobx-state-tree";
+import { createModelActions } from '../../../store';
+<#      
+    var structurePropertyName = $"{structureName.First().ToString().ToLower()}{structureName.Substring(1)}";
+    var ServicePropertyName = $"{ServiceName.First().ToString().ToLower()}{ServiceName.Substring(1)}";
+    var processNameCamel = $"{processName.First().ToString().ToLower()}{processName.Substring(1)}";
+    // Generate model output
+	if (tables.Count>0)
+	{
+        foreach(var table in tables.Values)
+        {
+#>              
+<#@ include file="JsRepositoryModel.ttinclude" #>
+<#      
+
+        }
+    }
+#>              
+<#@ include file="JsStructureModel.ttinclude" #>
+<#@ include file="JsStructureModelInitData.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/store");
+    SaveOutputNotExists(dir, $"{structurePropertyName}.model.ts");
+#>
+<#@ include file="JsDataStore.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/store");
+    SaveOutputNotExists(dir, $"{structurePropertyName}.store.ts");
+#>
+<#@ include file="JsStoreIndex.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/store");
+    SaveOutputNotExists(dir, $"index.ts");
+#>
+<#@ include file="JsServiceClass.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/service");
+    SaveOutputNotExists(dir, $"{ServicePropertyName}.ts");
+#>
+<#@ include file="JsUseService.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/service");
+    SaveOutputNotExists(dir, $"use{ServiceName}.ts");
+#>
+<#@ include file="JsServiceIndex.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/service");
+    SaveOutputNotExists(dir, $"index.ts");
+#>
+<#@ include file="JsScreenUi.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}");
+    SaveOutputNotExists(dir, $"{processNameCamel}.ui.ts");
+#>
+<# 
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+        if (child.OneToOne) continue;
+        var table = child.Table;
+#>
+<#@ include file="JsRepositoryGrid.ttinclude" #>
+<# 
+        dir = Path.Combine(path,$"{JsModelFolder}");
+        SaveOutputNotExists(dir, $"{table.JsPropertyName}.grid.ts");
+    } 
+#>
+
+<#+
+    public void SaveOutput(string destinationFolder, string outputFileName)
+    {
+        // Write to destination folder
+        //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(destinationFolder, outputFileName);
+        File.Delete(outputFilePath);
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+ 
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+
+    public void SaveOutputNotExists(string destinationFolder, string outputFileName)
+    {
+        // Write to destination folder
+        //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(destinationFolder, outputFileName);
+        if (!File.Exists(outputFilePath)) 
+            File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+#>

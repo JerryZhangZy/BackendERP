@@ -1,0 +1,44 @@
+﻿<# 
+        // generate all grand children
+        if(child.Table.HasOneToOneChildren || child.Table.HasOneToManyChildren)
+        {
+            WriteLine($"{new String('\t',indent+1)}#region read all grand children object");
+            WriteLine($"");
+        }
+
+        if(child.Table.HasOneToOneChildren)
+        {
+            foreach(var gradeChildTable in child.Table.oneToOneChildren)
+            { 
+                if (gradeChildTable == null) continue;
+                WriteLine($"{new String('\t',indent+1)}if (dto.{gradeChildTable.Name} != null)");
+                WriteLine($"{new String('\t',indent+1)}{{");
+                WriteLine($"{new String('\t',indent+2)}if (data.{gradeChildTable.Name} is null)");
+                WriteLine($"{new String('\t',indent+3)}data.{gradeChildTable.Name} = new {gradeChildTable.Name}();");
+                WriteLine($"{new String('\t',indent+2)}Read{gradeChildTable.Name}(data.{gradeChildTable.Name}, dto.{gradeChildTable.Name});");
+                WriteLine($"{new String('\t',indent+1)}}}");
+            }
+        }
+
+        if(child.Table.HasOneToManyChildren)
+        {
+            foreach(var gradeChildTable in child.Table.oneToManyChildren)
+            { 
+                if (gradeChildTable == null) continue;
+                WriteLine($"{new String('\t',indent+1)}if (dto.{gradeChildTable.Name} != null)");
+                WriteLine($"{new String('\t',indent+1)}{{");
+                WriteLine($"{new String('\t',indent+2)}if (data.{gradeChildTable.Name} is null)");
+                WriteLine($"{new String('\t',indent+3)}data.{gradeChildTable.Name} = new List<{gradeChildTable.Name}>();");
+                WriteLine($"{new String('\t',indent+2)}Read{gradeChildTable.Name}(data.{gradeChildTable.Name}, dto.{gradeChildTable.Name});");
+                WriteLine($"{new String('\t',indent+1)}}}");
+            }
+        }
+
+        if(child.Table.HasOneToOneChildren || child.Table.HasOneToManyChildren)
+        {
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}#endregion read all grand children object");
+            WriteLine($"");
+        }
+        //end generate all grand children
+#>

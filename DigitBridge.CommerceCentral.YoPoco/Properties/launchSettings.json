@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DigitBridge.CommerceCentral.YoPoco": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASYNC": "true"
+      }
+    }
+  }
+}

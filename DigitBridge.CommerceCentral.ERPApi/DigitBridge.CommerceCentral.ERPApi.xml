@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DigitBridge.CommerceCentral.ERPApi</name>
+    </assembly>
+    <members>
+        <member name="M:DigitBridge.CommerceCentral.ERPApi.CommonAttribute.OnExceptionAsync(Microsoft.Azure.WebJobs.Host.FunctionExceptionContext,System.Threading.CancellationToken)">
+            <summary>
+            mark exception handled 
+            todo:write log 
+            </summary>
+            <param name="exceptionContext"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPApi.CommonAttribute.OnExecutedAsync(Microsoft.Azure.WebJobs.Host.FunctionExecutedContext,System.Threading.CancellationToken)">
+            <summary>
+            override exception respone
+            </summary>
+            <param name="executedContext"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPApi.SalesOrderApi.GetSalesOrders(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Get salesorder
+            </summary>
+            <param name="req"></param>
+            <param name="log"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPApi.SalesOrderApi.DeleteSalesOrders(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Delete salesorder 
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPApi.SalesOrderApi.UpdateSalesOrders(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+             Update salesorder 
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPApi.SalesOrderApi.AddSalesOrders(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Add sales order
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

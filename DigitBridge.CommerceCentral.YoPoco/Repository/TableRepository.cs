@@ -1,0 +1,607 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+using DigitBridge.Base.Utility;
+using Newtonsoft.Json;
+
+namespace DigitBridge.CommerceCentral.YoPoco
+{
+    [ExplicitColumns]
+    [Serializable]
+    public class TableRepository<TEntity, TId> : ITableRepository<TEntity, TId>
+        where TEntity : TableRepository<TEntity, TId>, new()
+    {
+        #region Public Static Methods
+
+        public void Register()
+        {
+            PocoData.ForType(typeof(TEntity), new ConventionMapper());
+        }
+
+        public PocoData GetPocoData()
+        {
+            return PocoData.ForType(typeof(TEntity), new ConventionMapper());
+        }
+
+        #region Static Methods for Exist and get Scalar value 
+
+        public static bool Exists(IDataBaseFactory dbFactory, TId id) => dbFactory.Db.Exists<TEntity>((object)id);
+        public static bool ExistUniqueId(IDataBaseFactory dbFactory, string uniqueKey) => dbFactory.Db.ExistsUniqueId<TEntity>((object)uniqueKey);
+        public static bool Exists(IDataBaseFactory dbFactory, string sql, params object[] args) => dbFactory.Db.Exists<TEntity>(sql, args); // True or False
+        public static T GetValue<T>(IDataBaseFactory dbFactory, string sql, params object[] args) => dbFactory.Db.ExecuteScalar<T>(sql, args);
+        public static long Count(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => dbFactory.Db.ExecuteScalar<long>(AutoSelectHelper.AddCountClause<TEntity>(sql), args);
+
+
+        public static async Task<bool> ExistsAsync(IDataBaseFactory dbFactory, TId id)
+            => await dbFactory.Db.ExistsAsync<TEntity>((object)id);
+
+        public static async Task<bool> ExistUniqueIdAsync(IDataBaseFactory dbFactory, string uniqueKey)
+            => await dbFactory.Db.ExistUniqueIdAsync<TEntity>((object)uniqueKey);
+
+        public static async Task<bool> ExistsAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => await dbFactory.Db.ExistsAsync<TEntity>(sql, args); // True or False
+
+        public static async Task<T> GetValueAsync<T>(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => await dbFactory.Db.ExecuteScalarAsync<T>(sql, args);
+
+        public static async Task<long> CountAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => await dbFactory.Db.ExecuteScalarAsync<long>(AutoSelectHelper.AddCountClause<TEntity>(sql), args);
+
+        #endregion
+
+        #region Query - Static Methods for get single record
+
+        public static TEntity Get(IDataBaseFactory dbFactory, TId id)
+            => dbFactory.Db.SingleOrDefault<TEntity>((object)id)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static TEntity Get(IDataBaseFactory dbFactory, TId id, IEnumerable<string> columns)
+            => dbFactory.Db.SingleOrDefault<TEntity>(columns, (object)id)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static TEntity GetById(IDataBaseFactory dbFactory, string uid)
+            => dbFactory.Db.SingleOrDefault<TEntity>((object)uid, true)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static TEntity GetById(IDataBaseFactory dbFactory, string uid, IEnumerable<string> columns)
+            => dbFactory.Db.SingleOrDefault<TEntity>(columns, (object)uid, true)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static TEntity GetBy(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => dbFactory.Db.FirstOrDefault<TEntity>(sql, args)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+
+        public static async Task<TEntity> GetAsync(IDataBaseFactory dbFactory, TId id)
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)id))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static async Task<TEntity> GetAsync(IDataBaseFactory dbFactory, TId id, IEnumerable<string> columns)
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)id))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static async Task<TEntity> GetByIdAsync(IDataBaseFactory dbFactory, string uid)
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)uid, true))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static async Task<TEntity> GetByIdAsync(IDataBaseFactory dbFactory, string uid, IEnumerable<string> columns)
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)uid, true))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        public static async Task<TEntity> GetByAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => (await dbFactory.Db.FirstOrDefaultAsync<TEntity>(sql, args))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+
+        #endregion Query - get single record
+
+        #region Query - Static Methods for find multiple records
+
+        public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory)
+            => dbFactory.Db.Query<TEntity>().ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static IEnumerable<TEntity> FindByOrder(IDataBaseFactory dbFactory, params string[] orderBy)
+            => dbFactory.Db.Query<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+        public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, IEnumerable<string> columns, params string[] orderBy)
+            => dbFactory.Db.Query<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => dbFactory.Db.Query<TEntity>(sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, string sql, IEnumerable<string> columns, params object[] args)
+            => dbFactory.Db.Query<TEntity>(columns, sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+
+        public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory)
+            => (await dbFactory.Db.FetchAsync<TEntity>()).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static async Task<IEnumerable<TEntity>> FindByOrderAsync(IDataBaseFactory dbFactory, params string[] orderBy)
+            => (await dbFactory.Db.FetchAsync<TEntity>($"ORDER BY {orderBy.JoinToString(",")}")).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, IEnumerable<string> columns, params string[] orderBy)
+            => (await dbFactory.Db.FetchAsync<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}")).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
+            => (await dbFactory.Db.FetchAsync<TEntity>(sql, args)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, string sql, IEnumerable<string> columns, params object[] args)
+            => (await dbFactory.Db.FetchAsync<TEntity>(columns, sql, args)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+
+        #endregion
+
+        #endregion Public Static Methods
+
+        public TableRepository() 
+        {
+            Clear();
+            SetIgnoreUpdateColumns(IgnoreUpdateColumns());
+        }
+
+        public TableRepository(IDataBaseFactory dbFactory) : this()
+        {
+            SetDataBaseFactory(dbFactory);
+        }
+
+        #region DataBase
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        protected IDataBaseFactory _dbFactory;
+
+        [CsvHelper.Configuration.Attributes.Ignore]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        protected IDataBaseFactory dbFactory
+        {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public TEntity SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+            return (TEntity)this;
+        }
+
+        [CsvHelper.Configuration.Attributes.Ignore]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public IDatabase db => dbFactory?.Db;
+
+        public virtual ITransaction GetTransaction()
+            => db.GetTransaction();
+
+        #endregion DataBase
+
+        #region Fields Variables
+
+        [ResultColumn(Name = "RowNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)]
+        [XmlIgnore]
+        protected long _rowNum;
+
+        [ResultColumn(Name = "EnterDateUtc", IncludeInAutoSelect = IncludeInAutoSelect.Yes)]
+        [XmlIgnore]
+        protected DateTime? _enterDateUtc;
+
+        [ResultColumn(Name = "DigitBridgeGuid", IncludeInAutoSelect = IncludeInAutoSelect.Yes)]
+        [XmlIgnore]
+        protected Guid _digitBridgeGuid;
+
+        #endregion Fields Variables
+
+        #region Properties
+
+        [IgnoreCompare]
+        public virtual long RowNum
+        {
+            get => _rowNum;
+            set => _rowNum = value;
+        }
+        [IgnoreCompare]
+        public virtual string UniqueId => string.Empty;
+        [IgnoreCompare]
+        public DateTime? EnterDateUtc => _enterDateUtc;
+        [IgnoreCompare]
+        public Guid DigitBridgeGuid => _digitBridgeGuid;
+
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public bool AllowNull { get; private set; } = true;
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public virtual bool IsNew => RowNum <= 0;
+
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public virtual bool IsEmpty => false;
+
+        public TEntity SetAllowNull(bool allowNull)
+        {
+            AllowNull = allowNull;
+            return (TEntity)this;
+        }
+
+        //TODO Add method to identify entity changed
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        private bool NeedsUpdate
+        {
+            get
+            {
+                //ObjectCacheData<T> cachedData = GetCacheData();
+                //return (cachedData._UpdatedObjects.Count > 0) || (cachedData._InsertedObjects.Count > 0);
+                return true;
+            }
+        }
+
+        public virtual void ClearMetaData()
+        {
+            _rowNum = 0;
+            _enterDateUtc = null;
+            _digitBridgeGuid = Guid.NewGuid();
+            return;
+        }
+
+        [XmlIgnore, JsonIgnore,IgnoreCompare]
+        protected virtual IList<string> _IgnoreUpdate { get; private set; } = new List<string>();
+        protected virtual bool IgnoreUpdate(string name) => !_IgnoreUpdate.Contains(name);
+        public virtual void AddIgnoreUpdate(string name)
+        {
+            if (!_IgnoreUpdate.Contains(name))
+                _IgnoreUpdate.Add(name);
+        }
+        public virtual void SetIgnoreUpdateColumns(IList<string> columns)
+        {
+            if (columns != null)
+            {
+                _IgnoreUpdate = columns;
+            }
+        }
+        public virtual IList<string> IgnoreUpdateColumns() => null;
+
+        #endregion Properties
+
+        #region Property Changed
+        protected IList<string> _changedProperties;
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public virtual IList<string> ChangedProperties
+        {
+            get
+            {
+                if (_changedProperties is null)
+                    _changedProperties = new List<string>();
+                return _changedProperties;
+            }
+        }
+        public virtual void OnPropertyChanged(string name, object value)
+        {
+            if (!string.IsNullOrEmpty(name) && !ChangedProperties.Contains(name))
+                ChangedProperties.Add(name);
+        }
+        public virtual void ClearChangedProperties()
+        {
+            ChangedProperties.Clear();
+        }
+
+        #endregion Property Changed
+
+        #region CRUD Methods
+        public virtual void CheckUniqueId() { }
+        public virtual TEntity CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
+            return (TEntity)this;
+        }
+        public virtual void CheckIntegrityOthers() { }
+
+        public virtual bool Add(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return Add();
+        }
+
+        public virtual bool Add()
+        {
+            if (!IsNew) return false;
+            object rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                rtn = db.Insert(this.SetAllowNull(false));
+            else
+            {
+                db.BeginTransaction();
+                rtn = db.Insert(this.SetAllowNull(false));
+                db.CompleteTransaction();
+            }
+            return (rtn != null);
+        }
+
+        public virtual int Put(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return Put();
+        }
+
+        public virtual int Put()
+        {
+            if (IsNew) return 0;
+            int rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = db.UpdateWithIgnore(this.SetAllowNull(false),null, _IgnoreUpdate);
+                else
+                    rtn = db.Update(this.SetAllowNull(false));
+            else
+            {
+                db.BeginTransaction();
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = db.UpdateWithIgnore(this.SetAllowNull(false), null, _IgnoreUpdate);
+                else
+                    rtn = db.Update(this.SetAllowNull(false));
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual int Patch(IDataBaseFactory DbFactory)
+        {
+            return Patch(DbFactory, ChangedProperties);
+        }
+
+        public virtual int Patch(IDataBaseFactory DbFactory, IEnumerable<string> columns)
+        {
+            SetDataBaseFactory(DbFactory);
+            return Patch(columns);
+        }
+        public virtual int Patch()
+        {
+            return Patch(ChangedProperties);
+        }
+
+        public virtual int Patch(IEnumerable<string> columns)
+        {
+            if (IsNew) return 0;
+            int rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                rtn = db.Update(this.SetAllowNull(false), columns);
+            else
+            {
+                db.BeginTransaction();
+                rtn = db.Update(this.SetAllowNull(false), columns);
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual int Delete(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return Delete();
+        }
+
+        public virtual int Delete()
+        {
+            if (IsNew) return 0;
+            int rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                rtn = db.Delete(this);
+            else
+            {
+                db.BeginTransaction();
+                rtn = db.Delete(this);
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual int Delete(IDataBaseFactory DbFactory, string sql, params object[] args)
+        {
+            SetDataBaseFactory(DbFactory);
+            return Delete(sql, args);
+        }
+
+        public virtual int Delete(string sql, params object[] args)
+        {
+            if (string.IsNullOrWhiteSpace(sql)) return 0;
+            int rtn;
+            if (db.IsInTransaction)
+                rtn = db.Delete<TEntity>(sql, args);
+            else
+            {
+                db.BeginTransaction();
+                rtn = db.Delete<TEntity>(sql, args);
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual bool Save(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return Save();
+        }
+
+        public virtual bool Save()
+        {
+            return (IsNew)
+                ? Add()
+                : Put() > 0;
+        }
+
+
+        public virtual async Task<bool> AddAsync(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return await AddAsync();
+        }
+
+        public virtual async Task<bool> AddAsync()
+        {
+            if (!IsNew) return false;
+            object rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                rtn = await db.InsertAsync(this.SetAllowNull(false));
+            else
+            {
+                await db.BeginTransactionAsync();
+                rtn = await db.InsertAsync(this.SetAllowNull(false));
+                db.CompleteTransaction();
+            }
+            return (rtn != null);
+        }
+
+        public virtual async Task<int> PutAsync(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return await PutAsync();
+        }
+
+        public virtual async Task<int> PutAsync()
+        {
+            if (IsNew) return 0;
+            int rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = await db.UpdateWithIgnoreAsync(this.SetAllowNull(false), _IgnoreUpdate);
+                else
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false));
+            else
+            {
+                await db.BeginTransactionAsync();
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false), _IgnoreUpdate);
+                else
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false));
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+        public virtual async Task<int> PatchAsync(IDataBaseFactory DbFactory)
+        {
+            return await PatchAsync(DbFactory, this.ChangedProperties);
+        }
+        public virtual async Task<int> PatchAsync(IDataBaseFactory DbFactory, IEnumerable<string> columns)
+        {
+            SetDataBaseFactory(DbFactory);
+            return await PatchAsync(columns);
+        }
+        public virtual async Task<int> PatchAsync()
+        {
+            return await PatchAsync(this.ChangedProperties);
+        }
+
+        public virtual async Task<int> PatchAsync(IEnumerable<string> columns)
+        {
+            if (IsNew) return 0;
+            int rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                rtn = await db.UpdateAsync(this.SetAllowNull(false), columns);
+            else
+            {
+                await db.BeginTransactionAsync();
+                rtn = await db.UpdateAsync(this.SetAllowNull(false), columns);
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual async Task<int> DeleteAsync(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return await DeleteAsync();
+        }
+
+        public virtual async Task<int> DeleteAsync()
+        {
+            if (IsNew) return 0;
+            int rtn;
+            this.ConvertDataFieldsToDb();
+            if (db.IsInTransaction)
+                rtn = await db.DeleteAsync(this);
+            else
+            {
+                await db.BeginTransactionAsync();
+                rtn = await db.DeleteAsync(this);
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual async Task<int> DeleteAsync(IDataBaseFactory DbFactory, string sql, params object[] args)
+        {
+            SetDataBaseFactory(DbFactory);
+            return await DeleteAsync(sql, args);
+        }
+
+        public virtual async Task<int> DeleteAsync(string sql, params object[] args)
+        {
+            if (string.IsNullOrWhiteSpace(sql)) return 0;
+            int rtn;
+            if (db.IsInTransaction)
+                rtn = await db.DeleteAsync<TEntity>(sql, args);
+            else
+            {
+                await db.BeginTransactionAsync();
+                rtn = await db.DeleteAsync<TEntity>(sql, args);
+                db.CompleteTransaction();
+            }
+            return rtn;
+        }
+
+        public virtual async Task<bool> SaveAsync(IDataBaseFactory DbFactory)
+        {
+            SetDataBaseFactory(DbFactory);
+            return await SaveAsync();
+        }
+
+        public virtual async Task<bool> SaveAsync()
+        {
+            return (IsNew)
+                ? await AddAsync()
+                : (await PutAsync()) > 0;
+        }
+
+        #endregion
+
+        public virtual TEntity ConvertDbFieldsToData() { return (TEntity)this; }
+        public virtual TEntity ConvertDataFieldsToDb() { return (TEntity)this; }
+
+        #region Interface Definition
+
+        public bool Equals(TEntity other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (!RowNum.Equals(other.RowNum)) return false;
+            return PropertyEquals(other);
+        }
+        public virtual bool PropertyEquals(TEntity other)
+        {
+            var unequalProperties = GetPocoData().GetChangedProperties(this, other);
+            return !unequalProperties.Any();
+        }
+        public virtual TEntity CopyFrom(TEntity other)
+        {
+            return CopyFrom(other, new List<string>() { "RowNum", "AllowNull", "IsNew" });
+        }
+        public virtual TEntity CopyFrom(TEntity other, IEnumerable<string> ignoreColumns)
+        {
+            GetPocoData().CopyProperties(other, this, true, ignoreColumns);
+            return (TEntity)this;
+        }
+        public virtual TEntity Clear()
+        {
+            ClearChangedProperties();
+            return (TEntity)this;
+        }
+
+        public virtual TEntity Clone()
+        {
+            var newData = new TEntity();
+            newData.Clear();
+            newData?.CopyFrom((TEntity)this);
+            newData.ClearMetaData();
+            return newData;
+        }
+
+        #endregion Interface Definition
+
+    }
+
+} 

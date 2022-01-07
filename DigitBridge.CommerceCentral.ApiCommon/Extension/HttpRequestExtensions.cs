@@ -1,0 +1,174 @@
+﻿using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ERPDb;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace DigitBridge.CommerceCentral.ApiCommon
+{
+    public static partial class HttpRequestExtensions
+    {
+        /// <summary>
+        /// Get all request parameter to RequestParameter object, include Header and Query string
+        /// </summary>
+        public static async Task<TPayload> GetParameters<TPayload>(this HttpRequest req, bool fromBody = false)
+            where TPayload : PayloadBase, new()
+        {
+            if (fromBody)
+                return await req.GetBodyParameters<TPayload>();
+            else
+                return req.GetNoneBodyParameters<TPayload>();
+        }
+        private static async Task<TPayload> GetBodyParameters<TPayload>(this HttpRequest req)
+            where TPayload : PayloadBase, new()
+        {
+            var instance = await req.GetBodyObjectAsync<TPayload>();
+            if (instance is null)
+            {
+                instance = new TPayload();
+            }
+            instance.GetHeaderParameters(req);
+            //instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            //instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            //instance.AccessToken = req.GetHeaderValue("Authorization").Replace("Bearer ", "");
+            return instance;
+        }
+        /// <summary>
+        /// Get all request parameter to RequestParameter object, include Header and Query string
+        /// </summary>
+        private static T GetNoneBodyParameters<T>(this HttpRequest req) where T : PayloadBase, new()
+        {
+            //return (T)req.GetRequestParameter(typeof(T));
+            //Activator.CreateInstance(instanceType);
+            var instance = new T();
+            instance.GetHeaderParameters(req);
+            instance.GetQueryParameters(req);
+
+            //instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            //instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            //instance.Top = req.GetQueryStringValue("$top").ToInt();
+            //instance.Skip = req.GetQueryStringValue("$skip").ToInt();
+            //instance.IsQueryTotalCount = req.GetQueryStringValue("$Count").ToBool();
+            //instance.SortBy = req.GetQueryStringValue("$sortBy");
+            //instance.Filter = req.GetQueryStringValue("$filter").ToJObject();
+
+            var moreParameterFunc = instance.GetOtherParameters();
+            if (moreParameterFunc != null && moreParameterFunc.Count > 0)
+            {
+                foreach (var item in moreParameterFunc)
+                {
+                    if (string.IsNullOrEmpty(item.Key) || item.Value is null)
+                        continue;
+                    var param = req.GetQueryStringValue(item.Key);
+                    if (!string.IsNullOrEmpty(param))
+                        item.Value(param);
+                }
+            }
+            return instance;
+        }
+
+        private static TPayload GetHeaderParameters<TPayload>(this TPayload instance, HttpRequest req)
+            where TPayload : PayloadBase, new()
+        {
+            if (instance is null)
+                return instance;
+
+            instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            instance.AccessToken = req.GetHeaderValue("Authorization").Replace("Bearer ", "");
+
+            if (MySingletonAppSetting.BackdoorMode)
+            {
+                instance.BackdoorModeEmail = req.GetHeaderValue("BackdoorModeEmail");
+                instance.BackdoorModePassword = req.GetHeaderValue("BackdoorModePassword");
+            }
+            return instance;
+        }
+
+        private static TPayload GetQueryParameters<TPayload>(this TPayload instance, HttpRequest req)
+            where TPayload : PayloadBase, new()
+        {
+            if (instance is null)
+                return instance;
+
+            instance.Top = req.GetQueryStringValue("$top").ToInt();
+            instance.Skip = req.GetQueryStringValue("$skip").ToInt();
+            instance.IsQueryTotalCount = req.GetQueryStringValue("$Count").ToBool();
+            instance.SortBy = req.GetQueryStringValue("$sortBy");
+            instance.Filter = req.GetQueryStringValue("$filter").ToJObject();
+            return instance;
+        }
+
+
+        public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
+        {
+            var json = await req.GetBodyStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+        public static async Task<string> GetBodyStringAsync(this HttpRequest req)
+        {
+            if (req.Body.CanSeek)
+                req.Body.Seek(0, SeekOrigin.Begin);
+            var reader = new StreamReader(req.Body);
+            return await reader.ReadToEndAsync();
+        }
+
+        /// <summary>
+        /// Get value string from context headers
+        /// </summary>
+        /// <returns></returns>
+        public static string GetHeaderValue(this HttpRequest req, string key) =>
+            req.Headers.TryGetValue(key, out var val)
+                ? val.ToString()
+                : string.Empty;
+
+        /// <summary>
+        /// Get value string from context headers
+        /// </summary>
+        /// <returns></returns>
+        private static string GetQueryStringValue(this HttpRequest req, string key) =>
+            req.Query.TryGetValue(key, out var val)
+                ? val.ToString()
+                : string.Empty;
+
+        /// <summary>
+        /// Get data from Headers 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="key"></param> 
+        /// <returns></returns>
+        public static string GetData(this HttpRequest req, string key, ParameterLocation location)
+        {
+            string value = null;
+            if (req.Headers.ContainsKey(key) && location == ParameterLocation.Header)
+            {
+                value = req.Headers[key].ToString();
+            }
+            else if (req.Query.ContainsKey(key) && location == ParameterLocation.Query)
+            {
+                value = req.Query[key].ToString();
+            }
+            else if (req.HttpContext.GetRouteData().Values.ContainsKey(key) && location == ParameterLocation.Path)
+            {
+                value = req.HttpContext.GetRouteData().Values[key].ToString();
+            }
+            else if (req.Cookies.ContainsKey(key) && location == ParameterLocation.Cookie)
+            {
+                value = req.Cookies[key].ToString();
+            }
+            return value;
+        }
+
+        public static int MasterAccountNum(this HttpRequest req)
+        {
+            return req.GetHeaderValue("masterAccountNum").ToInt();
+        }
+        public static int ProfileNum(this HttpRequest req)
+        {
+            return req.GetHeaderValue("profileNum").ToInt();
+        }
+    }
+}
