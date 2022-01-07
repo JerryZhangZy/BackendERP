@@ -73,6 +73,8 @@
     <Folder Include="sql" />
     <Folder Include="po\" />
     <Folder Include="channel" />
+    <Folder Include="styleCode" />
+    <Folder Include="pricing" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -325,5 +327,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="warehouseTransfer\WarehouseTransferHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="styleCode\StyleCode.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="styleCode\StyleCodeAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="styleCode\VariationSet.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pricing\PriceBook.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pricing\PriceCode.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pricing\PriceRule.sql" />
   </ItemGroup>
 </Project>
