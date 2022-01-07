@@ -242,12 +242,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var channelSkus = await GetChannelSkusAsync(masterAccountNum, profileNum, dto.SalesOrderHeaderInfo.ChannelNum.ToInt());
             foreach (var soitem in dto.SalesOrderItems)
             {
+                if (soitem.MerchantSku.IsZero()) continue;
+
                 if (soitem.WarehouseCode.IsZero()) soitem.WarehouseCode = string.Empty;//TODO set default warehousecode.
                 if (soitem == null) continue;
                 var foundChannelSku = channelSkus.Where(i => i.MerchantSku == soitem.MerchantSku).FirstOrDefault();
-                if (foundChannelSku.SKU.IsZero()) continue;
 
-                soitem.SKU = foundChannelSku.SKU;
+                if (foundChannelSku.SKU.IsZero())
+                    soitem.SKU = soitem.MerchantSku;
+                else
+                    soitem.SKU = foundChannelSku.SKU;
             }
 
             // find inventory data

@@ -732,11 +732,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-                return this.ShipAmount;
+                return this.ShippingAmount;
             }
             set
             {
-                this.ShipAmount = value;
+                this.ShippingAmount = value;
             }
         }
 
