@@ -36,18 +36,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
                 $"SELECT * FROM SystemCodes WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND SystemCodeName='{SystemCodeName}'");
             if (systemCodes != null)
             {
-                var data = new List<SelectListDataItem>();
-                foreach (var pair in ((List<Dictionary<string, object>>)systemCodes.Fields.Values["data"]))
-                    if (pair["code"].ToString().StartsWith(payload.Term, StringComparison.CurrentCultureIgnoreCase))
-                        data.Add(new SelectListDataItem()
-                        {
-                            value = pair["code"].ToString(),
-                            text = pair["description"].ToString(),
-                            count = 1
-                        });
+                var data = new List<Dictionary<string, object>>();
+                var dict = (List<Dictionary<string, object>>)systemCodes.Fields.Values["data"];
+                foreach (Dictionary<string, object> pair in dict)
+                {
+                    if (pair == null) continue;
+                    var code = pair.GetValue("code");
+                    var description = pair.GetValue("description");
+                    if (description == null || string.IsNullOrWhiteSpace(description.ToString()))
+                        description = code;
+                    if (code == null || string.IsNullOrWhiteSpace(code.ToString())) continue;
+                    if (!string.IsNullOrWhiteSpace(payload.Term) && !code.ToString().StartsWith(payload.Term, StringComparison.CurrentCultureIgnoreCase))
+                        continue;
+
+                    pair.SetValue("value", code);
+                    pair.SetValue("text", description);
+                    pair.SetValue("count", 1);
+                    data.Add(pair);
+                }
+
                 payload.Data = new StringBuilder(JsonConvert.SerializeObject(data));
                 payload.Success = true;
                 return true;
+
+
+                //var data = new List<SelectListDataItem>();
+                //foreach (var pair in ((List<Dictionary<string, object>>)systemCodes.Fields.Values["data"]))
+                //    if (string.IsNullOrWhiteSpace(payload.Term) || pair["code"].ToString().StartsWith(payload.Term, StringComparison.CurrentCultureIgnoreCase))
+                //        data.Add(new SelectListDataItem()
+                //        {
+                //            value = pair["code"].ToString(),
+                //            text = pair["description"].ToString(),
+                //            count = 1
+                //        });
+                //payload.Data = new StringBuilder(JsonConvert.SerializeObject(data));
+                //payload.Success = true;
+                //return true;
             }
             payload.Success = false;
             return false;
