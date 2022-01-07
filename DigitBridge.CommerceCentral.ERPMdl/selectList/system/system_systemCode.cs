@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
                     if (pair == null) continue;
                     var code = pair.GetValue("code");
                     var description = pair.GetValue("description");
-                    if (string.IsNullOrWhiteSpace(description.ToString()))
+                    if (description == null || string.IsNullOrWhiteSpace(description.ToString()))
                         description = code;
                     if (code == null || string.IsNullOrWhiteSpace(code.ToString())) continue;
                     if (!string.IsNullOrWhiteSpace(payload.Term) && !code.ToString().StartsWith(payload.Term, StringComparison.CurrentCultureIgnoreCase))
